@@ -18,7 +18,7 @@ export default async function HomePage() {
                 B2B SaaS writer and strategist.
               </h1>
               <p className="text-base sm:text-lg md:text-xl leading-relaxed mb-6 sm:mb-8 max-w-xl" style={{ color: 'rgba(255, 255, 255, 0.9)' }}>
-                B2B SaaS writer specializing in comparisons, alternative pages, and how-to guides. I also build AI systems to scale marketing operations.
+                B2B SaaS writer specializing in comparisons, alternative pages, and how-to guides. AI Content Engineer scaling marketing operations.
               </p>
               <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
                 <Link

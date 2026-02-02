@@ -3,16 +3,21 @@ import "./globals.css";
 import { ThemeProvider } from "./providers";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
+import { GoogleAnalytics } from "@/components/GoogleAnalytics";
 
 export const metadata: Metadata = {
-  title: "Peace Akinwale | Content Strategist & AI Systems Builder",
-  description: "I write content that converts, and build AI systems to improve marketing operations. Content strategist and AI systems builder for B2B SaaS companies.",
+  title: "Peace Akinwale | Content Strategist & AI Content Engineer",
+  description: "I write content that converts, and build AI systems to improve marketing operations. Content strategist and AI Content Engineer for B2B SaaS companies.",
   viewport: "width=device-width, initial-scale=1, maximum-scale=5",
+  icons: {
+    icon: '/images/peace-akinwale.jpg',
+    apple: '/images/peace-akinwale.jpg',
+  },
   verification: {
     google: "JAyf5aaXTbM7ev_a1fFUGsiZ6yYgoAa5QNEFngUjllQ",
   },
   openGraph: {
-    title: "Peace Akinwale | Content Strategist & AI Systems Builder",
+    title: "Peace Akinwale | Content Strategist & AI Content Engineer",
     description: "I write content that converts, and build AI systems to improve marketing operations.",
     url: "https://peaceakinwale.com",
     siteName: "Peace Akinwale",
@@ -21,7 +26,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Peace Akinwale | Content Strategist & AI Systems Builder",
+    title: "Peace Akinwale | Content Strategist & AI Content Engineer",
     description: "I write content that converts, and build AI systems to improve marketing operations.",
   },
 };
@@ -34,6 +39,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className="antialiased">
+        <GoogleAnalytics />
         <ThemeProvider>
           <div className="flex flex-col min-h-screen">
             <Header />

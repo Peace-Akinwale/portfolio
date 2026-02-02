@@ -4,7 +4,7 @@ import Image from 'next/image';
 
 export const metadata: Metadata = {
   title: 'About | Peace Akinwale',
-  description: 'Learn more about Peace Akinwale - B2B SaaS writer and AI systems builder.',
+  description: 'Learn more about Peace Akinwale - B2B SaaS writer and AI Content Engineer.',
 };
 
 export default async function AboutPage() {
