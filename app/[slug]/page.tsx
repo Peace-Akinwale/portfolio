@@ -1,0 +1,179 @@
+import { getPostBySlug, getAllPostSlugs, getPosts } from '@/lib/hashnode/client';
+import { formatDate, formatReadingTime } from '@/lib/hashnode/utils';
+import { notFound } from 'next/navigation';
+import Image from 'next/image';
+import Link from 'next/link';
+import type { Metadata } from 'next';
+import { ArticleCard } from '@/components/ArticleCard';
+import { ShareButtons } from '@/components/ShareButtons';
+import { ReadingProgress } from '@/components/ReadingProgress';
+import { TableOfContents } from '@/components/TableOfContents';
+import { ImageLightbox } from '@/components/ImageLightbox';
+
+interface ArticlePageProps {
+  params: Promise<{ slug: string }>;
+}
+
+// Generate static paths for all articles
+export async function generateStaticParams() {
+  const slugs = await getAllPostSlugs();
+  return slugs.map((slug) => ({ slug }));
+}
+
+// Generate metadata for SEO
+export async function generateMetadata({ params }: ArticlePageProps): Promise<Metadata> {
+  const { slug } = await params;
+  const post = await getPostBySlug(slug);
+
+  if (!post) {
+    return {
+      title: 'Article Not Found',
+    };
+  }
+
+  return {
+    title: post.seo?.title || post.title,
+    description: post.seo?.description || post.brief,
+    openGraph: {
+      title: post.seo?.title || post.title,
+      description: post.seo?.description || post.brief,
+      images: post.coverImage?.url ? [post.coverImage.url] : [],
+      type: 'article',
+      publishedTime: post.publishedAt,
+      authors: [post.author.name],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: post.seo?.title || post.title,
+      description: post.seo?.description || post.brief,
+      images: post.coverImage?.url ? [post.coverImage.url] : [],
+    },
+  };
+}
+
+export default async function ArticlePage({ params }: ArticlePageProps) {
+  const { slug } = await params;
+  const post = await getPostBySlug(slug);
+
+  if (!post) {
+    notFound();
+  }
+
+  // Get related posts (same tag, limit 3)
+  const { posts: allPosts } = await getPosts(20);
+  const relatedPosts = allPosts
+    .filter((p) =>
+      p.id !== post.id &&
+      p.tags?.some((tag) => post.tags?.some((pt) => pt.id === tag.id))
+    )
+    .slice(0, 3);
+
+  return (
+    <>
+      <ReadingProgress />
+      <TableOfContents />
+      <ImageLightbox />
+
+      <article className="max-w-4xl mx-auto px-6 py-16">
+        {/* Article Header */}
+        <header className="mb-12">
+        {/* Tags */}
+        {post.tags && post.tags.length > 0 && (
+          <div className="mb-4">
+            <span className="text-sm uppercase tracking-wider text-muted-foreground">
+              {post.tags[0].name}
+            </span>
+          </div>
+        )}
+
+        {/* Title */}
+        <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
+          {post.title}
+        </h1>
+
+        {/* Meta */}
+        <div className="flex items-center gap-4 text-muted-foreground mb-8">
+          <time dateTime={post.publishedAt} className="text-sm">
+            {formatDate(post.publishedAt, 'MMMM dd, yyyy')}
+          </time>
+          <span>•</span>
+          <span className="text-sm font-medium px-3 py-1 bg-muted rounded-sm">
+            {formatReadingTime(post.readTimeInMinutes)}
+          </span>
+        </div>
+
+        {/* Cover Image */}
+        {post.coverImage?.url && (
+          <div className="relative aspect-[16/9] overflow-hidden bg-muted mb-12">
+            <Image
+              src={post.coverImage.url}
+              alt={post.title}
+              fill
+              className="object-cover"
+              priority
+            />
+          </div>
+        )}
+      </header>
+
+      {/* Article Content */}
+      <div
+        className="prose prose-lg max-w-none"
+        dangerouslySetInnerHTML={{ __html: post.content.html }}
+      />
+
+      {/* Article Footer */}
+      <footer className="mt-16 pt-8 border-t border-border">
+        {/* Tags */}
+        {post.tags && post.tags.length > 0 && (
+          <div className="mb-8">
+            <h3 className="text-sm uppercase tracking-wider text-muted-foreground mb-3">
+              Tags
+            </h3>
+            <div className="flex flex-wrap gap-2">
+              {post.tags.map((tag) => (
+                <span
+                  key={tag.id}
+                  className="px-3 py-1 bg-muted text-sm hover:bg-accent hover:text-accent-foreground transition-colors"
+                >
+                  {tag.name}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Share */}
+        <div className="mb-8">
+          <h3 className="text-sm uppercase tracking-wider text-muted-foreground mb-3">
+            Share
+          </h3>
+          <ShareButtons url={post.url} title={post.title} />
+        </div>
+      </footer>
+
+      {/* Related Articles */}
+      {relatedPosts.length > 0 && (
+        <section className="mt-24 pt-12 border-t border-border">
+          <h2 className="font-serif text-3xl font-bold mb-8">Related Articles</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {relatedPosts.map((relatedPost) => (
+              <ArticleCard key={relatedPost.id} post={relatedPost} />
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* Back to Blog */}
+      <div className="mt-16 text-center">
+        <Link
+          href="/blog"
+          className="inline-block font-sans text-sm uppercase tracking-wide border-b-2 border-foreground hover:border-muted-foreground hover:text-muted-foreground transition-colors"
+        >
+          ← Back to Blog
+        </Link>
+      </div>
+      </article>
+    </>
+  );
+}

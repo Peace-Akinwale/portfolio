@@ -1,26 +1,310 @@
 @import "tailwindcss";
 
+/* Editorial Portfolio Design System - Monochrome */
+
 :root {
+  /* Light mode colors - Navy + Burnt Orange */
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: #000000;
+  --muted: #f4f4f5;
+  --muted-foreground: #27272a;
+  --border: #e4e4e7;
+  --accent: #e07a5f;
+  --accent-foreground: #ffffff;
+  --navy: #000000;
+  --orange: #e07a5f;
+
+  /* Typography */
+  --font-serif: Georgia, Cambria, "Times New Roman", Times, serif;
+  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 }
 
 @theme inline {
+  /* Colors */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-border: var(--border);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+
+  /* Typography */
+  --font-serif: var(--font-serif);
+  --font-sans: var(--font-sans);
+
+  /* Spacing for editorial layouts */
+  --spacing-section: 6rem;
+  --spacing-content: 2rem;
 }
 
+/* Dark mode */
+[data-theme="dark"] {
+  --background: #0f1419;
+  --foreground: #f1f5f9;
+  --muted: #1e293b;
+  --muted-foreground: #cbd5e1;
+  --border: #334155;
+  --accent: #e07a5f;
+  --accent-foreground: #ffffff;
+  --navy: #f1f5f9;
+  --orange: #e07a5f;
+}
+
+/* Auto dark mode (system preference) */
 @media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  :root:not([data-theme="light"]) {
+    --background: #0f1419;
+    --foreground: #f1f5f9;
+    --muted: #1e293b;
+    --muted-foreground: #cbd5e1;
+    --border: #334155;
+    --accent: #e07a5f;
+    --accent-foreground: #ffffff;
+    --navy: #f1f5f9;
+    --orange: #e07a5f;
   }
+}
+
+/* Base styles */
+* {
+  border-color: var(--border);
+}
+
+html {
+  overflow-x: hidden;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 1.7;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  overflow-x: hidden;
+  width: 100%;
+  max-width: 100vw;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Editorial typography */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-serif);
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--foreground);
+}
+
+h1 {
+  font-size: clamp(2rem, 5vw, 3rem);
+  margin-bottom: 1.5rem;
+  letter-spacing: -0.02em;
+}
+
+h2 {
+  font-size: clamp(1.75rem, 4vw, 2.25rem);
+  margin-bottom: 1.25rem;
+  letter-spacing: -0.01em;
+}
+
+h3 {
+  font-size: clamp(1.5rem, 3vw, 1.75rem);
+  margin-bottom: 1rem;
+  letter-spacing: -0.01em;
+}
+
+/* Article content styling */
+.prose {
+  font-family: var(--font-serif);
+  font-size: 1.125rem;
+  line-height: 1.8;
+  max-width: 65ch;
+  color: var(--foreground);
+}
+
+.prose p {
+  margin-bottom: 1.5rem;
+  color: var(--muted-foreground);
+}
+
+.prose h1, .prose h2, .prose h3, .prose h4, .prose h5, .prose h6 {
+  font-family: var(--font-serif);
+  font-weight: 700;
+  color: var(--foreground);
+  margin-top: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+.prose h2 {
+  font-size: 2rem;
+  color: var(--foreground);
+}
+
+.prose h3 {
+  font-size: 1.5rem;
+  color: var(--foreground);
+}
+
+.prose a {
+  color: #e07a5f;
+  text-decoration: underline;
+  text-decoration-color: #e07a5f;
+  text-underline-offset: 3px;
+  transition: all 0.2s ease;
+}
+
+.prose a:hover {
+  color: #d4816f;
+  text-decoration-color: #d4816f;
+}
+
+.prose ul, .prose ol {
+  margin-bottom: 1.5rem;
+  padding-left: 2rem;
+  color: var(--muted-foreground);
+}
+
+.prose ul {
+  list-style-type: disc;
+}
+
+.prose ol {
+  list-style-type: decimal;
+}
+
+.prose li {
+  margin-bottom: 0.5rem;
+  color: var(--muted-foreground);
+  padding-left: 0.5rem;
+}
+
+.prose li::marker {
+  color: var(--accent);
+}
+
+.prose strong {
+  color: var(--foreground);
+  font-weight: 600;
+}
+
+.prose blockquote {
+  border-left: 4px solid var(--accent);
+  padding: 1.5rem 2rem;
+  margin: 2.5rem 0;
+  font-style: italic;
+  color: var(--foreground);
+  background: var(--muted);
+  font-size: 1.25rem;
+  line-height: 1.6;
+  border-radius: 4px;
+}
+
+.prose blockquote p {
+  color: var(--foreground);
+  margin: 0;
+}
+
+.prose code {
+  font-family: monospace;
+  background: var(--muted);
+  color: var(--foreground);
+  padding: 0.2rem 0.4rem;
+  border-radius: 3px;
+  font-size: 0.9em;
+}
+
+.prose pre {
+  background: #1a1f36;
+  color: #ffffff;
+  padding: 1.5rem;
+  border-radius: 8px;
+  overflow-x: auto;
+  margin: 1.5rem 0;
+}
+
+.prose pre code {
+  background: none;
+  color: #ffffff;
+  padding: 0;
+}
+
+.prose img {
+  max-width: 100%;
+  height: auto;
+  margin: 2rem 0;
+  border-radius: 4px;
+}
+
+
+/* Dark mode prose - now handled by CSS variables */
+
+/* Smooth transitions */
+a, button {
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Link styling */
+a {
+  text-decoration: none;
+}
+
+/* Focus visible for accessibility */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Sidebar slide-in animation */
+@keyframes slide-in {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.animate-slide-in {
+  animation: slide-in 0.3s ease-out;
+}
+
+/* Lightbox animations */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes zoom-in {
+  from {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.2s ease-out;
+}
+
+.animate-zoom-in {
+  animation: zoom-in 0.3s ease-out;
+}
+
+/* Make prose images interactive */
+.prose img {
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.prose img:hover {
+  transform: scale(1.02);
 }
