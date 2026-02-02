@@ -9,10 +9,6 @@ export const metadata: Metadata = {
   title: "Peace Akinwale | Content Strategist & AI Content Engineer",
   description: "I write content that converts, and build AI systems to improve marketing operations. Content strategist and AI Content Engineer for B2B SaaS companies.",
   viewport: "width=device-width, initial-scale=1, maximum-scale=5",
-  icons: {
-    icon: '/images/peace-akinwale.jpg',
-    apple: '/images/peace-akinwale.jpg',
-  },
   verification: {
     google: "JAyf5aaXTbM7ev_a1fFUGsiZ6yYgoAa5QNEFngUjllQ",
   },
