@@ -91,8 +91,15 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
           {post.title}
         </h1>
 
-        {/* Meta */}
-        <div className="flex items-center gap-4 text-muted-foreground mb-8">
+        {/* Author & Meta */}
+        <div className="flex flex-wrap items-center gap-4 text-muted-foreground mb-8">
+          <Link
+            href="/blog"
+            className="text-sm font-medium hover:text-accent transition-colors"
+          >
+            By {post.author.name}
+          </Link>
+          <span>•</span>
           <time dateTime={post.publishedAt} className="text-sm">
             {formatDate(post.publishedAt, 'MMMM dd, yyyy')}
           </time>

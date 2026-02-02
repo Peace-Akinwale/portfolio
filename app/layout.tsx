@@ -8,6 +8,9 @@ export const metadata: Metadata = {
   title: "Peace Akinwale | Content Strategist & AI Systems Builder",
   description: "I write content that converts, and build AI systems to improve marketing operations. Content strategist and AI systems builder for B2B SaaS companies.",
   viewport: "width=device-width, initial-scale=1, maximum-scale=5",
+  verification: {
+    google: "JAyf5aaXTbM7ev_a1fFUGsiZ6yYgoAa5QNEFngUjllQ",
+  },
   openGraph: {
     title: "Peace Akinwale | Content Strategist & AI Systems Builder",
     description: "I write content that converts, and build AI systems to improve marketing operations.",
