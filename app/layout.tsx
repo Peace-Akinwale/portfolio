@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { ThemeProvider } from "./providers";
 import { Header } from "@/components/Header";
@@ -8,7 +8,6 @@ import { GoogleAnalytics } from "@/components/GoogleAnalytics";
 export const metadata: Metadata = {
   title: "Peace Akinwale | Content Strategist & AI Content Engineer",
   description: "I write content that converts, and build AI systems to improve marketing operations. Content strategist and AI Content Engineer for B2B SaaS companies.",
-  viewport: "width=device-width, initial-scale=1, maximum-scale=5",
   verification: {
     google: "JAyf5aaXTbM7ev_a1fFUGsiZ6yYgoAa5QNEFngUjllQ",
   },
@@ -25,6 +24,12 @@ export const metadata: Metadata = {
     title: "Peace Akinwale | Content Strategist & AI Content Engineer",
     description: "I write content that converts, and build AI systems to improve marketing operations.",
   },
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
 };
 
 export default function RootLayout({
