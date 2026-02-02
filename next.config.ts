@@ -9,12 +9,6 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  experimental: {
-    turbo: {
-      // Disable Turbopack for production builds to avoid build errors
-      enabled: false,
-    },
-  },
 };
 
 export default nextConfig;

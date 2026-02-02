@@ -1,6 +1,3 @@
 {
-  "buildCommand": "npm run build",
-  "env": {
-    "NEXT_PRIVATE_WEBPACK": "true"
-  }
+  "buildCommand": "npm run build -- --webpack"
 }
