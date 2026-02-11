@@ -103,3 +103,16 @@ export interface StaticPageResponse {
     staticPage: HashnodeStaticPage | null;
   };
 }
+
+export interface StaticPagesResponse {
+  publication: {
+    staticPages: {
+      edges: {
+        node: {
+          id: string;
+          slug: string;
+        };
+      }[];
+    };
+  };
+}

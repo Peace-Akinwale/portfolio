@@ -4,6 +4,7 @@ import {
   GET_POSTS,
   GET_POST_BY_SLUG,
   GET_STATIC_PAGE,
+  GET_STATIC_PAGES,
   SEARCH_POSTS,
 } from './queries';
 import type {
@@ -14,6 +15,7 @@ import type {
   PostResponse,
   PublicationResponse,
   StaticPageResponse,
+  StaticPagesResponse,
 } from './types';
 
 const HASHNODE_API_URL = 'https://gql.hashnode.com';
@@ -124,6 +126,21 @@ export async function getStaticPage(slug: string): Promise<HashnodeStaticPage | 
   } catch (error) {
     console.error(`Error fetching static page with slug "${slug}":`, error);
     return null;
+  }
+}
+
+/**
+ * Fetch all static pages (for generating static paths)
+ */
+export async function getAllStaticPageSlugs(): Promise<string[]> {
+  try {
+    const data = await client.request<StaticPagesResponse>(GET_STATIC_PAGES, {
+      host: PUBLICATION_HOST,
+    });
+    return data.publication.staticPages.edges.map((edge) => edge.node.slug);
+  } catch (error) {
+    console.error('Error fetching all static page slugs:', error);
+    return [];
   }
 }
 

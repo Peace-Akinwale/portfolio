@@ -1,4 +1,4 @@
-import { getPostBySlug, getAllPostSlugs, getPosts } from '@/lib/hashnode/client';
+import { getPostBySlug, getAllPostSlugs, getStaticPage, getAllStaticPageSlugs, getPosts } from '@/lib/hashnode/client';
 import { formatDate, formatReadingTime } from '@/lib/hashnode/utils';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
@@ -14,47 +14,117 @@ interface ArticlePageProps {
   params: Promise<{ slug: string }>;
 }
 
-// Generate static paths for all articles
+// Allow dynamic generation for slugs not pre-rendered at build time
+export const dynamicParams = true;
+
+// Revalidate every hour
+export const revalidate = 3600;
+
+// Generate static paths for all articles and static pages
 export async function generateStaticParams() {
-  const slugs = await getAllPostSlugs();
-  return slugs.map((slug) => ({ slug }));
+  const postSlugs = await getAllPostSlugs();
+  const staticPageSlugs = await getAllStaticPageSlugs();
+  return [...postSlugs, ...staticPageSlugs].map((slug) => ({ slug }));
 }
 
 // Generate metadata for SEO
 export async function generateMetadata({ params }: ArticlePageProps): Promise<Metadata> {
   const { slug } = await params;
-  const post = await getPostBySlug(slug);
 
-  if (!post) {
+  // Try fetching as a blog post first
+  let post = await getPostBySlug(slug);
+
+  if (post) {
     return {
-      title: 'Article Not Found',
+      title: post.seo?.title || post.title,
+      description: post.seo?.description || post.brief,
+      openGraph: {
+        title: post.seo?.title || post.title,
+        description: post.seo?.description || post.brief,
+        images: post.coverImage?.url ? [post.coverImage.url] : [],
+        type: 'article',
+        publishedTime: post.publishedAt,
+        authors: [post.author.name],
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title: post.seo?.title || post.title,
+        description: post.seo?.description || post.brief,
+        images: post.coverImage?.url ? [post.coverImage.url] : [],
+      },
+    };
+  }
+
+  // If not a post, try fetching as a static page
+  const staticPage = await getStaticPage(slug);
+
+  if (staticPage) {
+    return {
+      title: staticPage.title,
+      description: staticPage.title,
     };
   }
 
   return {
-    title: post.seo?.title || post.title,
-    description: post.seo?.description || post.brief,
-    openGraph: {
-      title: post.seo?.title || post.title,
-      description: post.seo?.description || post.brief,
-      images: post.coverImage?.url ? [post.coverImage.url] : [],
-      type: 'article',
-      publishedTime: post.publishedAt,
-      authors: [post.author.name],
-    },
-    twitter: {
-      card: 'summary_large_image',
-      title: post.seo?.title || post.title,
-      description: post.seo?.description || post.brief,
-      images: post.coverImage?.url ? [post.coverImage.url] : [],
-    },
+    title: 'Page Not Found',
   };
 }
 
 export default async function ArticlePage({ params }: ArticlePageProps) {
   const { slug } = await params;
-  const post = await getPostBySlug(slug);
 
+  // Try fetching as a blog post first
+  let post = await getPostBySlug(slug);
+  let isStaticPage = false;
+  let staticPage = null;
+
+  // If not a post, try fetching as a static page
+  if (!post) {
+    staticPage = await getStaticPage(slug);
+    isStaticPage = !!staticPage;
+  }
+
+  // If neither exists, show 404
+  if (!post && !staticPage) {
+    notFound();
+  }
+
+  // Render static page if that's what we have
+  if (isStaticPage && staticPage) {
+    return (
+      <>
+        <ReadingProgress />
+        <TableOfContents />
+        <ImageLightbox />
+
+        <article className="max-w-4xl mx-auto px-6 py-16">
+          <header className="mb-12">
+            <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
+              {staticPage.title}
+            </h1>
+          </header>
+
+          {/* Static Page Content */}
+          <div
+            className="prose prose-lg max-w-none"
+            dangerouslySetInnerHTML={{ __html: staticPage.content.html }}
+          />
+
+          {/* Back to Blog */}
+          <div className="mt-16 text-center">
+            <Link
+              href="/blog"
+              className="inline-block font-sans text-sm uppercase tracking-wide border-b-2 border-foreground hover:border-muted-foreground hover:text-muted-foreground transition-colors"
+            >
+              ← Back to Blog
+            </Link>
+          </div>
+        </article>
+      </>
+    );
+  }
+
+  // Render blog post
   if (!post) {
     notFound();
   }

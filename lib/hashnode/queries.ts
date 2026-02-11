@@ -129,6 +129,21 @@ export const GET_STATIC_PAGE = `
   }
 `;
 
+export const GET_STATIC_PAGES = `
+  query GetStaticPages($host: String!) {
+    publication(host: $host) {
+      staticPages(first: 50) {
+        edges {
+          node {
+            id
+            slug
+          }
+        }
+      }
+    }
+  }
+`;
+
 export const SEARCH_POSTS = `
   query SearchPosts($host: String!, $first: Int!, $filter: PublicationPostConnectionFilter!) {
     publication(host: $host) {
