@@ -302,9 +302,14 @@ a {
 /* Make prose images interactive */
 .prose img {
   cursor: pointer;
-  transition: transform 0.2s ease;
+  transition: transform 0.2s ease, opacity 0.15s ease;
 }
 
 .prose img:hover {
   transform: scale(1.02);
+}
+
+/* Lightbox image transition */
+#lightbox-image {
+  transition: opacity 0.15s ease;
 }
