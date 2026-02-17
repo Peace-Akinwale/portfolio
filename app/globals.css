@@ -216,15 +216,15 @@ h3 {
 }
 
 .prose pre {
-  background: #1a1f36;
-  color: #e2e8f0;
+  background: #f8f5f1;
+  color: #1e293b;
   padding: 1.25rem 1.5rem;
   border-radius: 8px;
   overflow-x: auto;
   margin: 1.5rem 0;
   font-size: 0.875rem;
   line-height: 1.7;
-  border: 1px solid #2d3748;
+  border: 1px solid #e2ddd7;
 }
 
 .prose pre code {
@@ -250,13 +250,16 @@ h3 {
   position: absolute;
   top: 0.5rem;
   right: 0.5rem;
-  padding: 0.25rem 0.75rem;
-  font-size: 0.75rem;
-  font-family: var(--font-sans);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
   color: #94a3b8;
-  background: #2d3748;
-  border: 1px solid #4a5568;
-  border-radius: 4px;
+  background: transparent;
+  border: 1px solid #d1ccc6;
+  border-radius: 6px;
   cursor: pointer;
   opacity: 0;
   transition: opacity 0.2s ease, background 0.2s ease, color 0.2s ease;
@@ -268,13 +271,38 @@ h3 {
 }
 
 .copy-btn:hover {
-  background: #4a5568;
-  color: #e2e8f0;
+  background: #e8e3dd;
+  color: #475569;
 }
 
 .copy-btn.copied {
-  color: #68d391;
-  border-color: #68d391;
+  color: #16a34a;
+  border-color: #16a34a;
+}
+
+/* Dark mode code blocks */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .prose pre {
+    background: #1a1f36;
+    color: #e2e8f0;
+    border-color: #2d3748;
+  }
+
+  :root:not([data-theme="light"]) .copy-btn {
+    color: #94a3b8;
+    border-color: #4a5568;
+    background: transparent;
+  }
+
+  :root:not([data-theme="light"]) .copy-btn:hover {
+    background: #2d3748;
+    color: #e2e8f0;
+  }
+
+  :root:not([data-theme="light"]) .copy-btn.copied {
+    color: #68d391;
+    border-color: #68d391;
+  }
 }
 
 .prose img {
