@@ -39,7 +39,7 @@ export function BlogClient({ initialPosts }: BlogClientProps) {
     <div className="max-w-7xl mx-auto px-6 py-24">
       {/* Header */}
       <div className="mb-16">
-        <h1 className="font-serif text-5xl md:text-6xl font-bold mb-6">
+        <h1 className="font-sans text-5xl md:text-6xl font-bold mb-6">
           Blog
         </h1>
 

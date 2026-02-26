@@ -7,11 +7,11 @@ export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
-    <header className="border-b border-border sticky top-0 bg-background/95 backdrop-blur-sm z-50">
+    <header className="border-b border-border fixed top-0 left-0 right-0 w-full bg-background/95 backdrop-blur-sm z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 sm:py-5">
         <div className="flex items-center justify-between">
           {/* Logo/Name */}
-          <Link href="/" className="text-xl sm:text-2xl font-serif font-bold hover:opacity-80 transition-opacity text-foreground">
+          <Link href="/" className="text-xl sm:text-2xl font-sans font-bold hover:opacity-80 transition-opacity text-foreground">
             Peace Akinwale
           </Link>
 

@@ -27,7 +27,7 @@ export default async function AboutPage() {
 
       {/* Header */}
       <div className="mb-12">
-        <h1 className="font-serif text-4xl md:text-5xl font-bold mb-4 text-foreground">
+        <h1 className="font-sans text-4xl md:text-5xl font-bold mb-4 text-foreground">
           {page?.title || "I'm Peace Akinwale"}
         </h1>
       </div>
@@ -44,14 +44,14 @@ export default async function AboutPage() {
             I'm a B2B SaaS writer who specializes in content that converts. From comparison pages to alternative pages and technical how-to guides, I help SaaS companies turn readers into customers.
           </p>
 
-          <h2 className="font-serif text-2xl font-bold mb-4 mt-8 text-foreground">
+          <h2 className="font-sans text-2xl font-bold mb-4 mt-8 text-foreground">
             What I Do
           </h2>
           <p className="mb-4 text-muted-foreground">
             I craft strategic content that drives results for B2B SaaS companies. My expertise lies in creating comparison pages, alternative pages, and comprehensive how-to guides that educate and convert.
           </p>
 
-          <h2 className="font-serif text-2xl font-bold mb-4 mt-8 text-foreground">
+          <h2 className="font-sans text-2xl font-bold mb-4 mt-8 text-foreground">
             Beyond Writing
           </h2>
           <p className="mb-4 text-muted-foreground">

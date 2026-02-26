@@ -9,7 +9,7 @@ export default function ContactPage() {
   return (
     <div className="max-w-6xl mx-auto px-6 py-24">
       <div className="mb-16 text-center">
-        <h1 className="font-serif text-5xl md:text-6xl font-bold mb-6">
+        <h1 className="font-sans text-5xl md:text-6xl font-bold mb-6">
           Let's Connect
         </h1>
         <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
@@ -20,7 +20,7 @@ export default function ContactPage() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
         {/* Google Form */}
         <div className="border border-border p-8">
-          <h2 className="font-serif text-2xl font-bold mb-4">
+          <h2 className="font-sans text-2xl font-bold mb-4">
             Send a Message
           </h2>
           <p className="text-muted-foreground mb-6">
@@ -43,7 +43,7 @@ export default function ContactPage() {
 
         {/* Calendly */}
         <div className="border border-border p-8">
-          <h2 className="font-serif text-2xl font-bold mb-4">
+          <h2 className="font-sans text-2xl font-bold mb-4">
             Schedule a Call
           </h2>
           <p className="text-muted-foreground mb-6">

@@ -11,7 +11,7 @@ export default async function ServicesPage() {
 
   return (
     <div className="max-w-4xl mx-auto px-6 py-24">
-      <h1 className="font-serif text-5xl md:text-6xl font-bold mb-8">
+      <h1 className="font-sans text-5xl md:text-6xl font-bold mb-8">
         {page?.title || 'Services'}
       </h1>
 

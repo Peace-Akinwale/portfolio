@@ -78,7 +78,7 @@ export function TableOfContents() {
             >
               {/* Modal Header */}
               <div className="flex items-center justify-between p-6 border-b border-border">
-                <h2 className="text-xl font-serif font-bold">Table of Contents</h2>
+                <h2 className="text-xl font-sans font-bold">Table of Contents</h2>
                 <button
                   onClick={() => setIsOpen(false)}
                   className="p-2 hover:bg-muted rounded-full transition-colors"

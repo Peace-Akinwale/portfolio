@@ -34,7 +34,7 @@ export function ArticleCard({ post }: ArticleCardProps) {
       )}
 
       {/* Title */}
-      <h3 className="font-serif text-xl md:text-2xl font-bold mb-3 group-hover:text-accent transition-colors">
+      <h3 className="font-sans text-xl md:text-2xl font-bold mb-3 group-hover:text-accent transition-colors">
         <Link href={`/${post.slug}`}>{post.title}</Link>
       </h3>
 

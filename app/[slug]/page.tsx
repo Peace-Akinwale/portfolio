@@ -1,10 +1,12 @@
 import { getPostBySlug, getAllPostSlugs, getStaticPage, getAllStaticPageSlugs, getPosts } from '@/lib/hashnode/client';
 import { formatDate, formatReadingTime } from '@/lib/hashnode/utils';
+import { parsePortfolioHtml } from '@/lib/hashnode/parsePortfolio';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
 import type { Metadata } from 'next';
 import { ArticleCard } from '@/components/ArticleCard';
+import { PortfolioGrid } from '@/components/PortfolioGrid';
 import { ShareButtons } from '@/components/ShareButtons';
 import { ReadingProgress } from '@/components/ReadingProgress';
 import { TableOfContents } from '@/components/TableOfContents';
@@ -92,6 +94,26 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
 
   // Render static page if that's what we have
   if (isStaticPage && staticPage) {
+    // Try parsing as portfolio-style content (lists of links)
+    const parsed = parsePortfolioHtml(staticPage.content.html, staticPage.title);
+    const hasPortfolioContent = parsed.sections.some(s => s.projects.length > 0);
+
+    if (hasPortfolioContent) {
+      return (
+        <>
+          <PortfolioGrid parsed={parsed} pageTitle={staticPage.title} />
+          <div className="max-w-4xl mx-auto px-6 pb-16 text-center">
+            <Link
+              href="/portfolio"
+              className="inline-block font-sans text-sm uppercase tracking-wide border-b-2 border-foreground hover:border-muted-foreground hover:text-muted-foreground transition-colors"
+            >
+              ← Back to Portfolio
+            </Link>
+          </div>
+        </>
+      );
+    }
+
     return (
       <>
         <ReadingProgress />
@@ -101,7 +123,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
 
         <article className="max-w-4xl mx-auto px-6 py-16">
           <header className="mb-12">
-            <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
+            <h1 className="font-sans text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
               {staticPage.title}
             </h1>
           </header>
@@ -160,7 +182,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
         )}
 
         {/* Title */}
-        <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
+        <h1 className="font-sans text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
           {post.title}
         </h1>
 
@@ -235,7 +257,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
       {/* Related Articles */}
       {relatedPosts.length > 0 && (
         <section className="mt-24 pt-12 border-t border-border">
-          <h2 className="font-serif text-3xl font-bold mb-8">Related Articles</h2>
+          <h2 className="font-sans text-3xl font-bold mb-8">Related Articles</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {relatedPosts.map((relatedPost) => (
               <ArticleCard key={relatedPost.id} post={relatedPost} />

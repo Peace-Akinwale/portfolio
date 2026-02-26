@@ -14,7 +14,7 @@ export default async function HomePage() {
           <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-center">
             {/* Text Content */}
             <div className="order-2 md:order-1">
-              <h1 className="font-serif text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6 leading-[1.1]" style={{ color: '#ffffff' }}>
+              <h1 className="font-sans text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6 leading-[1.1]" style={{ color: '#ffffff' }}>
                 B2B SaaS writer and strategist.
               </h1>
               <p className="text-base sm:text-lg md:text-xl leading-relaxed mb-6 sm:mb-8 max-w-xl" style={{ color: 'rgba(255, 255, 255, 0.9)' }}>
@@ -61,7 +61,7 @@ export default async function HomePage() {
       {/* Featured Work Section */}
       <section className="max-w-7xl mx-auto px-6 py-24">
         <div className="mb-16 text-center">
-          <h2 className="font-serif text-4xl md:text-5xl font-bold mb-4">
+          <h2 className="font-sans text-4xl md:text-5xl font-bold mb-4">
             Latest Insights
           </h2>
         </div>
@@ -88,7 +88,7 @@ export default async function HomePage() {
                         {posts[0].tags[0].name}
                       </span>
                     )}
-                    <h3 className="font-serif text-3xl md:text-4xl font-bold mb-4 transition-colors group-hover:text-accent text-foreground leading-tight">
+                    <h3 className="font-sans text-3xl md:text-4xl font-bold mb-4 transition-colors group-hover:text-accent text-foreground leading-tight">
                       {posts[0].title}
                     </h3>
                     <p className="text-lg mb-6 line-clamp-3 text-muted-foreground">
@@ -131,7 +131,7 @@ export default async function HomePage() {
                     </span>
                   )}
 
-                  <h3 className="font-serif text-xl font-bold mb-2 transition-colors group-hover:text-accent text-foreground leading-tight">
+                  <h3 className="font-sans text-xl font-bold mb-2 transition-colors group-hover:text-accent text-foreground leading-tight">
                     {post.title}
                   </h3>
 
@@ -174,7 +174,7 @@ export default async function HomePage() {
       {/* CTA Section - Navy & Orange */}
       <section className="relative overflow-hidden mt-24 bg-[#1a1f36]">
         <div className="max-w-4xl mx-auto px-6 py-24 text-center">
-          <h2 className="font-serif text-4xl md:text-5xl font-bold mb-6" style={{ color: '#ffffff' }}>
+          <h2 className="font-sans text-4xl md:text-5xl font-bold mb-6" style={{ color: '#ffffff' }}>
             Need content that drives results?
           </h2>
           <p className="text-xl mb-10 max-w-2xl mx-auto" style={{ color: 'rgba(255, 255, 255, 0.85)' }}>
