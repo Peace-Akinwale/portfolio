@@ -1,13 +1,20 @@
 'use client';
 
+import { useState } from 'react';
+
 interface ShareButtonsProps {
   url: string;
   title: string;
 }
 
 export function ShareButtons({ url, title }: ShareButtonsProps) {
+  const [copied, setCopied] = useState(false);
+
   const handleCopyLink = () => {
-    navigator.clipboard.writeText(url);
+    navigator.clipboard.writeText(url).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    });
   };
 
   return (
@@ -32,7 +39,7 @@ export function ShareButtons({ url, title }: ShareButtonsProps) {
         onClick={handleCopyLink}
         className="px-4 py-2 border border-border text-sm hover:bg-muted transition-colors"
       >
-        Copy Link
+        {copied ? 'Copied!' : 'Copy Link'}
       </button>
     </div>
   );

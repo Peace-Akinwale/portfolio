@@ -1,13 +1,14 @@
 'use client';
 
+import { useTheme } from 'next-themes';
 import type { PortfolioProject } from '@/lib/hashnode/parsePortfolio';
 
 /* ── Brand colors for known clients ── */
-const BRAND_COLORS: Record<string, { bg: string; text: string }> = {
-  manyrequests:    { bg: '#EDEDFF', text: '#3B3FC5' }, // indigo from logo
-  manyrequest:     { bg: '#EDEDFF', text: '#3B3FC5' },
-  highervisibility:{ bg: '#FEF7E8', text: '#9A7B1A' }, // gold/amber from logo swoosh
-  pangea:          { bg: '#EDF5F0', text: '#1B3A2D' }, // forest green from logo
+const BRAND_COLORS: Record<string, { bg: string; text: string; darkBg: string; darkText: string }> = {
+  manyrequests:    { bg: '#EDEDFF', text: '#3B3FC5', darkBg: '#1e1b4b', darkText: '#a5b4fc' },
+  manyrequest:     { bg: '#EDEDFF', text: '#3B3FC5', darkBg: '#1e1b4b', darkText: '#a5b4fc' },
+  highervisibility:{ bg: '#FEF7E8', text: '#9A7B1A', darkBg: '#2d1e00', darkText: '#fbbf24' },
+  pangea:          { bg: '#EDF5F0', text: '#1B3A2D', darkBg: '#0d2318', darkText: '#6ee7b7' },
 };
 
 /* ── Fallback palette for unknown clients ── */
@@ -26,10 +27,12 @@ const FALLBACK_COLORS = [
  * Get pill color from the client name.
  * Matches known brands first, then hashes the name to pick a consistent fallback.
  */
-function getPillColor(clientName: string) {
+function getPillColor(clientName: string, isDark: boolean) {
   const key = clientName.toLowerCase().replace(/[\s._-]/g, '');
   for (const [brand, color] of Object.entries(BRAND_COLORS)) {
-    if (key.includes(brand)) return color;
+    if (key.includes(brand)) {
+      return { bg: isDark ? color.darkBg : color.bg, text: isDark ? color.darkText : color.text };
+    }
   }
   // Deterministic hash so the same name always gets the same color
   let hash = 0;
@@ -45,13 +48,12 @@ interface PortfolioCardProps {
 }
 
 export function PortfolioCard({ project, clientName }: PortfolioCardProps) {
-  const pill = clientName ? getPillColor(clientName) : null;
+  const { resolvedTheme } = useTheme();
+  const isDark = resolvedTheme === 'dark';
+  const pill = clientName ? getPillColor(clientName, isDark) : null;
 
-  return (
-    <div
-      className="border border-border rounded-xl bg-background transition-all duration-300 hover:-translate-y-[3px] hover:shadow-[0_10px_36px_rgba(0,0,0,0.08)]"
-      style={{ padding: '24px 24px 20px' }}
-    >
+  const inner = (
+    <>
       {clientName && pill && (
         <span
           style={{
@@ -84,24 +86,41 @@ export function PortfolioCard({ project, clientName }: PortfolioCardProps) {
       </h3>
 
       {project.link && (
-        <a
-          href={project.link}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="hover:underline"
+        <span
           style={{
             fontFamily: 'var(--font-sans)',
             fontSize: '12px',
             fontWeight: 700,
             color: 'var(--accent)',
             letterSpacing: '0.02em',
-            textDecoration: 'none',
-            textUnderlineOffset: '2px',
           }}
         >
           Read article ↗
-        </a>
+        </span>
       )}
+    </>
+  );
+
+  if (project.link) {
+    return (
+      <a
+        href={project.link}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="block border border-border rounded-xl bg-background transition-all duration-300 hover:-translate-y-[3px] hover:shadow-[0_10px_36px_rgba(0,0,0,0.08)]"
+        style={{ padding: '24px 24px 20px', textDecoration: 'none' }}
+      >
+        {inner}
+      </a>
+    );
+  }
+
+  return (
+    <div
+      className="border border-border rounded-xl bg-background"
+      style={{ padding: '24px 24px 20px' }}
+    >
+      {inner}
     </div>
   );
 }

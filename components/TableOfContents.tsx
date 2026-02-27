@@ -17,11 +17,19 @@ export function TableOfContents() {
     // Extract headings from article
     const articleHeadings = Array.from(
       document.querySelectorAll('.prose h2, .prose h3')
-    ).map((heading) => ({
-      id: heading.id,
-      text: heading.textContent || '',
-      level: parseInt(heading.tagName.charAt(1)),
-    }));
+    ).map((heading) => {
+      if (!heading.id) {
+        heading.id = (heading.textContent || '')
+          .toLowerCase()
+          .replace(/[^a-z0-9]+/g, '-')
+          .replace(/(^-|-$)/g, '');
+      }
+      return {
+        id: heading.id,
+        text: heading.textContent || '',
+        level: parseInt(heading.tagName.charAt(1)),
+      };
+    });
 
     setHeadings(articleHeadings);
 

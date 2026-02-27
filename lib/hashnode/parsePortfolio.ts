@@ -47,7 +47,7 @@ export function parsePortfolioHtml(html: string, pageTitle?: string): ParsedPort
     html = html.replace(pastMatch[0], '');
   }
 
-  // Check for CTA sections — keep as raw HTML, don't parse as cards
+  // Check for CTA sections with headings — keep as raw HTML, don't parse as cards
   const ctaRegex =
     /(<h[23][^>]*>([\s\S]*?)<\/h[23]>)([\s\S]*?)(?=<h[23][^>]*>|$)/gi;
   let ctaMatch;
@@ -57,6 +57,19 @@ export function parsePortfolioHtml(html: string, pageTitle?: string): ParsedPort
       result.ctaHtml = ctaMatch[0];
       html = html.replace(ctaMatch[0], '');
       break;
+    }
+  }
+
+  // Check for CTA after <hr> separator (common pattern: <hr><p>Let us work together.</p>...)
+  if (!result.ctaHtml) {
+    const hrParts = html.split(/<hr\s*\/?>/i);
+    if (hrParts.length > 1) {
+      const trailing = hrParts[hrParts.length - 1];
+      const trailingText = trailing.replace(/<[^>]+>/g, '').trim();
+      if (CTA_PATTERNS.some(p => p.test(trailingText))) {
+        result.ctaHtml = trailing;
+        html = hrParts.slice(0, -1).join('<hr>');
+      }
     }
   }
 
@@ -151,6 +164,17 @@ export function parsePortfolioHtml(html: string, pageTitle?: string): ParsedPort
         if (!text) continue;
         if (/read\s+more/i.test(text)) continue;
 
+        // Skip CTA paragraphs that weren't caught by the <hr> split
+        if (CTA_PATTERNS.some(p => p.test(text))) {
+          // Collect this and all remaining paragraphs as CTA
+          const ctaParts: string[] = [pMatch[0]];
+          while ((pMatch = pRegex.exec(html)) !== null) {
+            ctaParts.push(pMatch[0]);
+          }
+          result.ctaHtml = ctaParts.join('\n');
+          break;
+        }
+
         const hasLink = /<a[^>]+href/i.test(inner);
         const isLong = text.length > 100;
         // Transitional phrases like "Published articles include:" or "here are some of my pieces:"
@@ -182,17 +206,30 @@ export function parsePortfolioHtml(html: string, pageTitle?: string): ParsedPort
   return result;
 }
 
+/** Decode common HTML entities so titles don't show &amp; literally */
+function decodeEntities(text: string): string {
+  return text
+    .replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'")
+    .replace(/&apos;/g, "'")
+    .replace(/&#x([0-9a-f]+);/gi, (_, hex) => String.fromCharCode(parseInt(hex, 16)))
+    .replace(/&#(\d+);/g, (_, dec) => String.fromCharCode(parseInt(dec, 10)));
+}
+
 function parseLiContent(content: string): PortfolioProject {
   const project: PortfolioProject = { title: '' };
 
   const linkMatch = content.match(/<a[^>]+href=["']([^"']+)["'][^>]*>([\s\S]*?)<\/a>/i);
   if (linkMatch) {
     project.link = linkMatch[1];
-    project.linkText = linkMatch[2].replace(/<[^>]+>/g, '').trim();
+    project.linkText = decodeEntities(linkMatch[2].replace(/<[^>]+>/g, '').trim());
   }
 
   // Always use the full stripped text as title — never split on link position
-  project.title = content.replace(/<[^>]+>/g, '').trim();
+  project.title = decodeEntities(content.replace(/<[^>]+>/g, '').trim());
 
   return project;
 }
