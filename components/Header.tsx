@@ -24,6 +24,12 @@ export function Header() {
               Blog
             </Link>
             <Link
+              href="/projects"
+              className="text-sm uppercase tracking-wide transition-colors text-muted-foreground hover:text-accent"
+            >
+              Projects
+            </Link>
+            <Link
               href="/portfolio"
               className="text-sm uppercase tracking-wide transition-colors text-muted-foreground hover:text-accent"
             >
@@ -71,6 +77,13 @@ export function Header() {
                 onClick={() => setIsMenuOpen(false)}
               >
                 Blog
+              </Link>
+              <Link
+                href="/projects"
+                className="text-sm uppercase tracking-wide py-2 text-muted-foreground"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Projects
               </Link>
               <Link
                 href="/portfolio"

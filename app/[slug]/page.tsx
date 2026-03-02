@@ -92,8 +92,92 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
     notFound();
   }
 
+  // Slugs that should always render as plain articles, never as portfolio cards
+  const articleOnlySlugs = new Set([
+    'linkedin-router',
+    'mylinks',
+    'mystyleguide',
+    'portfolio-project',
+    'editorial-style-guide',
+  ]);
+
+  // Cover images for project sub-pages
+  const projectCoverImages: Record<string, string> = {
+    'linkedin-router': 'https://res.cloudinary.com/cloud-blog-publisher/image/upload/v1772456192/LinkedIn_Router_dashboard_yeangn.png',
+    'mylinks': 'https://res.cloudinary.com/cloud-blog-publisher/image/upload/v1772457514/mylinks_app_demo_qbdfj7.png',
+    'mystyleguide': 'https://res.cloudinary.com/cloud-blog-publisher/image/upload/v1772458150/mystyleguide_uyokzm.png',
+    'portfolio-project': 'https://cdn.hashnode.com/res/hashnode/image/upload/v1771358819590/359f98d9-0ba4-4ca7-9486-8fd9223a85c1.png',
+    'editorial-style-guide': 'https://cdn.hashnode.com/res/hashnode/image/upload/v1770062817824/f8071b8e-b17f-4efc-8d4b-b645c0ecb3b9.png',
+  };
+
   // Render static page if that's what we have
   if (isStaticPage && staticPage) {
+
+    // Project sub-pages: full blog-post-style UI
+    if (articleOnlySlugs.has(slug)) {
+      const coverImage = projectCoverImages[slug];
+      const wordCount = staticPage.content.html.replace(/<[^>]+>/g, '').split(/\s+/).filter(Boolean).length;
+      const readTime = Math.max(1, Math.round(wordCount / 200));
+      const pageUrl = `https://peaceakinwale.com/${slug}`;
+
+      return (
+        <>
+          <ReadingProgress />
+          <ImageLightbox />
+          <CodeBlockEnhancer />
+
+          <article className="max-w-4xl mx-auto px-6 py-16">
+            <header className="mb-12">
+              <div className="mb-4">
+                <Link
+                  href="/projects"
+                  className="text-sm uppercase tracking-wider text-muted-foreground hover:text-accent transition-colors"
+                >
+                  Projects
+                </Link>
+              </div>
+
+              <h1 className="font-sans text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
+                {staticPage.title}
+              </h1>
+
+              <div className="flex items-center gap-4 text-muted-foreground mb-8">
+                <span className="text-sm font-medium px-3 py-1 bg-muted rounded-sm">
+                  {readTime} min read
+                </span>
+              </div>
+
+              {coverImage && (
+                <div className="relative aspect-[16/9] overflow-hidden bg-muted mb-12">
+                  <Image
+                    src={coverImage}
+                    alt={staticPage.title}
+                    fill
+                    className="object-cover"
+                    priority
+                  />
+                </div>
+              )}
+            </header>
+
+            <div
+              className="prose prose-lg max-w-none"
+              dangerouslySetInnerHTML={{ __html: staticPage.content.html }}
+            />
+
+            <footer className="mt-16 pt-8 border-t border-border">
+              <div className="mb-8">
+                <h3 className="text-sm uppercase tracking-wider text-muted-foreground mb-3">
+                  Share
+                </h3>
+                <ShareButtons url={pageUrl} title={staticPage.title} />
+              </div>
+            </footer>
+          </article>
+        </>
+      );
+    }
+
     // Try parsing as portfolio-style content (lists of links)
     const parsed = parsePortfolioHtml(staticPage.content.html, staticPage.title);
     const hasPortfolioContent = parsed.sections.some(s => s.projects.length > 0);
