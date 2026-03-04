@@ -8,6 +8,11 @@ export const metadata: Metadata = {
   description: 'Explore the portfolio of Peace Akinwale - featured B2B SaaS writing projects.',
 };
 
+const NEW_MANYREQUESTS_ARTICLE = {
+  title: '6 Best Project Management Software for Designers in 2026',
+  link: 'https://www.manyrequests.com/blog/project-management-software-for-designers',
+};
+
 export default async function PortfolioPage() {
   const page = await getStaticPage('portfolio');
   const parsed = page?.content?.html
@@ -15,6 +20,7 @@ export default async function PortfolioPage() {
     : null;
 
   if (parsed && parsed.sections.length > 0) {
+    parsed.sections[0].projects.unshift(NEW_MANYREQUESTS_ARTICLE);
     return <PortfolioGrid parsed={parsed} pageTitle={page?.title || 'Portfolio'} />;
   }
 

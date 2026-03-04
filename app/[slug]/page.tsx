@@ -183,6 +183,12 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
     const hasPortfolioContent = parsed.sections.some(s => s.projects.length > 0);
 
     if (hasPortfolioContent) {
+      if (slug === 'b2b-content-for-manyrequests' && parsed.sections.length > 0) {
+        parsed.sections[0].projects.unshift({
+          title: '6 Best Project Management Software for Designers in 2026',
+          link: 'https://www.manyrequests.com/blog/project-management-software-for-designers',
+        });
+      }
       return (
         <>
           <PortfolioGrid parsed={parsed} pageTitle={staticPage.title} />
