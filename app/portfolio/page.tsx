@@ -41,7 +41,7 @@ export default async function PortfolioPage() {
 
   if (parsed && parsed.sections.length > 0) {
     parsed.sections[0].projects.unshift(NEW_MANYREQUESTS_ARTICLE);
-    parsed.sections.push(MARKERIO_SECTION);
+    parsed.sections.splice(1, 0, MARKERIO_SECTION);
     return <PortfolioGrid parsed={parsed} pageTitle={page?.title || 'Portfolio'} />;
   }
 
