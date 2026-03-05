@@ -14,7 +14,7 @@ const NEW_MANYREQUESTS_ARTICLE = {
 };
 
 const MARKERIO_SECTION = {
-  heading: 'Content for Marker.io',
+  heading: 'Ghostwritten content for Marker.io',
   clientName: 'Marker.io',
   projects: [
     {
@@ -34,7 +34,7 @@ const MARKERIO_SECTION = {
 };
 
 const JABRA_SECTION = {
-  heading: 'Content for Jabra',
+  heading: 'Ghostwritten content for Jabra',
   clientName: 'Jabra',
   projects: [
     {
