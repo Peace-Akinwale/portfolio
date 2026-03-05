@@ -13,6 +13,26 @@ const NEW_MANYREQUESTS_ARTICLE = {
   link: 'https://www.manyrequests.com/blog/project-management-software-for-designers',
 };
 
+const MARKERIO_SECTION = {
+  heading: 'Content for Marker.io',
+  clientName: 'Marker.io',
+  projects: [
+    {
+      title: 'What is Regression Testing? A Practical Guide',
+      link: 'https://marker.io/blog/regression-testing',
+    },
+    {
+      title: 'How To Write Test Cases: A Step-By-Step Guide',
+      link: 'https://marker.io/blog/how-to-write-test-cases',
+    },
+    {
+      title: 'What is Black Box Testing? A Practical Guide',
+      link: 'https://marker.io/blog/black-box-testing',
+    },
+  ],
+  readMoreLink: '/b2b-content-for-marker.io',
+};
+
 export default async function PortfolioPage() {
   const page = await getStaticPage('portfolio');
   const parsed = page?.content?.html
@@ -21,6 +41,7 @@ export default async function PortfolioPage() {
 
   if (parsed && parsed.sections.length > 0) {
     parsed.sections[0].projects.unshift(NEW_MANYREQUESTS_ARTICLE);
+    parsed.sections.push(MARKERIO_SECTION);
     return <PortfolioGrid parsed={parsed} pageTitle={page?.title || 'Portfolio'} />;
   }
 
