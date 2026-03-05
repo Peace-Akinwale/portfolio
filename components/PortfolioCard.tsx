@@ -10,6 +10,7 @@ const BRAND_COLORS: Record<string, { bg: string; text: string; darkBg: string; d
   highervisibility:{ bg: '#FEF7E8', text: '#9A7B1A', darkBg: '#2d1e00', darkText: '#fbbf24' },
   pangea:          { bg: '#EDF5F0', text: '#1B3A2D', darkBg: '#0d2318', darkText: '#6ee7b7' },
   markerio:        { bg: '#EDEFFF', text: '#2336CC', darkBg: '#12154a', darkText: '#a5b0fd' },
+  jabra:           { bg: '#FFFBE6', text: '#856500', darkBg: '#2d2200', darkText: '#FFD100' },
 };
 
 /* ── Fallback palette for unknown clients ── */

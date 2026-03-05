@@ -13,7 +13,7 @@ const markerioPortfolio: ParsedPortfolio = {
     {
       heading: 'Content for Marker.io',
       clientName: 'Marker.io',
-      introHtml: `<p>Marker.io is a visual bug reporting tool that helps product and QA teams capture feedback and report bugs directly on their website or app. Their head of content reached out to collaborate, and I've been writing in-depth QA and software testing guides for their blog.</p><p>Published articles include:</p>`,
+      introHtml: `<p>Marker.io is a visual bug reporting tool that helps product and QA teams capture feedback and report bugs directly on their website or app. Their head of content reached out to collaborate, and I've been writing in-depth QA and software testing guides for their blog. All articles were ghostwritten.</p><p>Published articles include:</p>`,
       projects: [
         {
           title: 'What is Regression Testing? A Practical Guide',

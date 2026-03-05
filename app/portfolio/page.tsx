@@ -33,6 +33,21 @@ const MARKERIO_SECTION = {
   readMoreLink: '/b2b-content-for-marker.io',
 };
 
+const JABRA_SECTION = {
+  heading: 'Content for Jabra',
+  clientName: 'Jabra',
+  projects: [
+    {
+      title: '7 Modern Meeting Room Designs & What You Need to Nail Them',
+      link: 'https://www.jabra.com/discover/modern-meeting-room',
+    },
+    {
+      title: 'How to Increase Employee Engagement (By Fixing What\'s Broken)',
+      link: 'https://www.jabra.com/discover/increase-employee-engagement',
+    },
+  ],
+};
+
 export default async function PortfolioPage() {
   const page = await getStaticPage('portfolio');
   const parsed = page?.content?.html
@@ -42,6 +57,7 @@ export default async function PortfolioPage() {
   if (parsed && parsed.sections.length > 0) {
     parsed.sections[0].projects.unshift(NEW_MANYREQUESTS_ARTICLE);
     parsed.sections.splice(1, 0, MARKERIO_SECTION);
+    parsed.sections.splice(2, 0, JABRA_SECTION);
     return <PortfolioGrid parsed={parsed} pageTitle={page?.title || 'Portfolio'} />;
   }
 
