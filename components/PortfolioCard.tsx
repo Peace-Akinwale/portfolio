@@ -1,5 +1,7 @@
 'use client';
 
+import Image from 'next/image';
+import { useState } from 'react';
 import { useTheme } from 'next-themes';
 import type { PortfolioProject } from '@/lib/hashnode/parsePortfolio';
 
@@ -25,6 +27,7 @@ const FALLBACK_COLORS = [
   { bg: '#FEF2F2', text: '#B91C1C' }, // red
 ];
 
+
 /**
  * Get pill color from the client name.
  * Matches known brands first, then hashes the name to pick a consistent fallback.
@@ -44,34 +47,50 @@ function getPillColor(clientName: string, isDark: boolean) {
   return FALLBACK_COLORS[Math.abs(hash) % FALLBACK_COLORS.length];
 }
 
+
 interface PortfolioCardProps {
   project: PortfolioProject;
   clientName?: string;
+  ogImage?: string | null;
+  faviconUrl?: string | null;
 }
 
-export function PortfolioCard({ project, clientName }: PortfolioCardProps) {
+export function PortfolioCard({ project, clientName, ogImage, faviconUrl }: PortfolioCardProps) {
   const { resolvedTheme } = useTheme();
   const isDark = resolvedTheme === 'dark';
   const pill = clientName ? getPillColor(clientName, isDark) : null;
+  const [imgError, setImgError] = useState(false);
+  const showThumbnail = !imgError && !!ogImage && !!project.link;
 
-  const inner = (
-    <>
+  const textContent = (
+    <div style={{ flex: 1, minWidth: 0, padding: '20px' }}>
+      {/* Favicon + client pill row */}
       {clientName && pill && (
-        <span
-          style={{
-            display: 'inline-block',
-            fontSize: '11px',
-            fontWeight: 700,
-            fontFamily: 'var(--font-sans)',
-            padding: '3px 10px',
-            borderRadius: '8px',
-            marginBottom: '14px',
-            backgroundColor: pill.bg,
-            color: pill.text,
-          }}
-        >
-          {clientName}
-        </span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '14px' }}>
+          {faviconUrl && (
+            <img
+              src={faviconUrl}
+              alt=""
+              width={18}
+              height={18}
+              style={{ borderRadius: '4px', flexShrink: 0 }}
+            />
+          )}
+          <span
+            style={{
+              display: 'inline-block',
+              fontSize: '11px',
+              fontWeight: 700,
+              fontFamily: 'var(--font-sans)',
+              padding: '3px 10px',
+              borderRadius: '8px',
+              backgroundColor: pill.bg,
+              color: pill.text,
+            }}
+          >
+            {clientName}
+          </span>
+        </div>
       )}
 
       <h3
@@ -100,8 +119,29 @@ export function PortfolioCard({ project, clientName }: PortfolioCardProps) {
           Read article ↗
         </span>
       )}
-    </>
+    </div>
   );
+
+  const thumbnail = showThumbnail ? (
+    <div
+      style={{
+        width: 140,
+        flexShrink: 0,
+        position: 'relative',
+        borderRadius: '0 13px 13px 0',
+        overflow: 'hidden',
+      }}
+    >
+      <Image
+        src={ogImage!}
+        alt=""
+        fill
+        sizes="140px"
+        style={{ objectFit: 'cover' }}
+        onError={() => setImgError(true)}
+      />
+    </div>
+  ) : null;
 
   if (project.link) {
     return (
@@ -110,9 +150,10 @@ export function PortfolioCard({ project, clientName }: PortfolioCardProps) {
         target="_blank"
         rel="noopener noreferrer"
         className="block border border-border rounded-xl bg-background transition-all duration-300 hover:-translate-y-[3px] hover:shadow-[0_10px_36px_rgba(0,0,0,0.08)]"
-        style={{ padding: '24px 24px 20px', textDecoration: 'none' }}
+        style={{ display: 'flex', overflow: 'hidden', textDecoration: 'none' }}
       >
-        {inner}
+        {textContent}
+        {thumbnail}
       </a>
     );
   }
@@ -120,9 +161,10 @@ export function PortfolioCard({ project, clientName }: PortfolioCardProps) {
   return (
     <div
       className="border border-border rounded-xl bg-background"
-      style={{ padding: '24px 24px 20px' }}
+      style={{ display: 'flex', overflow: 'hidden' }}
     >
-      {inner}
+      {textContent}
+      {thumbnail}
     </div>
   );
 }

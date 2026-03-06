@@ -1,27 +1,51 @@
 import type { ParsedPortfolio } from '@/lib/hashnode/parsePortfolio';
 import { PortfolioCard } from '@/components/PortfolioCard';
+import { getDomain, getFaviconUrl } from '@/lib/ogImage';
 
 interface PortfolioGridProps {
   parsed: ParsedPortfolio;
   pageTitle?: string;
+  ogImages?: Record<string, string | null>;
 }
 
-export function PortfolioGrid({ parsed, pageTitle }: PortfolioGridProps) {
+export function PortfolioGrid({ parsed, pageTitle, ogImages = {} }: PortfolioGridProps) {
+  // Derive a page-level favicon from the first project link (for individual client pages)
+  const firstLink = parsed.sections[0]?.projects[0]?.link ?? null;
+  const pageDomain = firstLink ? getDomain(firstLink) : null;
+  const pageFavicon = pageDomain && parsed.sections.length === 1 ? getFaviconUrl(pageDomain, 24) : null;
+
   return (
     <div className="max-w-4xl mx-auto px-6 py-24">
       {pageTitle && (
         <div className="mb-12">
-          <h1
-            className="text-4xl md:text-5xl font-bold mb-4 text-foreground"
-            style={{ fontFamily: 'var(--font-sans)' }}
-          >
-            {pageTitle}
-          </h1>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px' }}>
+            {pageFavicon && (
+              <img
+                src={pageFavicon}
+                alt=""
+                width={24}
+                height={24}
+                style={{ borderRadius: '6px', flexShrink: 0 }}
+              />
+            )}
+            <h1
+              className="text-4xl md:text-5xl font-bold text-foreground"
+              style={{ fontFamily: 'var(--font-sans)' }}
+            >
+              {pageTitle}
+            </h1>
+          </div>
         </div>
       )}
 
       <div className="space-y-16">
-        {parsed.sections.map((section, i) => (
+        {parsed.sections.map((section, i) => {
+          const sectionDomain = section.projects[0]?.link
+            ? getDomain(section.projects[0].link)
+            : null;
+          const sectionFavicon = sectionDomain ? getFaviconUrl(sectionDomain) : null;
+
+          return (
           <section key={i}>
             {/* Only show section heading if there are multiple sections */}
             {parsed.sections.length > 1 && (
@@ -55,13 +79,19 @@ export function PortfolioGrid({ parsed, pageTitle }: PortfolioGridProps) {
             )}
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-              {section.projects.map((project, j) => (
-                <PortfolioCard
-                  key={j}
-                  project={project}
-                  clientName={section.clientName}
-                />
-              ))}
+              {section.projects.map((project, j) => {
+                const projectDomain = project.link ? getDomain(project.link) : null;
+                const favicon = projectDomain ? getFaviconUrl(projectDomain) : sectionFavicon;
+                return (
+                  <PortfolioCard
+                    key={j}
+                    project={project}
+                    clientName={section.clientName}
+                    ogImage={project.link ? (ogImages[project.link] ?? null) : null}
+                    faviconUrl={favicon}
+                  />
+                );
+              })}
             </div>
 
             {section.readMoreLink && (
@@ -77,7 +107,8 @@ export function PortfolioGrid({ parsed, pageTitle }: PortfolioGridProps) {
               </div>
             )}
           </section>
-        ))}
+          );
+        })}
 
         {/* Past Achievements — styled to match the card aesthetic */}
         {parsed.pastAchievementsHtml && (

@@ -7,6 +7,7 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 import { ArticleCard } from '@/components/ArticleCard';
 import { PortfolioGrid } from '@/components/PortfolioGrid';
+import { fetchOgImagesForPortfolio } from '@/lib/fetchOgImages';
 import { ShareButtons } from '@/components/ShareButtons';
 import { ReadingProgress } from '@/components/ReadingProgress';
 import { TableOfContents } from '@/components/TableOfContents';
@@ -189,9 +190,10 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
           link: 'https://www.manyrequests.com/blog/project-management-software-for-designers',
         });
       }
+      const ogImages = await fetchOgImagesForPortfolio(parsed);
       return (
         <>
-          <PortfolioGrid parsed={parsed} pageTitle={staticPage.title} />
+          <PortfolioGrid parsed={parsed} pageTitle={staticPage.title} ogImages={ogImages} />
           <div className="max-w-4xl mx-auto px-6 pb-16 text-center">
             <Link
               href="/portfolio"

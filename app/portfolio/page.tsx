@@ -1,6 +1,7 @@
 import { getStaticPage } from '@/lib/hashnode/client';
 import { parsePortfolioHtml } from '@/lib/hashnode/parsePortfolio';
 import { PortfolioGrid } from '@/components/PortfolioGrid';
+import { fetchOgImagesForPortfolio } from '@/lib/fetchOgImages';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -58,7 +59,8 @@ export default async function PortfolioPage() {
     parsed.sections[0].projects.unshift(NEW_MANYREQUESTS_ARTICLE);
     parsed.sections.splice(1, 0, MARKERIO_SECTION);
     parsed.sections.splice(2, 0, JABRA_SECTION);
-    return <PortfolioGrid parsed={parsed} pageTitle={page?.title || 'Portfolio'} />;
+    const ogImages = await fetchOgImagesForPortfolio(parsed);
+    return <PortfolioGrid parsed={parsed} pageTitle={page?.title || 'Portfolio'} ogImages={ogImages} />;
   }
 
   return (

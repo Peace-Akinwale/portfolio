@@ -1,4 +1,5 @@
 import { PortfolioGrid } from '@/components/PortfolioGrid';
+import { fetchOgImagesForPortfolio } from '@/lib/fetchOgImages';
 import type { ParsedPortfolio } from '@/lib/hashnode/parsePortfolio';
 import Link from 'next/link';
 import type { Metadata } from 'next';
@@ -13,7 +14,7 @@ const markerioPortfolio: ParsedPortfolio = {
     {
       heading: 'Content for Marker.io',
       clientName: 'Marker.io',
-      introHtml: `<p>Marker.io is a visual bug reporting tool that helps product and QA teams capture feedback and report bugs directly on their website or app. Their head of content reached out to collaborate, and I've been writing in-depth QA and software testing guides for their blog. All articles were ghostwritten.</p><p>Published articles include:</p>`,
+      introHtml: `<p><a href="https://marker.io" target="_blank" rel="noopener noreferrer">Marker.io</a> is a visual bug reporting tool that helps product and QA teams capture feedback and report bugs directly on their website or app. Their head of content reached out to collaborate, and I've been writing in-depth QA and software testing guides for their blog. All articles were ghostwritten.</p><p>Published articles include:</p>`,
       projects: [
         {
           title: 'What is Regression Testing? A Practical Guide',
@@ -48,10 +49,11 @@ const markerioPortfolio: ParsedPortfolio = {
   ],
 };
 
-export default function MarkerioPage() {
+export default async function MarkerioPage() {
+  const ogImages = await fetchOgImagesForPortfolio(markerioPortfolio);
   return (
     <>
-      <PortfolioGrid parsed={markerioPortfolio} pageTitle="Content for Marker.io" />
+      <PortfolioGrid parsed={markerioPortfolio} pageTitle="Content for Marker.io" ogImages={ogImages} />
       <div className="max-w-4xl mx-auto px-6 pb-16 text-center">
         <Link
           href="/portfolio"
