@@ -4,7 +4,7 @@ import Image from 'next/image';
 
 export const metadata: Metadata = {
   title: 'About | Peace Akinwale',
-  description: 'Learn more about Peace Akinwale - B2B SaaS writer and AI Content Engineer.',
+  description: 'Peace Akinwale is a B2B SaaS content writer who specializes in product-led articles that rank on Google and get cited in AI search.',
 };
 
 export default async function AboutPage() {
@@ -41,31 +41,28 @@ export default async function AboutPage() {
       ) : (
         <div className="prose prose-lg max-w-none">
           <p className="text-lg leading-relaxed mb-6 text-muted-foreground">
-            I'm a B2B SaaS writer who specializes in content that converts. From comparison pages to alternative pages and technical how-to guides, I help SaaS companies turn readers into customers.
+            I&rsquo;m a B2B SaaS content writer based in Lagos. I write product-led articles that rank on Google, show up in ChatGPT and Perplexity, and actually move the needle for the companies I work with.
+          </p>
+          <p className="mb-6 text-muted-foreground">
+            My background is in understanding how products work and how buyers think. Before I write anything, I dig into your product, your ICP, and what your competitors are getting wrong. The article only happens after that.
           </p>
 
-          <h2 className="font-sans text-2xl font-bold mb-4 mt-8 text-foreground">
-            What I Do
+          <h2 className="font-sans text-2xl font-bold mb-4 mt-10 text-foreground">
+            How I work
           </h2>
           <p className="mb-4 text-muted-foreground">
-            I craft strategic content that drives results for B2B SaaS companies. My expertise lies in creating comparison pages, alternative pages, and comprehensive how-to guides that educate and convert.
+            I write one first draft — no AI scaffolding, no outsourced outlines. I evaluate every topic for business potential before I accept it, and I push back if the fit isn&rsquo;t there. Most clients go from two rounds of feedback to zero by the end of an engagement.
+          </p>
+          <p className="mb-4 text-muted-foreground">
+            I also build lightweight AI systems and content workflows for teams who want to reduce the manual work on their plate without sacrificing quality on the output.
           </p>
 
-          <h2 className="font-sans text-2xl font-bold mb-4 mt-8 text-foreground">
-            Beyond Writing
+          <h2 className="font-sans text-2xl font-bold mb-4 mt-10 text-foreground">
+            Who I&rsquo;ve written for
           </h2>
           <p className="mb-4 text-muted-foreground">
-            I also build AI systems that scale, helping businesses automate and optimize their content operations.
+            ManyRequests, Marker.io, HigherVisibility, Jabra, Pangea.ai, Spicy Margarita, and a handful of other B2B SaaS brands over the past few years.
           </p>
-
-          <div className="mt-12 p-6 rounded-lg bg-muted">
-            <p className="text-sm mb-2 text-muted-foreground">
-              <strong className="text-foreground">Want to customize this page?</strong>
-            </p>
-            <p className="text-sm text-muted-foreground">
-              Create a static page called "about" in your Hashnode dashboard to replace this placeholder content with your story.
-            </p>
-          </div>
         </div>
       )}
     </div>

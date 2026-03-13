@@ -3,16 +3,16 @@
 /* Editorial Portfolio Design System - Monochrome */
 
 :root {
-  /* Light mode colors - Navy + Burnt Orange */
+  /* Light mode — Indigo: intellectual, editorial, premium */
   --background: #ffffff;
-  --foreground: #000000;
-  --muted: #f4f4f5;
-  --muted-foreground: #27272a;
-  --border: #e4e4e7;
-  --accent: #e07a5f;
+  --foreground: #1e2a5e;
+  --muted: #f5f6fe;
+  --muted-foreground: #5e6a8a;
+  --border: #dde2f5;
+  --accent: #4361c2;
   --accent-foreground: #ffffff;
-  --navy: #000000;
-  --orange: #e07a5f;
+  --navy: #1e2a5e;
+  --orange: #4361c2;
 
   /* Typography */
   --font-serif: Georgia, Cambria, "Times New Roman", Times, serif;
@@ -40,29 +40,29 @@
 
 /* Dark mode */
 [data-theme="dark"] {
-  --background: #0f1419;
-  --foreground: #f1f5f9;
-  --muted: #1e293b;
-  --muted-foreground: #cbd5e1;
-  --border: #334155;
-  --accent: #e07a5f;
+  --background: #0f1433;
+  --foreground: #e8ecfb;
+  --muted: #171d45;
+  --muted-foreground: #8a93b5;
+  --border: #2a3366;
+  --accent: #6b85e0;
   --accent-foreground: #ffffff;
-  --navy: #f1f5f9;
-  --orange: #e07a5f;
+  --navy: #e8ecfb;
+  --orange: #6b85e0;
 }
 
 /* Auto dark mode (system preference) */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --background: #0f1419;
-    --foreground: #f1f5f9;
-    --muted: #1e293b;
-    --muted-foreground: #cbd5e1;
-    --border: #334155;
-    --accent: #e07a5f;
+    --background: #0f1433;
+    --foreground: #e8ecfb;
+    --muted: #171d45;
+    --muted-foreground: #8a93b5;
+    --border: #2a3366;
+    --accent: #6b85e0;
     --accent-foreground: #ffffff;
-    --navy: #f1f5f9;
-    --orange: #e07a5f;
+    --navy: #e8ecfb;
+    --orange: #6b85e0;
   }
 }
 
@@ -148,16 +148,16 @@ h3 {
 }
 
 .prose a {
-  color: #e07a5f;
+  color: #4361c2;
   text-decoration: underline;
-  text-decoration-color: #e07a5f;
+  text-decoration-color: #4361c2;
   text-underline-offset: 3px;
   transition: all 0.2s ease;
 }
 
 .prose a:hover {
-  color: #d4816f;
-  text-decoration-color: #d4816f;
+  color: #3651a8;
+  text-decoration-color: #3651a8;
 }
 
 .prose ul, .prose ol {
@@ -283,9 +283,9 @@ h3 {
 /* Dark mode code blocks */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) .prose pre {
-    background: #1a1f36;
-    color: #e2e8f0;
-    border-color: #2d3748;
+    background: #171d45;
+    color: #e8ecfb;
+    border-color: #2a3366;
   }
 
   :root:not([data-theme="light"]) .copy-btn {

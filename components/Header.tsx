@@ -17,36 +17,12 @@ export function Header() {
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center gap-8">
-            <Link
-              href="/blog"
-              className="text-sm uppercase tracking-wide transition-colors text-muted-foreground hover:text-accent"
-            >
-              Blog
-            </Link>
-            <Link
-              href="/projects"
-              className="text-sm uppercase tracking-wide transition-colors text-muted-foreground hover:text-accent"
-            >
-              Projects
-            </Link>
-            <Link
-              href="/portfolio"
-              className="text-sm uppercase tracking-wide transition-colors text-muted-foreground hover:text-accent"
-            >
-              Portfolio
-            </Link>
-            <Link
-              href="/about"
-              className="text-sm uppercase tracking-wide transition-colors text-muted-foreground hover:text-accent"
-            >
-              About
-            </Link>
-            <Link
-              href="/contact"
-              className="text-sm uppercase tracking-wide transition-colors text-muted-foreground hover:text-accent"
-            >
-              Contact
-            </Link>
+            <Link href="/services" className="text-sm uppercase tracking-wide transition-colors text-muted-foreground hover:text-accent">Services</Link>
+            <Link href="/portfolio" className="text-sm uppercase tracking-wide transition-colors text-muted-foreground hover:text-accent">Portfolio</Link>
+            <Link href="/blog" className="text-sm uppercase tracking-wide transition-colors text-muted-foreground hover:text-accent">Blog</Link>
+            <Link href="/projects" className="text-sm uppercase tracking-wide transition-colors text-muted-foreground hover:text-accent">Projects</Link>
+            <Link href="/about" className="text-sm uppercase tracking-wide transition-colors text-muted-foreground hover:text-accent">About</Link>
+            <Link href="/contact" className="text-sm uppercase tracking-wide transition-colors text-muted-foreground hover:text-accent">Contact</Link>
           </nav>
 
           {/* Mobile Hamburger */}
@@ -71,41 +47,23 @@ export function Header() {
         {isMenuOpen && (
           <nav className="md:hidden pt-4 pb-2 border-t border-border mt-4">
             <div className="flex flex-col gap-4">
-              <Link
-                href="/blog"
-                className="text-sm uppercase tracking-wide py-2 text-muted-foreground"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Blog
-              </Link>
-              <Link
-                href="/projects"
-                className="text-sm uppercase tracking-wide py-2 text-muted-foreground"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Projects
-              </Link>
-              <Link
-                href="/portfolio"
-                className="text-sm uppercase tracking-wide py-2 text-muted-foreground"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Portfolio
-              </Link>
-              <Link
-                href="/about"
-                className="text-sm uppercase tracking-wide py-2 text-muted-foreground"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                About
-              </Link>
-              <Link
-                href="/contact"
-                className="text-sm uppercase tracking-wide py-2 text-muted-foreground"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Contact
-              </Link>
+              {[
+                { href: '/services', label: 'Services' },
+                { href: '/portfolio', label: 'Portfolio' },
+                { href: '/blog', label: 'Blog' },
+                { href: '/projects', label: 'Projects' },
+                { href: '/about', label: 'About' },
+                { href: '/contact', label: 'Contact' },
+              ].map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className="text-sm uppercase tracking-wide py-2 text-muted-foreground"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  {item.label}
+                </Link>
+              ))}
             </div>
           </nav>
         )}
