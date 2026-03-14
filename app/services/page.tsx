@@ -140,7 +140,7 @@ export default function ServicesPage() {
             Organic SaaS Content Marketer
           </p>
           <h1
-            className="font-sans text-3xl sm:text-4xl md:text-5xl font-extrabold leading-[1.1] mb-6 text-foreground"
+            className="text-3xl sm:text-4xl md:text-5xl font-extrabold leading-[1.1] mb-6 text-foreground"
             style={{ letterSpacing: '-0.03em' }}
           >
             Product-led content for B2B&nbsp;SaaS
@@ -183,7 +183,7 @@ export default function ServicesPage() {
             Is this you?
           </p>
           <h2
-            className="font-sans text-2xl sm:text-3xl font-extrabold mb-10 text-foreground"
+            className="text-2xl sm:text-3xl font-extrabold mb-10 text-foreground"
             style={{ letterSpacing: '-0.02em' }}
           >
             You might be the right fit
@@ -241,141 +241,6 @@ export default function ServicesPage() {
         </div>
       </section>
 
-      {/* ── Who I write for ───────────────────────────── */}
-      <section className="border-t border-border" style={{ background: 'var(--muted)' }}>
-        <div className="max-w-4xl mx-auto px-6 py-16 sm:py-20">
-          <p
-            className="text-xs font-bold uppercase tracking-[0.15em] mb-10"
-            style={{ color: 'var(--accent)' }}
-          >
-            Who I write for
-          </p>
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-x-8 gap-y-7">
-            {[
-              { label: 'MarTech', sub: 'Marketing & analytics software' },
-              { label: 'Project Management Software', sub: 'Work management & agency ops' },
-              { label: 'DevTools & QA Software', sub: 'Developer tools & testing platforms' },
-              { label: 'Collaboration Software', sub: 'Workplace & unified communications' },
-              { label: 'Workflow Automation', sub: 'Workflow automation tools' },
-              { label: 'HR Tech & Talent Platforms', sub: 'Hiring, workforce & talent marketplaces' },
-            ].map((item) => (
-              <div key={item.label}>
-                <p className="text-sm font-bold text-foreground leading-snug mb-1">{item.label}</p>
-                <p className="text-xs text-muted-foreground leading-relaxed">{item.sub}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── Client logos ───────────────────────────────── */}
-      <section className="border-y border-border" style={{ background: 'var(--muted)' }}>
-        <div className="max-w-4xl mx-auto px-6 py-10">
-          <div className="flex items-center gap-4 mb-8">
-            <span className="flex-1 h-px bg-border" />
-            <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-muted-foreground whitespace-nowrap">
-              Written for brands like
-            </p>
-            <span className="flex-1 h-px bg-border" />
-          </div>
-          <div className="flex flex-wrap justify-center items-center gap-x-1 gap-y-3">
-            {CLIENTS.map((c, i) => (
-              <span key={c.domain} className="flex items-center">
-                <span className="flex items-center gap-2 px-4 py-2 opacity-75 hover:opacity-100 transition-all">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={c.favicon}
-                    alt=""
-                    width={18}
-                    height={18}
-                    className="rounded"
-                    loading="lazy"
-                  />
-                  <span className="text-[13px] font-semibold text-foreground">{c.name}</span>
-                </span>
-                {i < CLIENTS.length - 1 && (
-                  <span className="text-border select-none" aria-hidden>&middot;</span>
-                )}
-              </span>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── Pull quote ─────────────────────────────────── */}
-      <section style={{ background: 'var(--muted)' }}>
-        <div className="max-w-3xl mx-auto px-6 py-10 text-center">
-          <p
-            className="text-base sm:text-lg leading-relaxed text-foreground mb-3"
-            style={{ fontFamily: 'var(--font-serif)' }}
-          >
-            &ldquo;His top-performing posts are product-led ones, which has led to more traffic and demo requests for ManyRequests.&rdquo;
-          </p>
-          <p className="text-xs text-muted-foreground">
-            Regine Garcia &middot; Head of Content, ManyRequests
-          </p>
-        </div>
-      </section>
-
-      {/* ── Results strip ──────────────────────────────── */}
-      <section className="border-t border-border" style={{ background: 'var(--muted)' }}>
-        <div className="max-w-4xl mx-auto px-6 py-12 sm:py-16">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-            <div>
-              <p
-                className="font-sans text-4xl font-extrabold mb-2"
-                style={{ letterSpacing: '-0.04em', color: 'var(--accent)' }}
-              >
-                233%
-              </p>
-              <p className="text-xs text-muted-foreground leading-relaxed">Organic traffic growth for HigherVisibility</p>
-            </div>
-            <div>
-              <p
-                className="font-sans text-4xl font-extrabold mb-2"
-                style={{ letterSpacing: '-0.04em', color: 'var(--accent)' }}
-              >
-                6+
-              </p>
-              <p className="text-xs text-muted-foreground leading-relaxed">B2B SaaS brands published at</p>
-            </div>
-            <div>
-              <p
-                className="font-sans text-4xl font-extrabold mb-2"
-                style={{ letterSpacing: '-0.04em', color: 'var(--accent)' }}
-              >
-                1 round
-              </p>
-              <p className="text-xs text-muted-foreground leading-relaxed">Average revisions per article (often zero toward end of engagements)</p>
-            </div>
-            <div>
-              <p
-                className="inline-block text-xs font-bold uppercase tracking-[0.08em] px-3 py-1.5 rounded-full mb-3"
-                style={{ background: 'var(--accent)', color: '#fff' }}
-              >
-                Cited in LLM search engines
-              </p>
-              <p className="text-xs text-muted-foreground leading-relaxed">My clients get mentioned in ChatGPT, Perplexity, and Google AI Overviews for relevant queries</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ── Nathan pull quote ──────────────────────────── */}
-      <section style={{ background: 'var(--muted)' }}>
-        <div className="max-w-3xl mx-auto px-6 py-10 text-center">
-          <p
-            className="text-base sm:text-lg leading-relaxed text-foreground mb-3"
-            style={{ fontFamily: 'var(--font-serif)' }}
-          >
-            &ldquo;We never needed more than one round of feedback per article &mdash; and none towards the end of our project.&rdquo;
-          </p>
-          <p className="text-xs text-muted-foreground">
-            Nathan Vander Heyden &middot; Head of Marketing, Marker.io
-          </p>
-        </div>
-      </section>
-
       {/* ── Services / Pricing ─────────────────────────── */}
       <section className="bg-background">
         <div className="max-w-4xl mx-auto px-6 py-20 sm:py-24">
@@ -386,7 +251,7 @@ export default function ServicesPage() {
             What I offer
           </p>
           <h2
-            className="font-sans text-2xl sm:text-3xl font-extrabold mb-3 text-foreground"
+            className="text-2xl sm:text-3xl font-extrabold mb-3 text-foreground"
             style={{ letterSpacing: '-0.02em' }}
           >
             Four ways to work together
@@ -498,6 +363,141 @@ export default function ServicesPage() {
         </div>
       </section>
 
+      {/* ── Who I write for ───────────────────────────── */}
+      <section className="border-t border-border" style={{ background: 'var(--muted)' }}>
+        <div className="max-w-4xl mx-auto px-6 py-16 sm:py-20">
+          <p
+            className="text-xs font-bold uppercase tracking-[0.15em] mb-10"
+            style={{ color: 'var(--accent)' }}
+          >
+            Who I write for
+          </p>
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-x-8 gap-y-7">
+            {[
+              { label: 'MarTech', sub: 'Marketing & analytics software' },
+              { label: 'Project Management Software', sub: 'Work management & agency ops' },
+              { label: 'DevTools & QA Software', sub: 'Developer tools & testing platforms' },
+              { label: 'Collaboration Software', sub: 'Workplace & unified communications' },
+              { label: 'Workflow Automation', sub: 'Workflow automation tools' },
+              { label: 'HR Tech & Talent Platforms', sub: 'Hiring, workforce & talent marketplaces' },
+            ].map((item) => (
+              <div key={item.label}>
+                <p className="text-sm font-bold text-foreground leading-snug mb-1">{item.label}</p>
+                <p className="text-xs text-muted-foreground leading-relaxed">{item.sub}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Client logos ───────────────────────────────── */}
+      <section className="border-y border-border" style={{ background: 'var(--muted)' }}>
+        <div className="max-w-4xl mx-auto px-6 py-10">
+          <div className="flex items-center gap-4 mb-8">
+            <span className="flex-1 h-px bg-border" />
+            <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-muted-foreground whitespace-nowrap">
+              Written for brands like
+            </p>
+            <span className="flex-1 h-px bg-border" />
+          </div>
+          <div className="flex flex-wrap justify-center items-center gap-x-1 gap-y-3">
+            {CLIENTS.map((c, i) => (
+              <span key={c.domain} className="flex items-center">
+                <span className="flex items-center gap-2 px-4 py-2 opacity-75 hover:opacity-100 transition-all">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={c.favicon}
+                    alt=""
+                    width={18}
+                    height={18}
+                    className="rounded"
+                    loading="lazy"
+                  />
+                  <span className="text-[13px] font-semibold text-foreground">{c.name}</span>
+                </span>
+                {i < CLIENTS.length - 1 && (
+                  <span className="text-border select-none" aria-hidden>&middot;</span>
+                )}
+              </span>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Pull quote ─────────────────────────────────── */}
+      <section style={{ background: 'var(--muted)' }}>
+        <div className="max-w-3xl mx-auto px-6 py-10 text-center">
+          <p
+            className="text-base sm:text-lg leading-relaxed text-foreground mb-3"
+            style={{ fontFamily: 'var(--font-serif)' }}
+          >
+            &ldquo;His top-performing posts are product-led ones, which has led to more traffic and demo requests for ManyRequests.&rdquo;
+          </p>
+          <p className="text-xs text-muted-foreground">
+            Regine Garcia &middot; Head of Content, ManyRequests
+          </p>
+        </div>
+      </section>
+
+      {/* ── Results strip ──────────────────────────────── */}
+      <section className="border-t border-border" style={{ background: 'var(--muted)' }}>
+        <div className="max-w-4xl mx-auto px-6 py-12 sm:py-16">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+            <div>
+              <p
+                className="text-4xl font-extrabold mb-2"
+                style={{ letterSpacing: '-0.04em', color: 'var(--accent)' }}
+              >
+                233%
+              </p>
+              <p className="text-xs text-muted-foreground leading-relaxed">Organic traffic growth for HigherVisibility</p>
+            </div>
+            <div>
+              <p
+                className="text-4xl font-extrabold mb-2"
+                style={{ letterSpacing: '-0.04em', color: 'var(--accent)' }}
+              >
+                6+
+              </p>
+              <p className="text-xs text-muted-foreground leading-relaxed">B2B SaaS brands published at</p>
+            </div>
+            <div>
+              <p
+                className="text-4xl font-extrabold mb-2"
+                style={{ letterSpacing: '-0.04em', color: 'var(--accent)' }}
+              >
+                1 round
+              </p>
+              <p className="text-xs text-muted-foreground leading-relaxed">Average revisions per article (often zero toward end of engagements)</p>
+            </div>
+            <div>
+              <p
+                className="inline-block text-xs font-bold uppercase tracking-[0.08em] px-3 py-1.5 rounded-full mb-3"
+                style={{ background: 'var(--accent)', color: '#fff' }}
+              >
+                Cited in LLM search engines
+              </p>
+              <p className="text-xs text-muted-foreground leading-relaxed">My clients get mentioned in ChatGPT, Perplexity, and Google AI Overviews for relevant queries</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Nathan pull quote ──────────────────────────── */}
+      <section style={{ background: 'var(--muted)' }}>
+        <div className="max-w-3xl mx-auto px-6 py-10 text-center">
+          <p
+            className="text-base sm:text-lg leading-relaxed text-foreground mb-3"
+            style={{ fontFamily: 'var(--font-serif)' }}
+          >
+            &ldquo;We never needed more than one round of feedback per article &mdash; and none towards the end of our project.&rdquo;
+          </p>
+          <p className="text-xs text-muted-foreground">
+            Nathan Vander Heyden &middot; Head of Marketing, Marker.io
+          </p>
+        </div>
+      </section>
+
       {/* ── How I think (scannable boxes) ─────────────── */}
       <section className="bg-background">
         <div className="max-w-3xl mx-auto px-6 py-20 sm:py-24">
@@ -508,7 +508,7 @@ export default function ServicesPage() {
             How I think
           </p>
           <h2
-            className="font-sans text-2xl sm:text-3xl font-extrabold mb-14 text-foreground"
+            className="text-2xl sm:text-3xl font-extrabold mb-14 text-foreground"
             style={{ letterSpacing: '-0.02em' }}
           >
             How I think about content
@@ -517,7 +517,7 @@ export default function ServicesPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-8">
             <div className="rounded-xl border border-border p-7" style={{ background: 'var(--muted)' }}>
               <p className="text-[11px] font-bold uppercase tracking-[0.1em] mb-3" style={{ color: 'var(--accent)' }}>01</p>
-              <h3 className="font-sans text-[15px] font-bold text-foreground mb-2 leading-snug">
+              <h3 className="text-[15px] font-bold text-foreground mb-2 leading-snug">
                 &ldquo;Will we be able to talk about the product here, without forcing it?&rdquo;
               </h3>
               <p className="text-[13px] leading-[1.7] text-muted-foreground">
@@ -528,7 +528,7 @@ export default function ServicesPage() {
 
             <div className="rounded-xl border border-border p-7" style={{ background: 'var(--muted)' }}>
               <p className="text-[11px] font-bold uppercase tracking-[0.1em] mb-3" style={{ color: 'var(--accent)' }}>02</p>
-              <h3 className="font-sans text-[15px] font-bold text-foreground mb-2 leading-snug">
+              <h3 className="text-[15px] font-bold text-foreground mb-2 leading-snug">
                 Do a few things right, and it bangs.
               </h3>
               <p className="text-[13px] leading-[1.7] text-muted-foreground">
@@ -540,7 +540,7 @@ export default function ServicesPage() {
 
             <div className="rounded-xl border border-border p-7" style={{ background: 'var(--muted)' }}>
               <p className="text-[11px] font-bold uppercase tracking-[0.1em] mb-3" style={{ color: 'var(--accent)' }}>03</p>
-              <h3 className="font-sans text-[15px] font-bold text-foreground mb-2 leading-snug">
+              <h3 className="text-[15px] font-bold text-foreground mb-2 leading-snug">
                 Good GEO is good SEO.
               </h3>
               <p className="text-[13px] leading-[1.7] text-muted-foreground">
@@ -552,7 +552,7 @@ export default function ServicesPage() {
 
             <div className="rounded-xl border border-border p-7" style={{ background: 'var(--muted)' }}>
               <p className="text-[11px] font-bold uppercase tracking-[0.1em] mb-3" style={{ color: 'var(--accent)' }}>04</p>
-              <h3 className="font-sans text-[15px] font-bold text-foreground mb-2 leading-snug">
+              <h3 className="text-[15px] font-bold text-foreground mb-2 leading-snug">
                 I try to understand the &lsquo;why&rsquo; before I write.
               </h3>
               <p className="text-[13px] leading-[1.7] text-muted-foreground">
@@ -571,59 +571,6 @@ export default function ServicesPage() {
         </div>
       </section>
 
-      {/* ── Process ────────────────────────────────────── */}
-      <section className="border-t border-border bg-background">
-        <div className="max-w-4xl mx-auto px-6 py-20 sm:py-24">
-          <p
-            className="text-xs font-bold uppercase tracking-[0.15em] mb-4"
-            style={{ color: 'var(--accent)' }}
-          >
-            How it works
-          </p>
-          <h2
-            className="font-sans text-2xl sm:text-3xl font-extrabold mb-14 text-foreground"
-            style={{ letterSpacing: '-0.02em' }}
-          >
-            From brief to published
-          </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
-            {[
-              {
-                step: '01',
-                name: 'Discovery',
-                desc: 'Short call or async brief to understand your product, audience, and goals.',
-              },
-              {
-                step: '02',
-                name: 'Research',
-                desc: <span>Competitor analysis, intent mapping, <a href="https://databox.com/customers-and-revenue-ahrefs" target="_blank" rel="noopener noreferrer" className="underline underline-offset-2" style={{ color: 'var(--accent)' }}>Business Potential Score</a> check.</span>,
-              },
-              {
-                step: '03',
-                name: 'Draft',
-                desc: 'First draft delivered with internal links, product mentions, and optimized for organic and AI search.',
-              },
-              {
-                step: '04',
-                name: 'Publish-ready',
-                desc: 'One round of revisions, usually fewer as we work together.',
-              },
-            ].map((s) => (
-              <div key={s.step} className="relative">
-                <p
-                  className="text-[11px] font-bold uppercase tracking-[0.1em] mb-3"
-                  style={{ color: 'var(--accent)' }}
-                >
-                  {s.step}
-                </p>
-                <h3 className="font-sans text-[15px] font-bold text-foreground mb-2">{s.name}</h3>
-                <p className="text-[13px] leading-[1.7] text-muted-foreground">{s.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* ── Testimonials ───────────────────────────────── */}
       <section style={{ background: 'var(--muted)' }}>
         <div className="max-w-3xl mx-auto px-6 py-20 sm:py-24">
@@ -634,7 +581,7 @@ export default function ServicesPage() {
             What clients say
           </p>
           <h2
-            className="font-sans text-2xl sm:text-3xl font-extrabold mb-14 text-foreground"
+            className="text-2xl sm:text-3xl font-extrabold mb-14 text-foreground"
             style={{ letterSpacing: '-0.02em' }}
           >
             From the people who hired me
@@ -687,11 +634,64 @@ export default function ServicesPage() {
         </div>
       </section>
 
+      {/* ── Process ────────────────────────────────────── */}
+      <section className="border-t border-border bg-background">
+        <div className="max-w-4xl mx-auto px-6 py-20 sm:py-24">
+          <p
+            className="text-xs font-bold uppercase tracking-[0.15em] mb-4"
+            style={{ color: 'var(--accent)' }}
+          >
+            How it works
+          </p>
+          <h2
+            className="text-2xl sm:text-3xl font-extrabold mb-14 text-foreground"
+            style={{ letterSpacing: '-0.02em' }}
+          >
+            From brief to published
+          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+            {[
+              {
+                step: '01',
+                name: 'Discovery',
+                desc: 'Short call or async brief to understand your product, audience, and goals.',
+              },
+              {
+                step: '02',
+                name: 'Research',
+                desc: <span>Competitor analysis, intent mapping, <a href="https://databox.com/customers-and-revenue-ahrefs" target="_blank" rel="noopener noreferrer" className="underline underline-offset-2" style={{ color: 'var(--accent)' }}>Business Potential Score</a> check.</span>,
+              },
+              {
+                step: '03',
+                name: 'Draft',
+                desc: 'First draft delivered with internal links, product mentions, and optimized for organic and AI search.',
+              },
+              {
+                step: '04',
+                name: 'Publish-ready',
+                desc: 'One round of revisions, usually fewer as we work together.',
+              },
+            ].map((s) => (
+              <div key={s.step} className="relative">
+                <p
+                  className="text-[11px] font-bold uppercase tracking-[0.1em] mb-3"
+                  style={{ color: 'var(--accent)' }}
+                >
+                  {s.step}
+                </p>
+                <h3 className="text-[15px] font-bold text-foreground mb-2">{s.name}</h3>
+                <p className="text-[13px] leading-[1.7] text-muted-foreground">{s.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* ── FAQ ────────────────────────────────────────── */}
       <section className="border-t border-border bg-background">
         <div className="max-w-3xl mx-auto px-6 py-20 sm:py-24">
           <h2
-            className="font-sans text-lg sm:text-xl font-extrabold mb-10 text-foreground"
+            className="text-lg sm:text-xl font-extrabold mb-10 text-foreground"
             style={{ letterSpacing: '-0.02em' }}
           >
             FAQs about me
@@ -725,7 +725,7 @@ export default function ServicesPage() {
             ].map((item, i) => (
               <details key={i} className="group border-b border-border">
                 <summary className="flex items-center justify-between gap-4 py-5 cursor-pointer list-none">
-                  <h3 className="font-sans text-sm font-semibold text-foreground">{item.q}</h3>
+                  <h3 className="text-sm font-semibold text-foreground">{item.q}</h3>
                   <span className="flex-shrink-0 text-muted-foreground transition-transform group-open:rotate-45" style={{ color: 'var(--accent)' }}>
                     +
                   </span>
@@ -745,7 +745,7 @@ export default function ServicesPage() {
             Currently accepting 2 new clients
           </span>
           <h2
-            className="font-sans text-2xl sm:text-3xl font-extrabold mb-4 text-foreground"
+            className="text-2xl sm:text-3xl font-extrabold mb-4 text-foreground"
             style={{ letterSpacing: '-0.02em' }}
           >
             Ready to hire a B2B SaaS content writer?

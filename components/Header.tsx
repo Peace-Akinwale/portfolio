@@ -11,7 +11,7 @@ export function Header() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 sm:py-5">
         <div className="flex items-center justify-between">
           {/* Logo/Name */}
-          <Link href="/" className="text-xl sm:text-2xl font-sans font-bold hover:opacity-80 transition-opacity text-foreground">
+          <Link href="/" className="text-xl sm:text-2xl font-bold hover:opacity-80 transition-opacity text-foreground" style={{ fontFamily: 'var(--font-heading, var(--font-sans))' }}>
             Peace Akinwale
           </Link>
 

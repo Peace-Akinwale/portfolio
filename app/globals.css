@@ -3,20 +3,21 @@
 /* Editorial Portfolio Design System - Monochrome */
 
 :root {
-  /* Light mode — Indigo: intellectual, editorial, premium */
+  /* Light mode — Electric Teal + Rose: fresh, modern, energetic */
   --background: #ffffff;
-  --foreground: #1e2a5e;
-  --muted: #f5f6fe;
-  --muted-foreground: #5e6a8a;
-  --border: #dde2f5;
-  --accent: #4361c2;
+  --foreground: #0a0a0a;
+  --muted: #f0fdfa;
+  --muted-foreground: #4a5a58;
+  --border: #d1e7e4;
+  --accent: #0d9488;
   --accent-foreground: #ffffff;
-  --navy: #1e2a5e;
-  --orange: #4361c2;
+  --accent2: #e11d48;
+  --navy: #0a0a0a;
+  --orange: #e11d48;
 
   /* Typography */
   --font-serif: Georgia, Cambria, "Times New Roman", Times, serif;
-  --font-sans: var(--font-heading, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif);
+  --font-sans: var(--font-body, var(--font-heading, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif));
 }
 
 @theme inline {
@@ -40,29 +41,31 @@
 
 /* Dark mode */
 [data-theme="dark"] {
-  --background: #0f1433;
-  --foreground: #e8ecfb;
-  --muted: #171d45;
-  --muted-foreground: #8a93b5;
-  --border: #2a3366;
-  --accent: #6b85e0;
-  --accent-foreground: #ffffff;
-  --navy: #e8ecfb;
-  --orange: #6b85e0;
+  --background: #0a0f0e;
+  --foreground: #f0f0f0;
+  --muted: #0f1a18;
+  --muted-foreground: #8a9e9b;
+  --border: #1e3330;
+  --accent: #2dd4bf;
+  --accent-foreground: #0a0a0a;
+  --accent2: #fb7185;
+  --navy: #f0f0f0;
+  --orange: #fb7185;
 }
 
 /* Auto dark mode (system preference) */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --background: #0f1433;
-    --foreground: #e8ecfb;
-    --muted: #171d45;
-    --muted-foreground: #8a93b5;
-    --border: #2a3366;
-    --accent: #6b85e0;
-    --accent-foreground: #ffffff;
-    --navy: #e8ecfb;
-    --orange: #6b85e0;
+    --background: #0a0f0e;
+    --foreground: #f0f0f0;
+    --muted: #0f1a18;
+    --muted-foreground: #8a9e9b;
+    --border: #1e3330;
+    --accent: #2dd4bf;
+    --accent-foreground: #0a0a0a;
+    --accent2: #fb7185;
+    --navy: #f0f0f0;
+    --orange: #fb7185;
   }
 }
 
@@ -89,9 +92,9 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Typography — sans-serif for all UI headings */
+/* Typography — Syne for headings, DM Sans for body */
 h1, h2, h3, h4, h5, h6 {
-  font-family: var(--font-sans);
+  font-family: var(--font-heading, var(--font-sans));
   font-weight: 700;
   line-height: 1.2;
   color: var(--foreground);
@@ -148,16 +151,15 @@ h3 {
 }
 
 .prose a {
-  color: #4361c2;
+  color: var(--accent);
   text-decoration: underline;
-  text-decoration-color: #4361c2;
+  text-decoration-color: var(--accent);
   text-underline-offset: 3px;
   transition: all 0.2s ease;
 }
 
 .prose a:hover {
-  color: #3651a8;
-  text-decoration-color: #3651a8;
+  opacity: 0.8;
 }
 
 .prose ul, .prose ol {
@@ -283,9 +285,9 @@ h3 {
 /* Dark mode code blocks */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) .prose pre {
-    background: #171d45;
-    color: #e8ecfb;
-    border-color: #2a3366;
+    background: #0f1a18;
+    color: #f0f0f0;
+    border-color: #1e3330;
   }
 
   :root:not([data-theme="light"]) .copy-btn {

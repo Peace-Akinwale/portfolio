@@ -47,82 +47,53 @@ export default async function HomePage() {
     <>
       {/* ── Hero ─────────────────────────────────────── */}
       <section className="bg-background border-b border-border">
-        <div className="max-w-5xl mx-auto px-6 pt-16 sm:pt-24 pb-16">
-          <div className="grid md:grid-cols-[1fr_auto] gap-8 md:gap-12 items-center">
-            <div>
-              <span className="inline-flex items-center gap-2 text-xs font-semibold px-3 py-1.5 rounded-full border border-border text-muted-foreground mb-6">
-                <span className="w-1.5 h-1.5 rounded-full bg-green-500 inline-block" />
-                Currently accepting 2 new clients
-              </span>
-              <p
-                className="text-xs font-bold uppercase tracking-[0.15em] mb-4"
-                style={{ color: 'var(--accent)' }}
-              >
-                Organic SaaS Content Marketer
-              </p>
-              <h1
-                className="font-sans text-3xl sm:text-4xl md:text-5xl font-extrabold leading-[1.1] mb-6 text-foreground"
-                style={{ letterSpacing: '-0.03em' }}
-              >
-                Product-led content for B2B&nbsp;SaaS
-              </h1>
-              <p className="text-base sm:text-lg leading-relaxed text-muted-foreground max-w-xl mb-4">
-                I write articles that show your product in action, rank on Google, and earn citations in ChatGPT and Perplexity.
-              </p>
-              <p className="text-base sm:text-lg leading-relaxed text-muted-foreground max-w-xl mb-10">
-                I also build lightweight AI systems to take the manual work off your plate so you can focus on higher-stakes decisions.
-              </p>
-              <div className="flex flex-col sm:flex-row sm:items-center gap-3">
-                <Link
-                  href="/portfolio"
-                  className="inline-block px-7 py-3 text-xs font-bold uppercase tracking-[0.08em] rounded-md transition-all hover:opacity-90 text-center"
-                  style={{ background: 'var(--accent)', color: '#fff' }}
-                >
-                  See my work &rarr;
-                </Link>
-                <Link
-                  href="/services"
-                  className="inline-block px-7 py-3 text-xs font-bold uppercase tracking-[0.08em] rounded-md border border-border text-foreground transition-all hover:bg-muted text-center"
-                >
-                  View services
-                </Link>
-                <Link
-                  href="/contact"
-                  className="text-xs font-bold uppercase tracking-[0.08em] underline underline-offset-4 transition-colors hover:opacity-70 text-center sm:text-left"
-                  style={{ color: 'var(--accent)' }}
-                >
-                  Book a free call
-                </Link>
-              </div>
-            </div>
-            <div className="flex justify-center md:justify-end order-first md:order-last">
-              <div
-                className="relative overflow-hidden"
-                style={{
-                  width: 'min(300px, 72vw)',
-                  aspectRatio: '3 / 4',
-                  borderRadius: '18px',
-                  border: '1px solid var(--border)',
-                  boxShadow: '0 24px 64px rgba(0,0,0,0.16), 0 4px 12px rgba(0,0,0,0.08)',
-                  outline: '3px solid var(--accent)',
-                  outlineOffset: '5px',
-                }}
-              >
-                <Image
-                  src="/images/peace-akinwale.jpg"
-                  alt="Peace Akinwale"
-                  fill
-                  className="object-cover object-top"
-                  priority
-                />
-              </div>
-            </div>
+        <div className="max-w-3xl mx-auto px-6 pt-20 sm:pt-28 pb-16">
+          <span className="inline-flex items-center gap-2 text-xs font-semibold px-3 py-1.5 rounded-full border border-border text-muted-foreground mb-6">
+            <span className="w-1.5 h-1.5 rounded-full bg-green-500 inline-block" />
+            Currently accepting 2 new clients
+          </span>
+          <p
+            className="text-xs font-bold uppercase tracking-[0.15em] mb-4"
+            style={{ color: 'var(--accent)' }}
+          >
+            Organic SaaS Content Marketer
+          </p>
+          <h1
+            className="text-3xl sm:text-4xl md:text-5xl font-extrabold leading-[1.1] mb-6 text-foreground"
+            style={{ letterSpacing: '-0.03em' }}
+          >
+            Product-led content for B2B&nbsp;SaaS
+          </h1>
+          <p className="text-base sm:text-lg leading-relaxed text-muted-foreground max-w-xl mb-10">
+            Your product should show up in the article because it genuinely solves the problem, not because a brief said &ldquo;mention it somewhere.&rdquo; That&rsquo;s how I write.
+          </p>
+          <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+            <Link
+              href="/portfolio"
+              className="inline-block px-7 py-3 text-xs font-bold uppercase tracking-[0.08em] rounded-md transition-all hover:opacity-90 text-center"
+              style={{ background: 'var(--accent)', color: '#fff' }}
+            >
+              See my work &rarr;
+            </Link>
+            <Link
+              href="/services"
+              className="inline-block px-7 py-3 text-xs font-bold uppercase tracking-[0.08em] rounded-md border border-border text-foreground transition-all hover:bg-muted text-center"
+            >
+              View services
+            </Link>
+            <Link
+              href="/contact"
+              className="text-xs font-bold uppercase tracking-[0.08em] underline underline-offset-4 transition-colors hover:opacity-70 text-center sm:text-left"
+              style={{ color: 'var(--accent2, var(--accent))' }}
+            >
+              Book a free call
+            </Link>
           </div>
         </div>
       </section>
 
       {/* ── Client logos ─────────────────────────────── */}
-      <section className="border-b border-border" style={{ background: 'var(--muted)' }}>
+      <section style={{ background: 'var(--muted)' }}>
         <div className="max-w-4xl mx-auto px-6 py-10">
           <div className="flex items-center gap-4 mb-8">
             <span className="flex-1 h-px bg-border" />
@@ -153,15 +124,15 @@ export default async function HomePage() {
         <div className="max-w-4xl mx-auto px-6 py-12 sm:py-16">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
             <div>
-              <p className="font-sans text-4xl font-extrabold mb-2" style={{ letterSpacing: '-0.04em', color: 'var(--accent)' }}>233%</p>
+              <p className="text-4xl font-extrabold mb-2" style={{ letterSpacing: '-0.04em', color: 'var(--accent)' }}>233%</p>
               <p className="text-xs text-muted-foreground leading-relaxed">Organic traffic growth for HigherVisibility</p>
             </div>
             <div>
-              <p className="font-sans text-4xl font-extrabold mb-2" style={{ letterSpacing: '-0.04em', color: 'var(--accent)' }}>6+</p>
+              <p className="text-4xl font-extrabold mb-2" style={{ letterSpacing: '-0.04em', color: 'var(--accent)' }}>6+</p>
               <p className="text-xs text-muted-foreground leading-relaxed">B2B SaaS brands published at</p>
             </div>
             <div>
-              <p className="font-sans text-4xl font-extrabold mb-2" style={{ letterSpacing: '-0.04em', color: 'var(--accent)' }}>1 round</p>
+              <p className="text-4xl font-extrabold mb-2" style={{ letterSpacing: '-0.04em', color: 'var(--accent)' }}>1 round</p>
               <p className="text-xs text-muted-foreground leading-relaxed">Average revisions per article</p>
             </div>
             <div>
@@ -179,10 +150,10 @@ export default async function HomePage() {
             What I offer
           </p>
           <h2
-            className="font-sans text-2xl sm:text-3xl font-extrabold mb-14 text-foreground"
+            className="text-2xl sm:text-3xl font-extrabold mb-14 text-foreground"
             style={{ letterSpacing: '-0.02em' }}
           >
-            Three ways to work together.
+            How we work.
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-8">
             {[
@@ -231,7 +202,7 @@ export default async function HomePage() {
             What clients say
           </p>
           <h2
-            className="font-sans text-2xl sm:text-3xl font-extrabold mb-14 text-foreground"
+            className="text-2xl sm:text-3xl font-extrabold mb-14 text-foreground"
             style={{ letterSpacing: '-0.02em' }}
           >
             From the people who hired me.
@@ -260,15 +231,61 @@ export default async function HomePage() {
         </div>
       </section>
 
+      {/* ── About snippet ────────────────────────────── */}
+      <section className="bg-background border-t border-border">
+        <div className="max-w-4xl mx-auto px-6 py-20 sm:py-24">
+          <div className="grid md:grid-cols-[auto_1fr] gap-10 items-center">
+            <div
+              className="relative overflow-hidden w-[240px] sm:w-[280px] mx-auto md:mx-0 rounded-xl border border-border"
+              style={{ aspectRatio: '3 / 4', borderLeftWidth: '4px', borderLeftColor: 'var(--accent2)' }}
+            >
+              <Image
+                src="/images/peace-akinwale.jpg"
+                alt="Peace Akinwale"
+                fill
+                className="object-cover object-top"
+              />
+            </div>
+            <div>
+              <p
+                className="text-xs font-bold uppercase tracking-[0.15em] mb-4"
+                style={{ color: 'var(--accent)' }}
+              >
+                About me
+              </p>
+              <h2
+                className="text-2xl sm:text-3xl font-extrabold mb-6 text-foreground"
+                style={{ letterSpacing: '-0.02em' }}
+              >
+                Peace Akinwale
+              </h2>
+              <p className="text-base leading-relaxed text-muted-foreground mb-3">
+                I&rsquo;m a B2B SaaS content marketer in Lagos, Nigeria. I write product-led content for companies like ManyRequests, Marker.io, and Jabra &mdash; articles where the product shows up because it genuinely solves the problem being discussed.
+              </p>
+              <p className="text-base leading-relaxed text-muted-foreground mb-6">
+                I also build lightweight AI systems that take manual work off content teams so they can focus on higher-stakes decisions.
+              </p>
+              <Link
+                href="/about"
+                className="text-xs font-bold uppercase tracking-[0.08em] underline underline-offset-4 transition-colors hover:opacity-70"
+                style={{ color: 'var(--accent)' }}
+              >
+                More about me &rarr;
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* ── Blog posts ───────────────────────────────── */}
       {posts.length > 0 && (
-        <section className="bg-background border-t border-border">
+        <section className="border-t border-border" style={{ background: 'var(--muted)' }}>
           <div className="max-w-4xl mx-auto px-6 py-20 sm:py-24">
             <p className="text-xs font-bold uppercase tracking-[0.15em] mb-4" style={{ color: 'var(--accent)' }}>
               From the blog
             </p>
             <h2
-              className="font-sans text-2xl sm:text-3xl font-extrabold mb-14 text-foreground"
+              className="text-2xl sm:text-3xl font-extrabold mb-14 text-foreground"
               style={{ letterSpacing: '-0.02em' }}
             >
               How I think about content.
@@ -321,7 +338,7 @@ export default async function HomePage() {
             Currently accepting 2 new clients
           </span>
           <h2
-            className="font-sans text-2xl sm:text-3xl font-extrabold mb-4 text-foreground"
+            className="text-2xl sm:text-3xl font-extrabold mb-4 text-foreground"
             style={{ letterSpacing: '-0.02em' }}
           >
             Ready to hire a B2B SaaS content writer?
