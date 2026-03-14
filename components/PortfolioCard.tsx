@@ -81,7 +81,7 @@ export function PortfolioCard({ project, clientName, ogImage, faviconUrl }: Port
               display: 'inline-block',
               fontSize: '11px',
               fontWeight: 700,
-              fontFamily: 'var(--font-sans)',
+
               padding: '3px 10px',
               borderRadius: '8px',
               backgroundColor: pill.bg,
@@ -95,7 +95,6 @@ export function PortfolioCard({ project, clientName, ogImage, faviconUrl }: Port
 
       <h3
         style={{
-          fontFamily: 'var(--font-sans)',
           fontSize: '15px',
           fontWeight: 600,
           lineHeight: 1.45,
@@ -109,7 +108,6 @@ export function PortfolioCard({ project, clientName, ogImage, faviconUrl }: Port
       {project.link && (
         <span
           style={{
-            fontFamily: 'var(--font-sans)',
             fontSize: '12px',
             fontWeight: 700,
             color: 'var(--accent)',

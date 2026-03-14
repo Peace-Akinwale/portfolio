@@ -68,7 +68,6 @@ export default async function PortfolioPage() {
       <div className="mb-12">
         <h1
           className="text-4xl md:text-5xl font-bold mb-4 text-foreground"
-          style={{ fontFamily: 'var(--font-sans)' }}
         >
           {page?.title || 'Portfolio'}
         </h1>

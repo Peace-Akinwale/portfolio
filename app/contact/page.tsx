@@ -69,7 +69,7 @@ export default function ContactPage() {
         </p>
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <h1
-            className="font-sans text-3xl sm:text-4xl font-extrabold text-foreground leading-[1.1]"
+            className="text-3xl sm:text-4xl font-extrabold text-foreground leading-[1.1]"
             style={{ letterSpacing: '-0.03em' }}
           >
             Let&rsquo;s work together.

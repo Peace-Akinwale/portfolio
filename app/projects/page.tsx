@@ -50,7 +50,7 @@ export default function ProjectsPage() {
     <main className="max-w-4xl mx-auto px-6 py-16">
       {/* Header */}
       <header className="mb-16">
-        <h1 className="font-sans text-5xl md:text-6xl lg:text-7xl font-bold leading-tight mb-6">
+        <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold leading-tight mb-6">
           Things I&apos;ve Built
         </h1>
         <p className="text-lg text-muted-foreground max-w-2xl leading-relaxed">
@@ -68,11 +68,11 @@ export default function ProjectsPage() {
             href={`/${project.slug}`}
             className="group flex items-start gap-6 md:gap-10 py-10 border-b border-border hover:border-accent transition-colors"
           >
-            <span className="font-sans text-4xl md:text-5xl font-bold text-muted-foreground/25 group-hover:text-accent/40 transition-colors shrink-0 leading-none pt-1">
+            <span className="text-4xl md:text-5xl font-bold text-muted-foreground/25 group-hover:text-accent/40 transition-colors shrink-0 leading-none pt-1">
               {project.number}
             </span>
             <div className="flex-1 min-w-0">
-              <h2 className="font-sans text-xl md:text-2xl font-bold mb-2 group-hover:text-accent transition-colors leading-snug">
+              <h2 className="text-xl md:text-2xl font-bold mb-2 group-hover:text-accent transition-colors leading-snug">
                 {project.title}
               </h2>
               <p className="text-muted-foreground leading-relaxed">
@@ -88,7 +88,7 @@ export default function ProjectsPage() {
 
       {/* A note on how I work */}
       <section className="border-t border-border pt-16">
-        <h2 className="font-sans text-3xl font-bold mb-6">A note on how I work</h2>
+        <h2 className="text-3xl font-bold mb-6">A note on how I work</h2>
         <div className="prose prose-lg max-w-none">
           <p>
             Every project on this page started with a clear problem I wanted to solve for myself.

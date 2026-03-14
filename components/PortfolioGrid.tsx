@@ -30,7 +30,6 @@ export function PortfolioGrid({ parsed, pageTitle, ogImages = {} }: PortfolioGri
             )}
             <h1
               className="text-4xl md:text-5xl font-bold text-foreground"
-              style={{ fontFamily: 'var(--font-sans)' }}
             >
               {pageTitle}
             </h1>
@@ -52,7 +51,7 @@ export function PortfolioGrid({ parsed, pageTitle, ogImages = {} }: PortfolioGri
               <div className="mb-6 flex items-center gap-4">
                 <h2
                   style={{
-                    fontFamily: 'var(--font-sans)',
+  
                     fontSize: '14px',
                     fontWeight: 700,
                     letterSpacing: '0.01em',
@@ -116,7 +115,7 @@ export function PortfolioGrid({ parsed, pageTitle, ogImages = {} }: PortfolioGri
             <div className="mb-6 flex items-center gap-4">
               <h2
                 style={{
-                  fontFamily: 'var(--font-sans)',
+
                   fontSize: '13px',
                   fontWeight: 700,
                   letterSpacing: '0.08em',
@@ -136,8 +135,8 @@ export function PortfolioGrid({ parsed, pageTitle, ogImages = {} }: PortfolioGri
             >
               <div
                 className="prose prose-sm max-w-none
-                  [&>h1]:font-sans [&>h1]:text-base [&>h1]:font-semibold [&>h1]:leading-snug [&>h1]:mb-3 [&>h1]:mt-8 first:[&>h1]:mt-0
-                  [&>h2]:font-sans [&>h2]:text-base [&>h2]:font-semibold [&>h2]:leading-snug [&>h2]:mb-3 [&>h2]:mt-8
+                  [&>h1]:text-base [&>h1]:font-semibold [&>h1]:leading-snug [&>h1]:mb-3 [&>h1]:mt-8 first:[&>h1]:mt-0
+                  [&>h2]:text-base [&>h2]:font-semibold [&>h2]:leading-snug [&>h2]:mb-3 [&>h2]:mt-8
                   [&>p]:text-sm [&>p]:leading-relaxed [&>p]:text-[var(--muted-foreground)] [&>p]:mb-4
                   [&_img]:rounded-lg [&_img]:border [&_img]:border-border [&_img]:my-6
                   [&_a]:text-accent [&_a]:underline [&_a]:underline-offset-2
@@ -157,8 +156,8 @@ export function PortfolioGrid({ parsed, pageTitle, ogImages = {} }: PortfolioGri
             >
               <div
                 className="prose prose-sm max-w-none
-                  [&>h2]:font-sans [&>h2]:text-lg [&>h2]:font-bold [&>h2]:leading-snug [&>h2]:mb-4 [&>h2]:text-foreground
-                  [&>h3]:font-sans [&>h3]:text-lg [&>h3]:font-bold [&>h3]:leading-snug [&>h3]:mb-4 [&>h3]:text-foreground
+                  [&>h2]:text-lg [&>h2]:font-bold [&>h2]:leading-snug [&>h2]:mb-4 [&>h2]:text-foreground
+                  [&>h3]:text-lg [&>h3]:font-bold [&>h3]:leading-snug [&>h3]:mb-4 [&>h3]:text-foreground
                   [&>p]:text-sm [&>p]:leading-relaxed [&>p]:text-[var(--muted-foreground)]
                   [&_a]:text-accent [&_a]:font-semibold [&_a]:underline [&_a]:underline-offset-2
                   [&>hr]:hidden"

@@ -1,13 +1,20 @@
 import type { Metadata, Viewport } from "next";
-import { Plus_Jakarta_Sans } from "next/font/google";
+import { Syne, DM_Sans } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "./providers";
 
-const jakartaSans = Plus_Jakarta_Sans({
+const syne = Syne({
   subsets: ["latin"],
   variable: "--font-heading",
   display: "swap",
-  weight: ["400", "500", "600", "700", "800"],
+  weight: ["400", "600", "700", "800"],
+});
+
+const dmSans = DM_Sans({
+  subsets: ["latin"],
+  variable: "--font-body",
+  display: "swap",
+  weight: ["400", "500", "600", "700"],
 });
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
@@ -46,7 +53,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={jakartaSans.variable} suppressHydrationWarning>
+    <html lang="en" className={`${syne.variable} ${dmSans.variable}`} suppressHydrationWarning>
       <body className="antialiased">
         <GoogleAnalytics />
         <ThemeProvider>

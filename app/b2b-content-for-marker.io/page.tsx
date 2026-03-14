@@ -57,7 +57,7 @@ export default async function MarkerioPage() {
       <div className="max-w-4xl mx-auto px-6 pb-16 text-center">
         <Link
           href="/portfolio"
-          className="inline-block font-sans text-sm uppercase tracking-wide border-b-2 border-foreground hover:border-muted-foreground hover:text-muted-foreground transition-colors"
+          className="inline-block text-sm uppercase tracking-wide border-b-2 border-foreground hover:border-muted-foreground hover:text-muted-foreground transition-colors"
         >
           ← Back to Portfolio
         </Link>

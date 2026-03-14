@@ -9,7 +9,7 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* About */}
           <div className="md:col-span-1">
-            <h3 className="font-sans font-bold text-lg mb-3">Peace Akinwale</h3>
+            <h3 className="font-bold text-lg mb-3">Peace Akinwale</h3>
             <p className="text-sm text-muted-foreground leading-relaxed">
               B2B SaaS content writer and strategist.
             </p>

@@ -27,7 +27,7 @@ export default async function AboutPage() {
 
       {/* Header */}
       <div className="mb-12">
-        <h1 className="font-sans text-4xl md:text-5xl font-bold mb-4 text-foreground">
+        <h1 className="text-4xl md:text-5xl font-bold mb-4 text-foreground">
           {page?.title || "I'm Peace Akinwale"}
         </h1>
       </div>
@@ -47,7 +47,7 @@ export default async function AboutPage() {
             My background is in understanding how products work and how buyers think. Before I write anything, I dig into your product, your ICP, and what your competitors are getting wrong. The article only happens after that.
           </p>
 
-          <h2 className="font-sans text-2xl font-bold mb-4 mt-10 text-foreground">
+          <h2 className="text-2xl font-bold mb-4 mt-10 text-foreground">
             How I work
           </h2>
           <p className="mb-4 text-muted-foreground">
@@ -57,7 +57,7 @@ export default async function AboutPage() {
             I also build lightweight AI systems and content workflows for teams who want to reduce the manual work on their plate without sacrificing quality on the output.
           </p>
 
-          <h2 className="font-sans text-2xl font-bold mb-4 mt-10 text-foreground">
+          <h2 className="text-2xl font-bold mb-4 mt-10 text-foreground">
             Who I&rsquo;ve written for
           </h2>
           <p className="mb-4 text-muted-foreground">
