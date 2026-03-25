@@ -8,7 +8,7 @@ export async function POST(req: Request) {
     const { name, email, company, projectType, stage, about, message, budget } = body;
 
     await resend.emails.send({
-      from: 'onboarding@resend.dev',
+      from: 'peace@peaceakinwale.com',
       to: process.env.ADMIN_EMAIL!,
       subject: `New enquiry from ${name}`,
       html: `
