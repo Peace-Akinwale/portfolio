@@ -88,7 +88,7 @@ export const QUESTIONS: Question[] = [
     ],
   },
 
-  // ─── Conditional questions (only one shown per user, based on B1) ──────────
+  // ─── Conditional questions ──────────────────────────────────────────────────
   {
     id: 'B_TECH',
     phase: 'What Appeals to You',
