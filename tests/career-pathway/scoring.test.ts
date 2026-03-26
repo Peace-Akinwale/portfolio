@@ -1,10 +1,8 @@
-// tests/career-pathway/scoring.test.ts
-import { describe, it, expect } from 'vitest';
-import { scoreAllCareers, selectTopFour } from '../../lib/career-pathway/scoring';
+import { describe, expect, it } from 'vitest';
 import { CAREERS } from '../../lib/career-pathway/careers';
+import { resolveWhyItFits, scoreAllCareers, selectTopFour } from '../../lib/career-pathway/scoring';
 import type { Answers } from '../../lib/career-pathway/types';
 
-// Helper: answers for a frontend-biased profile
 function frontendProfile(): Answers {
   return {
     A1: ['tech-quick', 'creative'],
@@ -26,7 +24,6 @@ function frontendProfile(): Answers {
   };
 }
 
-// Helper: answers for a writing-biased profile
 function writerProfile(): Answers {
   return {
     A1: ['explainer', 'organised'],
@@ -69,7 +66,7 @@ describe('scoreAllCareers', () => {
   });
 
   it('penalises cert-required careers when user says cert is not realistic', () => {
-    const scores = scoreAllCareers(writerProfile()); // cert-no
+    const scores = scoreAllCareers(writerProfile());
     const cyberScore = scores.find((s) => s.career.id === 'cybersecurity')!.score;
     const writerScore = scores.find((s) => s.career.id === 'b2b-saas-writer')!.score;
     expect(cyberScore).toBeLessThan(writerScore);
@@ -80,7 +77,6 @@ describe('scoreAllCareers', () => {
     const relaxedProfile = { ...writerProfile(), A4: 'supported', C1: 'urgent' };
     const urgentScores = scoreAllCareers(urgentProfile);
     const relaxedScores = scoreAllCareers(relaxedProfile);
-    // Slow career (data-engineer, 18–36 months) should be penalised MORE with high pressure
     const urgentDataEng = urgentScores.find((s) => s.career.id === 'data-engineer')!.score;
     const relaxedDataEng = relaxedScores.find((s) => s.career.id === 'data-engineer')!.score;
     expect(urgentDataEng).toBeLessThan(relaxedDataEng);
@@ -89,6 +85,50 @@ describe('scoreAllCareers', () => {
   it('scores are all non-negative', () => {
     const scores = scoreAllCareers(frontendProfile());
     scores.forEach((s) => expect(s.score).toBeGreaterThanOrEqual(0));
+  });
+
+  it('removes retired careers from the catalog', () => {
+    ['no-code-dev', 'ux-writer', 'dev-docs', 'devrel', 'ecommerce-writer'].forEach((id) => {
+      expect(CAREERS.some((career) => career.id === id)).toBe(false);
+    });
+  });
+
+  it('routes docs-devrel answers into surviving writing careers', () => {
+    const answers: Answers = {
+      A1: ['explainer', 'organised'],
+      A2: ['english-languages', 'tech-cs'],
+      A3: ['writing-paid', 'explain-technical'],
+      A4: 'supported',
+      B1: 'docs-devrel',
+      B2: 'creating',
+      B_DEVREL: 'dev-docs',
+      C1: 'within-year',
+      C2: 'some-uni',
+      C3: '15to30',
+      C4: 'zero',
+      C5: 'cert-no',
+      D1: 'solid',
+      D2: 'remote-yes',
+      E1: ['remote-work', 'clear-growth'],
+      E2: 'ai-as-tool',
+    };
+
+    const top4 = selectTopFour(scoreAllCareers(answers));
+    expect(top4.some((result) => result.career.id === 'technical-writer')).toBe(true);
+  });
+});
+
+describe('resolveWhyItFits', () => {
+  it('falls back when a placeholder would resolve to blank', () => {
+    const frontendDev = CAREERS.find((career) => career.id === 'frontend-dev');
+    expect(frontendDev).toBeDefined();
+
+    const whyItFits = resolveWhyItFits(frontendDev!, {
+      A1: ['tech-quick'],
+      A3: ['build-website-app'],
+    });
+
+    expect(whyItFits).toBe(frontendDev!.whyItFitsFallback);
   });
 });
 
@@ -102,16 +142,14 @@ describe('selectTopFour', () => {
   it('position 3 comes from a different cluster than positions 1 and 2 when possible', () => {
     const scores = scoreAllCareers(frontendProfile());
     const top4 = selectTopFour(scores);
-    // With 28 careers across 7 clusters and a strongly-biased profile, cluster diversity
-    // at position 3 is expected (only falls back if qualifying careers are all same cluster)
     const cluster1 = top4[0].career.cluster;
     const cluster2 = top4[1].career.cluster;
     const cluster3 = top4[2].career.cluster;
     const usedClusters = new Set([cluster1, cluster2]);
-    // If there were careers from other clusters above the qualifying threshold, cluster3 must differ
     const otherClusterQualified = scores.some(
       (s) => s.score >= 20 && !usedClusters.has(s.career.cluster)
     );
+
     if (otherClusterQualified) {
       expect(cluster3).not.toBe(cluster1);
       expect(cluster3).not.toBe(cluster2);
@@ -128,10 +166,8 @@ describe('selectTopFour', () => {
   });
 
   it('falls back gracefully if fewer than 4 careers qualify', () => {
-    // Give an empty answers object (all scores will be 0)
     const scores = scoreAllCareers({});
     const top4 = selectTopFour(scores);
-    // Should return as many as qualify (may be < 4 with MIN_QUALIFYING_SCORE)
     expect(top4.length).toBeGreaterThanOrEqual(0);
     expect(top4.length).toBeLessThanOrEqual(4);
   });

@@ -23,12 +23,23 @@ export default function CareerPathwayLanding() {
           className="text-3xl sm:text-5xl font-extrabold text-foreground leading-[1.05]"
           style={{ letterSpacing: '-0.03em' }}
         >
-          Figure out what career<br />actually fits you.
+          Figure out the career you&apos;re the best fit for.
         </h1>
-        <p className="text-base sm:text-lg text-muted-foreground leading-relaxed max-w-xl">
-          Answer honest questions. Get 4 real career recommendations matched to your situation —
-          your time, your budget, your goals, and what the job market actually looks like in 2025.
-        </p>
+      </div>
+
+      <p className="text-base sm:text-lg text-muted-foreground leading-relaxed max-w-xl">
+        Answer honest questions, and get four real career recommendations matched to your situation — your time, your budget, your goals, and what the job market actually looks like in 2026 and beyond.
+      </p>
+
+      {/* CTA */}
+      <div className="flex flex-col sm:flex-row gap-4 items-start">
+        <Link
+          href="/career-pathway/assessment"
+          className="inline-block px-8 py-4 rounded-md text-sm font-bold uppercase tracking-[0.08em] text-white transition hover:opacity-90"
+          style={{ background: 'var(--accent)' }}
+        >
+          Start the Assessment →
+        </Link>
       </div>
 
       {/* What it does / doesn't */}
@@ -37,10 +48,9 @@ export default function CareerPathwayLanding() {
           <p className="text-xs font-bold uppercase tracking-[0.1em] text-muted-foreground mb-3">What it does</p>
           <ul className="flex flex-col gap-2 text-sm leading-relaxed">
             <li>✓ 17–18 click-only questions</li>
-            <li>✓ Scores 28 careers against your answers</li>
-            <li>✓ Returns 4 personalised matches with resources</li>
+            <li>✓ Scores 23 careers against your answers</li>
+            <li>✓ Returns 4 personalised matches with resources to get started</li>
             <li>✓ Honest about time, cost, and AI impact</li>
-            <li>✓ Works for Lagos, Manila, Bogotá, Berlin</li>
           </ul>
         </div>
         <div className="rounded-xl p-5 border" style={{ borderColor: 'var(--border)', background: 'var(--muted)' }}>
@@ -60,17 +70,6 @@ export default function CareerPathwayLanding() {
         Scoring informed by WEF Future of Jobs 2025, BLS Occupational Outlook, LinkedIn Jobs on the Rise,
         McKinsey AI displacement research, and Stack Overflow Developer Survey 2024/2025.
       </p>
-
-      {/* CTA */}
-      <div className="flex flex-col sm:flex-row gap-4 items-start">
-        <Link
-          href="/career-pathway/assessment"
-          className="inline-block px-8 py-4 rounded-md text-sm font-bold uppercase tracking-[0.08em] text-white transition hover:opacity-90"
-          style={{ background: 'var(--accent)' }}
-        >
-          Start the Assessment →
-        </Link>
-      </div>
     </div>
   );
 }

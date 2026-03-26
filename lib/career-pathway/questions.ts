@@ -72,7 +72,7 @@ export const QUESTIONS: Question[] = [
       { value: 'design-ux', label: 'Why does this app confuse everyone who uses it?' },
       { value: 'data-analysis', label: 'Why is this data telling two different stories?' },
       { value: 'project-mgmt', label: 'Why does this team keep missing deadlines?' },
-      { value: 'docs-devrel', label: "Why can't developers figure out how to use this product?" },
+      { value: 'docs-devrel', label: "Why can't people figure out how to use, trust, or adopt this product?" },
     ],
   },
   {
@@ -113,7 +113,7 @@ export const QUESTIONS: Question[] = [
       { value: 'tech-writing', label: 'Writing that teaches people how to use a product' },
       { value: 'b2b-saas', label: 'Writing that convinces businesses to buy something' },
       { value: 'seo-content', label: 'Writing that gets found on Google and drives traffic' },
-      { value: 'dev-docs', label: 'Writing that explains complex technical things to developers' },
+      { value: 'dev-docs', label: 'Writing technical explainers, tutorials, or product education content' },
     ],
   },
   {
@@ -153,13 +153,13 @@ export const QUESTIONS: Question[] = [
   {
     id: 'B_DEVREL',
     phase: 'What Appeals to You',
-    text: 'Who would you rather be explaining things to?',
+    text: 'What kind of communication work sounds most like you?',
     type: 'single',
     conditional: { dependsOn: 'B1', showWhen: 'docs-devrel' },
     options: [
-      { value: 'dev-docs', label: 'Developers using a technical product' },
-      { value: 'ux-writer', label: 'Regular people trying to use an app' },
-      { value: 'b2b-content', label: 'Business teams making decisions' },
+      { value: 'dev-docs', label: 'Technical docs, tutorials, or product education' },
+      { value: 'ux-writer', label: 'Product messaging, onboarding, or usability guidance' },
+      { value: 'b2b-content', label: 'Thought leadership, case studies, or buyer education' },
     ],
   },
 

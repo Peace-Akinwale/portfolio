@@ -1,5 +1,3 @@
-// lib/career-pathway/types.ts
-
 export type CareerCluster =
   | 'technical'
   | 'content'
@@ -83,7 +81,8 @@ export interface Career {
   resources: {
     startHere: MicroAction;
     learning: CareerResource[];
-    youtubeExplainer: CareerResource;
+    youtubeExplainer?: CareerResource;
+    youtubeExplainers?: CareerResource[];
   };
 }
 
@@ -126,8 +125,8 @@ export interface Question {
   phase: string;
   text: string;
   type: QuestionType;
-  maxSelections?: number;
   options: QuestionOption[];
+  maxSelections?: number;
   conditional?: {
     dependsOn: string;
     showWhen: string;

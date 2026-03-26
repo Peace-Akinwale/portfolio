@@ -152,14 +152,9 @@ export function AssessmentShell() {
   if (phase === 'welcome') {
     return (
       <div className="flex flex-col gap-8">
-        <div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold" style={{ letterSpacing: '-0.02em' }}>
+        <h1 className="text-2xl sm:text-3xl font-extrabold" style={{ letterSpacing: '-0.02em' }}>
             Before we start
           </h1>
-          <p className="text-sm text-muted-foreground mt-2">
-            Two quick questions — then your assessment begins.
-          </p>
-        </div>
         <WelcomeForm onComplete={handleWelcomeComplete} />
       </div>
     );

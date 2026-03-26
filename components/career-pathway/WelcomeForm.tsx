@@ -20,8 +20,9 @@ export function WelcomeForm({ onComplete }: Props) {
   return (
     <div className="flex flex-col gap-6 max-w-md">
       <div>
-        <label className={labelClass}>What&apos;s your name? <span className="font-normal lowercase normal-case tracking-normal">(optional)</span></label>
+        <label className={labelClass}>What&apos;s your name?</label>
         <input
+          required
           value={name}
           onChange={(e) => setName(e.target.value)}
           placeholder="Your first name"
@@ -57,7 +58,8 @@ export function WelcomeForm({ onComplete }: Props) {
       </div>
       <button
         onClick={() => onComplete(name.trim(), source, ageRange, country)}
-        className="py-3 rounded-md text-xs font-bold uppercase tracking-[0.08em] text-white transition hover:opacity-90"
+        disabled={!name.trim()}
+        className="py-3 rounded-md text-xs font-bold uppercase tracking-[0.08em] text-white transition hover:opacity-90 disabled:opacity-50"
         style={{ background: 'var(--accent)' }}
       >
         Start the Assessment →

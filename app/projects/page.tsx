@@ -43,6 +43,14 @@ const projects = [
     description:
       "I found a way to extract a brand's editorial voice from existing content and turn it into a detailed style guide for myself. Your in-house writers can use a process like this to improve their first draft where it makes sense — without the AI slop.",
   },
+  {
+    number: '06',
+    slug: 'career-pathway',
+    href: '/career-pathway',
+    title: 'Career Pathway Assessment',
+    description:
+      'An interactive assessment tool that scores 23 careers against a person\'s personality, constraints, and goals, then returns four realistic paths with resources, income context, and AI caveats.',
+  },
 ];
 
 export default function ProjectsPage() {
@@ -65,7 +73,7 @@ export default function ProjectsPage() {
         {projects.map((project) => (
           <Link
             key={project.slug}
-            href={`/${project.slug}`}
+            href={project.href ?? `/${project.slug}`}
             className="group flex items-start gap-6 md:gap-10 py-10 border-b border-border hover:border-accent transition-colors"
           >
             <span className="text-4xl md:text-5xl font-bold text-muted-foreground/25 group-hover:text-accent/40 transition-colors shrink-0 leading-none pt-1">

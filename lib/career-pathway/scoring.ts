@@ -179,11 +179,20 @@ export function resolveWhyItFits(career: Career, answers: Answers, userName?: st
     return career.whyItFitsFallback;
   }
 
-  return career.whyItFitsTemplate
+  const template = career.whyItFitsTemplate;
+
+  // Fall back if the template uses a placeholder that resolved to nothing
+  // (avoids "You described yourself as  and..." type broken sentences)
+  if (template.includes('{trait}') && !traitOption) return career.whyItFitsFallback;
+  if (template.includes('{efficacy}') && !efficacyOption) return career.whyItFitsFallback;
+  if (template.includes('{problem}') && !problemOption) return career.whyItFitsFallback;
+
+  return template
     .replace('{name}', userName || 'You')
     .replace('{trait}', traitOption?.label.toLowerCase() ?? '')
     .replace('{efficacy}', efficacyOption?.label.toLowerCase() ?? '')
-    .replace('{problem}', problemOption?.label.toLowerCase() ?? '');
+    // Wrap problem (a question label) in <em> so it renders in italics
+    .replace('{problem}', problemOption ? `<em>${problemOption.label.toLowerCase()}</em>` : '');
 }
 
 export function selectTopFour(rawScores: RawScore[]): ScoredCareer[] {
