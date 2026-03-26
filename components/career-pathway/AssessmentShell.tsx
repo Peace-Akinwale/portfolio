@@ -38,6 +38,12 @@ export function AssessmentShell() {
       setDiscoverySource(progress.discoverySource ?? '');
       setAnswers(progress.answers ?? {});
       setCurrentIndex(progress.currentQuestion ?? 0);
+      // Restore ageRange and country from the welcome key (not stored in progress)
+      const welcome = storageRead<{ ageRange: string; country: string }>(STORAGE_KEYS.WELCOME);
+      if (welcome) {
+        setAgeRange(welcome.ageRange ?? '');
+        setCountry(welcome.country ?? '');
+      }
       setPhase('resume-prompt');
     } else {
       setPhase('welcome');

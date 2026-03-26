@@ -64,8 +64,12 @@ export async function POST(req: Request) {
     const body = await req.json();
     const { email, name, results, answers } = body;
 
-    if (!email || !results) {
+    if (!email || !results || !Array.isArray(results) || results.length === 0) {
       return NextResponse.json({ error: 'Missing required fields.' }, { status: 400 });
+    }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return NextResponse.json({ error: 'Invalid email address.' }, { status: 400 });
     }
 
     const transporter = nodemailer.createTransport({

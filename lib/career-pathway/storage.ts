@@ -24,7 +24,7 @@ export function storageRead<T>(key: string): T | null {
     const raw = localStorage.getItem(key);
     if (!raw) return null;
     const stored: StoredValue<T> = JSON.parse(raw);
-    if (new Date(stored.expiresAt) < new Date()) {
+    if (new Date(stored.expiresAt).getTime() < Date.now()) {
       localStorage.removeItem(key);
       return null;
     }

@@ -25,8 +25,6 @@ export const POINTS = {
   VALUES_MATCH: 5,
   AI_PREF_MATCH: 5,
   AI_PREF_MISMATCH: -3,
-  PERSONALITY_FIT: 5,
-  FAMILY_PRESSURE_INCOME_MULTIPLIER: 1.5,
 } as const;
 
 export const STORAGE_TTL = {
