@@ -21,6 +21,7 @@ import { Footer } from "@/components/Footer";
 import { GoogleAnalytics } from "@/components/GoogleAnalytics";
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://peaceakinwale.com"),
   title: "Peace Akinwale | Content Strategist & AI Content Engineer",
   description: "I write content that converts, and build AI systems to improve marketing operations. Content strategist and AI Content Engineer for B2B SaaS companies.",
   verification: {

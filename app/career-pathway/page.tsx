@@ -3,9 +3,23 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Career Pathway Assessment | Peace Akinwale',
+  title: 'Career Assessment Tool | Peace Akinwale',
   description:
-    'Answer honest questions. Get 4 real career recommendations matched to your situation — backed by WEF, BLS, and LinkedIn data.',
+    'Figure out the career you\'re the best fit for so you can move from uncertainty to clarity, and then from clarity to action.',
+  openGraph: {
+    title: 'Career Assessment Tool',
+    description:
+      'Figure out the career you\'re the best fit for so you can move from uncertainty to clarity, and then from clarity to action.',
+    url: 'https://peaceakinwale.com/career-pathway',
+    siteName: 'Peace Akinwale',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Career Assessment Tool',
+    description:
+      'Figure out the career you\'re the best fit for so you can move from uncertainty to clarity, and then from clarity to action.',
+  },
 };
 
 export default function CareerPathwayLanding() {
@@ -67,8 +81,12 @@ export default function CareerPathwayLanding() {
 
       {/* Data source note */}
       <p className="text-xs text-muted-foreground">
-        Scoring informed by WEF Future of Jobs 2025, BLS Occupational Outlook, LinkedIn Jobs on the Rise,
-        McKinsey AI displacement research, and Stack Overflow Developer Survey 2024/2025.
+        Scoring informed by{' '}
+        <a href="https://www.weforum.org/publications/the-future-of-jobs-report-2025/" target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 text-accent hover:text-accent/80 transition-colors">WEF Future of Jobs 2025</a>,{' '}
+        <a href="https://www.bls.gov/ooh/" target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 text-accent hover:text-accent/80 transition-colors">BLS Occupational Outlook</a>,{' '}
+        <a href="https://www.linkedin.com/pulse/linkedin-jobs-rise-2025-25-fastest-growing-roles-us-linkedin-news/" target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 text-accent hover:text-accent/80 transition-colors">LinkedIn Jobs on the Rise</a>,{' '}
+        <a href="https://www.mckinsey.com/capabilities/mckinsey-digital/our-insights/the-economic-potential-of-generative-ai" target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 text-accent hover:text-accent/80 transition-colors">McKinsey AI displacement research</a>, and{' '}
+        <a href="https://survey.stackoverflow.co/2024/" target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 text-accent hover:text-accent/80 transition-colors">Stack Overflow Developer Survey 2024/2025</a>.
       </p>
     </div>
   );

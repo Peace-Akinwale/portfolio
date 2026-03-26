@@ -84,18 +84,30 @@ export function AssessmentShell() {
     const newAnswers = { ...answers, [q.id]: value };
     setAnswers(newAnswers);
 
+    // Multi-select: just update state, wait for explicit Continue click
+    if (q.type === 'multi') return;
+
+    advanceFrom(newAnswers);
+  }
+
+  function handleMultiContinue() {
+    advanceFrom(answers);
+  }
+
+  function advanceFrom(currentAnswers: Answers) {
+    const questions = buildQuestionSequence(currentAnswers);
+    const q = questions[currentIndex];
     const nextIndex = currentIndex + 1;
     storageWrite(
       STORAGE_KEYS.PROGRESS,
-      { name, discoverySource, answers: newAnswers, currentQuestion: nextIndex },
+      { name, discoverySource, answers: currentAnswers, currentQuestion: nextIndex },
       STORAGE_TTL.PROGRESS
     );
-
-    const updatedQuestions = buildQuestionSequence(newAnswers);
+    const updatedQuestions = buildQuestionSequence(currentAnswers);
     if (nextIndex < updatedQuestions.length) {
       setCurrentIndex(nextIndex);
     } else {
-      finishAssessment(newAnswers);
+      finishAssessment(currentAnswers);
     }
   }
 
@@ -195,6 +207,10 @@ export function AssessmentShell() {
   const q = questions[currentIndex];
   if (!q) return null;
 
+  const isMulti = q.type === 'multi';
+  const multiValue = isMulti ? (Array.isArray(answers[q.id]) ? (answers[q.id] as string[]) : []) : [];
+  const canContinueMulti = isMulti && multiValue.length > 0;
+
   return (
     <div className="flex flex-col gap-8">
       <ProgressBar
@@ -215,6 +231,16 @@ export function AssessmentShell() {
             style={{ color: 'var(--muted-foreground)' }}
           >
             ← Back
+          </button>
+        )}
+        {isMulti && (
+          <button
+            onClick={handleMultiContinue}
+            disabled={!canContinueMulti}
+            className="px-6 py-2.5 rounded-md text-xs font-bold uppercase tracking-[0.08em] text-white transition disabled:opacity-40"
+            style={{ background: 'var(--accent)' }}
+          >
+            Continue →
           </button>
         )}
       </div>

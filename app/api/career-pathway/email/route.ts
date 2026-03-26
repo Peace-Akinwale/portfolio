@@ -100,7 +100,7 @@ function buildEmailHtml(name: string, results: ScoredCareer[], answers: Record<s
       ${buildTranscriptHtml(answers)}
       <hr style="border:none;border-top:1px solid #eee;margin:24px 0;">
       <p style="font-size:12px;color:#888;line-height:1.6;">
-        This assessment was built using data from the World Economic Forum Future of Jobs Report 2025, Bureau of Labor Statistics, LinkedIn Jobs on the Rise, and career development research.<br><br>
+        This assessment was built using data from <a href="https://www.weforum.org/publications/the-future-of-jobs-report-2025/" style="color:#888;">WEF Future of Jobs Report 2025</a>, <a href="https://www.bls.gov/ooh/" style="color:#888;">Bureau of Labor Statistics</a>, <a href="https://www.linkedin.com/pulse/linkedin-jobs-rise-2025-25-fastest-growing-roles-us-linkedin-news/" style="color:#888;">LinkedIn Jobs on the Rise</a>, and <a href="https://www.mckinsey.com/capabilities/mckinsey-digital/our-insights/the-economic-potential-of-generative-ai" style="color:#888;">McKinsey AI displacement research</a>.<br><br>
         It's a starting point - not a final answer. Take the first step within the next 48 hours.<br><br>
         <strong>Peace Akinwale</strong><br>
         <a href="https://peaceakinwale.com" style="color:#888;">peaceakinwale.com</a>
