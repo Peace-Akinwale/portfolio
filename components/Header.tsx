@@ -23,6 +23,7 @@ export function Header() {
             <Link href="/projects" className="text-sm uppercase tracking-wide transition-colors text-muted-foreground hover:text-accent">Projects</Link>
             <Link href="/about" className="text-sm uppercase tracking-wide transition-colors text-muted-foreground hover:text-accent">About</Link>
             <Link href="/contact" className="text-sm uppercase tracking-wide transition-colors text-muted-foreground hover:text-accent">Contact</Link>
+            <Link href="/career-pathway" className="text-sm uppercase tracking-wide transition-colors text-muted-foreground hover:text-accent">Career Pathway</Link>
           </nav>
 
           {/* Mobile Hamburger */}
@@ -54,6 +55,7 @@ export function Header() {
                 { href: '/projects', label: 'Projects' },
                 { href: '/about', label: 'About' },
                 { href: '/contact', label: 'Contact' },
+                { href: '/career-pathway', label: 'Career Pathway' },
               ].map((item) => (
                 <Link
                   key={item.href}
