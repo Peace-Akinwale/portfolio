@@ -1,5 +1,5 @@
 // app/api/career-pathway/email/route.ts
-import nodemailer from 'nodemailer';
+import { Resend } from 'resend';
 import { NextResponse } from 'next/server';
 import type { ScoredCareer } from '@/lib/career-pathway/types';
 import { QUESTIONS } from '@/lib/career-pathway/questions';
@@ -72,17 +72,12 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Invalid email address.' }, { status: 400 });
     }
 
-    const transporter = nodemailer.createTransport({
-      service: 'gmail',
-      auth: {
-        user: process.env.GMAIL_USER,
-        pass: process.env.GMAIL_APP_PASSWORD,
-      },
-    });
+    const resend = new Resend(process.env.RESEND_API_KEY);
 
-    await transporter.sendMail({
-      from: `"Peace Akinwale" <${process.env.GMAIL_USER}>`,
+    await resend.emails.send({
+      from: 'peace@peaceakinwale.com',
       to: email,
+      replyTo: process.env.ADMIN_EMAIL!,
       subject: `${name ? name + ', your' : 'Your'} Career Pathway results`,
       html: buildEmailHtml(name ?? '', results, answers ?? {}),
     });
