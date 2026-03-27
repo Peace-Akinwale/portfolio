@@ -1,45 +1,50 @@
 import { NextResponse } from 'next/server';
 import { Resend } from 'resend';
-import { QUESTIONS } from '@/lib/career-pathway/questions';
 import { getYoutubeExplainers } from '@/lib/career-pathway/resources';
-import type { ScoredCareer } from '@/lib/career-pathway/types';
+import { buildTranscriptSections } from '@/lib/career-pathway/transcript';
+import type { Answers, ScoredCareer } from '@/lib/career-pathway/types';
 
-function buildTranscriptHtml(answers: Record<string, string | string[]>): string {
-  const answeredIds = new Set(Object.keys(answers));
-  const relevantQuestions = QUESTIONS.filter((q) => answeredIds.has(q.id));
+function buildTranscriptHtml(answers: Answers): string {
+  return buildTranscriptSections(answers)
+    .map((section) => {
+      const questionHtml = section.questions
+        .map((question) => {
+          const optionRows = question.options
+            .map((option) => {
+              const isSelected = question.selectedValues.includes(option.value);
+              return isSelected
+                ? `<li style="margin:3px 0;"><strong style="color:#111;">${option.label}</strong> (selected)</li>`
+                : `<li style="margin:3px 0;color:#aaa;">${option.label}</li>`;
+            })
+            .join('');
 
-  return relevantQuestions
-    .map((q) => {
-      const userAnswer = answers[q.id];
-      const selectedValues = Array.isArray(userAnswer) ? userAnswer : [userAnswer];
-
-      const optionRows = q.options
-        .map((opt) => {
-          const isSelected = selectedValues.includes(opt.value);
-          return isSelected
-            ? `<li style="margin:3px 0;"><strong style="color:#111;">${opt.label}</strong> (selected)</li>`
-            : `<li style="margin:3px 0;color:#aaa;">${opt.label}</li>`;
+          return `
+            <div style="margin-bottom:16px;">
+              <p style="margin:0 0 6px;font-size:13px;font-weight:600;color:#555;">${question.text}</p>
+              <ul style="list-style:none;padding:0;margin:0;font-size:13px;">${optionRows}</ul>
+            </div>
+          `;
         })
         .join('');
 
       return `
-      <div style="margin-bottom:16px;">
-        <p style="margin:0 0 6px;font-size:13px;font-weight:600;color:#555;">${q.text}</p>
-        <ul style="list-style:none;padding:0;margin:0;font-size:13px;">${optionRows}</ul>
-      </div>
-    `;
+        <div style="margin-bottom:20px;">
+          <h3 style="margin:0 0 12px;font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#888;">${section.title}</h3>
+          ${questionHtml}
+        </div>
+      `;
     })
     .join('');
 }
 
-function buildEmailHtml(name: string, results: ScoredCareer[], answers: Record<string, string | string[]>): string {
+function buildEmailHtml(name: string, results: ScoredCareer[], answers: Answers): string {
   const rankLabel = ['Best Fit', 'Strong Alternate', 'Worth Exploring', 'Worth Exploring'];
 
   const careerBlocks = results
-    .map((r, i) => {
-      const c = r.career;
-      const videoResources = getYoutubeExplainers(c.resources);
-      const learningLinks = c.resources.learning
+    .map((result, index) => {
+      const career = result.career;
+      const videoResources = getYoutubeExplainers(career.resources);
+      const learningLinks = career.resources.learning
         .map(
           (resource) =>
             `<li style="margin:4px 0;"><a href="${resource.url}" style="color:#0d9488;">${resource.title}</a> - ${resource.description}</li>`
@@ -53,38 +58,38 @@ function buildEmailHtml(name: string, results: ScoredCareer[], answers: Record<s
         .join('');
 
       return `
-    <div style="border:1px solid #e5e7eb;border-radius:12px;padding:24px;margin-bottom:24px;">
-      <p style="margin:0 0 4px;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:${i === 0 ? '#0d9488' : '#9ca3af'};">${rankLabel[i]}</p>
-      <h2 style="margin:4px 0 6px;font-size:20px;font-weight:800;">${c.title}</h2>
-      <p style="margin:0 0 16px;color:#6b7280;font-size:14px;">${c.subtitle}</p>
-      <p style="margin:0 0 16px;font-size:14px;line-height:1.6;">${c.whyItFitsFallback}</p>
+        <div style="border:1px solid #e5e7eb;border-radius:12px;padding:24px;margin-bottom:24px;">
+          <p style="margin:0 0 4px;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:${index === 0 ? '#0d9488' : '#9ca3af'};">${rankLabel[index]}</p>
+          <h2 style="margin:4px 0 6px;font-size:20px;font-weight:800;">${career.title}</h2>
+          <p style="margin:0 0 16px;color:#6b7280;font-size:14px;">${career.subtitle}</p>
+          <p style="margin:0 0 16px;font-size:14px;line-height:1.6;">${career.whyItFitsFallback}</p>
 
-      <table style="width:100%;border-collapse:collapse;font-size:13px;margin-bottom:16px;">
-        <tr><td style="padding:6px 0;font-weight:600;width:40%;vertical-align:top;">Time to first income</td><td style="padding:6px 0;color:#374151;">${c.timeToFirstIncome.min}-${c.timeToFirstIncome.max} months</td></tr>
-        <tr><td style="padding:6px 0;font-weight:600;vertical-align:top;">What it costs to start</td><td style="padding:6px 0;color:#374151;">${c.requiresCertification ? `Free learning path, but ${c.certificationDetails ?? 'certification exam required'} to get hired` : 'Free - the entire learning path is free'}</td></tr>
-        <tr><td style="padding:6px 0;font-weight:600;vertical-align:top;">Entry requirement</td><td style="padding:6px 0;color:#374151;">${c.entryDescription}</td></tr>
-        <tr><td style="padding:6px 0;font-weight:600;vertical-align:top;">AI reality</td><td style="padding:6px 0;color:#374151;">${c.aiRealityDescription}</td></tr>
-      </table>
+          <table style="width:100%;border-collapse:collapse;font-size:13px;margin-bottom:16px;">
+            <tr><td style="padding:6px 0;font-weight:600;width:40%;vertical-align:top;">Time to first income</td><td style="padding:6px 0;color:#374151;">${career.timeToFirstIncome.min}-${career.timeToFirstIncome.max} months</td></tr>
+            <tr><td style="padding:6px 0;font-weight:600;vertical-align:top;">What it costs to start</td><td style="padding:6px 0;color:#374151;">${career.requiresCertification ? `Free learning path, but ${career.certificationDetails ?? 'certification exam required'} to get hired` : 'Free - the entire learning path is free'}</td></tr>
+            <tr><td style="padding:6px 0;font-weight:600;vertical-align:top;">Entry requirement</td><td style="padding:6px 0;color:#374151;">${career.entryDescription}</td></tr>
+            <tr><td style="padding:6px 0;font-weight:600;vertical-align:top;">AI reality</td><td style="padding:6px 0;color:#374151;">${career.aiRealityDescription}</td></tr>
+          </table>
 
-      <p style="margin:0 0 6px;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#9ca3af;">A day in this role</p>
-      <p style="margin:0 0 16px;font-size:13px;line-height:1.6;color:#374151;">${c.dailyLifeDescription}</p>
+          <p style="margin:0 0 6px;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#9ca3af;">A day in this role</p>
+          <p style="margin:0 0 16px;font-size:13px;line-height:1.6;color:#374151;">${career.dailyLifeDescription}</p>
 
-      <p style="margin:0 0 6px;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#9ca3af;">Income by region</p>
-      <p style="margin:0 0 4px;font-size:13px;">US: $${c.incomeRanges.us.min.toLocaleString()}-$${c.incomeRanges.us.max.toLocaleString()}/yr entry</p>
-      <p style="margin:0 0 4px;font-size:13px;">UK: GBP ${c.incomeRanges.uk.min.toLocaleString()}-GBP ${c.incomeRanges.uk.max.toLocaleString()}/yr entry</p>
-      <p style="margin:0 0 16px;font-size:13px;">Global remote: $${c.incomeRanges.global_remote.min.toLocaleString()}-$${c.incomeRanges.global_remote.max.toLocaleString()}/yr</p>
+          <p style="margin:0 0 6px;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#9ca3af;">Income by region</p>
+          <p style="margin:0 0 4px;font-size:13px;">US: $${career.incomeRanges.us.min.toLocaleString()}-$${career.incomeRanges.us.max.toLocaleString()}/yr entry</p>
+          <p style="margin:0 0 4px;font-size:13px;">UK: GBP ${career.incomeRanges.uk.min.toLocaleString()}-GBP ${career.incomeRanges.uk.max.toLocaleString()}/yr entry</p>
+          <p style="margin:0 0 16px;font-size:13px;">Global remote: $${career.incomeRanges.global_remote.min.toLocaleString()}-$${career.incomeRanges.global_remote.max.toLocaleString()}/yr</p>
 
-      <p style="margin:0 0 6px;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#9ca3af;">Start here (15 minutes)</p>
-      <p style="margin:0 0 12px;font-size:13px;"><a href="${c.resources.startHere.url}" style="color:#0d9488;font-weight:600;">${c.resources.startHere.title}</a></p>
+          <p style="margin:0 0 6px;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#9ca3af;">Start here (15 minutes)</p>
+          <p style="margin:0 0 12px;font-size:13px;"><a href="${career.resources.startHere.url}" style="color:#0d9488;font-weight:600;">${career.resources.startHere.title}</a></p>
 
-      <p style="margin:0 0 6px;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#9ca3af;">Keep going</p>
-      <ul style="padding-left:16px;margin:0 0 16px;font-size:13px;line-height:1.8;">${learningLinks}${videoLinks}</ul>
+          <p style="margin:0 0 6px;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#9ca3af;">Keep going</p>
+          <ul style="padding-left:16px;margin:0 0 16px;font-size:13px;line-height:1.8;">${learningLinks}${videoLinks}</ul>
 
-      <div style="background:#f9fafb;border-radius:8px;padding:14px;font-size:13px;line-height:1.6;">
-        <strong>Honest note: </strong>${c.honestCaveat}
-      </div>
-    </div>
-  `;
+          <div style="background:#f9fafb;border-radius:8px;padding:14px;font-size:13px;line-height:1.6;">
+            <strong>Honest note: </strong>${career.honestCaveat}
+          </div>
+        </div>
+      `;
     })
     .join('');
 
@@ -112,7 +117,12 @@ function buildEmailHtml(name: string, results: ScoredCareer[], answers: Record<s
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { email, name, results, answers } = body;
+    const { email, name, results, answers } = body as {
+      email?: string;
+      name?: string;
+      results?: ScoredCareer[];
+      answers?: Answers;
+    };
 
     if (!email || !results || !Array.isArray(results) || results.length === 0) {
       return NextResponse.json({ error: 'Missing required fields.' }, { status: 400 });

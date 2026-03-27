@@ -15,6 +15,8 @@ export type HumanJudgmentLevel = 'very-high' | 'high' | 'medium-high' | 'medium'
 export type DegreeDependence = 'none' | 'low' | 'moderate' | 'high';
 export type PortfolioImportance = 'low' | 'moderate' | 'high' | 'critical';
 export type EarningCeiling = 'moderate' | 'high' | 'very-high';
+export type AssessmentStage = 'questions' | 'refinement';
+export type ResultConfidenceStyle = 'strong' | 'reasonably-strong' | 'exploratory';
 
 export interface IncomeRange {
   min: number;
@@ -92,6 +94,12 @@ export interface ScoredCareer {
   rank: 1 | 2 | 3 | 4;
 }
 
+export interface CareerResultSummary {
+  careerId: string;
+  score: number;
+  rank: 1 | 2 | 3 | 4;
+}
+
 export type SingleAnswer = string;
 export type MultiAnswer = string[];
 export type Answer = SingleAnswer | MultiAnswer;
@@ -102,15 +110,28 @@ export interface SessionProgress {
   answers: Answers;
   name: string;
   discoverySource: string;
-  startedAt: string;
-  expiresAt: string;
+  stage: AssessmentStage;
 }
 
 export interface SessionResults {
   results: ScoredCareer[];
+  answers: Answers;
   completedAt: string;
   name: string;
-  expiresAt: string;
+  refinementTriggered: boolean;
+  baseResults?: CareerResultSummary[];
+  baseTopScore?: number;
+  finalTopScore?: number;
+  confidenceStyle?: ResultConfidenceStyle;
+}
+
+export interface RefinementMetadata {
+  triggered: boolean;
+  baseResults: CareerResultSummary[];
+  finalResults: CareerResultSummary[];
+  baseTopScore: number;
+  finalTopScore: number;
+  refinementAnswers: Answers;
 }
 
 export type QuestionType = 'single' | 'multi';

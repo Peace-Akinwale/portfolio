@@ -1,12 +1,10 @@
-// lib/career-pathway/questions.ts
-import type { Question } from './types';
+import type { Answers, Question } from './types';
 
 export const QUESTIONS: Question[] = [
-  // ─── Phase 1: Who You Are ───────────────────────────────────────────────────
   {
     id: 'A1',
     phase: 'Who You Are',
-    text: 'People who know you well would say you\'re...',
+    text: "People who know you well would say you're...",
     type: 'multi',
     maxSelections: 2,
     options: [
@@ -29,13 +27,13 @@ export const QUESTIONS: Question[] = [
       { value: 'art-design', label: 'Art or Design' },
       { value: 'business-economics', label: 'Business or Economics' },
       { value: 'tech-cs', label: 'Tech or Computer studies' },
-      { value: 'none', label: "None — school wasn't my thing" },
+      { value: 'none', label: "None - school wasn't my thing" },
     ],
   },
   {
     id: 'A3',
     phase: 'Who You Are',
-    text: 'Which of these do you believe you could get good at, even if you haven\'t tried yet?',
+    text: "Which of these do you believe you could get good at, even if you haven't tried yet?",
     type: 'multi',
     maxSelections: 2,
     options: [
@@ -53,14 +51,12 @@ export const QUESTIONS: Question[] = [
     text: 'How much does your family situation shape your career choice?',
     type: 'single',
     options: [
-      { value: 'high-pressure', label: 'A lot — I need to earn for my family, not just myself' },
-      { value: 'some-pressure', label: "Somewhat — there's pressure but I have some freedom" },
-      { value: 'low-pressure', label: "Not much — I'm mostly deciding for myself" },
+      { value: 'high-pressure', label: 'A lot - I need to earn for my family, not just myself' },
+      { value: 'some-pressure', label: "Somewhat - there's pressure but I have some freedom" },
+      { value: 'low-pressure', label: "Not much - I'm mostly deciding for myself" },
       { value: 'supported', label: 'My family supports whatever I choose' },
     ],
   },
-
-  // ─── Phase 2: What Appeals to You ──────────────────────────────────────────
   {
     id: 'B1',
     phase: 'What Appeals to You',
@@ -87,8 +83,6 @@ export const QUESTIONS: Question[] = [
       { value: 'coordinating', label: 'Spending most of the day coordinating with people, solving team problems, or communicating ideas' },
     ],
   },
-
-  // ─── Conditional questions ──────────────────────────────────────────────────
   {
     id: 'B_TECH',
     phase: 'What Appeals to You',
@@ -162,17 +156,15 @@ export const QUESTIONS: Question[] = [
       { value: 'b2b-content', label: 'Thought leadership, case studies, or buyer education' },
     ],
   },
-
-  // ─── Phase 3: Your Situation ────────────────────────────────────────────────
   {
     id: 'C1',
     phase: 'Your Situation',
     text: 'How soon do you need to start earning from a new skill?',
     type: 'single',
     options: [
-      { value: 'urgent', label: 'As soon as possible — 3 to 6 months' },
+      { value: 'urgent', label: 'As soon as possible - 3 to 6 months' },
       { value: 'within-year', label: 'Within a year is okay' },
-      { value: 'one-two-years', label: 'I can invest 1–2 years before earning' },
+      { value: 'one-two-years', label: 'I can invest 1-2 years before earning' },
       { value: 'no-rush', label: 'No rush right now' },
     ],
   },
@@ -195,9 +187,9 @@ export const QUESTIONS: Question[] = [
     text: 'How many hours a week can you realistically give to learning?',
     type: 'single',
     options: [
-      { value: 'under5', label: 'Under 5 — I have major commitments' },
-      { value: '5to15', label: '5–15 — learning on the side' },
-      { value: '15to30', label: '15–30 — part-time focus' },
+      { value: 'under5', label: 'Under 5 - I have major commitments' },
+      { value: '5to15', label: '5-15 - learning on the side' },
+      { value: '15to30', label: '15-30 - part-time focus' },
       { value: '30plus', label: 'I can go all in' },
     ],
   },
@@ -207,16 +199,16 @@ export const QUESTIONS: Question[] = [
     text: "What's your budget for learning each month?",
     type: 'single',
     options: [
-      { value: 'zero', label: 'Zero — everything must be free' },
+      { value: 'zero', label: 'Zero - everything must be free' },
       { value: 'under20', label: 'Up to $20' },
-      { value: '20to100', label: '$20–$100' },
+      { value: '20to100', label: '$20-$100' },
       { value: 'over100', label: 'Over $100' },
     ],
   },
   {
     id: 'C5',
     phase: 'Your Situation',
-    text: 'Some technical roles (like cybersecurity or cloud engineering) require paid certification exams ($300–$500) to get hired. Writing and design roles typically don\'t. Could you save up for one if your best-fit career needed it?',
+    text: "Some technical roles (like cybersecurity or cloud engineering) require paid certification exams ($300-$500) to get hired. Writing and design roles typically don't. Could you save up for one if your best-fit career needed it?",
     type: 'single',
     options: [
       { value: 'cert-yes', label: 'Yes, I could manage that' },
@@ -224,15 +216,13 @@ export const QUESTIONS: Question[] = [
       { value: 'cert-no', label: "That's not realistic for me" },
     ],
   },
-
-  // ─── Phase 4: Your Setup ────────────────────────────────────────────────────
   {
     id: 'D1',
     phase: 'Your Setup',
     text: 'How reliable is your internet?',
     type: 'single',
     options: [
-      { value: 'solid', label: 'Solid — video calls and streaming work fine' },
+      { value: 'solid', label: 'Solid - video calls and streaming work fine' },
       { value: 'mostly-ok', label: 'Mostly okay, sometimes unreliable' },
       { value: 'limited', label: 'Often slow or limited' },
     ],
@@ -243,14 +233,12 @@ export const QUESTIONS: Question[] = [
     text: 'Could you do work online for people or companies outside your city or country?',
     type: 'single',
     options: [
-      { value: 'remote-yes', label: "Yes — I have stable internet and I'm comfortable working with people remotely" },
+      { value: 'remote-yes', label: "Yes - I have stable internet and I'm comfortable working with people remotely" },
       { value: 'remote-maybe', label: "I think so, but I've never done it before" },
       { value: 'local-pref', label: "I'd prefer to find work locally" },
       { value: 'remote-no', label: 'My internet situation makes remote work difficult' },
     ],
   },
-
-  // ─── Phase 5: What You Value ────────────────────────────────────────────────
   {
     id: 'E1',
     phase: 'What You Value',
@@ -272,13 +260,77 @@ export const QUESTIONS: Question[] = [
     text: 'How do you feel about AI being part of your work?',
     type: 'single',
     options: [
-      { value: 'lean-into-ai', label: 'I want to lean into it heavily — it makes me faster' },
+      { value: 'lean-into-ai', label: 'I want to lean into it heavily - it makes me faster' },
       { value: 'ai-as-tool', label: 'Fine as a tool, but my core skill should be human' },
-      { value: 'human-central', label: 'I\'d prefer a field where human judgment stays central' },
+      { value: 'human-central', label: "I'd prefer a field where human judgment stays central" },
       { value: 'ai-neutral', label: "Haven't thought about it" },
     ],
   },
 ];
+
+export const REFINEMENT_QUESTIONS: Question[] = [
+  {
+    id: 'R1',
+    phase: 'Quick Refinement',
+    text: 'Which kind of progress feels most satisfying?',
+    type: 'single',
+    options: [
+      { value: 'clarify', label: 'Making something clearer' },
+      { value: 'debug', label: 'Solving a technical problem' },
+      { value: 'pattern', label: 'Finding a hidden pattern' },
+      { value: 'design', label: 'Improving how something looks or feels' },
+      { value: 'coordinate', label: 'Organising people and moving work forward' },
+      { value: 'systemize', label: 'Setting up a system that saves time' },
+    ],
+  },
+  {
+    id: 'R2',
+    phase: 'Quick Refinement',
+    text: 'Which kind of task drains you the least?',
+    type: 'single',
+    options: [
+      { value: 'write', label: 'Writing and explaining' },
+      { value: 'troubleshoot', label: 'Troubleshooting broken things' },
+      { value: 'analyze', label: 'Working through numbers and trends' },
+      { value: 'ux', label: 'Shaping visuals and user experience' },
+      { value: 'prioritize', label: 'Coordinating people and priorities' },
+      { value: 'repeatable', label: 'Setting up repeatable processes' },
+    ],
+  },
+  {
+    id: 'R3',
+    phase: 'Quick Refinement',
+    text: 'If you had to learn one kind of work from scratch, which sounds most energising?',
+    type: 'single',
+    options: [
+      { value: 'teach_persuade', label: 'Writing to teach or persuade' },
+      { value: 'decision_analysis', label: 'Analysing information to make decisions' },
+      { value: 'screen_flow', label: 'Designing screens or user flows' },
+      { value: 'build_features', label: 'Building software or features' },
+      { value: 'workflow_automation', label: 'Automating repetitive work' },
+      { value: 'team_planning', label: 'Planning projects and aligning teams' },
+    ],
+  },
+  {
+    id: 'R4',
+    phase: 'Quick Refinement',
+    text: 'When a problem is messy, what do you instinctively want to do first?',
+    type: 'single',
+    options: [
+      { value: 'explain', label: 'Explain it clearly' },
+      { value: 'logic', label: 'Break it into logical parts' },
+      { value: 'sketch', label: 'Sketch what the solution could look like' },
+      { value: 'test', label: 'Test things until something works' },
+      { value: 'stakeholders', label: 'Ask who is affected and what matters most' },
+      { value: 'process', label: 'Create a repeatable process' },
+    ],
+  },
+];
+
+export interface AnsweredQuestionSection {
+  title: string;
+  questions: Question[];
+}
 
 export function getConditionalQuestion(b1Answer: string): Question | null {
   const conditionalMap: Record<string, string> = {
@@ -289,25 +341,48 @@ export function getConditionalQuestion(b1Answer: string): Question | null {
     'project-mgmt': 'B_PM',
     'docs-devrel': 'B_DEVREL',
   };
+
   const questionId = conditionalMap[b1Answer];
   if (!questionId) return null;
-  return QUESTIONS.find((q) => q.id === questionId) ?? null;
+  return QUESTIONS.find((question) => question.id === questionId) ?? null;
 }
 
-export function buildQuestionSequence(answers: Record<string, string | string[]>): Question[] {
+export function buildQuestionSequence(answers: Answers): Question[] {
   const universalIds = ['A1', 'A2', 'A3', 'A4', 'B1', 'B2', 'C1', 'C2', 'C3', 'C4', 'C5', 'D1', 'D2', 'E1', 'E2'];
-  const universal = universalIds.map((id) => QUESTIONS.find((q) => q.id === id)!);
+  const universal = universalIds.map((id) => QUESTIONS.find((question) => question.id === id)!);
 
-  const b1Answer = answers['B1'] as string | undefined;
+  const b1Answer = answers.B1 as string | undefined;
   const conditional = b1Answer ? getConditionalQuestion(b1Answer) : null;
 
-  if (conditional) {
-    const insertAfter = universal.findIndex((q) => q.id === 'B2');
-    return [
-      ...universal.slice(0, insertAfter + 1),
-      conditional,
-      ...universal.slice(insertAfter + 1),
-    ];
+  if (!conditional) {
+    return universal;
   }
-  return universal;
+
+  const insertAfter = universal.findIndex((question) => question.id === 'B2');
+  return [
+    ...universal.slice(0, insertAfter + 1),
+    conditional,
+    ...universal.slice(insertAfter + 1),
+  ];
+}
+
+export function buildRefinementSequence(): Question[] {
+  return REFINEMENT_QUESTIONS;
+}
+
+export function getAnsweredQuestionSections(answers: Answers): AnsweredQuestionSection[] {
+  const answeredIds = new Set(Object.keys(answers));
+  const baseQuestions = buildQuestionSequence(answers).filter((question) => answeredIds.has(question.id));
+  const refinementQuestions = REFINEMENT_QUESTIONS.filter((question) => answeredIds.has(question.id));
+  const sections: AnsweredQuestionSection[] = [];
+
+  if (baseQuestions.length) {
+    sections.push({ title: 'Assessment answers', questions: baseQuestions });
+  }
+
+  if (refinementQuestions.length) {
+    sections.push({ title: 'Quick refinement answers', questions: refinementQuestions });
+  }
+
+  return sections;
 }

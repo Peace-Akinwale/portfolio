@@ -1,32 +1,26 @@
-// app/career-pathway/results/page.tsx
 'use client';
+
+import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import type { ScoredCareer, Answers } from '@/lib/career-pathway/types';
-import { storageRead, storageClearAll } from '@/lib/career-pathway/storage';
+import type { Answers, SessionResults } from '@/lib/career-pathway/types';
+import { storageClearAll, storageRead } from '@/lib/career-pathway/storage';
 import { STORAGE_KEYS } from '@/lib/career-pathway/constants';
 import { ResultCard } from '@/components/career-pathway/ResultCard';
 import { EmailForm } from '@/components/career-pathway/EmailForm';
-import Link from 'next/link';
-
-interface StoredResults {
-  results: ScoredCareer[];
-  answers: Answers;
-  completedAt: string;
-  name: string;
-}
 
 export default function ResultsPage() {
   const router = useRouter();
-  const [data, setData] = useState<StoredResults | null>(null);
+  const [data, setData] = useState<SessionResults | null>(null);
   const [answers, setAnswers] = useState<Answers>({});
 
   useEffect(() => {
-    const stored = storageRead<StoredResults>(STORAGE_KEYS.RESULTS);
+    const stored = storageRead<SessionResults>(STORAGE_KEYS.RESULTS);
     if (!stored || !stored.results?.length) {
       router.replace('/career-pathway');
       return;
     }
+
     setData(stored);
     if (stored.answers) setAnswers(stored.answers);
   }, [router]);
@@ -38,44 +32,51 @@ export default function ResultsPage() {
 
   if (!data) return null;
 
-  const { results, name } = data;
+  const { results, name, refinementTriggered, confidenceStyle = 'reasonably-strong' } = data;
   const displayName = name ? `, ${name}` : '';
-
-  const a4 = answers['A4'] as string | undefined;
-  const familyPressureHigh = a4 === 'high-pressure' || a4 === 'some-pressure';
+  const familyPressureAnswer = answers.A4 as string | undefined;
+  const familyPressureHigh = familyPressureAnswer === 'high-pressure' || familyPressureAnswer === 'some-pressure';
+  const heading =
+    confidenceStyle === 'exploratory'
+      ? `Hey${displayName}, here are the directions worth testing next.`
+      : results.length < 4
+        ? `Hey${displayName}, we found ${results.length} strong match${results.length !== 1 ? 'es' : ''}.`
+        : `Hey${displayName}, here's what we found.`;
+  const supportingCopy =
+    confidenceStyle === 'exploratory'
+      ? 'These are the most promising directions to test next. Your answers point to a few viable paths rather than one clear winner.'
+      : 'These are options, not directives. Explore them, then take one action in the next 48 hours.';
 
   return (
     <div className="flex flex-col gap-10">
-      {/* Header */}
       <div className="flex flex-col gap-3">
-        <p
-          className="text-xs font-bold uppercase tracking-[0.15em]"
-          style={{ color: 'var(--accent)' }}
-        >
+        <p className="text-xs font-bold uppercase tracking-[0.15em]" style={{ color: 'var(--accent)' }}>
           Your results
         </p>
-        <h1
-          className="text-2xl sm:text-3xl font-extrabold leading-snug"
-          style={{ letterSpacing: '-0.02em' }}
-        >
-          {results.length < 4
-            ? `Hey${displayName}, we found ${results.length} strong match${results.length !== 1 ? 'es' : ''}.`
-            : `Hey${displayName}, here's what we found.`}
+        <h1 className="text-2xl font-extrabold leading-snug sm:text-3xl" style={{ letterSpacing: '-0.02em' }}>
+          {heading}
         </h1>
-        <p className="text-sm text-muted-foreground">
-          These are options, not directives. Explore them — then take one action in the next 48 hours.
-        </p>
+        <p className="text-sm text-muted-foreground">{supportingCopy}</p>
+        {refinementTriggered && (
+          <p className="max-w-2xl rounded-lg border px-4 py-3 text-sm text-muted-foreground" style={{ borderColor: 'var(--border)' }}>
+            Your follow-up answers helped narrow these results down.
+          </p>
+        )}
       </div>
 
-      {/* Result cards */}
       <div className="flex flex-col gap-5">
-        {results.map((r) => (
-          <ResultCard key={r.career.id} result={r} userName={name} answers={answers} familyPressureHigh={familyPressureHigh} />
+        {results.map((result) => (
+          <ResultCard
+            key={result.career.id}
+            result={result}
+            userName={name}
+            answers={answers}
+            familyPressureHigh={familyPressureHigh}
+          />
         ))}
       </div>
 
-      {/* Email section */}
-      <div className="flex flex-col gap-3 pt-4 border-t" style={{ borderColor: 'var(--border)' }}>
+      <div className="flex flex-col gap-3 border-t pt-4" style={{ borderColor: 'var(--border)' }}>
         <h2 className="text-sm font-bold">Want a copy of these results?</h2>
         <p className="text-xs text-muted-foreground">
           We&apos;ll send all 4 matches, why they fit, and your full answer transcript. No spam.
@@ -83,8 +84,7 @@ export default function ResultsPage() {
         <EmailForm results={results} answers={answers} name={name} />
       </div>
 
-      {/* LinkedIn attribution */}
-      <div className="flex flex-col gap-2 pt-4 border-t text-sm" style={{ borderColor: 'var(--border)' }}>
+      <div className="flex flex-col gap-2 border-t pt-4 text-sm" style={{ borderColor: 'var(--border)' }}>
         <p className="text-muted-foreground">
           If this helped, you&apos;re welcome to say Hi on LinkedIn.{' '}
           <a
@@ -94,20 +94,19 @@ export default function ResultsPage() {
             className="font-semibold underline underline-offset-2"
             style={{ color: 'var(--accent)' }}
           >
-            LinkedIn →
+            LinkedIn {'->'}
           </a>
         </p>
       </div>
 
-      {/* Retake / back */}
-      <div className="flex gap-4 text-xs pt-2">
+      <div className="flex gap-4 pt-2 text-xs">
         <button
           onClick={handleRetake}
-          className="underline underline-offset-2 text-muted-foreground hover:text-foreground transition"
+          className="underline underline-offset-2 text-muted-foreground transition hover:text-foreground"
         >
           Retake the assessment
         </button>
-        <Link href="/career-pathway" className="underline underline-offset-2 text-muted-foreground hover:text-foreground transition">
+        <Link href="/career-pathway" className="underline underline-offset-2 text-muted-foreground transition hover:text-foreground">
           Back to start
         </Link>
       </div>

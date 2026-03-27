@@ -40,6 +40,10 @@ export const STORAGE_KEYS = {
 } as const;
 
 export const MIN_QUALIFYING_SCORE = 20;
+export const REFINEMENT_TRIGGER_SCORE = 60;
+export const REFINEMENT_CLUSTER_BONUS = 2;
+export const REFINEMENT_CAREER_BONUS = 1;
+export const REFINEMENT_MAX_BONUS = 6;
 
 export const CLUSTERS: Record<CareerCluster, string> = {
   technical: 'Technical',
