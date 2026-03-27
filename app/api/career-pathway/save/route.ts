@@ -10,6 +10,7 @@ async function sendSlackNotification(data: {
   discoverySource?: string;
   results: { careerId: string; score: number; rank: number }[];
   count: number | null;
+  submissionUrl: string | null;
 }) {
   const webhookUrl = process.env.CAREER_PATHWAY_SLACK_WEBHOOK;
   if (!webhookUrl) return;
@@ -26,6 +27,7 @@ async function sendSlackNotification(data: {
     second ? `*#2:* ${second.careerId} (${second.score} pts)` : null,
     `*Country:* ${data.country || '—'} · *Age range:* ${data.ageRange || '—'}`,
     data.discoverySource ? `*Found via:* ${data.discoverySource}` : null,
+    data.submissionUrl ? `<${data.submissionUrl}|View full submission →>` : null,
   ].filter(Boolean).join('\n');
 
   await fetch(webhookUrl, {
@@ -51,16 +53,20 @@ export async function POST(req: Request) {
 
     const userAgent = req.headers.get('user-agent') ?? null;
 
-    const { error } = await supabase.from('career_pathway_responses').insert({
-      name: name ?? null,
-      discovery_source: discoverySource ?? null,
-      age_range: ageRange ?? null,
-      country: country ?? null,
-      answers,
-      results,
-      email: email ?? null,
-      user_agent: userAgent,
-    });
+    const { data: inserted, error } = await supabase
+      .from('career_pathway_responses')
+      .insert({
+        name: name ?? null,
+        discovery_source: discoverySource ?? null,
+        age_range: ageRange ?? null,
+        country: country ?? null,
+        answers,
+        results,
+        email: email ?? null,
+        user_agent: userAgent,
+      })
+      .select('id')
+      .single();
 
     if (error) throw error;
 
@@ -68,7 +74,11 @@ export async function POST(req: Request) {
       .from('career_pathway_responses')
       .select('*', { count: 'exact', head: true });
 
-    sendSlackNotification({ name, email, country, ageRange, discoverySource, results, count: count ?? null });
+    const submissionUrl = inserted?.id
+      ? `https://peaceakinwale.com/career-pathway/results/${inserted.id}`
+      : null;
+
+    sendSlackNotification({ name, email, country, ageRange, discoverySource, results, count: count ?? null, submissionUrl });
 
     return NextResponse.json({ success: true });
   } catch (err) {
