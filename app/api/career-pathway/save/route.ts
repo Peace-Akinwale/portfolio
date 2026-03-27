@@ -1,6 +1,7 @@
 // app/api/career-pathway/save/route.ts
 import { createClient } from '@supabase/supabase-js';
 import { NextResponse } from 'next/server';
+import { randomUUID } from 'crypto';
 
 async function sendSlackNotification(data: {
   name?: string;
@@ -48,25 +49,23 @@ export async function POST(req: Request) {
 
     const supabase = createClient(
       process.env.SUPABASE_URL!,
-      process.env.SUPABASE_ANON_KEY!
+      process.env.SUPABASE_SERVICE_ROLE_KEY!
     );
 
     const userAgent = req.headers.get('user-agent') ?? null;
+    const id = randomUUID();
 
-    const { data: inserted, error } = await supabase
-      .from('career_pathway_responses')
-      .insert({
-        name: name ?? null,
-        discovery_source: discoverySource ?? null,
-        age_range: ageRange ?? null,
-        country: country ?? null,
-        answers,
-        results,
-        email: email ?? null,
-        user_agent: userAgent,
-      })
-      .select('id')
-      .single();
+    const { error } = await supabase.from('career_pathway_responses').insert({
+      id,
+      name: name ?? null,
+      discovery_source: discoverySource ?? null,
+      age_range: ageRange ?? null,
+      country: country ?? null,
+      answers,
+      results,
+      email: email ?? null,
+      user_agent: userAgent,
+    });
 
     if (error) throw error;
 
@@ -74,9 +73,7 @@ export async function POST(req: Request) {
       .from('career_pathway_responses')
       .select('*', { count: 'exact', head: true });
 
-    const submissionUrl = inserted?.id
-      ? `https://peaceakinwale.com/career-pathway/results/${inserted.id}`
-      : null;
+    const submissionUrl = `https://peaceakinwale.com/career-pathway/results/${id}`;
 
     sendSlackNotification({ name, email, country, ageRange, discoverySource, results, count: count ?? null, submissionUrl });
 
