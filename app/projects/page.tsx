@@ -10,46 +10,46 @@ export const metadata: Metadata = {
 const projects = [
   {
     number: '01',
+    slug: 'career-pathway',
+    href: '/career-pathway',
+    title: 'Career Pathway Assessment',
+    description:
+      'An interactive assessment tool that scores 23 careers against a person\'s personality, constraints, and goals, then returns four realistic paths with resources, income context, and AI caveats.',
+  },
+  {
+    number: '02',
     slug: 'linkedin-router',
     title: 'LinkedIn Content Router',
     description:
       'Turns raw ideas into content briefs, LinkedIn posts & Twitter threads while sticking to your style guides. Built for writers, founders, and anyone who rarely have time to post consistently.',
   },
   {
-    number: '02',
+    number: '03',
     slug: 'mylinks',
     title: 'MyLinks — AI Internal Linking Tool',
     description:
       'Crawls your website, understands your content inventory, and suggests precise internal links for any draft — then applies them directly to Google Docs.',
   },
   {
-    number: '03',
+    number: '04',
     slug: 'mystyleguide',
     title: 'MyStyleGuide — Writing Voice Analyzer',
     description:
       'Analyzes writing samples you admire, tracks editor corrections, and generates a precise style guide you can load into any AI project to review your first drafts and provide editorial suggestions.',
   },
   {
-    number: '04',
+    number: '05',
     slug: 'portfolio-project',
     title: 'This Portfolio Website',
     description:
       'Build an editorial portfolio and blog from scratch using Claude Code. I can use the same process to create custom pages on a client\'s website for things like a sales calculator or any business-relevant tool to improve lead gen.',
   },
   {
-    number: '05',
+    number: '06',
     slug: 'editorial-style-guide',
     title: 'A Process to Generate Editorial Style Guides Through Claude Code',
     description:
       "I found a way to extract a brand's editorial voice from existing content and turn it into a detailed style guide for myself. Your in-house writers can use a process like this to improve their first draft where it makes sense — without the AI slop.",
-  },
-  {
-    number: '06',
-    slug: 'career-pathway',
-    href: '/career-pathway',
-    title: 'Career Pathway Assessment',
-    description:
-      'An interactive assessment tool that scores 23 careers against a person\'s personality, constraints, and goals, then returns four realistic paths with resources, income context, and AI caveats.',
   },
 ];
 
