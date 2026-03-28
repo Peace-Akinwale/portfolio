@@ -22,6 +22,7 @@ export function Footer() {
               <Link href="/services" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Services</Link>
               <Link href="/portfolio" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Portfolio</Link>
               <Link href="/projects" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Projects</Link>
+              <Link href="/contentdb" className="text-sm text-muted-foreground hover:text-foreground transition-colors">contentDB</Link>
               <Link href="/career-pathway" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Career Pathway</Link>
             </nav>
           </div>

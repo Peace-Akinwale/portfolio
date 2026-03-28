@@ -9,6 +9,7 @@ const MOBILE_LINKS = [
   { href: '/blog', label: 'Blog' },
   { href: '/about', label: 'About' },
   { href: '/projects', label: 'Projects' },
+  { href: '/contentdb', label: 'contentDB' },
   { href: '/career-pathway', label: 'Career Pathway' },
   { href: '/contact', label: 'Contact' },
 ];
@@ -36,6 +37,7 @@ export function Header() {
             <Link href="/blog" className="text-sm uppercase tracking-wide transition-colors text-muted-foreground hover:text-accent">Blog</Link>
             <Link href="/about" className="text-sm uppercase tracking-wide transition-colors text-muted-foreground hover:text-accent">About</Link>
             <Link href="/projects" className="text-sm uppercase tracking-wide transition-colors text-muted-foreground hover:text-accent">Projects</Link>
+            <Link href="/contentdb" className="text-sm uppercase tracking-wide transition-colors text-muted-foreground hover:text-accent">contentDB</Link>
             <Link href="/contact" className="text-sm uppercase tracking-wide transition-colors text-muted-foreground hover:text-accent">Contact</Link>
             <Link
               href="/career-pathway"

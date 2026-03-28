@@ -5,7 +5,35 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'contentDB',
   description:
-    'contentDB is a content intelligence system that turns research and customer conversations into searchable, source-grounded answers across web chat and AI tools through MCP.',
+    'contentDB stores customer conversations, research, and content in one place so you can query it through MCP in Claude, ChatGPT, or the contentDB web chat while you research, write, or update an article.',
+  openGraph: {
+    title: 'contentDB',
+    description:
+      'contentDB stores customer conversations, research, and content in one place so you can query it through MCP in Claude, ChatGPT, or the contentDB web chat while you research, write, or update an article.',
+    url: '/contentdb',
+    siteName: 'contentDB',
+    type: 'website',
+    images: [
+      {
+        url: '/contentdb/opengraph-image',
+        width: 1200,
+        height: 630,
+        alt: 'contentDB preview image',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'contentDB',
+    description:
+      'contentDB stores customer conversations, research, and content in one place so you can query it through MCP in Claude, ChatGPT, or the contentDB web chat while you research, write, or update an article.',
+    images: ['/contentdb/opengraph-image'],
+  },
+  icons: {
+    icon: '/images/contentdb/logo.svg',
+    shortcut: '/images/contentdb/logo.svg',
+    apple: '/images/contentdb/logo.svg',
+  },
 };
 
 const stack = [
@@ -34,7 +62,17 @@ const differentiators = [
   'Built for agency workflows where multiple clients share one workspace but still need clean separation.',
 ];
 
-const screenshots = [
+type WorkflowShot = {
+  title: string;
+  description: string;
+  src: string;
+  alt: string;
+  prompt?: string;
+  response?: string;
+  ctaLabel?: string;
+};
+
+const screenshots: WorkflowShot[] = [
   {
     title: 'Bring sources into one searchable system',
     description:
@@ -50,11 +88,15 @@ const screenshots = [
     alt: 'contentDB search results showing quote context before and after the matched passage',
   },
   {
-    title: 'Get grounded output from the same source base',
+    title: 'Turn that stored research into structured, source-grounded answers you can write from.',
     description:
-      'Turn that stored research into structured, source-grounded answers you can actually write from.',
+      'Claude gives a response from your database first, which helps keep the answer grounded and avoids hallucination.',
     src: '/images/contentdb/grounded-output.png',
     alt: 'Grounded contentDB output showing pain points surfaced across sources',
+    prompt:
+      'holla. i am writing an article about how to get retainer clients for ManyRequests. based on the contentDB mcp, are there any context I can lead with? e.g. productized agency founders who used this retainer model to scale their business, the pain point they had, and how they solved it. let’s start with the pain point they usually faced/had. i am looking for pain/friction points when it comes to getting retainer clients.',
+    response: 'Let me search the ContentDB for relevant pain points around retainer clients.',
+    ctaLabel: 'Try it again in contentDB',
   },
 ];
 
@@ -77,9 +119,8 @@ export default function ContentDbPage() {
         <div className="flex flex-col gap-4">
           <h1 className="text-4xl font-bold leading-tight md:text-5xl lg:text-6xl">contentDB</h1>
           <p className="max-w-3xl text-lg leading-relaxed text-muted-foreground">
-            contentDB is a <strong className="font-semibold text-foreground">content intelligence system</strong> that turns research and customer conversations
-            into <strong className="font-semibold text-foreground">searchable, source-grounded answers</strong> across web chat and AI tools (Claude, ChatGPT,
-            Gemini) through MCP.
+            contentDB stores customer conversations, research, and content in one place so you can query it through MCP in Claude, ChatGPT, or the
+            contentDB web chat while you research, write, or update an article.
           </p>
         </div>
         <div className="flex flex-wrap gap-3">
@@ -97,47 +138,117 @@ export default function ContentDbPage() {
       </header>
 
       <div className="grid gap-12">
-        <section className="grid gap-4">
-          <h2 className="text-2xl font-bold">What it is</h2>
-          <p className="leading-relaxed text-muted-foreground">
-            contentDB is a workspace database where you can add your company&apos;s <strong className="font-semibold text-foreground">high-value content</strong>
-            from URLs or pasted text, including podcasts, transcripts, SME-led articles, ebooks,
-            reports, surveys, LinkedIn posts, Reddit threads, and customer chats or calls. You can
-            then query that material from the web app or from <strong className="font-semibold text-foreground">connected AI clients through MCP</strong> while
-            writing or doing research.
-          </p>
-        </section>
-
         <section className="grid gap-6">
           <div className="grid gap-2">
             <h2 className="text-2xl font-bold">How it works</h2>
             <p className="max-w-3xl leading-relaxed text-muted-foreground">
-              The workflow is simple: <strong className="font-semibold text-foreground">bring the source in</strong>, <strong className="font-semibold text-foreground">retrieve the useful context</strong>, then
-              use the same material to get <strong className="font-semibold text-foreground">accurate context while writing or during research</strong>.
+              contentDB is a workspace database where you can add your company&apos;s high-value content from URLs or pasted texts, including podcasts,
+              transcripts, SME-led articles, ebooks, reports, surveys, LinkedIn posts, Reddit threads, and customer chats or calls. You can then query
+              that material from the contentDB web app or from connected AI clients through MCP while writing or doing research.
             </p>
           </div>
+
           <div className="grid gap-8">
             {screenshots.map((shot, index) => (
-              <article key={shot.title} className="grid gap-4">
+              <article
+                key={shot.title}
+                className="grid gap-4"
+              >
                 <div className="grid gap-2">
                   <p className="text-xs font-bold uppercase tracking-[0.16em]" style={{ color: 'var(--accent)' }}>
                     Step 0{index + 1}
                   </p>
                   <h3 className="text-xl font-bold">{shot.title}</h3>
-                  <p className="max-w-3xl leading-relaxed text-muted-foreground">{shot.description}</p>
+                  {index !== 2 && <p className="max-w-3xl leading-relaxed text-muted-foreground">{shot.description}</p>}
                 </div>
-                <div
-                  className="overflow-hidden rounded-2xl border"
-                  style={{ borderColor: 'var(--border)', background: 'color-mix(in srgb, var(--accent) 3%, var(--background))' }}
-                >
-                  <Image
-                    src={shot.src}
-                    alt={shot.alt}
-                    width={1600}
-                    height={1000}
-                    className="h-auto w-full"
-                  />
-                </div>
+
+                {index === 2 ? (
+                  <div className="flex flex-col gap-6">
+                    <div
+                      className="ml-auto flex w-full max-w-xl flex-col gap-4 rounded-[28px] border p-5 shadow-sm"
+                      style={{
+                        borderColor: 'var(--border)',
+                        background:
+                          'linear-gradient(180deg, color-mix(in srgb, var(--background) 92%, #efe8d8 8%), color-mix(in srgb, var(--background) 98%, #efe8d8 2%))',
+                      }}
+                    >
+                      <div className="flex justify-center">
+                        <div className="inline-flex rounded-full border bg-background/80 px-1 py-1 text-xs text-muted-foreground shadow-sm">
+                          <span className="rounded-full bg-background px-3 py-1 text-foreground">Chat</span>
+                          <span className="px-3 py-1">Cowork</span>
+                          <span className="px-3 py-1">Code</span>
+                        </div>
+                      </div>
+
+                      <div className="flex justify-end">
+                        <div
+                          className="max-w-[92%] rounded-2xl bg-[#e9dfcf] px-4 py-4 text-sm leading-relaxed text-foreground shadow-sm"
+                          style={{ boxShadow: '0 1px 0 rgba(0,0,0,0.04)' }}
+                        >
+                          <p className="whitespace-pre-wrap">{shot.prompt}</p>
+                        </div>
+                      </div>
+
+                      <div className="flex justify-start">
+                        <div
+                          className="max-w-[92%] rounded-2xl border bg-background px-4 py-4 text-sm leading-relaxed text-foreground shadow-sm"
+                          style={{ borderColor: 'var(--border)' }}
+                        >
+                          <div className="flex items-start gap-3">
+                            <span className="mt-1 inline-flex h-4 w-4 flex-none items-center justify-center rounded-full bg-emerald-500 text-[10px] font-bold leading-none text-white">
+                              ✓
+                            </span>
+                            <p className="whitespace-pre-wrap">{shot.response}</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="grid gap-4">
+                      <div
+                        className="overflow-hidden rounded-2xl border"
+                        style={{ borderColor: 'var(--border)', background: 'color-mix(in srgb, var(--accent) 3%, var(--background))' }}
+                      >
+                        <Image
+                          src={shot.src}
+                          alt={shot.alt}
+                          width={1600}
+                          height={1000}
+                          className="h-auto w-full"
+                        />
+                      </div>
+
+                      <p className="text-sm leading-relaxed text-muted-foreground">
+                        {shot.description}
+                      </p>
+
+                      <div className="flex justify-start">
+                        <a
+                          href="https://contentdb.vercel.app"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex rounded-md px-5 py-3 text-sm font-bold uppercase tracking-[0.08em] text-white"
+                          style={{ background: 'var(--accent)' }}
+                        >
+                          {shot.ctaLabel}
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <div
+                    className="overflow-hidden rounded-2xl border"
+                    style={{ borderColor: 'var(--border)', background: 'color-mix(in srgb, var(--accent) 3%, var(--background))' }}
+                  >
+                    <Image
+                      src={shot.src}
+                      alt={shot.alt}
+                      width={1600}
+                      height={1000}
+                      className="h-auto w-full"
+                    />
+                  </div>
+                )}
               </article>
             ))}
           </div>
