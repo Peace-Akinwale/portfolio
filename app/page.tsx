@@ -286,13 +286,7 @@ export default async function HomePage() {
           <p className="text-xs font-bold uppercase tracking-[0.15em] mb-4" style={{ color: 'var(--accent)' }}>
             What clients say
           </p>
-          <h2
-            className="text-2xl sm:text-3xl font-extrabold mb-14 text-foreground"
-            style={{ letterSpacing: '-0.02em' }}
-          >
-            From the people who hired me.
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mt-4">
             {TESTIMONIALS.map((t, i) => (
               <div key={i} className="rounded-xl border border-border bg-background p-7 flex flex-col justify-between">
                 <p className="text-sm leading-[1.85] text-muted-foreground mb-7" style={{ fontFamily: 'var(--font-serif)' }}>
@@ -369,13 +363,7 @@ export default async function HomePage() {
             <p className="text-xs font-bold uppercase tracking-[0.15em] mb-4" style={{ color: 'var(--accent)' }}>
               From the blog
             </p>
-            <h2
-              className="text-2xl sm:text-3xl font-extrabold mb-14 text-foreground"
-              style={{ letterSpacing: '-0.02em' }}
-            >
-              How I think about content.
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-2">
               {posts.map((post) => (
                 <Link key={post.id} href={`/${post.slug}`} className="group flex flex-col">
                   {post.coverImage?.url && (
@@ -427,10 +415,10 @@ export default async function HomePage() {
               className="text-2xl sm:text-3xl font-extrabold mb-4 text-foreground"
               style={{ letterSpacing: '-0.02em' }}
             >
-              Ready to hire a B2B SaaS content writer?
+              Let&rsquo;s talk about your content goals.
             </h2>
             <p className="text-base leading-relaxed text-muted-foreground mb-10 max-w-xl">
-              Let&rsquo;s talk about your content goals. Book a free 30-minute discovery call. No commitment, no pressure.
+              Book a 30-minute call to see how I can be a good fit. No commitment, no pressure.
             </p>
             <div className="flex flex-col sm:flex-row gap-3">
               <a
