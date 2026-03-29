@@ -64,7 +64,7 @@ export function Header() {
 
           <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="md:hidden p-2 hover:bg-muted rounded-full transition-colors"
+            className="lg:hidden p-2 hover:bg-muted rounded-full transition-colors"
             aria-label="Toggle menu"
           >
             {isMenuOpen ? (
@@ -80,7 +80,7 @@ export function Header() {
           </div>
 
           {isMenuOpen && (
-            <nav className="md:hidden border-t border-border/90 px-4 pb-4 pt-2">
+            <nav className="lg:hidden border-t border-border/90 px-4 pb-4 pt-2">
               <div className="flex flex-col gap-1 py-2">
                 {PRIMARY_LINKS.map((item) => (
                   <Link
