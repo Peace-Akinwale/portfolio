@@ -4,14 +4,14 @@ export function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="border-t border-border mt-24">
+    <footer className="border-t border-border mt-0">
       <div className="max-w-7xl mx-auto px-6 py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* About */}
           <div className="md:col-span-1">
             <h3 className="font-bold text-lg mb-3">Peace Akinwale</h3>
             <p className="text-sm text-muted-foreground leading-relaxed">
-              B2B SaaS content writer and strategist.
+              B2B SaaS content writer for product-led software companies.
             </p>
           </div>
 

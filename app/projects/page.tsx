@@ -63,14 +63,15 @@ const projects = [
 
 export default function ProjectsPage() {
   return (
-    <main className="mx-auto max-w-4xl px-6 py-16">
+    <main className="mx-auto max-w-7xl px-6 py-16">
+      <div className="max-w-5xl">
       <header className="mb-16">
         <h1 className="mb-6 text-5xl font-bold leading-tight md:text-6xl lg:text-7xl">
           Things I&apos;ve Built
         </h1>
         <p className="max-w-2xl text-lg leading-relaxed text-muted-foreground">
           I use AI tools to automate content marketing processes where it makes sense. For my personal
-          work as a content marketer for B2B SaaS brands and agencies, I&apos;ve found great use cases
+          work as a B2B SaaS content writer for brands and agencies, I&apos;ve found great use cases
           for the following projects.
         </p>
       </header>
@@ -138,6 +139,7 @@ export default function ProjectsPage() {
           </p>
         </div>
       </section>
+      </div>
     </main>
   );
 }

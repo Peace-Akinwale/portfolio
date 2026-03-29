@@ -11,15 +11,16 @@ export default async function AboutPage() {
   const page = await getStaticPage('about');
 
   return (
-    <div className="max-w-4xl mx-auto px-6 py-24">
+    <div className="max-w-7xl mx-auto px-6 py-24">
+      <div className="max-w-4xl mx-auto">
       {/* Photo */}
       <div className="mb-12">
         <div className="relative w-full max-w-md mx-auto aspect-[3/4] overflow-hidden rounded-lg shadow-xl">
           <Image
-            src="/images/peace-akinwale-about.jpg"
+            src="/images/peace-akinwale-about-wedding.jpg"
             alt="Peace Akinwale"
             fill
-            className="object-cover"
+            className="object-cover object-top"
             priority
           />
         </div>
@@ -65,6 +66,7 @@ export default async function AboutPage() {
           </p>
         </div>
       )}
+      </div>
     </div>
   );
 }

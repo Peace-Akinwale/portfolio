@@ -4,16 +4,16 @@
 
 :root {
   /* Light mode — Electric Teal + Rose: fresh, modern, energetic */
-  --background: #ffffff;
-  --foreground: #0a0a0a;
-  --muted: #f0fdfa;
-  --muted-foreground: #4a5a58;
-  --border: #d1e7e4;
-  --accent: #0d9488;
+  --background: #f8f0e3;
+  --foreground: #130f0d;
+  --muted: #efe2cd;
+  --muted-foreground: #5f5449;
+  --border: #d2bea0;
+  --accent: #64734f;
   --accent-foreground: #ffffff;
-  --accent2: #e11d48;
-  --navy: #0a0a0a;
-  --orange: #e11d48;
+  --accent2: #b55e3d;
+  --navy: #130f0d;
+  --orange: #b55e3d;
 
   /* Typography */
   --font-serif: Georgia, Cambria, "Times New Roman", Times, serif;
@@ -41,31 +41,31 @@
 
 /* Dark mode */
 [data-theme="dark"] {
-  --background: #0a0f0e;
-  --foreground: #f0f0f0;
-  --muted: #0f1a18;
-  --muted-foreground: #8a9e9b;
-  --border: #1e3330;
-  --accent: #2dd4bf;
-  --accent-foreground: #0a0a0a;
-  --accent2: #fb7185;
-  --navy: #f0f0f0;
-  --orange: #fb7185;
+  --background: #1d1814;
+  --foreground: #f5ecdf;
+  --muted: #29211b;
+  --muted-foreground: #c7b29c;
+  --border: #49382d;
+  --accent: #97a57d;
+  --accent-foreground: #171411;
+  --accent2: #d38561;
+  --navy: #f5ecdf;
+  --orange: #d38561;
 }
 
 /* Auto dark mode (system preference) */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --background: #0a0f0e;
-    --foreground: #f0f0f0;
-    --muted: #0f1a18;
-    --muted-foreground: #8a9e9b;
-    --border: #1e3330;
-    --accent: #2dd4bf;
-    --accent-foreground: #0a0a0a;
-    --accent2: #fb7185;
-    --navy: #f0f0f0;
-    --orange: #fb7185;
+    --background: #1d1814;
+    --foreground: #f5ecdf;
+    --muted: #29211b;
+    --muted-foreground: #c7b29c;
+    --border: #49382d;
+    --accent: #97a57d;
+    --accent-foreground: #171411;
+    --accent2: #d38561;
+    --navy: #f5ecdf;
+    --orange: #d38561;
   }
 }
 
@@ -79,7 +79,9 @@ html {
 }
 
 body {
-  background: var(--background);
+  background:
+    radial-gradient(circle at top, rgba(181, 94, 61, 0.09), transparent 22%),
+    linear-gradient(180deg, color-mix(in srgb, var(--background) 96%, #fffaf3 4%) 0%, var(--background) 58%, color-mix(in srgb, var(--background) 90%, #f0e1ca 10%) 100%);
   color: var(--foreground);
   font-family: var(--font-sans);
   font-size: 16px;
@@ -218,15 +220,15 @@ h3 {
 }
 
 .prose pre {
-  background: #f8f5f1;
-  color: #1e293b;
+  background: #f0e1cf;
+  color: #1e1814;
   padding: 1.25rem 1.5rem;
   border-radius: 8px;
   overflow-x: auto;
   margin: 1.5rem 0;
   font-size: 0.875rem;
   line-height: 1.7;
-  border: 1px solid #e2ddd7;
+  border: 1px solid #d2bea6;
 }
 
 .prose pre code {
@@ -258,9 +260,9 @@ h3 {
   width: 2rem;
   height: 2rem;
   padding: 0;
-  color: #94a3b8;
+  color: #7d6a57;
   background: transparent;
-  border: 1px solid #d1ccc6;
+  border: 1px solid #c8b293;
   border-radius: 6px;
   cursor: pointer;
   opacity: 0;
@@ -273,8 +275,8 @@ h3 {
 }
 
 .copy-btn:hover {
-  background: #e8e3dd;
-  color: #475569;
+  background: #e9d7c3;
+  color: #4d4138;
 }
 
 .copy-btn.copied {
@@ -285,20 +287,20 @@ h3 {
 /* Dark mode code blocks */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) .prose pre {
-    background: #0f1a18;
-    color: #f0f0f0;
-    border-color: #1e3330;
+    background: #29211b;
+    color: #f5ecdf;
+    border-color: #49382d;
   }
 
   :root:not([data-theme="light"]) .copy-btn {
-    color: #94a3b8;
-    border-color: #4a5568;
+    color: #cfb8a0;
+    border-color: #695244;
     background: transparent;
   }
 
   :root:not([data-theme="light"]) .copy-btn:hover {
-    background: #2d3748;
-    color: #e2e8f0;
+    background: #3c3027;
+    color: #f5ecdf;
   }
 
   :root:not([data-theme="light"]) .copy-btn.copied {

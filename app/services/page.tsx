@@ -3,9 +3,15 @@ import type { Metadata } from 'next';
 import { getFaviconUrl } from '@/lib/ogImage';
 
 export const metadata: Metadata = {
-  title: 'Services | Peace Akinwale',
+  title: 'B2B SaaS Content Writer Services | Peace Akinwale',
   description:
-    'Product-led B2B SaaS content and AI-powered editorial systems. Content refreshes, net new articles, monthly retainers, and custom automation.',
+    'B2B SaaS content writer services: product-led articles, content refreshes, BOFU blog posts, and AI-supported editorial systems for software companies.',
+  keywords: [
+    'B2B SaaS content writer',
+    'B2B SaaS content writer services',
+    'product-led content writer',
+    'SaaS content refresh services',
+  ],
 };
 
 /* ─── Static data ────────────────────────────────────────── */
@@ -132,12 +138,13 @@ export default function ServicesPage() {
     <>
       {/* ── Hero ───────────────────────────────────────── */}
       <section className="bg-background">
-        <div className="max-w-3xl mx-auto px-6 pt-16 sm:pt-24 pb-16">
+        <div className="max-w-7xl mx-auto px-6 pt-16 sm:pt-24 pb-16">
+          <div className="max-w-3xl">
           <p
             className="text-xs font-bold uppercase tracking-[0.15em] mb-5"
             style={{ color: 'var(--accent)' }}
           >
-            Organic SaaS Content Marketer
+            B2B SaaS Content Writer
           </p>
           <h1
             className="text-3xl sm:text-4xl md:text-5xl font-extrabold leading-[1.1] mb-6 text-foreground"
@@ -146,7 +153,7 @@ export default function ServicesPage() {
             Product-led content for B2B&nbsp;SaaS
           </h1>
           <p className="text-base sm:text-lg leading-relaxed text-muted-foreground max-w-xl mb-4">
-            I write in a way that naturally shows your product in action, and I optimize with long-tail keywords to improve our chances of ranking on the SERP and LLM search engines.
+            If you need a B2B SaaS content writer, I write in a way that naturally shows your product in action and improves your chances of ranking in Google and showing up in LLM search.
           </p>
           <p className="text-base sm:text-lg leading-relaxed text-muted-foreground max-w-xl mb-10">
             I also build lightweight automations to take the manual work off your plate so you can focus on higher-stakes decisions.
@@ -170,12 +177,13 @@ export default function ServicesPage() {
               Get in touch
             </Link>
           </div>
+          </div>
         </div>
       </section>
 
       {/* ── Is This You? ───────────────────────────────── */}
       <section className="border-t border-border bg-background">
-        <div className="max-w-4xl mx-auto px-6 py-16 sm:py-20">
+        <div className="max-w-7xl mx-auto px-6 py-16 sm:py-20">
           <p
             className="text-xs font-bold uppercase tracking-[0.15em] mb-4"
             style={{ color: 'var(--accent)' }}
@@ -243,7 +251,7 @@ export default function ServicesPage() {
 
       {/* ── Services / Pricing ─────────────────────────── */}
       <section className="bg-background">
-        <div className="max-w-4xl mx-auto px-6 py-20 sm:py-24">
+        <div className="max-w-7xl mx-auto px-6 py-20 sm:py-24">
           <p
             className="text-xs font-bold uppercase tracking-[0.15em] mb-4"
             style={{ color: 'var(--accent)' }}
@@ -266,11 +274,13 @@ export default function ServicesPage() {
               <div
                 key={s.tag}
                 className={`rounded-xl border p-7 flex flex-col transition-shadow hover:shadow-md ${
-                  s.featured
-                    ? 'border-accent/40 ring-1 ring-accent/10'
-                    : 'border-border'
+                  s.tag === 'Monthly Retainer'
+                    ? 'border-accent/40 ring-1 ring-accent/10 md:order-2'
+                    : s.tag === 'Net New Article'
+                      ? 'border-border md:order-3'
+                      : 'border-border md:order-1'
                 }`}
-                style={{ background: s.featured ? 'var(--muted)' : 'var(--background)' }}
+                style={{ background: s.tag === 'Monthly Retainer' ? 'var(--muted)' : 'var(--background)' }}
               >
                 <span
                   className="text-[10px] font-bold uppercase tracking-[0.12em] mb-5 block"
@@ -278,10 +288,15 @@ export default function ServicesPage() {
                 >
                   {s.tag}
                 </span>
+                {s.tag === 'Monthly Retainer' && (
+                  <span className="inline-flex items-center self-start rounded-full border border-accent/20 bg-background px-3 py-1 text-[10px] font-bold uppercase tracking-[0.12em] text-foreground mb-5">
+                    Most common choice
+                  </span>
+                )}
                 <p className="text-sm font-bold text-foreground mb-3">{s.name}</p>
                 <p
                   className="text-3xl font-extrabold mb-1"
-                  style={{ letterSpacing: '-0.03em', color: s.featured ? 'var(--accent)' : 'var(--foreground)' }}
+                  style={{ letterSpacing: '-0.03em', color: s.tag === 'Monthly Retainer' ? 'var(--accent)' : 'var(--foreground)' }}
                 >
                   {s.price}
                 </p>
@@ -365,7 +380,7 @@ export default function ServicesPage() {
 
       {/* ── Who I write for ───────────────────────────── */}
       <section className="border-t border-border" style={{ background: 'var(--muted)' }}>
-        <div className="max-w-4xl mx-auto px-6 py-16 sm:py-20">
+        <div className="max-w-7xl mx-auto px-6 py-16 sm:py-20">
           <p
             className="text-xs font-bold uppercase tracking-[0.15em] mb-10"
             style={{ color: 'var(--accent)' }}
@@ -392,7 +407,7 @@ export default function ServicesPage() {
 
       {/* ── Client logos ───────────────────────────────── */}
       <section className="border-y border-border" style={{ background: 'var(--muted)' }}>
-        <div className="max-w-4xl mx-auto px-6 py-10">
+        <div className="max-w-7xl mx-auto px-6 py-10">
           <div className="flex items-center gap-4 mb-8">
             <span className="flex-1 h-px bg-border" />
             <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-muted-foreground whitespace-nowrap">
@@ -426,7 +441,8 @@ export default function ServicesPage() {
 
       {/* ── Pull quote ─────────────────────────────────── */}
       <section style={{ background: 'var(--muted)' }}>
-        <div className="max-w-3xl mx-auto px-6 py-10 text-center">
+        <div className="max-w-7xl mx-auto px-6 py-10">
+          <div className="max-w-3xl mx-auto text-center">
           <p
             className="text-base sm:text-lg leading-relaxed text-foreground mb-3"
             style={{ fontFamily: 'var(--font-serif)' }}
@@ -436,12 +452,13 @@ export default function ServicesPage() {
           <p className="text-xs text-muted-foreground">
             Regine Garcia &middot; Head of Content, ManyRequests
           </p>
+          </div>
         </div>
       </section>
 
       {/* ── Results strip ──────────────────────────────── */}
       <section className="border-t border-border" style={{ background: 'var(--muted)' }}>
-        <div className="max-w-4xl mx-auto px-6 py-12 sm:py-16">
+        <div className="max-w-7xl mx-auto px-6 py-12 sm:py-16">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
             <div>
               <p
@@ -485,7 +502,8 @@ export default function ServicesPage() {
 
       {/* ── Nathan pull quote ──────────────────────────── */}
       <section style={{ background: 'var(--muted)' }}>
-        <div className="max-w-3xl mx-auto px-6 py-10 text-center">
+        <div className="max-w-7xl mx-auto px-6 py-10">
+          <div className="max-w-3xl mx-auto text-center">
           <p
             className="text-base sm:text-lg leading-relaxed text-foreground mb-3"
             style={{ fontFamily: 'var(--font-serif)' }}
@@ -495,12 +513,14 @@ export default function ServicesPage() {
           <p className="text-xs text-muted-foreground">
             Nathan Vander Heyden &middot; Head of Marketing, Marker.io
           </p>
+          </div>
         </div>
       </section>
 
       {/* ── How I think (scannable boxes) ─────────────── */}
       <section className="bg-background">
-        <div className="max-w-3xl mx-auto px-6 py-20 sm:py-24">
+        <div className="max-w-7xl mx-auto px-6 py-20 sm:py-24">
+          <div className="max-w-4xl">
           <p
             className="text-xs font-bold uppercase tracking-[0.15em] mb-4"
             style={{ color: 'var(--accent)' }}
@@ -568,12 +588,14 @@ export default function ServicesPage() {
             they&rsquo;re how I make sure a piece is as specific and resonant as it needs to be.
             What AI doesn&rsquo;t do is write articles for me.
           </p>
+          </div>
         </div>
       </section>
 
       {/* ── Testimonials ───────────────────────────────── */}
       <section style={{ background: 'var(--muted)' }}>
-        <div className="max-w-3xl mx-auto px-6 py-20 sm:py-24">
+        <div className="max-w-7xl mx-auto px-6 py-20 sm:py-24">
+          <div className="max-w-5xl">
           <p
             className="text-xs font-bold uppercase tracking-[0.15em] mb-4"
             style={{ color: 'var(--accent)' }}
@@ -631,12 +653,13 @@ export default function ServicesPage() {
               </div>
             ))}
           </div>
+          </div>
         </div>
       </section>
 
       {/* ── Process ────────────────────────────────────── */}
       <section className="border-t border-border bg-background">
-        <div className="max-w-4xl mx-auto px-6 py-20 sm:py-24">
+        <div className="max-w-7xl mx-auto px-6 py-20 sm:py-24">
           <p
             className="text-xs font-bold uppercase tracking-[0.15em] mb-4"
             style={{ color: 'var(--accent)' }}
@@ -689,7 +712,8 @@ export default function ServicesPage() {
 
       {/* ── FAQ ────────────────────────────────────────── */}
       <section className="border-t border-border bg-background">
-        <div className="max-w-3xl mx-auto px-6 py-20 sm:py-24">
+        <div className="max-w-7xl mx-auto px-6 py-20 sm:py-24">
+          <div className="max-w-3xl">
           <h2
             className="text-lg sm:text-xl font-extrabold mb-10 text-foreground"
             style={{ letterSpacing: '-0.02em' }}
@@ -699,7 +723,7 @@ export default function ServicesPage() {
           <div className="flex flex-col">
             {[
               {
-                q: 'Do you use AI to write?',
+                q: 'Do you use AI to write your draft?',
                 a: 'No, I don\u2019t. I use AI as a research assistant and to automate part of my process. It helps me process research, gut-check my structure, tweak poor sentences, and move faster. The thinking, the opinions, the product depth, and the actual writing are mine.',
               },
               {
@@ -734,41 +758,44 @@ export default function ServicesPage() {
               </details>
             ))}
           </div>
+          </div>
         </div>
       </section>
 
       {/* ── CTA ────────────────────────────────────────── */}
       <section className="border-t border-border bg-background">
-        <div className="max-w-3xl mx-auto px-6 py-20 sm:py-24">
-          <span className="inline-flex items-center gap-2 text-xs font-semibold px-3 py-1.5 rounded-full border border-border text-muted-foreground mb-8">
-            <span className="w-1.5 h-1.5 rounded-full bg-green-500 inline-block" />
-            Currently accepting 2 new clients
-          </span>
-          <h2
-            className="text-2xl sm:text-3xl font-extrabold mb-4 text-foreground"
-            style={{ letterSpacing: '-0.02em' }}
-          >
-            Ready to hire a B2B SaaS content writer?
-          </h2>
-          <p className="text-base leading-relaxed text-muted-foreground mb-10 max-w-xl">
-            Let&rsquo;s talk about your content goals. Book a free 30-minute discovery call. No commitment, no pressure.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-3">
-            <a
-              href="https://calendly.com/akindayopeaceakinwale/30min"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-block px-7 py-3 text-xs font-bold uppercase tracking-[0.08em] rounded-md transition-all hover:opacity-90 text-center"
-              style={{ background: 'var(--accent)', color: '#fff' }}
+        <div className="max-w-7xl mx-auto px-6 py-20 sm:py-24">
+          <div className="max-w-3xl">
+            <span className="inline-flex items-center gap-2 text-xs font-semibold px-3 py-1.5 rounded-full border border-border text-muted-foreground mb-8">
+              <span className="w-1.5 h-1.5 rounded-full bg-green-500 inline-block" />
+              Currently accepting 2 new clients
+            </span>
+            <h2
+              className="text-2xl sm:text-3xl font-extrabold mb-4 text-foreground"
+              style={{ letterSpacing: '-0.02em' }}
             >
-              Book a free discovery call &rarr;
-            </a>
-            <Link
-              href="/contact"
-              className="inline-block px-7 py-3 text-xs font-bold uppercase tracking-[0.08em] rounded-md border border-border text-foreground transition-all hover:bg-muted text-center"
-            >
-              Send a message
-            </Link>
+              Ready to hire a B2B SaaS content writer?
+            </h2>
+            <p className="text-base leading-relaxed text-muted-foreground mb-10 max-w-xl">
+              Let&rsquo;s talk about your content goals. Book a free 30-minute discovery call. No commitment, no pressure.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-3">
+              <a
+                href="https://calendly.com/akindayopeaceakinwale/30min"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-block px-7 py-3 text-xs font-bold uppercase tracking-[0.08em] rounded-md transition-all hover:opacity-90 text-center"
+                style={{ background: 'var(--accent)', color: '#fff' }}
+              >
+                Book a free discovery call &rarr;
+              </a>
+              <Link
+                href="/contact"
+                className="inline-block px-7 py-3 text-xs font-bold uppercase tracking-[0.08em] rounded-md border border-border text-foreground transition-all hover:bg-muted text-center"
+              >
+                Send a message
+              </Link>
+            </div>
           </div>
         </div>
       </section>

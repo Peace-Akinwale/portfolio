@@ -60,7 +60,8 @@ export default function ContactPage() {
   };
 
   return (
-    <div className="max-w-3xl mx-auto px-6 py-20 sm:py-28">
+    <div className="max-w-7xl mx-auto px-6 py-20 sm:py-28">
+      <div className="max-w-3xl mx-auto">
 
       {/* ── Header ─────────────────────────────────── */}
       <div className="mb-10">
@@ -187,6 +188,7 @@ export default function ContactPage() {
           </button>
         </form>
       )}
+      </div>
     </div>
   );
 }
