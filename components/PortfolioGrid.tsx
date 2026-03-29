@@ -77,7 +77,7 @@ export function PortfolioGrid({ parsed, pageTitle, ogImages = {} }: PortfolioGri
               />
             )}
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
               {section.projects.map((project, j) => {
                 const projectDomain = project.link ? getDomain(project.link) : null;
                 const favicon = projectDomain ? getFaviconUrl(projectDomain) : sectionFavicon;
