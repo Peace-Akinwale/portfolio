@@ -16,6 +16,7 @@ interface SavePayload {
   baseResults?: CareerResultSummary[] | null;
   baseTopScore?: number | null;
   finalTopScore?: number | null;
+  moatResults?: CareerResultSummary[] | null;
 }
 
 async function sendSlackNotification(data: {
@@ -65,6 +66,7 @@ function insertErrorMentionsMissingRefinementColumns(error: unknown): boolean {
     'base_results',
     'base_top_score',
     'final_top_score',
+    'moat_results',
   ].some((column) => message.includes(column));
 }
 
@@ -84,6 +86,7 @@ export async function POST(req: Request) {
       baseResults = null,
       baseTopScore = null,
       finalTopScore = null,
+      moatResults = null,
     } = body;
 
     if (!answers || !results) {
@@ -113,6 +116,7 @@ export async function POST(req: Request) {
       base_results: baseResults,
       base_top_score: baseTopScore,
       final_top_score: finalTopScore,
+      moat_results: moatResults,
     };
 
     let insertError: unknown = null;

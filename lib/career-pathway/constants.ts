@@ -25,6 +25,8 @@ export const POINTS = {
   VALUES_MATCH: 5,
   AI_PREF_MATCH: 5,
   AI_PREF_MISMATCH: -3,
+  STRATEGY_MATCH: 6,
+  AI_WORKFLOW_WEAK_FIT: -8,
 } as const;
 
 export const STORAGE_TTL = {

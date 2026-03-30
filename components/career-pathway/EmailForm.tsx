@@ -5,11 +5,12 @@ import type { ScoredCareer, Answers } from '@/lib/career-pathway/types';
 
 interface Props {
   results: ScoredCareer[];
+  moatResults?: ScoredCareer[];
   answers: Answers;
   name?: string;
 }
 
-export function EmailForm({ results, answers, name }: Props) {
+export function EmailForm({ results, moatResults = [], answers, name }: Props) {
   const [email, setEmail] = useState('');
   const [status, setStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle');
 
@@ -21,7 +22,7 @@ export function EmailForm({ results, answers, name }: Props) {
       const res = await fetch('/api/career-pathway/email', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, name, results, answers }),
+        body: JSON.stringify({ email, name, results, moatResults, answers }),
       });
       setStatus(res.ok ? 'sent' : 'error');
     } catch {

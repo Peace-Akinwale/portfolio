@@ -32,7 +32,7 @@ const CAREER_TITLES: Record<string, string> = {
   'ai-workflow': 'AI Workflow Specialist / AI Operations',
 };
 
-const RANK_LABEL = ['Best Fit', 'Strong Alternate', 'Worth Exploring', 'Worth Exploring'] as const;
+const RANK_LABEL = ['Best Fit', 'Best Alternative', 'Worth Exploring', 'Worth Exploring'] as const;
 
 function ResultsBlock({ title, results }: { title: string; results: CareerResultSummary[] }) {
   return (
@@ -86,6 +86,7 @@ export default async function SubmissionPage({ params }: { params: Promise<{ id:
   if (error || !data) notFound();
 
   const results = (data.results ?? []) as CareerResultSummary[];
+  const moatResults = (data.moat_results ?? []) as CareerResultSummary[];
   const baseResults = (data.base_results ?? []) as CareerResultSummary[];
   const answers = (data.answers ?? {}) as Answers;
   const refinementTriggered = Boolean(data.refinement_triggered);
@@ -120,6 +121,10 @@ export default async function SubmissionPage({ params }: { params: Promise<{ id:
       </div>
 
       <ResultsBlock title="Final top matches" results={results} />
+
+      {moatResults.length > 0 && (
+        <ResultsBlock title="Long-term moat path" results={moatResults} />
+      )}
 
       {refinementTriggered && baseResults.length > 0 && (
         <ResultsBlock title="Base top matches before refinement" results={baseResults} />

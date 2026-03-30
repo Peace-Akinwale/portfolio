@@ -37,9 +37,12 @@ function buildTranscriptHtml(answers: Answers): string {
     .join('');
 }
 
-function buildEmailHtml(name: string, results: ScoredCareer[], answers: Answers): string {
-  const rankLabel = ['Best Fit', 'Strong Alternate', 'Worth Exploring', 'Worth Exploring'];
-
+function buildCareerBlocks(
+  results: ScoredCareer[],
+  rankLabel: string[],
+  sectionTitle: string,
+  intro: string
+): string {
   const careerBlocks = results
     .map((result, index) => {
       const career = result.career;
@@ -94,12 +97,35 @@ function buildEmailHtml(name: string, results: ScoredCareer[], answers: Answers)
     .join('');
 
   return `
+    <h2 style="font-size:16px;letter-spacing:.08em;text-transform:uppercase;color:#888;margin:0 0 8px;">${sectionTitle}</h2>
+    <p style="margin:0 0 16px;color:#555;font-size:14px;line-height:1.6;">${intro}</p>
+    ${careerBlocks}
+  `;
+}
+
+function buildEmailHtml(name: string, results: ScoredCareer[], moatResults: ScoredCareer[], answers: Answers): string {
+  const startNowSection = buildCareerBlocks(
+    results,
+    ['Best Fit', 'Best Alternative', 'Worth Exploring', 'Worth Exploring'],
+    'Best path to start now',
+    'These matches respect your current timeline, constraints, and the fastest realistic path to getting paid.'
+  );
+  const moatSection = moatResults.length
+    ? buildCareerBlocks(
+        moatResults,
+        ['Long-Term Moat', 'Moat Alternative', 'Worth Building Toward', 'Worth Building Toward'],
+        'Stronger long-term moat path',
+        'These options are tougher and slower to ramp into, but they are generally more defensible if you can handle a longer learning curve.'
+      )
+    : '';
+
+  return `
     <div style="font-family:system-ui,sans-serif;max-width:640px;margin:0 auto;color:#111;">
       <h2 style="font-size:22px;margin:0 0 8px;">Hi ${name || 'there'},</h2>
       <p style="color:#555;margin:0 0 24px;">Here are your Career Pathway results.</p>
       <hr style="border:none;border-top:1px solid #eee;margin:0 0 24px;">
-      <h2 style="font-size:16px;letter-spacing:.08em;text-transform:uppercase;color:#888;margin:0 0 16px;">Your Top Matches</h2>
-      ${careerBlocks}
+      ${startNowSection}
+      ${moatSection ? `<hr style="border:none;border-top:1px solid #eee;margin:24px 0;">${moatSection}` : ''}
       <hr style="border:none;border-top:1px solid #eee;margin:24px 0;">
       <h2 style="font-size:16px;letter-spacing:.08em;text-transform:uppercase;color:#888;margin:0 0 12px;">Your Answers</h2>
       ${buildTranscriptHtml(answers)}
@@ -117,10 +143,11 @@ function buildEmailHtml(name: string, results: ScoredCareer[], answers: Answers)
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { email, name, results, answers } = body as {
+    const { email, name, results, moatResults, answers } = body as {
       email?: string;
       name?: string;
       results?: ScoredCareer[];
+      moatResults?: ScoredCareer[];
       answers?: Answers;
     };
 
@@ -140,7 +167,7 @@ export async function POST(req: Request) {
       to: email,
       replyTo: process.env.ADMIN_EMAIL!,
       subject: `${name ? `${name}, your` : 'Your'} Career Pathway results`,
-      html: buildEmailHtml(name ?? '', results, answers ?? {}),
+      html: buildEmailHtml(name ?? '', results, moatResults ?? [], answers ?? {}),
     });
 
     return NextResponse.json({ success: true });

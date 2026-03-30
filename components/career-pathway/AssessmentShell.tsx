@@ -9,6 +9,7 @@ import {
   getResultConfidenceStyle,
   getTopScore,
   scoreAllCareers,
+  selectLongTermResults,
   selectTopFour,
   shouldTriggerRefinement,
   toCareerResultSummaries,
@@ -20,6 +21,18 @@ import { WelcomeForm } from './WelcomeForm';
 import { QuestionCard } from './QuestionCard';
 
 type Phase = 'check' | 'welcome' | 'resume-prompt' | 'questions' | 'refinement' | 'scoring';
+
+function normalizeStoredAnswers(rawAnswers: Answers | undefined): Answers {
+  if (!rawAnswers) return {};
+
+  const answers = { ...rawAnswers };
+  const a2 = answers.A2;
+  if (Array.isArray(a2)) {
+    answers.A2 = a2[0] ?? '';
+  }
+
+  return answers;
+}
 
 export function AssessmentShell() {
   const router = useRouter();
@@ -41,9 +54,10 @@ export function AssessmentShell() {
 
     const progress = storageRead<SessionProgress>(STORAGE_KEYS.PROGRESS);
     if (progress) {
+      const normalizedAnswers = normalizeStoredAnswers(progress.answers);
       setName(progress.name ?? '');
       setDiscoverySource(progress.discoverySource ?? '');
-      setAnswers(progress.answers ?? {});
+      setAnswers(normalizedAnswers);
       setCurrentIndex(progress.currentQuestion ?? 0);
       setResumeStage(progress.stage ?? 'questions');
 
@@ -66,7 +80,7 @@ export function AssessmentShell() {
       {
         name,
         discoverySource,
-        answers: nextAnswers,
+        answers: normalizeStoredAnswers(nextAnswers),
         currentQuestion: nextIndex,
         stage,
       },
@@ -150,11 +164,16 @@ export function AssessmentShell() {
     const finalResults = selectTopFour(finalScores);
     const finalTopScore = getTopScore(finalScores);
     const confidenceStyle = getResultConfidenceStyle(finalResults);
+    const moatBaseScores = scoreAllCareers(finalAnswers, 'long-term');
+    const moatScores = refinementTriggered ? applyRefinementBonuses(moatBaseScores, finalAnswers) : moatBaseScores;
+    const moatResults = selectLongTermResults(moatScores);
+    const moatConfidenceStyle = getResultConfidenceStyle(moatResults);
 
     storageWrite(
       STORAGE_KEYS.RESULTS,
       {
         results: finalResults,
+        moatResults,
         answers: finalAnswers,
         completedAt: new Date().toISOString(),
         name,
@@ -163,6 +182,7 @@ export function AssessmentShell() {
         baseTopScore,
         finalTopScore,
         confidenceStyle,
+        moatConfidenceStyle,
       },
       STORAGE_TTL.RESULTS
     );
@@ -189,6 +209,7 @@ export function AssessmentShell() {
         baseResults: toCareerResultSummaries(baseResults),
         baseTopScore,
         finalTopScore,
+        moatResults: toCareerResultSummaries(moatResults),
       }),
     }).catch(() => {
       // Silently ignore analytics failures.

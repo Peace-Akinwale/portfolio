@@ -10,11 +10,20 @@ interface Props {
   userName?: string;
   answers?: Answers;
   familyPressureHigh?: boolean;
+  labelOverrides?: readonly string[];
+  forceTimingNote?: boolean;
 }
 
-const rankLabel = ['Best Fit', 'Strong Alternate', 'Worth Exploring', 'Worth Exploring'] as const;
+const rankLabel = ['Best Fit', 'Best Alternative', 'Worth Exploring', 'Worth Exploring'] as const;
 
-export function ResultCard({ result, userName, answers = {}, familyPressureHigh = false }: Props) {
+export function ResultCard({
+  result,
+  userName,
+  answers = {},
+  familyPressureHigh = false,
+  labelOverrides,
+  forceTimingNote = false,
+}: Props) {
   const [expanded, setExpanded] = useState(false);
   const { career, rank } = result;
   const whyItFits = resolveWhyItFits(career, answers, userName);
@@ -29,8 +38,8 @@ export function ResultCard({ result, userName, answers = {}, familyPressureHigh 
   };
   const userMaxMonths = urgencyMaxMonths[urgentAnswer ?? ''] ?? 999;
   const careerExceedsTimeline = career.timeToFirstIncome.min > userMaxMonths;
-  const showTimingNote = familyPressureHigh && careerExceedsTimeline && rank >= 3;
-  const label = rankLabel[rank - 1];
+  const showTimingNote = familyPressureHigh && careerExceedsTimeline && (forceTimingNote || rank >= 3);
+  const label = labelOverrides?.[rank - 1] ?? rankLabel[rank - 1];
   const isBest = rank === 1;
 
   return (

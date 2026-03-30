@@ -17,6 +17,7 @@ export type PortfolioImportance = 'low' | 'moderate' | 'high' | 'critical';
 export type EarningCeiling = 'moderate' | 'high' | 'very-high';
 export type AssessmentStage = 'questions' | 'refinement';
 export type ResultConfidenceStyle = 'strong' | 'reasonably-strong' | 'exploratory';
+export type RecommendationTrack = 'immediate' | 'long-term';
 
 export interface IncomeRange {
   min: number;
@@ -115,6 +116,7 @@ export interface SessionProgress {
 
 export interface SessionResults {
   results: ScoredCareer[];
+  moatResults?: ScoredCareer[];
   answers: Answers;
   completedAt: string;
   name: string;
@@ -123,6 +125,7 @@ export interface SessionResults {
   baseTopScore?: number;
   finalTopScore?: number;
   confidenceStyle?: ResultConfidenceStyle;
+  moatConfidenceStyle?: ResultConfidenceStyle;
 }
 
 export interface RefinementMetadata {

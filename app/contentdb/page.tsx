@@ -114,7 +114,7 @@ export default function ContentDbPage() {
 
       <header className="mb-14 flex flex-col gap-6">
         <p className="text-xs font-bold uppercase tracking-[0.16em]" style={{ color: 'var(--accent)' }}>
-          Flagship Product / System Project
+          Flagship Product
         </p>
         <div className="flex flex-col gap-4">
           <h1 className="text-4xl font-bold leading-tight md:text-5xl lg:text-6xl">contentDB</h1>

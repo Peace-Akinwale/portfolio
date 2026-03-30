@@ -32,20 +32,26 @@ export default function ResultsPage() {
 
   if (!data) return null;
 
-  const { results, name, refinementTriggered, confidenceStyle = 'reasonably-strong' } = data;
+  const { results, moatResults = [], name, refinementTriggered, confidenceStyle = 'reasonably-strong' } = data;
   const displayName = name ? `, ${name}` : '';
   const familyPressureAnswer = answers.A4 as string | undefined;
   const familyPressureHigh = familyPressureAnswer === 'high-pressure' || familyPressureAnswer === 'some-pressure';
   const heading =
     confidenceStyle === 'exploratory'
       ? `Hey${displayName}, here are the directions worth testing next.`
-      : results.length < 4
-        ? `Hey${displayName}, we found ${results.length} strong match${results.length !== 1 ? 'es' : ''}.`
-        : `Hey${displayName}, here's what we found.`;
+      : `Hey${displayName}, here's the faster path now and the stronger path if you want to build for the long term.`;
   const supportingCopy =
     confidenceStyle === 'exploratory'
-      ? 'These are the most promising directions to test next. Your answers point to a few viable paths rather than one clear winner.'
-      : 'These are options, not directives. Explore them, then take one action in the next 48 hours.';
+      ? "Your answers point to a few viable paths. We're showing both what looks most realistic to start soon and what could compound better if you can take a harder route."
+      : "We're separating the easiest realistic path to start from the more demanding careers that can give you a stronger long-term moat.";
+  const visibleResults = results.slice(0, 2);
+  const visibleMoatResults = moatResults.slice(0, 2);
+  const moatLabelOverrides = [
+    'Long-Term Moat',
+    'Moat Alternative',
+    'Worth Building Toward',
+    'Worth Building Toward',
+  ] as const;
 
   return (
     <div className="flex flex-col gap-10">
@@ -64,8 +70,14 @@ export default function ResultsPage() {
         )}
       </div>
 
-      <div className="flex flex-col gap-5">
-        {results.map((result) => (
+      <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-1">
+          <h2 className="text-sm font-bold uppercase tracking-[0.12em] text-muted-foreground">Best path to start now</h2>
+          <p className="text-sm text-muted-foreground">
+            These results respect your current constraints, timeline, and what looks most realistic to start earning from.
+          </p>
+        </div>
+        {visibleResults.map((result) => (
           <ResultCard
             key={result.career.id}
             result={result}
@@ -76,12 +88,35 @@ export default function ResultsPage() {
         ))}
       </div>
 
+      {visibleMoatResults.length > 0 && (
+        <div className="flex flex-col gap-5 border-t pt-5" style={{ borderColor: 'var(--border)' }}>
+          <div className="flex flex-col gap-1">
+            <h2 className="text-sm font-bold uppercase tracking-[0.12em] text-muted-foreground">Stronger long-term moat path</h2>
+            <p className="text-sm text-muted-foreground">
+              These are the tougher, more technical paths that look more defensible if you can absorb a longer ramp and more learning friction.
+            </p>
+          </div>
+
+          {visibleMoatResults.map((result) => (
+            <ResultCard
+              key={`moat-${result.career.id}`}
+              result={result}
+              userName={name}
+              answers={answers}
+              familyPressureHigh={familyPressureHigh}
+              labelOverrides={moatLabelOverrides}
+              forceTimingNote
+            />
+          ))}
+        </div>
+      )}
+
       <div className="flex flex-col gap-3 border-t pt-4" style={{ borderColor: 'var(--border)' }}>
         <h2 className="text-sm font-bold">Want a copy of these results?</h2>
         <p className="text-xs text-muted-foreground">
-          We&apos;ll send all 4 matches, why they fit, and your full answer transcript. No spam.
+          We&apos;ll send your start-now matches, long-term moat options, and your full answer transcript. No spam.
         </p>
-        <EmailForm results={results} answers={answers} name={name} />
+        <EmailForm results={visibleResults} moatResults={visibleMoatResults} answers={answers} name={name} />
       </div>
 
       <div className="flex flex-col gap-2 border-t pt-4 text-sm" style={{ borderColor: 'var(--border)' }}>

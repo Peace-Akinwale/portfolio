@@ -1,4 +1,12 @@
-import type { Answers, Career, CareerCluster, CareerResultSummary, ResultConfidenceStyle, ScoredCareer } from './types';
+import type {
+  Answers,
+  Career,
+  CareerCluster,
+  CareerResultSummary,
+  RecommendationTrack,
+  ResultConfidenceStyle,
+  ScoredCareer,
+} from './types';
 import { CAREERS } from './careers';
 import { QUESTIONS } from './questions';
 import {
@@ -78,11 +86,116 @@ function toArray(value: string | string[] | undefined): string[] {
   return Array.isArray(value) ? value : [value];
 }
 
+function getAiWorkflowReadiness(answers: Answers): number {
+  const a3 = new Set(toArray(answers.A3 as string | string[] | undefined));
+  const automationSignals = ['build-website-app', 'data-sense', 'project-track', 'explain-technical'];
+  const readinessChecks = [
+    automationSignals.some((signal) => a3.has(signal)),
+    ['technical', 'data-analysis'].includes((answers.B1 as string | undefined) ?? ''),
+    ['building', 'analysing'].includes((answers.B2 as string | undefined) ?? ''),
+    ['lean-into-ai', 'ai-as-tool'].includes((answers.E2 as string | undefined) ?? ''),
+    !['under5'].includes((answers.C3 as string | undefined) ?? ''),
+  ];
+
+  return readinessChecks.filter(Boolean).length;
+}
+
+function getTrackUrgencyScore(
+  career: Career,
+  c1: string,
+  familyPressureMultiplier: number,
+  track: RecommendationTrack
+): number {
+  const urgencyMaxMonths = INCOME_URGENCY_MAX_MONTHS[c1] ?? 999;
+  const timelineMatches = urgencyMaxMonths >= career.timeToFirstIncome.min;
+
+  if (track === 'long-term') {
+    if (timelineMatches) return Math.round(POINTS.INCOME_URGENCY_MATCH * 0.4);
+    return Math.round(POINTS.INCOME_URGENCY_MISMATCH * 0.35 * familyPressureMultiplier);
+  }
+
+  if (timelineMatches) return POINTS.INCOME_URGENCY_MATCH;
+  return Math.round(POINTS.INCOME_URGENCY_MISMATCH * familyPressureMultiplier);
+}
+
+function getTrackHoursScore(userHours: number, minHours: number, idealHours: number, track: RecommendationTrack): number {
+  if (userHours < minHours) {
+    return track === 'long-term' ? Math.round(POINTS.HOURS_LOW * 0.5) : POINTS.HOURS_LOW;
+  }
+  if (userHours >= idealHours) {
+    return track === 'long-term' ? Math.round(POINTS.HOURS_IDEAL * 0.6) : POINTS.HOURS_IDEAL;
+  }
+  return 0;
+}
+
+function getTrackCertScore(c5: string | undefined, requiresCertBudget: boolean, track: RecommendationTrack): number {
+  if (!requiresCertBudget) {
+    return track === 'long-term' ? 0 : POINTS.NO_CERT_BONUS;
+  }
+
+  if (c5 === 'cert-yes') return POINTS.CERT_FEASIBLE;
+  if (c5 === 'cert-maybe') return track === 'long-term' ? Math.round(POINTS.CERT_MAYBE * 0.5) : POINTS.CERT_MAYBE;
+  if (c5 === 'cert-no') return track === 'long-term' ? Math.round(POINTS.CERT_INFEASIBLE * 0.5) : POINTS.CERT_INFEASIBLE;
+  return 0;
+}
+
+function getStrategyAdjustment(career: Career, answers: Answers, track: RecommendationTrack): number {
+  const strategy = answers.E3 as string | undefined;
+  if (!strategy) return 0;
+
+  if (track === 'immediate') {
+    if (strategy === 'start-now') {
+      if (career.timeToFirstIncome.min <= 6) return POINTS.STRATEGY_MATCH;
+      if (career.timeToFirstIncome.min <= 12) return Math.round(POINTS.STRATEGY_MATCH * 0.5);
+      return -POINTS.STRATEGY_MATCH;
+    }
+    if (strategy === 'balanced') {
+      if (career.timeToFirstIncome.min <= 12) return Math.round(POINTS.STRATEGY_MATCH * 0.5);
+      if (career.timeToFirstIncome.min > 18) return -Math.round(POINTS.STRATEGY_MATCH * 0.5);
+    }
+    return 0;
+  }
+
+  if (strategy === 'long-term-moat') {
+    const isMoatCluster = career.cluster === 'technical' || career.cluster === 'data';
+    return isMoatCluster ? POINTS.STRATEGY_MATCH : -Math.round(POINTS.STRATEGY_MATCH * 0.5);
+  }
+  if (strategy === 'balanced' && (career.cluster === 'technical' || career.cluster === 'data')) {
+    return Math.round(POINTS.STRATEGY_MATCH * 0.5);
+  }
+  return 0;
+}
+
+function getLongTermMoatBonus(career: Career): number {
+  let bonus = 0;
+
+  if (career.earningCeiling === 'very-high') bonus += 10;
+  else if (career.earningCeiling === 'high') bonus += 6;
+
+  if (career.aiDisplacementRisk === 'low') bonus += 8;
+  else if (career.aiDisplacementRisk === 'low-medium') bonus += 5;
+  else if (career.aiDisplacementRisk === 'medium') bonus += 2;
+
+  if (career.humanJudgmentCentrality === 'very-high') bonus += 6;
+  else if (career.humanJudgmentCentrality === 'high') bonus += 4;
+  else if (career.humanJudgmentCentrality === 'medium-high') bonus += 2;
+
+  if (career.cluster === 'technical' || career.cluster === 'data') bonus += 6;
+
+  if (career.entryDifficulty === 'high' || career.entryDifficulty === 'medium-high') bonus += 3;
+  else if (career.entryDifficulty === 'medium') bonus += 2;
+
+  if (career.id === 'ai-workflow') bonus -= 6;
+
+  return bonus;
+}
+
 function scoreCareer(
   career: Career,
   answers: Answers,
   familyPressureMultiplier: number,
-  countryContext: 'collectivist' | 'individualist' | 'unknown'
+  countryContext: 'collectivist' | 'individualist' | 'unknown',
+  track: RecommendationTrack
 ): number {
   let score = 0;
   const weights = career.scoringWeights;
@@ -115,13 +228,7 @@ function scoreCareer(
 
   const c1 = answers.C1 as string | undefined;
   if (c1) {
-    const urgencyMaxMonths = INCOME_URGENCY_MAX_MONTHS[c1] ?? 999;
-    const timelineMatches = urgencyMaxMonths >= career.timeToFirstIncome.min;
-    if (timelineMatches) {
-      score += POINTS.INCOME_URGENCY_MATCH;
-    } else {
-      score += POINTS.INCOME_URGENCY_MISMATCH * familyPressureMultiplier;
-    }
+    score += getTrackUrgencyScore(career, c1, familyPressureMultiplier, track);
   }
 
   const c3 = answers.C3 as string | undefined;
@@ -133,18 +240,11 @@ function scoreCareer(
       '30plus': 35,
     };
     const userHours = hoursMap[c3] ?? 0;
-    if (userHours < weights.minHoursPerWeek) score += POINTS.HOURS_LOW;
-    else if (userHours >= weights.idealHoursPerWeek) score += POINTS.HOURS_IDEAL;
+    score += getTrackHoursScore(userHours, weights.minHoursPerWeek, weights.idealHoursPerWeek, track);
   }
 
   const c5 = answers.C5 as string | undefined;
-  if (weights.requiresCertBudget) {
-    if (c5 === 'cert-yes') score += POINTS.CERT_FEASIBLE;
-    else if (c5 === 'cert-maybe') score += POINTS.CERT_MAYBE;
-    else if (c5 === 'cert-no') score += POINTS.CERT_INFEASIBLE;
-  } else {
-    score += POINTS.NO_CERT_BONUS;
-  }
+  score += getTrackCertScore(c5, weights.requiresCertBudget, track);
 
   const c2 = answers.C2 as string | undefined;
   if (weights.requiresDegree && c2 && ['secondary', 'no-formal'].includes(c2)) {
@@ -182,10 +282,20 @@ function scoreCareer(
   if (e2 === 'human-central' && career.aiDisplacementRisk === 'high') score += POINTS.AI_PREF_MISMATCH;
   if (e2 === 'lean-into-ai' && career.id === 'ai-workflow') score += POINTS.AI_PREF_MATCH;
 
+  score += getStrategyAdjustment(career, answers, track);
+
+  if (career.id === 'ai-workflow' && getAiWorkflowReadiness(answers) < 3) {
+    score += POINTS.AI_WORKFLOW_WEAK_FIT;
+  }
+
+  if (track === 'long-term') {
+    score += getLongTermMoatBonus(career);
+  }
+
   return Math.max(0, score);
 }
 
-export function scoreAllCareers(answers: Answers): RawScore[] {
+export function scoreAllCareers(answers: Answers, track: RecommendationTrack = 'immediate'): RawScore[] {
   const country = (answers.W4 as string | undefined) ?? '';
   const countryContext = COLLECTIVIST_COUNTRIES.has(country)
     ? 'collectivist'
@@ -198,7 +308,7 @@ export function scoreAllCareers(answers: Answers): RawScore[] {
 
   return CAREERS.map((career) => ({
     career,
-    score: scoreCareer(career, answers, familyPressureMultiplier, countryContext),
+    score: scoreCareer(career, answers, familyPressureMultiplier, countryContext, track),
   }));
 }
 
@@ -284,9 +394,9 @@ export function resolveWhyItFits(career: Career, answers: Answers, userName?: st
     .replace('{problem}', problemOption ? `<em>${problemOption.label.toLowerCase()}</em>` : '');
 }
 
-export function selectTopFour(rawScores: RawScore[]): ScoredCareer[] {
+function buildRankedResults(rawScores: RawScore[], minimumScore: number): ScoredCareer[] {
   const sorted = [...rawScores].sort((a, b) => b.score - a.score);
-  const qualifying = sorted.filter((score) => score.score >= MIN_QUALIFYING_SCORE);
+  const qualifying = sorted.filter((score) => score.score >= minimumScore);
 
   if (qualifying.length === 0) return [];
 
@@ -320,6 +430,20 @@ export function selectTopFour(rawScores: RawScore[]): ScoredCareer[] {
   }
 
   return results;
+}
+
+export function selectTopFour(rawScores: RawScore[]): ScoredCareer[] {
+  return buildRankedResults(rawScores, MIN_QUALIFYING_SCORE);
+}
+
+export function selectLongTermResults(rawScores: RawScore[]): ScoredCareer[] {
+  const moatMinimumScore = MIN_QUALIFYING_SCORE - 4;
+  const moatCandidates = rawScores.filter(
+    (score) => score.career.cluster === 'technical' || score.career.cluster === 'data'
+  );
+  const preferredResults = buildRankedResults(moatCandidates, moatMinimumScore);
+  if (preferredResults.length > 0) return preferredResults;
+  return buildRankedResults(rawScores, moatMinimumScore);
 }
 
 export function getTopGap(results: Array<{ score: number }>): number {

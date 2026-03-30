@@ -20,7 +20,7 @@ export const QUESTIONS: Question[] = [
     id: 'A2',
     phase: 'Who You Are',
     text: 'Which school subjects did you actually enjoy?',
-    type: 'multi',
+    type: 'single',
     options: [
       { value: 'maths-sciences', label: 'Maths or Sciences' },
       { value: 'english-languages', label: 'English or Languages' },
@@ -159,12 +159,12 @@ export const QUESTIONS: Question[] = [
   {
     id: 'C1',
     phase: 'Your Situation',
-    text: 'How soon do you need to start earning from a new skill?',
+    text: 'How soon do you need a path you can realistically start monetizing, even if you are still learning?',
     type: 'single',
     options: [
-      { value: 'urgent', label: 'As soon as possible - 3 to 6 months' },
-      { value: 'within-year', label: 'Within a year is okay' },
-      { value: 'one-two-years', label: 'I can invest 1-2 years before earning' },
+      { value: 'urgent', label: 'I need something I can begin monetizing within 3 to 6 months' },
+      { value: 'within-year', label: 'Within a year is realistic for me' },
+      { value: 'one-two-years', label: 'I can invest 1 to 2 years before expecting meaningful income' },
       { value: 'no-rush', label: 'No rush right now' },
     ],
   },
@@ -266,6 +266,17 @@ export const QUESTIONS: Question[] = [
       { value: 'ai-neutral', label: "Haven't thought about it" },
     ],
   },
+  {
+    id: 'E3',
+    phase: 'What You Value',
+    text: 'Which tradeoff sounds most like you right now?',
+    type: 'single',
+    options: [
+      { value: 'start-now', label: 'I need the fastest realistic path to income' },
+      { value: 'balanced', label: 'I want something practical now with room to grow' },
+      { value: 'long-term-moat', label: 'I can take a harder path if it gives me stronger long-term upside' },
+    ],
+  },
 ];
 
 export const REFINEMENT_QUESTIONS: Question[] = [
@@ -348,7 +359,7 @@ export function getConditionalQuestion(b1Answer: string): Question | null {
 }
 
 export function buildQuestionSequence(answers: Answers): Question[] {
-  const universalIds = ['A1', 'A2', 'A3', 'A4', 'B1', 'B2', 'C1', 'C2', 'C3', 'C4', 'C5', 'D1', 'D2', 'E1', 'E2'];
+  const universalIds = ['A1', 'A2', 'A3', 'A4', 'B1', 'B2', 'C1', 'C2', 'C3', 'C4', 'C5', 'D1', 'D2', 'E1', 'E2', 'E3'];
   const universal = universalIds.map((id) => QUESTIONS.find((question) => question.id === id)!);
 
   const b1Answer = answers.B1 as string | undefined;

@@ -6,6 +6,7 @@ import {
   getResultConfidenceStyle,
   resolveWhyItFits,
   scoreAllCareers,
+  selectLongTermResults,
   selectTopFour,
   shouldTriggerRefinement,
 } from '../../lib/career-pathway/scoring';
@@ -75,6 +76,28 @@ function lowConfidenceProfile(): Answers {
   };
 }
 
+function longTermTechnicalProfile(): Answers {
+  return {
+    A1: ['analytical', 'tech-quick'],
+    A2: ['maths-sciences', 'tech-cs'],
+    A3: ['build-website-app', 'data-sense'],
+    A4: 'supported',
+    B1: 'technical',
+    B2: 'building',
+    B_TECH: 'backend',
+    C1: 'within-year',
+    C2: 'some-uni',
+    C3: '15to30',
+    C4: 'under20',
+    C5: 'cert-yes',
+    D1: 'solid',
+    D2: 'remote-yes',
+    E1: ['clear-growth', 'earning-well'],
+    E2: 'ai-as-tool',
+    E3: 'long-term-moat',
+  };
+}
+
 describe('scoreAllCareers', () => {
   it('returns a score for every career', () => {
     const scores = scoreAllCareers(frontendProfile());
@@ -115,6 +138,31 @@ describe('scoreAllCareers', () => {
   it('scores are all non-negative', () => {
     const scores = scoreAllCareers(frontendProfile());
     scores.forEach((score) => expect(score.score).toBeGreaterThanOrEqual(0));
+  });
+
+  it('does not let ai-workflow dominate when automation readiness is weak', () => {
+    const weakAiProfile: Answers = {
+      A1: ['creative'],
+      A2: ['art-design'],
+      A3: ['writing-paid'],
+      A4: 'high-pressure',
+      B1: 'docs-devrel',
+      B2: 'creating',
+      C1: 'urgent',
+      C2: 'degree',
+      C3: 'under5',
+      C4: 'zero',
+      C5: 'cert-no',
+      D1: 'solid',
+      D2: 'remote-yes',
+      E1: ['earning-well'],
+      E2: 'lean-into-ai',
+    };
+
+    const scores = scoreAllCareers(weakAiProfile);
+    const aiWorkflowScore = scores.find((score) => score.career.id === 'ai-workflow')!.score;
+    const technicalWriterScore = scores.find((score) => score.career.id === 'technical-writer')!.score;
+    expect(aiWorkflowScore).toBeLessThan(technicalWriterScore);
   });
 
   it('removes retired careers from the catalog', () => {
@@ -292,5 +340,12 @@ describe('selectTopFour', () => {
     const top4 = selectTopFour(scores);
     expect(top4.length).toBeGreaterThanOrEqual(0);
     expect(top4.length).toBeLessThanOrEqual(4);
+  });
+
+  it('selects technical or data careers for the long-term moat track when possible', () => {
+    const scores = scoreAllCareers(longTermTechnicalProfile(), 'long-term');
+    const moatResults = selectLongTermResults(scores);
+    expect(moatResults.length).toBeGreaterThan(0);
+    expect(['technical', 'data']).toContain(moatResults[0].career.cluster);
   });
 });
