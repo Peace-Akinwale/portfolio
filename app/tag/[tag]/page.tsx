@@ -1,4 +1,18 @@
 import { getPosts } from '@/lib/hashnode/client';
+import type { HashnodePost } from '@/lib/hashnode/types';
+
+async function getAllPosts(): Promise<HashnodePost[]> {
+  const all: HashnodePost[] = [];
+  let hasNextPage = true;
+  let after: string | undefined;
+  while (hasNextPage) {
+    const { posts, hasNextPage: more, endCursor } = await getPosts(50, after);
+    all.push(...posts);
+    hasNextPage = more;
+    after = endCursor;
+  }
+  return all;
+}
 import { ArticleCard } from '@/components/ArticleCard';
 import Link from 'next/link';
 import type { Metadata } from 'next';
@@ -21,7 +35,7 @@ export async function generateMetadata({ params }: TagPageProps): Promise<Metada
 
 export default async function TagPage({ params }: TagPageProps) {
   const { tag } = await params;
-  const { posts } = await getPosts(50);
+  const posts = await getAllPosts();
   const filtered = posts.filter((p) =>
     p.tags?.some((t) => t.slug === tag)
   );
