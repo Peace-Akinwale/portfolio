@@ -6,7 +6,6 @@ import { usePathname } from 'next/navigation';
 
 const PORTFOLIO_LINKS = [
   { href: '/portfolio', label: 'Portfolio', description: 'Featured writing work and selected client projects.' },
-  { href: '/projects', label: 'Projects', description: "Things I've built — AI tools and automations for real content marketing problems." },
   { href: '/contentdb', label: 'contentDB', description: 'Store high-value content assets and query them inside Claude through MCP.' },
   { href: '/career-pathway', label: 'Career Pathway', description: 'A quiz that helps young people find a realistic tech career path to start with and grow into.' },
 ];
@@ -14,6 +13,7 @@ const PORTFOLIO_LINKS = [
 const PRIMARY_LINKS = [
   { href: '/services', label: 'Services' },
   { href: '/portfolio', label: 'Portfolio', children: PORTFOLIO_LINKS },
+  { href: '/projects', label: 'Projects' },
   { href: '/about', label: 'About' },
   { href: '/blog', label: 'Blog' },
   { href: '/contact', label: 'Contact' },
