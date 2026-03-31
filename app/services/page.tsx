@@ -12,6 +12,9 @@ export const metadata: Metadata = {
     'product-led content writer',
     'SaaS content refresh services',
   ],
+  alternates: {
+    canonical: 'https://peaceakinwale.com/services',
+  },
 };
 
 /* ─── Static data ────────────────────────────────────────── */

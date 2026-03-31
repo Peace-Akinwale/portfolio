@@ -1,14 +1,27 @@
 import { MetadataRoute } from 'next';
 import { getPosts } from '@/lib/hashnode/client';
+import type { HashnodePost } from '@/lib/hashnode/types';
+
+async function getAllPosts(): Promise<HashnodePost[]> {
+  const all: HashnodePost[] = [];
+  let hasNextPage = true;
+  let after: string | undefined;
+  while (hasNextPage) {
+    const { posts, hasNextPage: more, endCursor } = await getPosts(50, after);
+    all.push(...posts);
+    hasNextPage = more;
+    after = endCursor;
+  }
+  return all;
+}
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = 'https://peaceakinwale.com';
 
-  // Fetch posts (Hashnode API max is 50 per request)
-  const { posts } = await getPosts(50);
+  const validPosts = await getAllPosts();
 
   // Generate article URLs
-  const articleUrls = posts.map((post) => ({
+  const articleUrls = validPosts.map((post) => ({
     url: `${baseUrl}/${post.slug}`,
     lastModified: new Date(post.updatedAt),
     changeFrequency: 'weekly' as const,

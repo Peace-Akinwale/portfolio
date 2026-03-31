@@ -42,6 +42,9 @@ export async function generateMetadata({ params }: ArticlePageProps): Promise<Me
     return {
       title: post.seo?.title || post.title,
       description: post.seo?.description || post.brief,
+      alternates: {
+        canonical: `https://peaceakinwale.com/${slug}`,
+      },
       openGraph: {
         title: post.seo?.title || post.title,
         description: post.seo?.description || post.brief,
@@ -66,6 +69,9 @@ export async function generateMetadata({ params }: ArticlePageProps): Promise<Me
     return {
       title: staticPage.title,
       description: staticPage.title,
+      alternates: {
+        canonical: `https://peaceakinwale.com/${slug}`,
+      },
     };
   }
 

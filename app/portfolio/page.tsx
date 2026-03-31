@@ -7,6 +7,9 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'Portfolio | Peace Akinwale',
   description: 'Explore the portfolio of Peace Akinwale - featured B2B SaaS writing projects.',
+  alternates: {
+    canonical: 'https://peaceakinwale.com/portfolio',
+  },
 };
 
 const NEW_MANYREQUESTS_ARTICLE = {

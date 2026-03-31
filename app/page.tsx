@@ -15,6 +15,9 @@ export const metadata: Metadata = {
     'B2B content writer',
     'SaaS content writer',
   ],
+  alternates: {
+    canonical: 'https://peaceakinwale.com',
+  },
 };
 
 const CLIENTS = [

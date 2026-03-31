@@ -4,7 +4,10 @@ import Image from 'next/image';
 
 export const metadata: Metadata = {
   title: 'About | Peace Akinwale',
-  description: 'Peace Akinwale is a B2B SaaS content writer who specializes in product-led articles that rank on Google and get cited in AI search.',
+  description: 'Peace Akinwale is a B2B SaaS content writer who specializes in product-led content that rank on Google and is cited in AI search.',
+  alternates: {
+    canonical: 'https://peaceakinwale.com/about',
+  },
 };
 
 export default async function AboutPage() {
