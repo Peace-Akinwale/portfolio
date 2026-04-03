@@ -2,34 +2,23 @@ import { getPosts, getPublication } from '@/lib/hashnode/client';
 import { formatDate, formatReadingTime } from '@/lib/hashnode/utils';
 
 export default async function TestPage() {
-  // Fetch publication info and posts
   const publication = await getPublication();
   const { posts } = await getPosts(10);
 
   return (
     <div style={{ padding: '2rem', maxWidth: '1200px', margin: '0 auto' }}>
-      <h1 style={{ fontSize: '2rem', marginBottom: '1rem' }}>
-        Hashnode API Test Page
-      </h1>
+      <h1 style={{ fontSize: '2rem', marginBottom: '1rem' }}>CMS Integration Test Page</h1>
 
-      {/* Publication Info */}
       {publication && (
         <div style={{ marginBottom: '3rem', padding: '1.5rem', background: '#f5f5f5', borderRadius: '8px' }}>
-          <h2 style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}>
-            Publication Info
-          </h2>
+          <h2 style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}>Publication Info</h2>
           <p><strong>Title:</strong> {publication.title}</p>
           <p><strong>Author:</strong> {publication.author.name}</p>
-          {publication.author.bio?.text && (
-            <p><strong>Bio:</strong> {publication.author.bio.text}</p>
-          )}
+          {publication.author.bio?.text && <p><strong>Bio:</strong> {publication.author.bio.text}</p>}
         </div>
       )}
 
-      {/* Posts List */}
-      <h2 style={{ fontSize: '1.5rem', marginBottom: '1rem' }}>
-        Recent Articles ({posts.length} found)
-      </h2>
+      <h2 style={{ fontSize: '1.5rem', marginBottom: '1rem' }}>Recent Articles ({posts.length} found)</h2>
 
       {posts.length > 0 ? (
         <div style={{ display: 'grid', gap: '1.5rem' }}>
@@ -45,9 +34,7 @@ export default async function TestPage() {
               <h3 style={{ fontSize: '1.25rem', marginBottom: '0.5rem' }}>
                 {index + 1}. {post.title}
               </h3>
-              <p style={{ color: '#666', marginBottom: '0.5rem' }}>
-                {post.brief}
-              </p>
+              <p style={{ color: '#666', marginBottom: '0.5rem' }}>{post.brief}</p>
               <div style={{ fontSize: '0.875rem', color: '#888' }}>
                 <span>Published: {formatDate(post.publishedAt)}</span>
                 {' • '}
@@ -78,12 +65,12 @@ export default async function TestPage() {
           ))}
         </div>
       ) : (
-        <p style={{ color: '#666' }}>No articles found. Check your API configuration.</p>
+        <p style={{ color: '#666' }}>No articles found. Check your CMS configuration.</p>
       )}
 
       <div style={{ marginTop: '3rem', padding: '1rem', background: '#e8f5e9', borderRadius: '8px' }}>
         <p style={{ margin: 0 }}>
-          ✓ If you see articles above, the Hashnode API integration is working correctly!
+          If you see articles above, the WordPress content integration is working correctly.
         </p>
       </div>
     </div>

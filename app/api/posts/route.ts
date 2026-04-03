@@ -3,7 +3,7 @@ import { getPosts } from '@/lib/hashnode/client';
 
 export async function GET() {
   try {
-    // Fetch posts (Hashnode API max is 50 per request)
+    // Fetch posts from the active CMS
     const { posts } = await getPosts(50);
 
     return NextResponse.json({ posts });

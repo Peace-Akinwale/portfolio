@@ -13,9 +13,65 @@ import { ReadingProgress } from '@/components/ReadingProgress';
 import { TableOfContents } from '@/components/TableOfContents';
 import { ImageLightbox } from '@/components/ImageLightbox';
 import { CodeBlockEnhancer } from '@/components/CodeBlockEnhancer';
+import { ArticleEndCta } from '@/components/ArticleEndCta';
+import { Comments } from '@/components/Comments';
 
 interface ArticlePageProps {
   params: Promise<{ slug: string }>;
+}
+
+function getAssetName(url: string): string {
+  try {
+    const pathname = url.startsWith('/') ? url : new URL(url).pathname;
+    const cleaned = pathname.split('?')[0].split('#')[0];
+    return cleaned.split('/').filter(Boolean).pop()?.toLowerCase() ?? '';
+  } catch {
+    return url.split('?')[0].split('#')[0].split('/').filter(Boolean).pop()?.toLowerCase() ?? '';
+  }
+}
+
+function getComparableAssetStem(url: string): string {
+  const assetName = getAssetName(url);
+  if (!assetName) {
+    return '';
+  }
+
+  return assetName
+    .replace(/\.[a-z0-9]+$/i, '')
+    .replace(/-\d+x\d+$/i, '')
+    .replace(/-\d+$/i, '');
+}
+
+function stripLeadingDuplicateCoverImage(html: string, coverUrl?: string): string {
+  if (!coverUrl) {
+    return html;
+  }
+
+  const coverAsset = getComparableAssetStem(coverUrl);
+  if (!coverAsset) {
+    return html;
+  }
+
+  const leadingFigurePattern =
+    /^\s*(?:<figure\b[^>]*>\s*)?<img\b[^>]*src=["']([^"']+)["'][^>]*>\s*(?:<\/figure>)?\s*/i;
+  const leadingParagraphFigurePattern =
+    /^\s*<p>\s*(?:<figure\b[^>]*>\s*)?<img\b[^>]*src=["']([^"']+)["'][^>]*>\s*(?:<\/figure>)?\s*<\/p>\s*/i;
+
+  const candidates = [leadingParagraphFigurePattern, leadingFigurePattern];
+
+  for (const pattern of candidates) {
+    const match = html.match(pattern);
+    if (!match?.[1]) {
+      continue;
+    }
+
+    const firstAsset = getComparableAssetStem(match[1]);
+    if (firstAsset && firstAsset === coverAsset) {
+      return html.replace(pattern, '');
+    }
+  }
+
+  return html;
 }
 
 // Allow dynamic generation for slugs not pre-rendered at build time
@@ -113,8 +169,8 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
     'linkedin-router': 'https://res.cloudinary.com/cloud-blog-publisher/image/upload/v1772456192/LinkedIn_Router_dashboard_yeangn.png',
     'mylinks': 'https://res.cloudinary.com/cloud-blog-publisher/image/upload/v1772457514/mylinks_app_demo_qbdfj7.png',
     'mystyleguide': 'https://res.cloudinary.com/cloud-blog-publisher/image/upload/v1772458150/mystyleguide_uyokzm.png',
-    'portfolio-project': 'https://cdn.hashnode.com/res/hashnode/image/upload/v1771358819590/359f98d9-0ba4-4ca7-9486-8fd9223a85c1.png',
-    'editorial-style-guide': 'https://cdn.hashnode.com/res/hashnode/image/upload/v1770062817824/f8071b8e-b17f-4efc-8d4b-b645c0ecb3b9.png',
+    'portfolio-project': '/images/blog/second-thorough-prompt.png',
+    'editorial-style-guide': 'https://res.cloudinary.com/cloud-blog-publisher/image/upload/v1772467301/claude_projext_vvozy6.png',
   };
 
   // Render static page if that's what we have
@@ -126,6 +182,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
       const wordCount = staticPage.content.html.replace(/<[^>]+>/g, '').split(/\s+/).filter(Boolean).length;
       const readTime = Math.max(1, Math.round(wordCount / 200));
       const pageUrl = `https://peaceakinwale.com/${slug}`;
+      const renderedStaticHtml = stripLeadingDuplicateCoverImage(staticPage.content.html, coverImage);
 
       return (
         <>
@@ -169,7 +226,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
 
             <div
               className="prose prose-lg max-w-none"
-              dangerouslySetInnerHTML={{ __html: staticPage.content.html }}
+              dangerouslySetInnerHTML={{ __html: renderedStaticHtml }}
             />
 
             <footer className="mt-16 pt-8 border-t border-border">
@@ -251,14 +308,31 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
     notFound();
   }
 
-  // Get related posts (same tag, limit 3)
+  // Get related posts, preferring tag overlap and falling back to the latest posts.
   const { posts: allPosts } = await getPosts(20);
+  const postTagSlugs = new Set(post.tags?.map((tag) => tag.slug.toLowerCase()) ?? []);
+  const renderedPostHtml = stripLeadingDuplicateCoverImage(post.content.html, post.coverImage?.url);
   const relatedPosts = allPosts
-    .filter((p) =>
-      p.id !== post.id &&
-      p.tags?.some((tag) => post.tags?.some((pt) => pt.id === tag.id))
-    )
-    .slice(0, 3);
+    .filter((candidate) => candidate.id !== post.id)
+    .map((candidate) => {
+      const overlap =
+        candidate.tags?.filter((tag) => postTagSlugs.has(tag.slug.toLowerCase())).length ?? 0;
+
+      return {
+        candidate,
+        overlap,
+        recency: new Date(candidate.publishedAt).getTime(),
+      };
+    })
+    .sort((left, right) => {
+      if (right.overlap !== left.overlap) {
+        return right.overlap - left.overlap;
+      }
+
+      return right.recency - left.recency;
+    })
+    .slice(0, 3)
+    .map((entry) => entry.candidate);
 
   return (
     <>
@@ -319,7 +393,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
       {/* Article Content */}
       <div
         className="prose prose-lg max-w-none"
-        dangerouslySetInnerHTML={{ __html: post.content.html }}
+        dangerouslySetInnerHTML={{ __html: renderedPostHtml }}
       />
 
       {/* Article Footer */}
@@ -350,6 +424,8 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
           </h3>
           <ShareButtons url={post.url} title={post.title} />
         </div>
+
+        <ArticleEndCta />
       </footer>
 
       {/* Related Articles */}
@@ -373,6 +449,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
           ← Back to Blog
         </Link>
       </div>
+      <Comments postSlug={post.slug} postTitle={post.title} />
       </article>
     </>
   );

@@ -5,6 +5,9 @@ export const metadata: Metadata = {
   title: "Things I've Built",
   description:
     'I use AI tools to automate content marketing processes where it makes sense. A collection of projects built for real problems.',
+  alternates: {
+    canonical: 'https://peaceakinwale.com/projects',
+  },
 };
 
 const projects = [

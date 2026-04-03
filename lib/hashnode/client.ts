@@ -1,165 +1,358 @@
-import { GraphQLClient } from 'graphql-request';
-import {
-  GET_PUBLICATION,
-  GET_POSTS,
-  GET_POST_BY_SLUG,
-  GET_STATIC_PAGE,
-  GET_STATIC_PAGES,
-  SEARCH_POSTS,
-} from './queries';
 import type {
   HashnodePost,
   HashnodePublication,
   HashnodeStaticPage,
-  PostsResponse,
-  PostResponse,
-  PublicationResponse,
-  StaticPageResponse,
-  StaticPagesResponse,
 } from './types';
 
-const HASHNODE_API_URL = 'https://gql.hashnode.com';
-const PUBLICATION_HOST = process.env.NEXT_PUBLIC_HASHNODE_PUBLICATION_HOST!;
-const API_TOKEN = process.env.HASHNODE_API_TOKEN;
+const WORDPRESS_SITE = process.env.WORDPRESS_SITE;
+const CUSTOM_SITE_URL = 'https://peaceakinwale.com';
 
-// Create GraphQL client
-const client = new GraphQLClient(HASHNODE_API_URL, {
-  headers: API_TOKEN
-    ? {
-        Authorization: API_TOKEN,
-      }
-    : {},
-});
+const DEFAULT_AUTHOR: HashnodePost['author'] = {
+  name: 'Peace Akinwale',
+  profilePicture: undefined,
+  bio: {
+    text: 'B2B SaaS content writer for product-led software companies. I write articles that rank, refresh content with business potential, and help brands show up in AI search.',
+  },
+};
 
-/**
- * Fetch publication information
- */
-export async function getPublication(): Promise<HashnodePublication | null> {
-  try {
-    const data = await client.request<PublicationResponse>(GET_PUBLICATION, {
-      host: PUBLICATION_HOST,
-    });
-    return data.publication;
-  } catch (error) {
-    console.error('Error fetching publication:', error);
-    return null;
-  }
+const LOCAL_COVER_IMAGE_OVERRIDES: Record<string, string> = {
+  'what-i-learned-vibe-coding-my-first-app-shutting-it-down': '/images/blog/garde-logo.jpg',
+  'how-to-build-portfolio-website-claude-code': '/images/blog/second-thorough-prompt.png',
+};
+
+interface WordPressTag {
+  ID?: number;
+  name: string;
+  slug?: string;
 }
 
-/**
- * Fetch all posts with pagination
- */
+interface WordPressAuthor {
+  name?: string;
+  avatar_URL?: string;
+  bio?: string;
+}
+
+interface WordPressPublicPost {
+  ID: number;
+  date: string;
+  modified: string;
+  title: string;
+  URL: string;
+  content: string;
+  excerpt?: string;
+  slug: string;
+  featured_image?: string;
+  tags?: Record<string, WordPressTag>;
+  author?: WordPressAuthor;
+}
+
+interface WordPressPublicPage {
+  ID: number;
+  title: string;
+  slug: string;
+  content: string;
+}
+
+interface WordPressCollectionResponse<T> {
+  posts: T[];
+  meta?: {
+    next_page?: string;
+  };
+}
+
+let wordpressPostsPromise: Promise<HashnodePost[]> | null = null;
+let wordpressPagesPromise: Promise<HashnodeStaticPage[]> | null = null;
+
+function decodeHtmlEntities(input: string): string {
+  const namedEntities: Record<string, string> = {
+    amp: '&',
+    lt: '<',
+    gt: '>',
+    quot: '"',
+    apos: "'",
+    nbsp: ' ',
+    rsquo: "'",
+    lsquo: "'",
+    rdquo: '"',
+    ldquo: '"',
+    mdash: '-',
+    ndash: '-',
+    hellip: '...',
+  };
+
+  return input.replace(/&(#x?[0-9a-fA-F]+|\w+);/g, (_, entity: string) => {
+    if (entity.startsWith('#x')) {
+      return String.fromCodePoint(parseInt(entity.slice(2), 16));
+    }
+
+    if (entity.startsWith('#')) {
+      return String.fromCodePoint(parseInt(entity.slice(1), 10));
+    }
+
+    return namedEntities[entity] ?? `&${entity};`;
+  });
+}
+
+function stripHtml(html: string): string {
+  return decodeHtmlEntities(html.replace(/<[^>]+>/g, ' '))
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function normalizePlainText(input?: string): string {
+  return decodeHtmlEntities(input ?? '')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function estimateReadingTime(html: string): number {
+  const wordCount = stripHtml(html).split(/\s+/).filter(Boolean).length;
+  return Math.max(1, Math.round(wordCount / 200));
+}
+
+function extractFirstImageUrl(html: string): string | undefined {
+  const match = html.match(/<img[^>]+src=["']([^"']+)["']/i);
+  return match?.[1];
+}
+
+function mapWordPressTags(tags?: Record<string, WordPressTag>) {
+  return Object.values(tags ?? {}).map((tag) => ({
+    id: String(tag.ID ?? tag.slug ?? tag.name),
+    name: decodeHtmlEntities(tag.name),
+    slug: (tag.slug ?? tag.name.toLowerCase().replace(/\s+/g, '-')).toLowerCase(),
+  }));
+}
+
+function mapWordPressAuthor(author?: WordPressAuthor): HashnodePost['author'] {
+  if (!author?.name) {
+    return DEFAULT_AUTHOR;
+  }
+
+  return {
+    name: decodeHtmlEntities(author.name),
+    profilePicture: author.avatar_URL,
+    bio: author.bio ? { text: normalizePlainText(author.bio) } : DEFAULT_AUTHOR.bio,
+  };
+}
+
+function buildPostFromWordPress(raw: WordPressPublicPost): HashnodePost {
+  const excerptSource = raw.excerpt?.trim() ? raw.excerpt : raw.content;
+  const summary = normalizePlainText(stripHtml(excerptSource)).slice(0, 240).trim();
+  const title = normalizePlainText(raw.title);
+  const coverUrl =
+    LOCAL_COVER_IMAGE_OVERRIDES[raw.slug] ||
+    raw.featured_image ||
+    extractFirstImageUrl(raw.content);
+
+  return {
+    id: String(raw.ID),
+    title,
+    brief: summary,
+    slug: raw.slug,
+    content: {
+      markdown: '',
+      html: raw.content,
+    },
+    coverImage: coverUrl ? { url: coverUrl } : undefined,
+    publishedAt: raw.date,
+    updatedAt: raw.modified,
+    readTimeInMinutes: estimateReadingTime(raw.content),
+    tags: mapWordPressTags(raw.tags),
+    author: mapWordPressAuthor(raw.author),
+    seo: {
+      title,
+      description: summary,
+    },
+    url: `${CUSTOM_SITE_URL}/${raw.slug}`,
+  };
+}
+
+function buildPageFromWordPress(raw: WordPressPublicPage): HashnodeStaticPage {
+  return {
+    id: String(raw.ID),
+    title: decodeHtmlEntities(raw.title),
+    slug: raw.slug,
+    content: {
+      markdown: '',
+      html: raw.content,
+    },
+  };
+}
+
+async function requestWordPressCollection<T>(path: string, params: URLSearchParams): Promise<WordPressCollectionResponse<T>> {
+  if (!WORDPRESS_SITE) {
+    return { posts: [] };
+  }
+
+  const response = await fetch(
+    `https://public-api.wordpress.com/rest/v1.1/sites/${encodeURIComponent(WORDPRESS_SITE)}/${path}?${params.toString()}`,
+    {
+      next: { revalidate: 3600 },
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error(`WordPress request failed with status ${response.status}`);
+  }
+
+  return (await response.json()) as WordPressCollectionResponse<T>;
+}
+
+async function fetchWordPressPosts(): Promise<HashnodePost[]> {
+  if (!WORDPRESS_SITE) {
+    return [];
+  }
+
+  if (!wordpressPostsPromise) {
+    wordpressPostsPromise = (async () => {
+      const allPosts: WordPressPublicPost[] = [];
+      let nextPage: string | undefined;
+
+      do {
+        const params = new URLSearchParams({
+          number: '100',
+          order_by: 'date',
+          order: 'DESC',
+          fields: 'ID,date,modified,title,URL,content,excerpt,slug,featured_image,tags,author',
+        });
+
+        if (nextPage) {
+          params.set('page_handle', nextPage);
+        }
+
+        const data = await requestWordPressCollection<WordPressPublicPost>('posts/', params);
+        allPosts.push(...data.posts);
+        nextPage = data.meta?.next_page;
+      } while (nextPage);
+
+      return allPosts.map(buildPostFromWordPress);
+    })().catch((error) => {
+      wordpressPostsPromise = null;
+      console.error('Error fetching WordPress posts:', error);
+      return [];
+    });
+  }
+
+  return wordpressPostsPromise;
+}
+
+async function fetchWordPressPages(): Promise<HashnodeStaticPage[]> {
+  if (!WORDPRESS_SITE) {
+    return [];
+  }
+
+  if (!wordpressPagesPromise) {
+    wordpressPagesPromise = (async () => {
+      const allPages: WordPressPublicPage[] = [];
+      let nextPage: string | undefined;
+
+      do {
+        const params = new URLSearchParams({
+          type: 'page',
+          number: '100',
+          order_by: 'title',
+          order: 'ASC',
+          fields: 'ID,title,slug,content',
+        });
+
+        if (nextPage) {
+          params.set('page_handle', nextPage);
+        }
+
+        const data = await requestWordPressCollection<WordPressPublicPage>('posts/', params);
+        allPages.push(...data.posts);
+        nextPage = data.meta?.next_page;
+      } while (nextPage);
+
+      return allPages.map(buildPageFromWordPress);
+    })().catch((error) => {
+      wordpressPagesPromise = null;
+      console.error('Error fetching WordPress pages:', error);
+      return [];
+    });
+  }
+
+  return wordpressPagesPromise;
+}
+
+export async function getPublication(): Promise<HashnodePublication | null> {
+  if (!WORDPRESS_SITE) {
+    return null;
+  }
+
+  return {
+    id: WORDPRESS_SITE,
+    title: 'Peace Akinwale',
+    about: {
+      markdown: '',
+      html: '<p>B2B SaaS content writer for product-led software companies. Articles, content refreshes, and AI-search-friendly content systems.</p>',
+    },
+    author: {
+      name: DEFAULT_AUTHOR.name,
+      profilePicture: DEFAULT_AUTHOR.profilePicture,
+      bio: DEFAULT_AUTHOR.bio,
+      socialMediaLinks: {
+        twitter: 'https://x.com/PeaceAkinwaleA',
+        linkedin: 'https://www.linkedin.com/in/peaceakinwale/',
+        github: 'https://github.com/Peace-Akinwale',
+      },
+    },
+    posts: {
+      edges: [],
+      pageInfo: {
+        hasNextPage: false,
+      },
+    },
+  };
+}
+
 export async function getPosts(
   first: number = 10,
   after?: string
 ): Promise<{ posts: HashnodePost[]; hasNextPage: boolean; endCursor?: string }> {
-  try {
-    const data = await client.request<PostsResponse>(GET_POSTS, {
-      host: PUBLICATION_HOST,
-      first,
-      after,
-    });
+  const allPosts = await fetchWordPressPosts();
+  const startIndex = after ? Number(after) : 0;
+  const posts = allPosts.slice(startIndex, startIndex + first);
+  const endIndex = startIndex + posts.length;
 
-    const posts = data.publication.posts.edges.map((edge) => edge.node);
-    const pageInfo = data.publication.posts.pageInfo;
-
-    return {
-      posts,
-      hasNextPage: pageInfo.hasNextPage,
-      endCursor: pageInfo.endCursor,
-    };
-  } catch (error) {
-    console.error('Error fetching posts:', error);
-    return { posts: [], hasNextPage: false };
-  }
+  return {
+    posts,
+    hasNextPage: endIndex < allPosts.length,
+    endCursor: endIndex < allPosts.length ? String(endIndex) : undefined,
+  };
 }
 
-/**
- * Fetch a single post by slug
- */
 export async function getPostBySlug(slug: string): Promise<HashnodePost | null> {
-  try {
-    const data = await client.request<PostResponse>(GET_POST_BY_SLUG, {
-      host: PUBLICATION_HOST,
-      slug,
-    });
-    return data.publication.post;
-  } catch (error) {
-    console.error(`Error fetching post with slug "${slug}":`, error);
-    return null;
-  }
+  const posts = await fetchWordPressPosts();
+  return posts.find((post) => post.slug === slug) ?? null;
 }
 
-/**
- * Fetch all posts (for generating static paths)
- */
 export async function getAllPostSlugs(): Promise<string[]> {
-  const allPosts: HashnodePost[] = [];
-  let hasNextPage = true;
-  let after: string | undefined;
-
-  try {
-    while (hasNextPage) {
-      const { posts, hasNextPage: hasMore, endCursor } = await getPosts(20, after);
-      allPosts.push(...posts);
-      hasNextPage = hasMore;
-      after = endCursor;
-    }
-
-    return allPosts.map((post) => post.slug);
-  } catch (error) {
-    console.error('Error fetching all post slugs:', error);
-    return [];
-  }
+  const posts = await fetchWordPressPosts();
+  return posts.map((post) => post.slug);
 }
 
-/**
- * Fetch a static page by slug
- */
 export async function getStaticPage(slug: string): Promise<HashnodeStaticPage | null> {
-  try {
-    const data = await client.request<StaticPageResponse>(GET_STATIC_PAGE, {
-      host: PUBLICATION_HOST,
-      slug,
-    });
-    return data.publication.staticPage;
-  } catch (error) {
-    console.error(`Error fetching static page with slug "${slug}":`, error);
-    return null;
-  }
+  const pages = await fetchWordPressPages();
+  return pages.find((page) => page.slug === slug) ?? null;
 }
 
-/**
- * Fetch all static pages (for generating static paths)
- */
 export async function getAllStaticPageSlugs(): Promise<string[]> {
-  try {
-    const data = await client.request<StaticPagesResponse>(GET_STATIC_PAGES, {
-      host: PUBLICATION_HOST,
-    });
-    return data.publication.staticPages.edges.map((edge) => edge.node.slug);
-  } catch (error) {
-    console.error('Error fetching all static page slugs:', error);
-    return [];
-  }
+  const pages = await fetchWordPressPages();
+  return pages.map((page) => page.slug);
 }
 
-/**
- * Search posts by query
- */
 export async function searchPosts(query: string): Promise<HashnodePost[]> {
-  try {
-    const data = await client.request<PostsResponse>(SEARCH_POSTS, {
-      host: PUBLICATION_HOST,
-      first: 50,
-      filter: {
-        query,
-      },
-    });
+  const posts = await fetchWordPressPosts();
+  const normalizedQuery = query.trim().toLowerCase();
 
-    return data.publication.posts.edges.map((edge) => edge.node);
-  } catch (error) {
-    console.error('Error searching posts:', error);
-    return [];
+  if (!normalizedQuery) {
+    return posts;
   }
+
+  return posts.filter((post) =>
+    post.title.toLowerCase().includes(normalizedQuery) ||
+    post.brief.toLowerCase().includes(normalizedQuery) ||
+    post.tags?.some((tag) => tag.name.toLowerCase().includes(normalizedQuery))
+  );
 }

@@ -4,7 +4,13 @@ import { createClient } from '@supabase/supabase-js';
 import { buildTranscriptSections } from '@/lib/career-pathway/transcript';
 import type { Answers, CareerResultSummary } from '@/lib/career-pathway/types';
 
-export const metadata: Metadata = { title: 'Submission View | Career Pathway' };
+export const metadata: Metadata = {
+  title: 'Submission View | Career Pathway',
+  robots: {
+    index: false,
+    follow: false,
+  },
+};
 
 const CAREER_TITLES: Record<string, string> = {
   'frontend-dev': 'Frontend Developer',

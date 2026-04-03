@@ -6,6 +6,9 @@ import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
   title: 'Content for Marker.io | Peace Akinwale',
+  alternates: {
+    canonical: 'https://peaceakinwale.com/b2b-content-for-marker.io',
+  },
   description: 'B2B writing samples for Marker.io — QA testing and software testing guides.',
 };
 
