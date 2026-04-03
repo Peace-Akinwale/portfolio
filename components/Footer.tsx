@@ -6,7 +6,7 @@ export function Footer() {
   return (
     <footer className="border-t border-border mt-0">
       <div className="max-w-7xl mx-auto px-6 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-5">
           {/* About */}
           <div className="md:col-span-1">
             <h3 className="font-bold text-lg mb-3">Peace Akinwale</h3>
@@ -21,6 +21,14 @@ export function Footer() {
             <nav className="flex flex-col gap-2">
               <Link href="/services" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Services</Link>
               <Link href="/portfolio" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Portfolio</Link>
+              <Link href="/testimonials" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Testimonials</Link>
+            </nav>
+          </div>
+
+          {/* Projects */}
+          <div>
+            <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-muted-foreground mb-3">Projects</p>
+            <nav className="flex flex-col gap-2">
               <Link href="/projects" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Projects</Link>
               <Link href="/contentdb" className="text-sm text-muted-foreground hover:text-foreground transition-colors">contentDB</Link>
               <Link href="/career-pathway" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Career Pathway</Link>

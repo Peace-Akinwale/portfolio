@@ -310,6 +310,15 @@ export default async function HomePage() {
               </div>
             ))}
           </div>
+          <div className="mt-10">
+            <Link
+              href="/testimonials"
+              className="text-xs font-bold uppercase tracking-[0.08em] underline underline-offset-4 transition-colors hover:opacity-70"
+              style={{ color: 'var(--accent)' }}
+            >
+              See all testimonials &rarr;
+            </Link>
+          </div>
         </div>
       </section>
 
