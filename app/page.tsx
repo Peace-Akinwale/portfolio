@@ -223,15 +223,9 @@ export default async function HomePage() {
       {/* ── Services teaser ──────────────────────────── */}
       <section className="bg-background border-b border-border">
         <div className="max-w-7xl mx-auto px-6 py-20 sm:py-24">
-          <p className="text-xs font-bold uppercase tracking-[0.15em] mb-4" style={{ color: 'var(--accent)' }}>
+          <p className="text-xs font-bold uppercase tracking-[0.15em] mb-14" style={{ color: 'var(--accent)' }}>
             What I offer
           </p>
-          <h2
-            className="text-2xl sm:text-3xl font-extrabold mb-14 text-foreground"
-            style={{ letterSpacing: '-0.02em' }}
-          >
-            How we work.
-          </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-8">
             {[
               {
@@ -255,10 +249,10 @@ export default async function HomePage() {
                 key={s.tag}
                 className={`rounded-xl border p-7 flex flex-col ${
                   s.tag === 'Monthly Retainer'
-                    ? 'border-accent/40 ring-1 ring-accent/10 md:order-2'
+                    ? 'border-accent/40 ring-1 ring-accent/10 order-2'
                     : s.tag === 'Net New Article'
-                      ? 'border-border md:order-3'
-                      : 'border-border md:order-1'
+                      ? 'border-border order-3'
+                      : 'border-border order-1'
                 }`}
                 style={{ background: s.tag === 'Monthly Retainer' ? 'var(--muted)' : 'var(--background)' }}
               >
