@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Syne, DM_Sans } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "./providers";
+import { AppChrome } from "@/components/AppChrome";
 
 const syne = Syne({
   subsets: ["latin"],
@@ -16,8 +17,6 @@ const dmSans = DM_Sans({
   display: "swap",
   weight: ["400", "500", "600", "700"],
 });
-import { Header } from "@/components/Header";
-import { Footer } from "@/components/Footer";
 import { GoogleAnalytics } from "@/components/GoogleAnalytics";
 
 const structuredData = {
@@ -128,12 +127,8 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
         />
         <ThemeProvider>
-          <div className="flex flex-col min-h-screen">
-            <Header />
-            <main className="flex-1 pt-[88px] sm:pt-[96px]">
-              {children}
-            </main>
-            <Footer />
+          <div className="flex min-h-screen flex-col">
+            <AppChrome>{children}</AppChrome>
           </div>
         </ThemeProvider>
       </body>

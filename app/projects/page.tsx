@@ -14,7 +14,7 @@ const projects = [
   {
     number: '01',
     slug: 'contentdb',
-    href: '/contentdb',
+    href: '/projects/contentdb',
     title: 'contentDB',
     description:
       'ContentDB is a content intelligence system that turns research and customer conversations into searchable, source-grounded answers across web chat and AI tools (Claude, ChatGPT, Gemini) through MCP.',
@@ -22,7 +22,7 @@ const projects = [
   {
     number: '02',
     slug: 'career-pathway',
-    href: '/career-pathway',
+    href: '/projects/career-pathway',
     title: 'Career Pathway Assessment',
     description:
       "An interactive assessment tool that scores 23 careers against a person's personality, constraints, and goals, then returns four realistic paths with resources, income context, and AI caveats.",
@@ -37,6 +37,7 @@ const projects = [
   {
     number: '04',
     slug: 'mylinks',
+    href: '/projects/mylinks',
     title: 'MyLinks - AI Internal Linking Tool',
     description:
       'Crawls your website, understands your content inventory, and suggests precise internal links for any draft, then applies them directly to Google Docs.',
@@ -83,7 +84,7 @@ export default function ProjectsPage() {
         {projects.map((project) => (
           <Link
             key={project.slug}
-            href={project.href ?? `/${project.slug}`}
+            href={project.href ?? `/projects/${project.slug}`}
             className="group flex items-start gap-6 border-b border-border py-10 transition-colors hover:border-accent md:gap-10"
           >
             <span className="shrink-0 pt-1 text-4xl font-bold leading-none text-muted-foreground/25 transition-colors group-hover:text-accent/40 md:text-5xl">

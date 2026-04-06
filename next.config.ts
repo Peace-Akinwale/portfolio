@@ -18,6 +18,46 @@ const nextConfig: NextConfig = {
         destination: '/portfolio',
         permanent: true,
       },
+      {
+        source: '/tools',
+        destination: '/projects',
+        permanent: true,
+      },
+      {
+        source: '/tools/mylinks/:path*',
+        destination: '/projects/mylinks/:path*',
+        permanent: true,
+      },
+      {
+        source: '/contentdb',
+        destination: '/projects/contentdb',
+        permanent: true,
+      },
+      {
+        source: '/mylinks',
+        destination: '/projects/mylinks',
+        permanent: true,
+      },
+      {
+        source: '/linkedin-router',
+        destination: '/projects/linkedin-router',
+        permanent: true,
+      },
+      {
+        source: '/mystyleguide',
+        destination: '/projects/mystyleguide',
+        permanent: true,
+      },
+      {
+        source: '/portfolio-project',
+        destination: '/projects/portfolio-project',
+        permanent: true,
+      },
+      {
+        source: '/editorial-style-guide',
+        destination: '/projects/editorial-style-guide',
+        permanent: true,
+      },
     ];
   },
   images: {
