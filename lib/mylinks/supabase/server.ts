@@ -3,11 +3,11 @@ import { cookies } from "next/headers";
 import type { Database } from "@/lib/mylinks/types/database";
 
 function getSupabaseUrl() {
-  return process.env.NEXT_PUBLIC_SUPABASE_URL ?? process.env.SUPABASE_URL!;
+  return process.env.NEXT_PUBLIC_SUPABASE_URL?.trim() || process.env.SUPABASE_URL!.trim();
 }
 
 function getSupabaseAnonKey() {
-  return process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? process.env.SUPABASE_ANON_KEY!;
+  return process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY?.trim() || process.env.SUPABASE_ANON_KEY!.trim();
 }
 
 export async function createClient() {
@@ -39,6 +39,6 @@ export async function createServiceClient() {
   const { createClient } = await import("@supabase/supabase-js");
   return createClient<Database>(
     getSupabaseUrl(),
-    process.env.SUPABASE_SERVICE_ROLE_KEY!
+    process.env.SUPABASE_SERVICE_ROLE_KEY!.trim()
   );
 }

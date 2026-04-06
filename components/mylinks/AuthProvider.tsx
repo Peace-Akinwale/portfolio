@@ -16,13 +16,19 @@ const AuthContext = createContext<AuthContextValue>({
   signOut: async () => {},
 });
 
-const supabase = createClient();
-
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    let supabase;
+    try {
+      supabase = createClient();
+    } catch {
+      setLoading(false);
+      return;
+    }
+
     supabase.auth.getUser().then(({ data: { user } }) => {
       setUser(user);
       setLoading(false);
@@ -38,7 +44,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   async function signOut() {
-    await supabase.auth.signOut();
+    try {
+      const supabase = createClient();
+      await supabase.auth.signOut();
+    } catch {
+      // If auth client setup is broken, still force the user back to login.
+    }
     window.location.href = "/projects/mylinks/login";
   }
 

@@ -4,7 +4,10 @@ import { isRangeInsideHeading } from '@/lib/mylinks/article-preview';
 import type { DestinationSource, PageType } from '@/lib/mylinks/types/database';
 
 const MODEL_NAME = 'gemini-2.5-flash';
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
+
+function getGeminiClient() {
+  return new GoogleGenerativeAI(process.env.GEMINI_API_KEY!.trim());
+}
 
 export interface InventoryPage {
   url: string;
@@ -175,7 +178,7 @@ export async function getSuggestions(
   draft: string,
   inventory: InventoryPage[]
 ): Promise<SuggestionResult> {
-  const model = genAI.getGenerativeModel({
+  const model = getGeminiClient().getGenerativeModel({
     model: MODEL_NAME,
     generationConfig: {
       responseMimeType: 'application/json',

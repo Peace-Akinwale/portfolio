@@ -2,7 +2,7 @@ function getSlackWebhookUrl(preferredEnvNames: string[] = []) {
   const envNames = ['ALL_NOTIFICATIONS_SLACK_WEBHOOK', ...preferredEnvNames];
 
   for (const name of envNames) {
-    const value = process.env[name];
+    const value = process.env[name]?.trim();
     if (value) {
       return value;
     }

@@ -9,12 +9,20 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [sent, setSent] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const supabase = createClient();
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setLoading(true);
     setError(null);
+
+    let supabase;
+    try {
+      supabase = createClient();
+    } catch {
+      setError('Supabase is not configured correctly for this deployment yet.');
+      setLoading(false);
+      return;
+    }
 
     const { error: authError } = await supabase.auth.signInWithOtp({
       email,

@@ -6,13 +6,21 @@ const SCOPES = [
   'https://www.googleapis.com/auth/drive.readonly',
 ].join(' ');
 
+function getGoogleClientId() {
+  return process.env.GOOGLE_CLIENT_ID!.trim();
+}
+
+function getGoogleClientSecret() {
+  return process.env.GOOGLE_CLIENT_SECRET!.trim();
+}
+
 function buildRedirectUri(origin: string) {
   return `${origin}/api/mylinks/auth/google/callback`;
 }
 
 export function buildAuthUrl(state: string, origin: string) {
   const params = new URLSearchParams({
-    client_id: process.env.GOOGLE_CLIENT_ID!,
+    client_id: getGoogleClientId(),
     redirect_uri: buildRedirectUri(origin),
     response_type: 'code',
     scope: SCOPES,
@@ -38,8 +46,8 @@ export async function exchangeCodeForTokens(code: string, origin: string): Promi
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
     body: new URLSearchParams({
       code,
-      client_id: process.env.GOOGLE_CLIENT_ID!,
-      client_secret: process.env.GOOGLE_CLIENT_SECRET!,
+      client_id: getGoogleClientId(),
+      client_secret: getGoogleClientSecret(),
       redirect_uri: buildRedirectUri(origin),
       grant_type: 'authorization_code',
     }),
@@ -62,8 +70,8 @@ export async function refreshAccessToken(refreshToken: string): Promise<{
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
     body: new URLSearchParams({
       refresh_token: refreshToken,
-      client_id: process.env.GOOGLE_CLIENT_ID!,
-      client_secret: process.env.GOOGLE_CLIENT_SECRET!,
+      client_id: getGoogleClientId(),
+      client_secret: getGoogleClientSecret(),
       grant_type: 'refresh_token',
     }),
   });
