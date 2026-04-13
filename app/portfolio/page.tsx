@@ -12,10 +12,20 @@ export const metadata: Metadata = {
   },
 };
 
-const NEW_MANYREQUESTS_ARTICLE = {
-  title: '6 Best Project Management Software for Designers in 2026',
-  link: 'https://www.manyrequests.com/blog/project-management-software-for-designers',
-};
+const NEW_MANYREQUESTS_ARTICLES = [
+  {
+    title: 'Wrike vs ClickUp: Which Tool Is Better for Agencies?',
+    link: 'https://www.manyrequests.com/blog/wrike-vs-clickup',
+  },
+  {
+    title: 'Agency Retainer Model: How to Price, Package, and Scale',
+    link: 'https://www.manyrequests.com/blog/agency-retainer-model',
+  },
+  {
+    title: '6 Best Project Management Software for Designers in 2026',
+    link: 'https://www.manyrequests.com/blog/project-management-software-for-designers',
+  },
+];
 
 const MARKERIO_SECTION = {
   heading: 'Ghostwritten content for Marker.io',
@@ -59,7 +69,7 @@ export default async function PortfolioPage() {
     : null;
 
   if (parsed && parsed.sections.length > 0) {
-    parsed.sections[0].projects.unshift(NEW_MANYREQUESTS_ARTICLE);
+    parsed.sections[0].projects.unshift(...NEW_MANYREQUESTS_ARTICLES);
     parsed.sections.splice(1, 0, MARKERIO_SECTION);
     parsed.sections.splice(2, 0, JABRA_SECTION);
     const ogImages = await fetchOgImagesForPortfolio(parsed);

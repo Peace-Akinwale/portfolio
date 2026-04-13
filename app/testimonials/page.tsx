@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import Image from 'next/image';
 import { Fragment } from 'react';
 
 type TextSegment = {
@@ -264,14 +265,14 @@ export default function TestimonialsPage() {
                       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                         <div className="flex items-center gap-4">
                           {testimonial.photo ? (
-                            /* eslint-disable-next-line @next/next/no-img-element */
-                            <img
+                            <Image
                               src={testimonial.photo}
                               alt={testimonial.name}
                               width={56}
                               height={56}
                               className="h-14 w-14 rounded-full object-cover"
                               loading="lazy"
+                              sizes="56px"
                             />
                           ) : (
                             <span className="flex h-14 w-14 items-center justify-center rounded-full bg-muted text-sm font-bold text-muted-foreground">
@@ -315,12 +316,14 @@ export default function TestimonialsPage() {
                   className="rounded-[1.5rem] border border-border bg-background p-5 shadow-[0_12px_30px_rgba(35,26,20,0.04)] sm:p-6"
                 >
                   <div className="rounded-[1rem] border border-border bg-muted/70 p-3">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
+                    <Image
                       src={testimonial.image}
                       alt={testimonial.alt}
+                      width={1400}
+                      height={900}
                       className="h-auto w-full rounded-[0.75rem]"
                       loading="lazy"
+                      sizes="(min-width: 1024px) 46vw, 92vw"
                     />
                   </div>
                   <div className="mt-5">

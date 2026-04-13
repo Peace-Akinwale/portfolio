@@ -20,6 +20,21 @@ interface ArticlePageProps {
   params: Promise<{ slug: string }>;
 }
 
+const NEW_MANYREQUESTS_ARTICLES = [
+  {
+    title: 'Wrike vs ClickUp: Which Tool Is Better for Agencies?',
+    link: 'https://www.manyrequests.com/blog/wrike-vs-clickup',
+  },
+  {
+    title: 'Agency Retainer Model: How to Price, Package, and Scale',
+    link: 'https://www.manyrequests.com/blog/agency-retainer-model',
+  },
+  {
+    title: '6 Best Project Management Software for Designers in 2026',
+    link: 'https://www.manyrequests.com/blog/project-management-software-for-designers',
+  },
+];
+
 function getAssetName(url: string): string {
   try {
     const pathname = url.startsWith('/') ? url : new URL(url).pathname;
@@ -248,10 +263,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
 
     if (hasPortfolioContent) {
       if (slug === 'b2b-content-for-manyrequests' && parsed.sections.length > 0) {
-        parsed.sections[0].projects.unshift({
-          title: '6 Best Project Management Software for Designers in 2026',
-          link: 'https://www.manyrequests.com/blog/project-management-software-for-designers',
-        });
+        parsed.sections[0].projects.unshift(...NEW_MANYREQUESTS_ARTICLES);
       }
       const ogImages = await fetchOgImagesForPortfolio(parsed);
       return (
