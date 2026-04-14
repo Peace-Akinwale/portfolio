@@ -187,7 +187,7 @@ async function requestWordPressCollection<T>(path: string, params: URLSearchPara
   const response = await fetch(
     `https://public-api.wordpress.com/rest/v1.1/sites/${encodeURIComponent(WORDPRESS_SITE)}/${path}?${params.toString()}`,
     {
-      next: { revalidate: 3600 },
+      next: { revalidate: 300 },
     }
   );
 

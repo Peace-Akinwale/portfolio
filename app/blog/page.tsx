@@ -2,7 +2,7 @@ import { getPosts } from '@/lib/hashnode/client';
 import { BlogClient } from './BlogClient';
 import type { Metadata } from 'next';
 
-export const revalidate = 3600; // Revalidate every hour
+export const revalidate = 300; // Revalidate every 5 minutes
 
 export const metadata: Metadata = {
   title: 'Blog | Peace Akinwale',
