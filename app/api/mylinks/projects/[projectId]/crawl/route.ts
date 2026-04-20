@@ -3,6 +3,7 @@ import { requireAuthenticatedUser } from '@/lib/mylinks/auth';
 import { discoverAndParseSitemap } from '@/lib/mylinks/sitemap';
 import { extractPage } from '@/lib/mylinks/extract';
 import { inferPageType } from '@/lib/mylinks/page-type';
+import { batchEmbedTexts, buildPageEmbeddingText, formatVector } from '@/lib/mylinks/gemini';
 
 export const dynamic = 'force-dynamic';
 export const maxDuration = 300;
@@ -72,16 +73,46 @@ export async function POST(
         for (let index = 0; index < urls.length; index += batchSize) {
           const batch = urls.slice(index, index + batchSize);
 
-          await Promise.all(
+          const extracted = await Promise.all(
             batch.map(async (url) => {
               const pageData = await extractPage(url);
-              if (!pageData) {
-                failed += 1;
-                return;
-              }
+              return { url, pageData };
+            })
+          );
 
+          const validPages = extracted.filter(
+            (entry): entry is { url: string; pageData: NonNullable<typeof entry.pageData> } =>
+              entry.pageData !== null
+          );
+          failed += extracted.length - validPages.length;
+
+          let embeddings: number[][] | null = null;
+          if (validPages.length > 0) {
+            try {
+              const texts = validPages.map((entry) =>
+                buildPageEmbeddingText({
+                  url: entry.url,
+                  title: entry.pageData.title,
+                  h1: entry.pageData.h1,
+                  meta_description: entry.pageData.metaDescription,
+                  h2s: entry.pageData.h2s,
+                })
+              );
+              embeddings = await batchEmbedTexts(texts);
+            } catch (embeddingError) {
+              console.error(
+                'Embedding batch failed, upserting pages without embeddings:',
+                embeddingError instanceof Error ? embeddingError.message : embeddingError
+              );
+              embeddings = null;
+            }
+          }
+
+          await Promise.all(
+            validPages.map(async ({ url, pageData }, pageIndex) => {
               const { pageType, priority } = inferPageType(url, pageData.title, pageData.wordCount);
-              await serviceClient.from('pages').upsert({
+              const embedding = embeddings?.[pageIndex];
+              const basePayload = {
                 project_id: projectId,
                 url,
                 title: pageData.title,
@@ -94,7 +125,11 @@ export async function POST(
                 status_code: pageData.statusCode,
                 published_at: pageData.publishedAt,
                 last_crawled_at: new Date().toISOString(),
-              });
+              };
+              const payload = embedding
+                ? { ...basePayload, embedding: formatVector(embedding) }
+                : basePayload;
+              await serviceClient.from('pages').upsert(payload);
 
               crawled += 1;
               send(controller, { type: 'progress', crawled, failed, url });

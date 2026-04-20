@@ -4,9 +4,100 @@ import { isRangeInsideHeading } from '@/lib/mylinks/article-preview';
 import type { DestinationSource, PageType } from '@/lib/mylinks/types/database';
 
 const MODEL_NAME = 'gemini-2.5-flash';
+const EMBEDDING_MODEL_NAME = 'text-embedding-004';
+export const EMBEDDING_DIMENSIONS = 768;
+const EMBEDDING_MAX_INPUT_CHARS = 7000;
 
 function getGeminiClient() {
   return new GoogleGenerativeAI(process.env.GEMINI_API_KEY!.trim());
+}
+
+function isTransientGeminiError(error: Error): boolean {
+  const message = error.message.toLowerCase();
+  return (
+    message.includes('503') ||
+    message.includes('502') ||
+    message.includes('500') ||
+    message.includes('429') ||
+    message.includes('unavailable') ||
+    message.includes('overload') ||
+    message.includes('rate limit') ||
+    message.includes('timeout') ||
+    message.includes('deadline')
+  );
+}
+
+async function withGeminiRetry<T>(label: string, fn: () => Promise<T>): Promise<T> {
+  const MAX_ATTEMPTS = 5;
+  const BASE_DELAY_MS = 1000;
+  let lastError: Error | null = null;
+
+  for (let attempt = 0; attempt < MAX_ATTEMPTS; attempt += 1) {
+    try {
+      return await fn();
+    } catch (error) {
+      lastError = error instanceof Error ? error : new Error(String(error));
+      const isLastAttempt = attempt === MAX_ATTEMPTS - 1;
+      if (!isTransientGeminiError(lastError) || isLastAttempt) {
+        break;
+      }
+      const delayMs = BASE_DELAY_MS * 2 ** attempt;
+      await new Promise((resolve) => setTimeout(resolve, delayMs));
+    }
+  }
+
+  throw lastError ?? new Error(`${label} failed after 5 attempts`);
+}
+
+export function formatVector(values: number[]): string {
+  return `[${values.join(',')}]`;
+}
+
+export interface PageEmbeddingInput {
+  url: string;
+  title?: string | null;
+  h1?: string | null;
+  meta_description?: string | null;
+  h2s?: string[] | null;
+}
+
+export function buildPageEmbeddingText(page: PageEmbeddingInput): string {
+  const parts = [page.title, page.h1, page.meta_description, page.h2s?.join(' '), page.url]
+    .map((part) => (typeof part === 'string' ? part.trim() : null))
+    .filter((part): part is string => Boolean(part));
+  return parts.join('\n').slice(0, EMBEDDING_MAX_INPUT_CHARS);
+}
+
+function truncateForEmbedding(text: string): string {
+  return text.slice(0, EMBEDDING_MAX_INPUT_CHARS);
+}
+
+export async function embedText(text: string): Promise<number[]> {
+  const input = truncateForEmbedding(text);
+  if (!input) {
+    throw new Error('embedText called with empty input');
+  }
+  const model = getGeminiClient().getGenerativeModel({ model: EMBEDDING_MODEL_NAME });
+  return withGeminiRetry('embedText', async () => {
+    const result = await model.embedContent(input);
+    return result.embedding.values;
+  });
+}
+
+export async function batchEmbedTexts(texts: string[]): Promise<number[][]> {
+  if (texts.length === 0) {
+    return [];
+  }
+  const model = getGeminiClient().getGenerativeModel({ model: EMBEDDING_MODEL_NAME });
+  const prepared = texts.map((text) => truncateForEmbedding(text));
+  return withGeminiRetry('batchEmbedTexts', async () => {
+    const result = await model.batchEmbedContents({
+      requests: prepared.map((text) => ({
+        content: { role: 'user', parts: [{ text: text || ' ' }] },
+      })),
+    });
+    return result.embeddings.map((embedding) => embedding.values);
+  });
 }
 
 export interface InventoryPage {
@@ -106,7 +197,7 @@ ${draft}
 ${inventoryLines}
 
 ## OBJECTIVE
-Return 12-24 strong suggestions if the draft supports that many natural links. Suggest fewer only when the draft truly lacks natural anchors.
+Return every link that is genuinely useful — do not cap the count. Your goal is maximum coverage of contextually relevant destinations. Include a suggestion whenever the anchor text appears naturally in the draft AND the destination clearly serves the reader AND relevance_score is at least 0.6. If the draft supports 40+ strong links, return 40+. If it only supports 3, return 3. Returning zero suggestions is correct when no destination clearly fits — do not invent weak matches to hit a number.
 
 ## CRITICAL PRIORITIES
 1. Use only URLs from the provided inventory.
@@ -124,7 +215,7 @@ For each suggestion:
 - relevance_score must be at least 0.6
 - confidence should be high, medium, or low
 - anchor_refinement is optional
-- justification should explain why this destination is valuable for the reader and the editorial outcome
+- justification should explain why this destination is valuable for the reader — keep it to one concise sentence
 
 ## SAFETY RULES
 - Never suggest the same URL twice.
@@ -184,59 +275,50 @@ export async function getSuggestions(
       responseMimeType: 'application/json',
       responseSchema,
       temperature: 0.3,
+      maxOutputTokens: 8192,
     },
   });
 
-  let lastError: Error | null = null;
+  const prompt = buildPrompt(draft, inventory);
 
-  for (let attempt = 0; attempt < 2; attempt += 1) {
-    try {
-      const prompt = buildPrompt(draft, inventory);
-      const result = await model.generateContent(prompt);
-      const rawText = result.response.text();
-      const rawPayload = JSON.parse(rawText);
-      const parsed = z.object({ suggestions: z.array(SuggestionSchema) }).parse(rawPayload);
+  const result = await withGeminiRetry('getSuggestions', () => model.generateContent(prompt));
+  const rawText = result.response.text();
+  const rawPayload = JSON.parse(rawText);
+  const parsed = z.object({ suggestions: z.array(SuggestionSchema) }).parse(rawPayload);
 
-      const validated: Suggestion[] = [];
-      const seenUrls = new Set<string>();
+  const validated: Suggestion[] = [];
+  const seenUrls = new Set<string>();
 
-      for (const suggestion of parsed.suggestions) {
-        if (seenUrls.has(suggestion.target_url)) {
-          continue;
-        }
-
-        const range = resolveAnchorRange(draft, suggestion);
-        if (!range) {
-          continue;
-        }
-
-        seenUrls.add(suggestion.target_url);
-        validated.push({
-          ...suggestion,
-          char_start: range.start,
-          char_end: range.end,
-        });
-      }
-
-      const usageMetadata = result.response.usageMetadata;
-      const promptTokens = usageMetadata?.promptTokenCount ?? null;
-      const completionTokens = usageMetadata?.candidatesTokenCount ?? null;
-      const totalTokens = usageMetadata?.totalTokenCount ?? null;
-
-      return {
-        suggestions: validated,
-        usage: {
-          promptTokens,
-          completionTokens,
-          totalTokens,
-          estimatedCostUsd: estimateCostUsd(promptTokens, completionTokens),
-        },
-      };
-    } catch (error) {
-      lastError = error instanceof Error ? error : new Error(String(error));
-      await new Promise((resolve) => setTimeout(resolve, 1000 * (attempt + 1)));
+  for (const suggestion of parsed.suggestions) {
+    if (seenUrls.has(suggestion.target_url)) {
+      continue;
     }
+
+    const range = resolveAnchorRange(draft, suggestion);
+    if (!range) {
+      continue;
+    }
+
+    seenUrls.add(suggestion.target_url);
+    validated.push({
+      ...suggestion,
+      char_start: range.start,
+      char_end: range.end,
+    });
   }
 
-  throw lastError ?? new Error('Gemini suggestion generation failed after 2 attempts');
+  const usageMetadata = result.response.usageMetadata;
+  const promptTokens = usageMetadata?.promptTokenCount ?? null;
+  const completionTokens = usageMetadata?.candidatesTokenCount ?? null;
+  const totalTokens = usageMetadata?.totalTokenCount ?? null;
+
+  return {
+    suggestions: validated,
+    usage: {
+      promptTokens,
+      completionTokens,
+      totalTokens,
+      estimatedCostUsd: estimateCostUsd(promptTokens, completionTokens),
+    },
+  };
 }

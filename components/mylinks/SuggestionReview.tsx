@@ -27,6 +27,7 @@ export default function SuggestionReview({
   googleAccessEnabled,
 }: Props) {
   const [suggestions, setSuggestions] = useState<Suggestion[]>(initialSuggestions);
+  const [hasGenerated, setHasGenerated] = useState(initialSuggestions.length > 0);
   const [googleDocId, setGoogleDocId] = useState(article.google_doc_id);
   const [generating, setGenerating] = useState(false);
   const [generationProgress, setGenerationProgress] = useState(0);
@@ -133,6 +134,7 @@ export default function SuggestionReview({
       setGenerationProgress(100);
       setGenerationPhase("Suggestions ready.");
       setSuggestions(payload.suggestions ?? []);
+      setHasGenerated(true);
       showToast(`${payload.suggestions?.length ?? 0} link suggestions generated.`);
     } catch {
       setError("Request failed while generating suggestions.");
@@ -556,8 +558,9 @@ export default function SuggestionReview({
 
             {suggestions.length === 0 ? (
               <div className="text-sm leading-7 text-muted-foreground">
-                No suggestions yet. Generate suggestions after crawling the site and adding any
-                client-approved destinations.
+                {hasGenerated
+                  ? "Gemini reviewed the article and didn't find destinations that clearly fit. These are all the relevant links we could confidently recommend. Expand the draft or add client-approved URLs and regenerate to try again."
+                  : "No suggestions yet. Generate suggestions after crawling the site and adding any client-approved destinations."}
               </div>
             ) : (
               <div className="space-y-4">
@@ -580,8 +583,9 @@ export default function SuggestionReview({
           >
             {suggestions.length === 0 ? (
               <div className="px-6 py-16 text-sm leading-7 text-muted-foreground">
-                No suggestions yet. Generate suggestions after crawling the site and adding any
-                client-approved destinations.
+                {hasGenerated
+                  ? "Gemini reviewed the article and didn't find destinations that clearly fit. These are all the relevant links we could confidently recommend. Expand the draft or add client-approved URLs and regenerate to try again."
+                  : "No suggestions yet. Generate suggestions after crawling the site and adding any client-approved destinations."}
               </div>
             ) : (
               suggestions.map((suggestion) => (
