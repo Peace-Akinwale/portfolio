@@ -1,15 +1,11 @@
 import { randomBytes } from 'crypto';
 import { NextResponse } from 'next/server';
-import { canUseGoogleDocs, requireAuthenticatedUser } from '@/lib/mylinks/auth';
+import { requireAuthenticatedUser } from '@/lib/mylinks/auth';
 import { buildAuthUrl } from '@/lib/mylinks/google-auth';
 
 export async function GET(request: Request) {
   const user = await requireAuthenticatedUser();
-  const allowed = await canUseGoogleDocs(user.id, user.email);
-
-  if (!allowed) {
-    return NextResponse.redirect(new URL('/projects/mylinks/settings?error=google_access_required', request.url));
-  }
+  void user;
 
   const state = randomBytes(16).toString('hex');
   const url = buildAuthUrl(state, new URL(request.url).origin);
@@ -24,4 +20,3 @@ export async function GET(request: Request) {
 
   return response;
 }
-
