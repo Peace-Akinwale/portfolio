@@ -424,6 +424,36 @@ export type Database = {
         };
         Relationships: [];
       };
+      notifications: {
+        Row: {
+          id: string;
+          recipient_id: string;
+          type: 'google_connected' | 'admin_user_connected_google' | 'suggestions_ready';
+          message: string;
+          metadata: Record<string, Json> | null;
+          read_at: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          recipient_id: string;
+          type: 'google_connected' | 'admin_user_connected_google' | 'suggestions_ready';
+          message: string;
+          metadata?: Record<string, Json> | null;
+          read_at?: string | null;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          recipient_id?: string;
+          type?: 'google_connected' | 'admin_user_connected_google' | 'suggestions_ready';
+          message?: string;
+          metadata?: Record<string, Json> | null;
+          read_at?: string | null;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
     };
     Views: Record<never, never>;
     Functions: Record<never, never>;
