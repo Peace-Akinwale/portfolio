@@ -60,7 +60,13 @@ export async function canUseGoogleDocs(userId: string, email?: string | null) {
     return true;
   }
 
-  const request = await getGoogleAccessRequest(userId);
-  return request?.status === 'approved';
+  const serviceClient = await createServiceClient();
+  const { data } = await serviceClient
+    .from('google_tokens')
+    .select('user_id')
+    .eq('user_id', userId)
+    .maybeSingle();
+
+  return !!data;
 }
 
