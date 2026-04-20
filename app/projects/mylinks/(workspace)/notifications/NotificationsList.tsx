@@ -15,6 +15,7 @@ export function NotificationsList({ initialNotifications }: Props) {
       method: 'POST',
     });
     if (!response.ok) {
+      console.error('[mylinks/notifications] mark-read failed for', id);
       return;
     }
     setNotifications((current) =>

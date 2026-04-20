@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
 export function NotificationBell() {
-  const [unread, setUnread] = useState(0);
+  const [unread, setUnread] = useState<number | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -36,16 +36,16 @@ export function NotificationBell() {
     <Link
       href="/projects/mylinks/notifications"
       className="relative inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.12em] text-muted-foreground transition-colors hover:text-foreground"
-      aria-label={`Notifications${unread > 0 ? ` (${unread} unread)` : ''}`}
+      aria-label={`Notifications${unread !== null && unread > 0 ? ` (${unread} unread)` : ''}`}
     >
       <span aria-hidden="true">🔔</span>
       <span>Inbox</span>
-      {unread > 0 ? (
+      {unread !== null && unread > 0 ? (
         <span
           className="ml-1 inline-flex min-w-[1.25rem] items-center justify-center rounded-full px-1 text-[10px] font-bold text-white"
           style={{ background: 'var(--accent)' }}
         >
-          {unread > 99 ? '99+' : unread}
+          {unread! > 99 ? '99+' : unread}
         </span>
       ) : null}
     </Link>

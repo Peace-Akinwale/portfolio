@@ -40,6 +40,12 @@ export function RichTextEditor({
 
     const selection = window.getSelection();
     if (!selection || selection.rangeCount === 0) {
+      if (editorRef.current) {
+        const template = document.createElement('template');
+        template.innerHTML = clean;
+        editorRef.current.appendChild(template.content);
+        emitChange();
+      }
       return;
     }
     const range = selection.getRangeAt(0);
