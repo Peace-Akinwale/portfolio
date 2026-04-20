@@ -3,6 +3,10 @@ const INLINE_TAGS = new Set(['STRONG', 'EM', 'U', 'S', 'A']);
 const ALLOWED_TAGS = new Set([...BLOCK_TAGS, ...INLINE_TAGS]);
 const DROP_TAGS = new Set(['SCRIPT', 'STYLE', 'IFRAME', 'OBJECT', 'EMBED', 'LINK', 'META', 'NOSCRIPT']);
 
+/**
+ * Browser-only: depends on DOMParser and Node globals.
+ * Safe to call from 'use client' components; never import in server context.
+ */
 export function sanitizePastedHtml(html: string): string {
   if (!html) {
     return '';
@@ -59,7 +63,10 @@ function stripAttributes(el: Element, tag: string) {
   const attributes = Array.from(el.attributes);
   for (const attribute of attributes) {
     if (tag === 'A' && attribute.name === 'href') {
-      continue;
+      const value = attribute.value.trim().toLowerCase();
+      if (!value.startsWith('javascript:') && !value.startsWith('data:')) {
+        continue;
+      }
     }
     el.removeAttribute(attribute.name);
   }

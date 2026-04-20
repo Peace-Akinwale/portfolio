@@ -45,4 +45,9 @@ describe('sanitizePastedHtml', () => {
     const dirty = '<a href="https://example.com" target="_blank" rel="noopener" data-x="y">link</a>';
     expect(sanitizePastedHtml(dirty)).toBe('<a href="https://example.com">link</a>');
   });
+
+  it('drops javascript: hrefs on anchors', () => {
+    const dirty = '<a href="javascript:steal()">bad</a>';
+    expect(sanitizePastedHtml(dirty)).toBe('<a>bad</a>');
+  });
 });
