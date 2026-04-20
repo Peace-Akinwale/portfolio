@@ -92,3 +92,11 @@ Do not drop the MyLinks routes into the root of `portfolio`. Use the live prefix
 
 That keeps the portfolio site intact while letting both experiences share one Next app and one Supabase project.
 
+## 2026-04-20 update
+
+- The "Request access" approval workflow is removed. Any authenticated MyLinks user can click "Connect Google Docs" in settings and authorize their own Google account directly.
+- Every new Google Docs connection fires a Slack notification (`MYLINKS_SLACK_WEBHOOK`) and writes two rows into the new `notifications` table: one for the connecting user (`google_connected`), one for the admin identified by `ADMIN_EMAIL` (`admin_user_connected_google`).
+- Pasted draft content is now sanitized against an allowlist (`p`, `h1`–`h6`, `ul`, `ol`, `li`, `blockquote`, `hr`, `br`, `strong`, `em`, `u`, `s`, `a`). Inline styles and non-allowed tags are stripped on paste and again on blur. `javascript:` and `data:` hrefs are blocked.
+- The in-app notifications inbox is at `/projects/mylinks/notifications`. A bell icon in the dashboard nav shows the unread count, polling every 60 seconds.
+- The `google_access_requests` table remains in the database for historical records but is no longer written to. It can be dropped in a later cleanup migration.
+- Apply `supabase/migrations/20260420_add_notifications.sql` to your Supabase project before deploying (via dashboard SQL editor or `supabase db push`).
