@@ -26,7 +26,7 @@ export async function GET(request: NextRequest) {
 
   const expiresAt = new Date(Date.now() + tokens.expires_in * 1000).toISOString();
   const serviceClient = await createServiceClient();
-  await serviceClient.from('google_tokens').upsert(
+  const { error: upsertError } = await serviceClient.from('google_tokens').upsert(
     {
       user_id: user.id,
       access_token: tokens.access_token,
@@ -36,6 +36,10 @@ export async function GET(request: NextRequest) {
     },
     { onConflict: 'user_id' }
   );
+  if (upsertError) {
+    console.error('[mylinks/google/callback] token upsert failed:', upsertError);
+    return NextResponse.redirect(`${origin}/projects/mylinks/settings?error=google_token_failed`);
+  }
 
   const adminEmail = process.env.ADMIN_EMAIL?.trim().toLowerCase();
   let adminUserId: string | null = null;

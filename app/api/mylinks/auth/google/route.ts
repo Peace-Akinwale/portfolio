@@ -4,8 +4,7 @@ import { requireAuthenticatedUser } from '@/lib/mylinks/auth';
 import { buildAuthUrl } from '@/lib/mylinks/google-auth';
 
 export async function GET(request: Request) {
-  const user = await requireAuthenticatedUser();
-  void user;
+  await requireAuthenticatedUser();
 
   const state = randomBytes(16).toString('hex');
   const url = buildAuthUrl(state, new URL(request.url).origin);

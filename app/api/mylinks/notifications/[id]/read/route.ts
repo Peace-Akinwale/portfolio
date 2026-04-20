@@ -9,5 +9,8 @@ export async function POST(
   const user = await requireAuthenticatedUser();
   const { id } = await params;
   const ok = await markRead(user.id, id);
-  return NextResponse.json({ ok });
+  if (!ok) {
+    return NextResponse.json({ ok: false }, { status: 500 });
+  }
+  return NextResponse.json({ ok: true });
 }
