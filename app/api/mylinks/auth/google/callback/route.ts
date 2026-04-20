@@ -26,14 +26,15 @@ export async function GET(request: NextRequest) {
 
   const expiresAt = new Date(Date.now() + tokens.expires_in * 1000).toISOString();
   const serviceClient = await createServiceClient();
+  const upsertData = {
+    user_id: user.id,
+    access_token: tokens.access_token,
+    ...(tokens.refresh_token && { refresh_token: tokens.refresh_token }),
+    expires_at: expiresAt,
+    scope: tokens.scope,
+  };
   const { error: upsertError } = await serviceClient.from('google_tokens').upsert(
-    {
-      user_id: user.id,
-      access_token: tokens.access_token,
-      refresh_token: tokens.refresh_token,
-      expires_at: expiresAt,
-      scope: tokens.scope,
-    },
+    upsertData as any,
     { onConflict: 'user_id' }
   );
   if (upsertError) {
@@ -50,6 +51,9 @@ export async function GET(request: NextRequest) {
       .eq('email', adminEmail)
       .maybeSingle();
     adminUserId = adminProfile?.user_id ?? null;
+    if (adminEmail && !adminUserId) {
+      console.warn('[mylinks/google/callback] admin profile not found for email:', adminEmail);
+    }
   }
 
   await createNotification({

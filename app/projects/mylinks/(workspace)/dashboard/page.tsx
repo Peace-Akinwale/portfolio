@@ -33,7 +33,7 @@ export default async function DashboardPage() {
                 href="/projects/mylinks/admin/google-access"
                 className="text-xs font-semibold uppercase tracking-[0.12em] text-muted-foreground transition-colors hover:text-foreground"
               >
-                Google approvals
+                Access history
               </Link>
             ) : null}
             <UserMenu email={user.email} />

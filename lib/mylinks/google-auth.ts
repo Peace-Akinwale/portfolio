@@ -34,7 +34,7 @@ export function buildAuthUrl(state: string, origin: string) {
 
 export interface TokenResponse {
   access_token: string;
-  refresh_token: string;
+  refresh_token: string | undefined;
   expires_in: number;
   scope: string;
   token_type: string;
