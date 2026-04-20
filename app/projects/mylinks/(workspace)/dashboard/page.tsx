@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import NewProjectModal from '@/components/mylinks/NewProjectModal';
 import UserMenu from '@/components/mylinks/UserMenu';
+import { NotificationBell } from '@/components/mylinks/NotificationBell';
 import { isMylinksAdminEmail, requireAuthenticatedUser, requireProfile } from '@/lib/mylinks/auth';
 import { createServiceClient } from '@/lib/mylinks/supabase/server';
 
@@ -26,6 +27,7 @@ export default async function DashboardPage() {
             <h1 className="mt-1 text-xl font-bold text-foreground">Workspace dashboard</h1>
           </div>
           <div className="flex items-center gap-4">
+            <NotificationBell />
             {isMylinksAdminEmail(user.email) ? (
               <Link
                 href="/projects/mylinks/admin/google-access"
