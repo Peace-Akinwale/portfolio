@@ -237,6 +237,65 @@ function estimateCostUsd(promptTokens: number | null, completionTokens: number |
   return Number((inputCost + outputCost).toFixed(6));
 }
 
+function salvageTruncatedSuggestions(rawText: string): unknown {
+  const arrayStart = rawText.indexOf('[');
+  if (arrayStart === -1) {
+    return { suggestions: [] };
+  }
+
+  const objects: string[] = [];
+  let depth = 0;
+  let inString = false;
+  let escape = false;
+  let objectStart = -1;
+
+  for (let i = arrayStart + 1; i < rawText.length; i += 1) {
+    const ch = rawText[i];
+    if (escape) {
+      escape = false;
+      continue;
+    }
+    if (inString) {
+      if (ch === '\\') {
+        escape = true;
+      } else if (ch === '"') {
+        inString = false;
+      }
+      continue;
+    }
+    if (ch === '"') {
+      inString = true;
+      continue;
+    }
+    if (ch === '{') {
+      if (depth === 0) {
+        objectStart = i;
+      }
+      depth += 1;
+    } else if (ch === '}') {
+      depth -= 1;
+      if (depth === 0 && objectStart !== -1) {
+        objects.push(rawText.slice(objectStart, i + 1));
+        objectStart = -1;
+      }
+    }
+  }
+
+  return { suggestions: objects.map((raw) => JSON.parse(raw)) };
+}
+
+function parseSuggestionsPayload(rawText: string): unknown {
+  try {
+    return JSON.parse(rawText);
+  } catch (err) {
+    console.warn(
+      '[gemini] suggestion JSON parse failed, attempting salvage:',
+      err instanceof Error ? err.message : err
+    );
+    return salvageTruncatedSuggestions(rawText);
+  }
+}
+
 function resolveAnchorRange(text: string, suggestion: Suggestion) {
   const exactSlice = text.slice(suggestion.char_start, suggestion.char_end);
   if (
@@ -275,7 +334,7 @@ export async function getSuggestions(
       responseMimeType: 'application/json',
       responseSchema,
       temperature: 0.3,
-      maxOutputTokens: 8192,
+      maxOutputTokens: 32768,
     },
   });
 
@@ -283,13 +342,20 @@ export async function getSuggestions(
 
   const result = await withGeminiRetry('getSuggestions', () => model.generateContent(prompt));
   const rawText = result.response.text();
-  const rawPayload = JSON.parse(rawText);
-  const parsed = z.object({ suggestions: z.array(SuggestionSchema) }).parse(rawPayload);
+  const rawPayload = parseSuggestionsPayload(rawText);
+  const envelope = z.object({ suggestions: z.array(z.unknown()) }).parse(rawPayload);
+  const validSuggestions: Suggestion[] = [];
+  for (const item of envelope.suggestions) {
+    const parsedItem = SuggestionSchema.safeParse(item);
+    if (parsedItem.success) {
+      validSuggestions.push(parsedItem.data);
+    }
+  }
 
   const validated: Suggestion[] = [];
   const seenUrls = new Set<string>();
 
-  for (const suggestion of parsed.suggestions) {
+  for (const suggestion of validSuggestions) {
     if (seenUrls.has(suggestion.target_url)) {
       continue;
     }
