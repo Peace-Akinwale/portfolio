@@ -1,7 +1,17 @@
 import { NextResponse } from 'next/server';
-import { getSuggestions, type InventoryPage } from '@/lib/mylinks/gemini';
+import { embedText, formatVector, getSuggestions, type InventoryPage } from '@/lib/mylinks/gemini';
 import { requireAuthenticatedUser } from '@/lib/mylinks/auth';
 import { createServiceClient } from '@/lib/mylinks/supabase/server';
+
+type InventoryPageRow = {
+  id: string;
+  url: string;
+  title: string | null;
+  h1: string | null;
+  page_type: import('@/lib/mylinks/types/database').PageType;
+  priority: number;
+  published_at: string | null;
+};
 
 export const maxDuration = 120;
 
@@ -37,13 +47,47 @@ export async function POST(
   const fourYearsAgo = new Date();
   fourYearsAgo.setFullYear(fourYearsAgo.getFullYear() - 4);
 
-  const { data: pages } = await serviceClient
-    .from('pages')
-    .select('id, url, title, h1, page_type, priority, published_at')
-    .eq('project_id', article.project_id)
-    .or(`published_at.gte.${fourYearsAgo.toISOString()},published_at.is.null`)
-    .order('priority', { ascending: false })
-    .limit(250);
+  const MATCH_COUNT = 80;
+  let pages: InventoryPageRow[] | null = null;
+
+  try {
+    const articleEmbedding = await embedText(article.content_text);
+    const { data: matched, error: matchError } = await serviceClient.rpc('match_pages', {
+      p_project_id: article.project_id,
+      p_query_embedding: formatVector(articleEmbedding),
+      p_match_count: MATCH_COUNT,
+      p_published_after: fourYearsAgo.toISOString(),
+    });
+    if (matchError) {
+      throw new Error(matchError.message);
+    }
+    pages = (matched ?? []).map((row) => ({
+      id: row.id,
+      url: row.url,
+      title: row.title,
+      h1: row.h1,
+      page_type: row.page_type,
+      priority: row.priority,
+      published_at: row.published_at,
+    }));
+  } catch (rankingError) {
+    console.error(
+      'Semantic ranking unavailable, falling back to priority sort:',
+      rankingError instanceof Error ? rankingError.message : rankingError
+    );
+    pages = null;
+  }
+
+  if (!pages || pages.length === 0) {
+    const { data: fallback } = await serviceClient
+      .from('pages')
+      .select('id, url, title, h1, page_type, priority, published_at')
+      .eq('project_id', article.project_id)
+      .or(`published_at.gte.${fourYearsAgo.toISOString()},published_at.is.null`)
+      .order('priority', { ascending: false })
+      .limit(MATCH_COUNT);
+    pages = fallback ?? [];
+  }
 
   const { data: clientTargets } = await serviceClient
     .from('article_link_targets')

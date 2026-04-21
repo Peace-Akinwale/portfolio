@@ -103,6 +103,7 @@ export type Database = {
           status_code: number | null;
           last_crawled_at: string | null;
           published_at: string | null;
+          embedding: string | null;
         };
         Insert: {
           id?: string;
@@ -118,6 +119,7 @@ export type Database = {
           status_code?: number | null;
           last_crawled_at?: string | null;
           published_at?: string | null;
+          embedding?: string | null;
         };
         Update: {
           id?: string;
@@ -133,6 +135,7 @@ export type Database = {
           status_code?: number | null;
           last_crawled_at?: string | null;
           published_at?: string | null;
+          embedding?: string | null;
         };
         Relationships: [];
       };
@@ -456,7 +459,32 @@ export type Database = {
       };
     };
     Views: Record<never, never>;
-    Functions: Record<never, never>;
+    Functions: {
+      match_pages: {
+        Args: {
+          p_project_id: string;
+          p_query_embedding: string;
+          p_match_count?: number;
+          p_published_after?: string | null;
+        };
+        Returns: {
+          id: string;
+          project_id: string;
+          url: string;
+          title: string | null;
+          meta_description: string | null;
+          h1: string | null;
+          h2s: string[] | null;
+          page_type: PageType;
+          priority: number;
+          word_count: number | null;
+          status_code: number | null;
+          last_crawled_at: string | null;
+          published_at: string | null;
+          similarity: number;
+        }[];
+      };
+    };
     Enums: {
       page_type: PageType;
       confidence_level: Confidence;
