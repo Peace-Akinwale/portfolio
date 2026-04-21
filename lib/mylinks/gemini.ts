@@ -4,7 +4,7 @@ import { isRangeInsideHeading } from '@/lib/mylinks/article-preview';
 import type { DestinationSource, PageType } from '@/lib/mylinks/types/database';
 
 const MODEL_NAME = 'gemini-2.5-flash';
-const EMBEDDING_MODEL_NAME = 'text-embedding-004';
+const EMBEDDING_MODEL_NAME = 'embedding-001';
 export const EMBEDDING_DIMENSIONS = 768;
 const EMBEDDING_MAX_INPUT_CHARS = 7000;
 
