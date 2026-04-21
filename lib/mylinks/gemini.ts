@@ -284,18 +284,6 @@ function salvageTruncatedSuggestions(rawText: string): unknown {
   return { suggestions: objects.map((raw) => JSON.parse(raw)) };
 }
 
-function parseSuggestionsPayload(rawText: string): unknown {
-  try {
-    return JSON.parse(rawText);
-  } catch (err) {
-    console.warn(
-      '[gemini] suggestion JSON parse failed, attempting salvage:',
-      err instanceof Error ? err.message : err
-    );
-    return salvageTruncatedSuggestions(rawText);
-  }
-}
-
 function resolveAnchorRange(text: string, suggestion: Suggestion) {
   const exactSlice = text.slice(suggestion.char_start, suggestion.char_end);
   if (
@@ -342,14 +330,38 @@ export async function getSuggestions(
 
   const result = await withGeminiRetry('getSuggestions', () => model.generateContent(prompt));
   const rawText = result.response.text();
-  const rawPayload = parseSuggestionsPayload(rawText);
+  const finishReason = result.response.candidates?.[0]?.finishReason ?? null;
+  if (finishReason && finishReason !== 'STOP') {
+    console.warn(
+      `[gemini] suggestion generation finished with reason=${finishReason} (rawLength=${rawText.length})`
+    );
+  }
+  let salvageUsed = false;
+  let rawPayload: unknown;
+  try {
+    rawPayload = JSON.parse(rawText);
+  } catch (err) {
+    salvageUsed = true;
+    console.warn(
+      `[gemini] JSON parse failed (${err instanceof Error ? err.message : err}); salvaging truncated response (finishReason=${finishReason ?? 'unknown'})`
+    );
+    rawPayload = salvageTruncatedSuggestions(rawText);
+  }
   const envelope = z.object({ suggestions: z.array(z.unknown()) }).parse(rawPayload);
   const validSuggestions: Suggestion[] = [];
+  let droppedSuggestions = 0;
   for (const item of envelope.suggestions) {
     const parsedItem = SuggestionSchema.safeParse(item);
     if (parsedItem.success) {
       validSuggestions.push(parsedItem.data);
+    } else {
+      droppedSuggestions += 1;
     }
+  }
+  if (salvageUsed || droppedSuggestions > 0) {
+    console.warn(
+      `[gemini] suggestion parse summary: raw=${envelope.suggestions.length} valid=${validSuggestions.length} dropped=${droppedSuggestions} salvage=${salvageUsed}`
+    );
   }
 
   const validated: Suggestion[] = [];
