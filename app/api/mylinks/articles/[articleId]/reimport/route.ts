@@ -62,7 +62,6 @@ export async function POST(
     .update({
       content_text: fetched.text,
       content_html: fetched.html,
-      updated_at: new Date().toISOString(),
     })
     .eq('id', articleId)
     .select()
