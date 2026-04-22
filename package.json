@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "eslint",
     "migrate:mylinks-data": "ts-node --transpile-only scripts/migrate-mylinks-data.ts",
-    "backfill:page-embeddings": "ts-node --transpile-only scripts/backfill-page-embeddings.ts",
+    "backfill:page-embeddings": "tsx scripts/backfill-page-embeddings.ts",
     "test": "vitest run",
     "test:watch": "vitest"
   },
@@ -49,6 +49,7 @@
     "jsdom": "^29.0.1",
     "tailwindcss": "^4",
     "ts-node": "^10.9.2",
+    "tsx": "^4.21.0",
     "typescript": "^5",
     "vitest": "^4.1.1"
   }
