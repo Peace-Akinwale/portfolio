@@ -1,5 +1,7 @@
 import { escapeHtml } from '@/lib/mylinks/rich-text-common';
 import { extractGoogleDocId } from '@/lib/mylinks/utils';
+import { refreshAccessToken } from '@/lib/mylinks/google-auth';
+import { createServiceClient } from '@/lib/mylinks/supabase/server';
 
 interface DocContent {
   text: string;
@@ -22,6 +24,9 @@ interface DocParagraphElement {
       [key: string]: unknown;
     };
   };
+  inlineObjectElement?: {
+    inlineObjectId?: string;
+  };
   startIndex?: number;
   endIndex?: number;
 }
@@ -42,10 +47,28 @@ interface DocStructuralElement {
   endIndex?: number;
 }
 
+interface InlineObject {
+  inlineObjectProperties?: {
+    embeddedObject?: {
+      imageProperties?: {
+        contentUri?: string;
+        sourceUri?: string;
+      };
+      size?: {
+        width?: { magnitude?: number; unit?: string };
+        height?: { magnitude?: number; unit?: string };
+      };
+      title?: string;
+      description?: string;
+    };
+  };
+}
+
 interface GoogleDoc {
   body?: {
     content?: DocStructuralElement[];
   };
+  inlineObjects?: Record<string, InlineObject>;
 }
 
 interface ParagraphContent {
@@ -55,13 +78,15 @@ interface ParagraphContent {
   docIndices: number[];
   blockTag: string;
   listType: 'ul' | 'ol' | null;
+  hasImages: boolean;
 }
 
 export function extractDocContent(doc: GoogleDoc): DocContent {
   const body = doc.body?.content ?? [];
+  const inlineObjects = doc.inlineObjects ?? {};
   const paragraphs = body
-    .map((element) => extractParagraphContent(element))
-    .filter((paragraph): paragraph is ParagraphContent => !!paragraph && !!paragraph.text.trim());
+    .map((element) => extractParagraphContent(element, inlineObjects))
+    .filter((paragraph): paragraph is ParagraphContent => !!paragraph && (!!paragraph.text.trim() || paragraph.hasImages));
 
   const charToDocIndex = new Map<number, number>();
   let plainText = '';
@@ -127,7 +152,10 @@ export function extractDocContent(doc: GoogleDoc): DocContent {
   };
 }
 
-function extractParagraphContent(element: DocStructuralElement): ParagraphContent | null {
+function extractParagraphContent(
+  element: DocStructuralElement,
+  inlineObjects: Record<string, InlineObject>
+): ParagraphContent | null {
   const paragraph = element.paragraph;
   if (!paragraph) {
     return null;
@@ -137,8 +165,18 @@ function extractParagraphContent(element: DocStructuralElement): ParagraphConten
   let inlineHtml = '';
   const docIndices: number[] = [];
   let newlineDocIndex: number | null = null;
+  let hasImages = false;
 
   for (const segment of paragraph.elements ?? []) {
+    if (segment.inlineObjectElement?.inlineObjectId) {
+      const imgHtml = buildImageHtml(segment.inlineObjectElement.inlineObjectId, inlineObjects);
+      if (imgHtml) {
+        inlineHtml += imgHtml;
+        hasImages = true;
+      }
+      continue;
+    }
+
     const content = segment.textRun?.content;
     if (!content) {
       continue;
@@ -156,7 +194,7 @@ function extractParagraphContent(element: DocStructuralElement): ParagraphConten
     }
   }
 
-  if (!paragraphText.trim()) {
+  if (!paragraphText.trim() && !hasImages) {
     return null;
   }
 
@@ -167,7 +205,42 @@ function extractParagraphContent(element: DocStructuralElement): ParagraphConten
     docIndices,
     blockTag: paragraphTagFromStyle(paragraph.paragraphStyle?.namedStyleType),
     listType: paragraph.bullet ? inferListType(paragraph.bullet.glyph) : null,
+    hasImages,
   };
+}
+
+function buildImageHtml(
+  inlineObjectId: string,
+  inlineObjects: Record<string, InlineObject>
+): string | null {
+  const obj = inlineObjects[inlineObjectId];
+  const embedded = obj?.inlineObjectProperties?.embeddedObject;
+  const src = embedded?.imageProperties?.contentUri;
+  if (!src) {
+    return null;
+  }
+  const alt = escapeHtml(embedded?.title ?? embedded?.description ?? '');
+  const sizeAttrs = buildImageSizeAttrs(embedded?.size);
+  return `<img src="${escapeHtml(src)}" alt="${alt}"${sizeAttrs} loading="lazy" referrerpolicy="no-referrer" />`;
+}
+
+type EmbeddedSize = NonNullable<
+  NonNullable<NonNullable<InlineObject['inlineObjectProperties']>['embeddedObject']>['size']
+>;
+
+function buildImageSizeAttrs(size: EmbeddedSize | undefined): string {
+  if (!size) return '';
+  const toPx = (magnitude?: number, unit?: string) => {
+    if (!magnitude) return null;
+    if (unit === 'PT') return Math.round(magnitude * 1.3333);
+    return Math.round(magnitude);
+  };
+  const w = toPx(size.width?.magnitude, size.width?.unit);
+  const h = toPx(size.height?.magnitude, size.height?.unit);
+  const parts: string[] = [];
+  if (w) parts.push(` width="${w}"`);
+  if (h) parts.push(` height="${h}"`);
+  return parts.join('');
 }
 
 function extractTextRun(segment: DocParagraphElement, docStart: number) {
@@ -303,4 +376,46 @@ export function buildBatchUpdateRequests(
 
 export function extractDocIdFromUrl(input: string): string {
   return extractGoogleDocId(input);
+}
+
+async function getValidAccessToken(userId: string): Promise<string> {
+  const serviceClient = await createServiceClient();
+  const { data: tokenRow } = await serviceClient
+    .from('google_tokens')
+    .select('*')
+    .eq('user_id', userId)
+    .order('expires_at', { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+  if (!tokenRow) {
+    throw new Error('Google account not connected');
+  }
+
+  if (new Date(tokenRow.expires_at).getTime() > Date.now() + 60_000) {
+    return tokenRow.access_token;
+  }
+
+  const refreshed = await refreshAccessToken(tokenRow.refresh_token);
+  const newExpiry = new Date(Date.now() + refreshed.expires_in * 1000).toISOString();
+  await serviceClient
+    .from('google_tokens')
+    .update({ access_token: refreshed.access_token, expires_at: newExpiry })
+    .eq('user_id', userId);
+
+  return refreshed.access_token;
+}
+
+export async function fetchGoogleDocContent(userId: string, docIdOrUrl: string): Promise<DocContent & { docId: string }> {
+  const accessToken = await getValidAccessToken(userId);
+  const docId = extractDocIdFromUrl(docIdOrUrl);
+  const response = await fetch(`https://docs.googleapis.com/v1/documents/${docId}`, {
+    headers: { Authorization: `Bearer ${accessToken}` },
+  });
+  if (!response.ok) {
+    throw new Error(`Google Docs API error: ${response.status}`);
+  }
+  const doc = (await response.json()) as GoogleDoc;
+  const content = extractDocContent(doc);
+  return { ...content, docId };
 }

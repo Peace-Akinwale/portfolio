@@ -34,6 +34,7 @@ export default function SuggestionReview({
   const [generationPhase, setGenerationPhase] = useState<string | null>(null);
   const [applying, setApplying] = useState(false);
   const [linking, setLinking] = useState(false);
+  const [reimporting, setReimporting] = useState(false);
   const [copying, setCopying] = useState(false);
   const [showLinkDoc, setShowLinkDoc] = useState(false);
   const [docUrl, setDocUrl] = useState(article.google_doc_id ?? "");
@@ -203,6 +204,28 @@ export default function SuggestionReview({
     }
 
     return null;
+  }
+
+  async function reimportFromGoogleDoc() {
+    if (!googleDocId) return;
+    setReimporting(true);
+    setError(null);
+    try {
+      const response = await fetch(`/api/mylinks/articles/${article.id}/reimport`, {
+        method: "POST",
+      });
+      const payload = (await response.json()) as { error?: string; article?: Article };
+      if (!response.ok || !payload.article) {
+        setError(payload.error ?? "Re-import failed.");
+        return;
+      }
+      showToast("Re-imported from Google Doc. Refreshing...");
+      window.setTimeout(() => window.location.reload(), 600);
+    } catch {
+      setError("Request failed during re-import.");
+    } finally {
+      setReimporting(false);
+    }
   }
 
   async function linkGoogleDoc() {
@@ -477,15 +500,25 @@ export default function SuggestionReview({
                 Request Google access
               </Link>
             ) : googleDocId ? (
-              <button
-                type="button"
-                onClick={applyToGoogleDoc}
-                disabled={applying || approvedSuggestions.length === 0}
-                className="inline-flex rounded-full px-5 py-3 text-xs font-bold uppercase tracking-[0.12em] text-white transition-opacity hover:opacity-90 disabled:opacity-50"
-                style={{ background: "var(--accent)" }}
-              >
-                {applying ? "Applying..." : "Apply approved to Google Doc"}
-              </button>
+              <>
+                <button
+                  type="button"
+                  onClick={reimportFromGoogleDoc}
+                  disabled={reimporting}
+                  className="inline-flex rounded-full border border-border px-5 py-3 text-xs font-semibold uppercase tracking-[0.12em] transition-colors hover:bg-[var(--muted)] disabled:opacity-50"
+                >
+                  {reimporting ? "Re-importing..." : "Re-import from Google Doc"}
+                </button>
+                <button
+                  type="button"
+                  onClick={applyToGoogleDoc}
+                  disabled={applying || approvedSuggestions.length === 0}
+                  className="inline-flex rounded-full px-5 py-3 text-xs font-bold uppercase tracking-[0.12em] text-white transition-opacity hover:opacity-90 disabled:opacity-50"
+                  style={{ background: "var(--accent)" }}
+                >
+                  {applying ? "Applying..." : "Apply approved to Google Doc"}
+                </button>
+              </>
             ) : (
               <button
                 type="button"

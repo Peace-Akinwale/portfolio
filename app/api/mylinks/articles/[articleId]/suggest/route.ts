@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { embedText, formatVector, getSuggestions, type InventoryPage } from '@/lib/mylinks/ai';
+import { extractExistingLinkRanges } from '@/lib/mylinks/article-preview';
 import { requireAuthenticatedUser } from '@/lib/mylinks/auth';
 import { createServiceClient } from '@/lib/mylinks/supabase/server';
 
@@ -120,9 +121,11 @@ export async function POST(
     return NextResponse.json({ error: 'No destination inventory available. Crawl first or add client URLs.' }, { status: 400 });
   }
 
+  const excludedRanges = extractExistingLinkRanges(article.content_html, article.content_text);
+
   let suggestionResult;
   try {
-    suggestionResult = await getSuggestions(article.content_text, inventory);
+    suggestionResult = await getSuggestions(article.content_text, inventory, excludedRanges);
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Suggestion generation failed';
     return NextResponse.json({ error: message }, { status: 500 });

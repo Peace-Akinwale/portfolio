@@ -1,7 +1,13 @@
 import OpenAI from 'openai';
 import { z } from 'zod';
-import { isRangeInsideHeading } from '@/lib/mylinks/article-preview';
+import { isRangeInsideHeading, rangeOverlaps } from '@/lib/mylinks/article-preview';
 import type { DestinationSource, PageType } from '@/lib/mylinks/types/database';
+
+export interface ExcludedRange {
+  start: number;
+  end: number;
+  url?: string;
+}
 
 const SUGGESTION_MODEL = 'gpt-4o-mini';
 const EMBEDDING_MODEL = 'text-embedding-3-small';
@@ -140,7 +146,26 @@ const suggestionJsonSchema = {
   required: ['suggestions'],
 } as const;
 
-function buildPrompt(draft: string, inventory: InventoryPage[]): string {
+function buildExcludedRangesSection(draft: string, ranges: ExcludedRange[]): string {
+  if (ranges.length === 0) return '';
+  const lines = ranges
+    .slice(0, 60)
+    .map((range) => {
+      const snippet = draft.slice(range.start, range.end).replace(/\s+/g, ' ').trim();
+      const urlNote = range.url ? ` (linked to ${range.url})` : '';
+      return `- "${snippet}" [chars ${range.start}-${range.end}]${urlNote}`;
+    })
+    .join('\n');
+  return `\n\n## ALREADY LINKED ANCHORS (do not suggest new links here)
+The author has already hyperlinked these phrases in the source document. Do not propose any suggestion whose [char_start, char_end) overlaps any of these ranges. Pick different anchor text instead:
+${lines}`;
+}
+
+function buildPrompt(
+  draft: string,
+  inventory: InventoryPage[],
+  excludedRanges: ExcludedRange[] = []
+): string {
   const inventoryLines = inventory
     .map((page, index) =>
       [
@@ -189,10 +214,11 @@ For each suggestion:
 - Never suggest the same URL twice.
 - Never suggest the article's own URL.
 - Never place anchors in H2, H3, headings, title-like lines, numbered section titles, or standalone short section labels.
+- Never place anchors on phrases the author already hyperlinked (see the ALREADY LINKED ANCHORS section if present).
 - Prefer exact topical fit over blog bias.
 - If a product or service page is a better destination than a blog post, choose it.
 
-Return JSON matching the schema.`;
+Return JSON matching the schema.${buildExcludedRangesSection(draft, excludedRanges)}`;
 }
 
 function estimateCostUsd(promptTokens: number | null, completionTokens: number | null) {
@@ -278,9 +304,10 @@ function resolveAnchorRange(text: string, suggestion: Suggestion) {
 
 export async function getSuggestions(
   draft: string,
-  inventory: InventoryPage[]
+  inventory: InventoryPage[],
+  excludedRanges: ExcludedRange[] = []
 ): Promise<SuggestionResult> {
-  const prompt = buildPrompt(draft, inventory);
+  const prompt = buildPrompt(draft, inventory, excludedRanges);
   const client = getClient();
 
   const completion = await client.chat.completions.create({
@@ -343,6 +370,9 @@ export async function getSuggestions(
     }
     const range = resolveAnchorRange(draft, suggestion);
     if (!range) {
+      continue;
+    }
+    if (excludedRanges.length > 0 && rangeOverlaps(range.start, range.end, excludedRanges)) {
       continue;
     }
     seenUrls.add(suggestion.target_url);
