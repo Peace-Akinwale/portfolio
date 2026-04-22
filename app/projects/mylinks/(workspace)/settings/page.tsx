@@ -52,9 +52,18 @@ export default async function SettingsPage() {
             Connect your Google account to import Docs and auto-apply approved links. You can disconnect at any time from your Google account settings.
           </p>
           {token ? (
-            <p className="mt-3 text-xs text-muted-foreground">
-              Connected. Current token expires at {new Date(token.expires_at).toLocaleString()}.
-            </p>
+            <div className="mt-3 space-y-1 text-xs text-muted-foreground">
+              <p>
+                Connected. Access token rotates automatically (next rotation at{' '}
+                {new Date(token.expires_at).toLocaleString()}).
+              </p>
+              <p>
+                Your long-lived refresh token stays valid until you revoke access in your Google
+                account. If this app is still in Google&rsquo;s OAuth testing mode, refresh tokens
+                expire after 7 days and you will need to reconnect weekly until the app is
+                published.
+              </p>
+            </div>
           ) : null}
           <a
             href="/api/mylinks/auth/google"

@@ -39,6 +39,7 @@ export default function SuggestionReview({
   const [showLinkDoc, setShowLinkDoc] = useState(false);
   const [docUrl, setDocUrl] = useState(article.google_doc_id ?? "");
   const [error, setError] = useState<string | null>(null);
+  const [reconnectRequired, setReconnectRequired] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
   const [activeSuggestionId, setActiveSuggestionId] = useState<string | null>(null);
   const [anchorPositions, setAnchorPositions] = useState<Record<string, number>>({});
@@ -210,11 +211,21 @@ export default function SuggestionReview({
     if (!googleDocId) return;
     setReimporting(true);
     setError(null);
+    setReconnectRequired(false);
     try {
       const response = await fetch(`/api/mylinks/articles/${article.id}/reimport`, {
         method: "POST",
       });
-      const payload = (await response.json()) as { error?: string; article?: Article };
+      const payload = (await response.json()) as {
+        error?: string;
+        article?: Article;
+        reconnect_required?: boolean;
+      };
+      if (payload.reconnect_required) {
+        setReconnectRequired(true);
+        setError(null);
+        return;
+      }
       if (!response.ok || !payload.article) {
         setError(payload.error ?? "Re-import failed.");
         return;
@@ -306,13 +317,23 @@ export default function SuggestionReview({
   async function applyToGoogleDoc() {
     setApplying(true);
     setError(null);
+    setReconnectRequired(false);
 
     try {
       const response = await fetch(`/api/mylinks/articles/${article.id}/apply`, {
         method: "POST",
       });
-      const payload = (await response.json()) as { error?: string; applied?: number };
+      const payload = (await response.json()) as {
+        error?: string;
+        applied?: number;
+        reconnect_required?: boolean;
+      };
 
+      if (payload.reconnect_required) {
+        setReconnectRequired(true);
+        setError(null);
+        return;
+      }
       if (!response.ok) {
         setError(payload.error ?? "Failed to apply links.");
         return;
@@ -558,6 +579,23 @@ export default function SuggestionReview({
           </p>
         ) : null}
       </div>
+
+      {reconnectRequired ? (
+        <div className="border-b border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900 sm:px-6">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <span>
+              <strong>Google connection expired.</strong> Reconnect Google Docs to re-import or apply
+              links.
+            </span>
+            <Link
+              href="/projects/mylinks/settings"
+              className="inline-flex rounded-full bg-amber-900 px-4 py-2 text-xs font-bold uppercase tracking-[0.12em] text-white transition-opacity hover:opacity-90"
+            >
+              Reconnect Google
+            </Link>
+          </div>
+        </div>
+      ) : null}
 
       {error ? (
         <div className="border-b border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 sm:px-6">

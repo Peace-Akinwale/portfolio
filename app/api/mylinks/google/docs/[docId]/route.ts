@@ -18,7 +18,14 @@ export async function GET(
     const { text, html, docId } = await fetchGoogleDocContent(user.id, decodeURIComponent(rawDocId));
     return NextResponse.json({ text, html, docId });
   } catch (error) {
+    const name = error instanceof Error ? error.name : '';
     const message = error instanceof Error ? error.message : 'Failed to fetch Google Doc';
+    if (name === 'GoogleRefreshRevokedError' || /invalid_grant/i.test(message)) {
+      return NextResponse.json(
+        { error: 'Google connection expired. Reconnect in Settings.', reconnect_required: true },
+        { status: 401 }
+      );
+    }
     const status = /not connected/i.test(message) ? 401 : /Google Docs API error/i.test(message) ? 502 : 500;
     return NextResponse.json({ error: message }, { status });
   }

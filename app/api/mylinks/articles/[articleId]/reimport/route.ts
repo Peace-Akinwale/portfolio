@@ -45,7 +45,14 @@ export async function POST(
   try {
     fetched = await fetchGoogleDocContent(user.id, article.google_doc_id);
   } catch (error) {
+    const name = error instanceof Error ? error.name : '';
     const message = error instanceof Error ? error.message : 'Failed to fetch Google Doc';
+    if (name === 'GoogleRefreshRevokedError' || /invalid_grant/i.test(message)) {
+      return NextResponse.json(
+        { error: 'Google connection expired. Reconnect in Settings.', reconnect_required: true },
+        { status: 401 }
+      );
+    }
     const status = /not connected/i.test(message) ? 401 : /Google Docs API error/i.test(message) ? 502 : 500;
     return NextResponse.json({ error: message }, { status });
   }

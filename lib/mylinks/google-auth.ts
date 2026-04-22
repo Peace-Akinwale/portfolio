@@ -3,8 +3,14 @@ const GOOGLE_TOKEN_URL = 'https://oauth2.googleapis.com/token';
 
 const SCOPES = [
   'https://www.googleapis.com/auth/documents',
-  'https://www.googleapis.com/auth/drive.readonly',
 ].join(' ');
+
+export class GoogleRefreshRevokedError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'GoogleRefreshRevokedError';
+  }
+}
 
 function getGoogleClientId() {
   return process.env.GOOGLE_CLIENT_ID!.trim();
@@ -79,6 +85,11 @@ export async function refreshAccessToken(refreshToken: string): Promise<{
   if (!response.ok) {
     const errorText = await response.text();
     console.error('[mylinks/google-auth] refresh failed:', response.status, errorText);
+    if (response.status === 400 && /invalid_grant/i.test(errorText)) {
+      throw new GoogleRefreshRevokedError(
+        'Google refresh token is expired or revoked. Reconnect Google Docs in Settings.'
+      );
+    }
     throw new Error(`Token refresh failed: ${response.status} ${errorText}`);
   }
 

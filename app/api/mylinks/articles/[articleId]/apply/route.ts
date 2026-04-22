@@ -77,7 +77,14 @@ export async function POST(
   try {
     accessToken = await getValidAccessToken(user.id);
   } catch (error) {
+    const name = error instanceof Error ? error.name : '';
     const message = error instanceof Error ? error.message : 'Auth error';
+    if (name === 'GoogleRefreshRevokedError' || /invalid_grant/i.test(message)) {
+      return NextResponse.json(
+        { error: 'Google connection expired. Reconnect in Settings.', reconnect_required: true },
+        { status: 401 }
+      );
+    }
     return NextResponse.json({ error: message }, { status: 401 });
   }
 
