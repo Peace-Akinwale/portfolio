@@ -7,7 +7,7 @@ const envSchema = z.object({
   NEXT_PUBLIC_APP_URL: z.string().url(),
   GOOGLE_CLIENT_ID: z.string().min(1),
   GOOGLE_CLIENT_SECRET: z.string().min(1),
-  GEMINI_API_KEY: z.string().min(1),
+  OPENAI_API_KEY: z.string().min(1),
 });
 
 export const env = envSchema.parse(process.env);

@@ -3,7 +3,7 @@ import { requireAuthenticatedUser } from '@/lib/mylinks/auth';
 import { discoverAndParseSitemap } from '@/lib/mylinks/sitemap';
 import { extractPage } from '@/lib/mylinks/extract';
 import { inferPageType } from '@/lib/mylinks/page-type';
-import { batchEmbedTexts, buildPageEmbeddingText, formatVector } from '@/lib/mylinks/gemini';
+import { batchEmbedTexts, buildPageEmbeddingText, formatVector } from '@/lib/mylinks/ai';
 
 export const dynamic = 'force-dynamic';
 export const maxDuration = 300;

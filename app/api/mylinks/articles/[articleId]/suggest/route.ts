@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { embedText, formatVector, getSuggestions, type InventoryPage } from '@/lib/mylinks/gemini';
+import { embedText, formatVector, getSuggestions, type InventoryPage } from '@/lib/mylinks/ai';
 import { requireAuthenticatedUser } from '@/lib/mylinks/auth';
 import { createServiceClient } from '@/lib/mylinks/supabase/server';
 
@@ -124,7 +124,7 @@ export async function POST(
   try {
     suggestionResult = await getSuggestions(article.content_text, inventory);
   } catch (error) {
-    const message = error instanceof Error ? error.message : 'Gemini call failed';
+    const message = error instanceof Error ? error.message : 'Suggestion generation failed';
     return NextResponse.json({ error: message }, { status: 500 });
   }
 
@@ -169,8 +169,8 @@ export async function POST(
     project_id: article.project_id,
     article_id: articleId,
     operation: 'generate_internal_suggestions',
-    provider: 'gemini',
-    model: 'gemini-2.5-flash',
+    provider: 'openai',
+    model: 'gpt-4o-mini',
     prompt_tokens: suggestionResult.usage.promptTokens,
     completion_tokens: suggestionResult.usage.completionTokens,
     total_tokens: suggestionResult.usage.totalTokens,

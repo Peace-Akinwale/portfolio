@@ -43,7 +43,7 @@ If you later fold the MyLinks UI into the portfolio app, you will also need:
 NEXT_PUBLIC_SUPABASE_URL=https://your-portfolio-project.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your-portfolio-anon-key
 NEXT_PUBLIC_APP_URL=http://localhost:3000
-GEMINI_API_KEY=your-gemini-api-key
+OPENAI_API_KEY=your-openai-api-key
 GOOGLE_CLIENT_ID=your-google-client-id
 GOOGLE_CLIENT_SECRET=your-google-client-secret
 ```

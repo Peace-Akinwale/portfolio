@@ -106,7 +106,7 @@ export default function SuggestionReview({
       } else if (nextProgress >= 52) {
         setGenerationPhase("Matching anchors against your site inventory...");
       } else if (nextProgress >= 28) {
-        setGenerationPhase("Sending the article to Gemini for link ideas...");
+        setGenerationPhase("Sending the article to the link generator for ideas...");
       }
     }, 220);
 
@@ -559,7 +559,7 @@ export default function SuggestionReview({
             {suggestions.length === 0 ? (
               <div className="text-sm leading-7 text-muted-foreground">
                 {hasGenerated
-                  ? "Gemini reviewed the article and didn't find destinations that clearly fit. These are all the relevant links we could confidently recommend. Expand the draft or add client-approved URLs and regenerate to try again."
+                  ? "The link generator reviewed the article and didn't find destinations that clearly fit. These are all the relevant links we could confidently recommend. Expand the draft or add client-approved URLs and regenerate to try again."
                   : "No suggestions yet. Generate suggestions after crawling the site and adding any client-approved destinations."}
               </div>
             ) : (
@@ -584,7 +584,7 @@ export default function SuggestionReview({
             {suggestions.length === 0 ? (
               <div className="px-6 py-16 text-sm leading-7 text-muted-foreground">
                 {hasGenerated
-                  ? "Gemini reviewed the article and didn't find destinations that clearly fit. These are all the relevant links we could confidently recommend. Expand the draft or add client-approved URLs and regenerate to try again."
+                  ? "The link generator reviewed the article and didn't find destinations that clearly fit. These are all the relevant links we could confidently recommend. Expand the draft or add client-approved URLs and regenerate to try again."
                   : "No suggestions yet. Generate suggestions after crawling the site and adding any client-approved destinations."}
               </div>
             ) : (

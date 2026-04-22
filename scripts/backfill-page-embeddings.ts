@@ -5,7 +5,7 @@ import {
   batchEmbedTexts,
   buildPageEmbeddingText,
   formatVector,
-} from '../lib/mylinks/gemini';
+} from '../lib/mylinks/ai';
 
 type PageRow = {
   id: string;
@@ -98,7 +98,7 @@ async function updateEmbedding(
 
 async function main(): Promise<void> {
   loadRuntimeEnv();
-  getRequiredEnv('GEMINI_API_KEY');
+  getRequiredEnv('OPENAI_API_KEY');
   const dryRun = process.argv.includes('--dry-run');
   const client = createAdminClient();
 
