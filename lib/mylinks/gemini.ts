@@ -5,8 +5,8 @@ import type { DestinationSource, PageType } from '@/lib/mylinks/types/database';
 
 const MODEL_FALLBACK_CHAIN = [
   'gemini-2.5-flash',
+  'gemini-2.5-flash-lite',
   'gemini-2.0-flash',
-  'gemini-1.5-flash',
 ] as const;
 const EMBEDDING_MODEL_NAME = 'embedding-001';
 export const EMBEDDING_DIMENSIONS = 768;
