@@ -1,9 +1,13 @@
-import { GoogleGenerativeAI, SchemaType, type Schema } from '@google/generative-ai';
+import { GoogleGenerativeAI, SchemaType, type GenerateContentResult, type Schema } from '@google/generative-ai';
 import { z } from 'zod';
 import { isRangeInsideHeading } from '@/lib/mylinks/article-preview';
 import type { DestinationSource, PageType } from '@/lib/mylinks/types/database';
 
-const MODEL_NAME = 'gemini-2.5-flash';
+const MODEL_FALLBACK_CHAIN = [
+  'gemini-2.5-flash',
+  'gemini-2.0-flash',
+  'gemini-1.5-flash',
+] as const;
 const EMBEDDING_MODEL_NAME = 'embedding-001';
 export const EMBEDDING_DIMENSIONS = 768;
 const EMBEDDING_MAX_INPUT_CHARS = 7000;
@@ -316,19 +320,29 @@ export async function getSuggestions(
   draft: string,
   inventory: InventoryPage[]
 ): Promise<SuggestionResult> {
-  const model = getGeminiClient().getGenerativeModel({
-    model: MODEL_NAME,
-    generationConfig: {
-      responseMimeType: 'application/json',
-      responseSchema,
-      temperature: 0.3,
-      maxOutputTokens: 32768,
-    },
-  });
-
   const prompt = buildPrompt(draft, inventory);
+  const generationConfig = {
+    responseMimeType: 'application/json',
+    responseSchema,
+    temperature: 0.3,
+    maxOutputTokens: 32768,
+  } as const;
 
-  const result = await withGeminiRetry('getSuggestions', () => model.generateContent(prompt));
+  let result: GenerateContentResult | null = null;
+  let lastError: Error | null = null;
+  for (const modelName of MODEL_FALLBACK_CHAIN) {
+    const model = getGeminiClient().getGenerativeModel({ model: modelName, generationConfig });
+    try {
+      result = await withGeminiRetry(`getSuggestions(${modelName})`, () => model.generateContent(prompt));
+      break;
+    } catch (error) {
+      lastError = error instanceof Error ? error : new Error(String(error));
+      console.warn(`[gemini] model ${modelName} failed after retries; trying next fallback: ${lastError.message}`);
+    }
+  }
+  if (!result) {
+    throw lastError ?? new Error('getSuggestions failed across all fallback models');
+  }
   const rawText = result.response.text();
   const finishReason = result.response.candidates?.[0]?.finishReason ?? null;
   if (finishReason && finishReason !== 'STOP') {
