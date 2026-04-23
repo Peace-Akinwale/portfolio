@@ -167,8 +167,10 @@ const TRUSTED_EMBED_HOSTS = [
  */
 function rescueTrustedIframes(html: string): string {
   if (!html.includes('&lt;iframe')) return html;
+  // [\s\S]*? matches any char (incl. &amp; in URLs) non-greedily; [^"]*? captures
+  // the src value up to its closing &quot; since escaped HTML never contains a literal ".
   return html.replace(
-    /&lt;iframe\b[^&]*?src=(?:&quot;|&#39;)([^&]+?)(?:&quot;|&#39;)[^&]*?&gt;\s*&lt;\/iframe&gt;/gi,
+    /&lt;iframe\b[\s\S]*?src=(?:&quot;|&#39;)([^"]*?)(?:&quot;|&#39;)[\s\S]*?&gt;\s*&lt;\/iframe&gt;/gi,
     (match, rawSrc: string) => {
       const src = rawSrc.replace(/&amp;/g, '&');
       if (!TRUSTED_EMBED_HOSTS.some((re) => re.test(src))) return match;
