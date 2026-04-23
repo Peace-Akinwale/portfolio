@@ -1,7 +1,7 @@
 'use client';
 
 import { buildHighlightedDraftHtml, buildLinkedHtml, normalizeSuggestions } from '@/lib/mylinks/article-preview';
-import { BLOCK_TAG_NAMES, LIST_TAG_NAMES, normalizeRichTextString } from '@/lib/mylinks/rich-text-common';
+import { BLOCK_TAG_NAMES, normalizeRichTextString } from '@/lib/mylinks/rich-text-common';
 
 type SuggestionShape = {
   id: string;
@@ -236,6 +236,10 @@ function hasMeaningfulText(element: Element) {
 }
 
 function isContentBlock(element: Element) {
+  // Only treat real text-bearing blocks as newline boundaries.
+  // ul/ol are list *containers*; their <li> children already add the newline,
+  // and extractDocContent() only emits one '\n' per paragraph/li — so counting
+  // the container too would shift every offset after the list by +1.
   const tag = element.tagName.toLowerCase();
-  return BLOCK_TAG_NAMES.has(tag) || LIST_TAG_NAMES.has(tag);
+  return BLOCK_TAG_NAMES.has(tag);
 }

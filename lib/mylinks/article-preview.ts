@@ -1,6 +1,6 @@
 import { marked } from 'marked';
 import * as cheerio from 'cheerio';
-import { BLOCK_TAG_NAMES, LIST_TAG_NAMES, normalizeRichTextString } from './rich-text-common';
+import { BLOCK_TAG_NAMES, normalizeRichTextString } from './rich-text-common';
 
 type SuggestionShape = {
   id: string;
@@ -209,7 +209,8 @@ export function extractExistingLinkRanges(
       return;
     }
 
-    const isBlock = BLOCK_TAG_NAMES.has(tag) || LIST_TAG_NAMES.has(tag);
+    // ul/ol are containers — only <li> emits a newline boundary, same as extractDocContent.
+    const isBlock = BLOCK_TAG_NAMES.has(tag);
     if (isBlock && hasMeaningfulText(n)) {
       appendVirtualNewline(state);
     }

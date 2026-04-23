@@ -6,11 +6,18 @@ export default async function SettingsPage() {
   const user = await requireAuthenticatedUser();
   const profile = await requireProfile(user.id);
   const serviceClient = await createServiceClient();
-  const { data: token } = await serviceClient
+  const { data: tokenRaw } = await serviceClient
     .from('google_tokens')
-    .select('scope, expires_at')
+    .select('scope, expires_at, refresh_issued_at')
     .eq('user_id', user.id)
     .maybeSingle();
+  const token = tokenRaw as
+    | { scope: string; expires_at: string; refresh_issued_at: string | null }
+    | null;
+  const refreshAgeDays = token?.refresh_issued_at
+    ? (Date.now() - new Date(token.refresh_issued_at).getTime()) / 86_400_000
+    : null;
+  const nearExpiry = refreshAgeDays !== null && refreshAgeDays >= 5;
 
   return (
     <div className="min-h-screen bg-[var(--muted)]/45">
@@ -57,12 +64,23 @@ export default async function SettingsPage() {
                 Connected. Access token rotates automatically (next rotation at{' '}
                 {new Date(token.expires_at).toLocaleString()}).
               </p>
+              {token.refresh_issued_at ? (
+                <p>
+                  Last connected {new Date(token.refresh_issued_at).toLocaleString()} (
+                  {Math.max(0, Math.round(7 - (refreshAgeDays ?? 0)))} days left in the 7-day
+                  testing window).
+                </p>
+              ) : null}
               <p>
-                Your long-lived refresh token stays valid until you revoke access in your Google
-                account. If this app is still in Google&rsquo;s OAuth testing mode, refresh tokens
-                expire after 7 days and you will need to reconnect weekly until the app is
-                published.
+                This app is still in Google&rsquo;s OAuth testing mode, so refresh tokens expire
+                after 7 days. Reconnect weekly until the app is published.
               </p>
+            </div>
+          ) : null}
+          {nearExpiry ? (
+            <div className="mt-4 rounded-[1rem] border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-900">
+              Your Google Docs connection expires soon. Reconnect below to keep re-import and
+              auto-apply working.
             </div>
           ) : null}
           <a

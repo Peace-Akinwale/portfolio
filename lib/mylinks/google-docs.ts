@@ -146,10 +146,35 @@ export function extractDocContent(doc: GoogleDoc): DocContent {
 
   return {
     text: plainText,
-    html: html || null,
+    html: rescueTrustedIframes(html) || null,
     charToDocIndex,
     docLength: lastDocIndex + 1,
   };
+}
+
+const TRUSTED_EMBED_HOSTS = [
+  /^https:\/\/(www\.)?youtube\.com\/embed\/[\w-]{6,}/i,
+  /^https:\/\/(www\.)?youtube-nocookie\.com\/embed\/[\w-]{6,}/i,
+  /^https:\/\/player\.vimeo\.com\/video\/\d+/i,
+  /^https:\/\/(www\.)?loom\.com\/embed\/[\w-]+/i,
+];
+
+/**
+ * When a Google Doc contains pasted iframe HTML as literal text, extractTextRun
+ * escape-encodes it (`&lt;iframe ...&gt;`) and the preview shows the raw source.
+ * Scan the generated html for these escaped iframes pointing at known video
+ * providers and replace them with a safe <iframe> tag (fixed attribute set).
+ */
+function rescueTrustedIframes(html: string): string {
+  if (!html.includes('&lt;iframe')) return html;
+  return html.replace(
+    /&lt;iframe\b[^&]*?src=(?:&quot;|&#39;)([^&]+?)(?:&quot;|&#39;)[^&]*?&gt;\s*&lt;\/iframe&gt;/gi,
+    (match, rawSrc: string) => {
+      const src = rawSrc.replace(/&amp;/g, '&');
+      if (!TRUSTED_EMBED_HOSTS.some((re) => re.test(src))) return match;
+      return `<iframe src="${escapeHtml(src)}" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>`;
+    }
+  );
 }
 
 function extractParagraphContent(

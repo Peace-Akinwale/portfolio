@@ -18,6 +18,7 @@ interface Props {
   initialSuggestions: Suggestion[];
   projectId: string;
   googleAccessEnabled: boolean;
+  googleRefreshIssuedAt?: string | null;
 }
 
 export default function SuggestionReview({
@@ -25,6 +26,7 @@ export default function SuggestionReview({
   initialSuggestions,
   projectId,
   googleAccessEnabled,
+  googleRefreshIssuedAt,
 }: Props) {
   const [suggestions, setSuggestions] = useState<Suggestion[]>(initialSuggestions);
   const [hasGenerated, setHasGenerated] = useState(initialSuggestions.length > 0);
@@ -579,6 +581,32 @@ export default function SuggestionReview({
           </p>
         ) : null}
       </div>
+
+      {!reconnectRequired && googleRefreshIssuedAt
+        ? (() => {
+            const ageDays =
+              (Date.now() - new Date(googleRefreshIssuedAt).getTime()) / 86_400_000;
+            if (ageDays < 5) return null;
+            const hoursLeft = Math.max(0, Math.round((7 - ageDays) * 24));
+            return (
+              <div className="border-b border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900 sm:px-6">
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  <span>
+                    Google Docs connection expires in about {hoursLeft} hour
+                    {hoursLeft === 1 ? '' : 's'} (7-day test-mode limit). Reconnect now to avoid
+                    interruption.
+                  </span>
+                  <Link
+                    href="/projects/mylinks/settings"
+                    className="inline-flex rounded-full border border-amber-300 bg-amber-100 px-4 py-2 text-xs font-bold uppercase tracking-[0.12em] text-amber-900 transition-colors hover:bg-amber-200"
+                  >
+                    Reconnect Google
+                  </Link>
+                </div>
+              </div>
+            );
+          })()
+        : null}
 
       {reconnectRequired ? (
         <div className="border-b border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900 sm:px-6">

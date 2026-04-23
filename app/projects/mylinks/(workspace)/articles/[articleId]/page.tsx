@@ -26,17 +26,22 @@ export default async function ArticlePage({
     notFound();
   }
 
-  const [{ data: suggestions }, { data: project }, { data: linkTargets }] = await Promise.all([
-    serviceClient.from('suggestions').select('*').eq('article_id', articleId).order('sort_order'),
-    serviceClient.from('projects').select('id, name').eq('id', article.project_id).maybeSingle(),
-    serviceClient
-      .from('article_link_targets')
-      .select('*')
-      .eq('article_id', articleId)
-      .order('sort_order'),
-  ]);
+  const [{ data: suggestions }, { data: project }, { data: linkTargets }, { data: googleToken }] =
+    await Promise.all([
+      serviceClient.from('suggestions').select('*').eq('article_id', articleId).order('sort_order'),
+      serviceClient.from('projects').select('id, name').eq('id', article.project_id).maybeSingle(),
+      serviceClient
+        .from('article_link_targets')
+        .select('*')
+        .eq('article_id', articleId)
+        .order('sort_order'),
+      serviceClient.from('google_tokens').select('*').eq('user_id', user.id).maybeSingle(),
+    ]);
 
   const googleEnabled = await canUseGoogleDocs(user.id, user.email);
+  const refreshIssuedAt =
+    (googleToken as unknown as { refresh_issued_at?: string | null } | null)?.refresh_issued_at ??
+    null;
 
   return (
     <div className="min-h-screen bg-[var(--muted)]/45">
@@ -67,6 +72,7 @@ export default async function ArticlePage({
             initialSuggestions={suggestions ?? []}
             projectId={article.project_id}
             googleAccessEnabled={googleEnabled}
+            googleRefreshIssuedAt={refreshIssuedAt}
           />
         </section>
 

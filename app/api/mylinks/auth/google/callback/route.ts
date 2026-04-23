@@ -32,6 +32,7 @@ export async function GET(request: NextRequest) {
     ...(tokens.refresh_token && { refresh_token: tokens.refresh_token }),
     expires_at: expiresAt,
     scope: tokens.scope,
+    refresh_issued_at: new Date().toISOString(),
   };
   const { error: upsertError } = await serviceClient.from('google_tokens').upsert(
     upsertData as any,
