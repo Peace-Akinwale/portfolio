@@ -33,7 +33,7 @@ export function ProfileForm({ email }: { email: string | undefined }) {
       return;
     }
 
-    router.push('/projects/mylinks/dashboard');
+    router.push('/projects/mylinks/onboarding/connect');
     router.refresh();
   }
 

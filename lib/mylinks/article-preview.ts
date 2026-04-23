@@ -69,7 +69,7 @@ export function normalizeSuggestions(text: string, suggestions: SuggestionShape[
   return suggestions
     .map((suggestion) => {
       const slice = text.slice(suggestion.char_start, suggestion.char_end);
-      if (slice === suggestion.anchor_text && !isRangeInsideHeading(text, suggestion.char_start, suggestion.char_end)) {
+      if (slice === suggestion.anchor_text) {
         return suggestion;
       }
 

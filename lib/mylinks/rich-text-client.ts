@@ -28,6 +28,12 @@ export function buildHighlightedDraftFromRichHtml(
     return buildHighlightedDraftHtml(text, suggestions, activeId);
   }
 
+  // DOMParser is browser-only. During Next.js SSR we return the raw html;
+  // the client will re-run this in useMemo after hydration and paint the marks.
+  if (typeof DOMParser === 'undefined') {
+    return html;
+  }
+
   return annotateRichHtml({
     html,
     text,
@@ -44,6 +50,10 @@ export function buildLinkedRichHtml(
 ) {
   if (!html?.trim()) {
     return buildLinkedHtml(text, suggestions);
+  }
+
+  if (typeof DOMParser === 'undefined') {
+    return html;
   }
 
   return annotateRichHtml({

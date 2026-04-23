@@ -66,6 +66,42 @@ export default async function MyLinksProjectPage() {
         </div>
       </section>
 
+      <section className="mt-12 grid gap-4 md:grid-cols-3">
+        {[
+          {
+            step: '01',
+            title: 'Crawl',
+            body:
+              'Add a client domain. MyLinks pulls the sitemap, extracts titles and metadata, and builds a ranked inventory of pages to link to.',
+          },
+          {
+            step: '02',
+            title: 'Draft',
+            body:
+              'Paste the article or connect a Google Doc. Add any client-approved URLs you must route into the piece.',
+          },
+          {
+            step: '03',
+            title: 'Export',
+            body:
+              'Approve each suggested link, then copy the linked HTML, export a .docx, or send approved links straight into the Google Doc.',
+          },
+        ].map((item) => (
+          <div
+            key={item.step}
+            className="rounded-[1.5rem] border border-border bg-background p-6"
+          >
+            <p
+              className="text-xs font-bold uppercase tracking-[0.18em]"
+              style={{ color: 'var(--accent)' }}
+            >
+              {item.step} · {item.title}
+            </p>
+            <p className="mt-3 text-sm leading-7 text-muted-foreground">{item.body}</p>
+          </div>
+        ))}
+      </section>
+
       <section className="mt-12 rounded-[2rem] border border-border bg-[var(--muted)]/35 p-8 sm:p-10">
         <p className="text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">
           What you can do in the workspace

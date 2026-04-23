@@ -9,6 +9,7 @@ import {
   buildLinkedRichHtml,
 } from "@/lib/mylinks/rich-text-client";
 import { extractGoogleDocId } from "@/lib/mylinks/utils";
+import { Tooltip } from "@/components/mylinks/Tooltip";
 
 type Article = Database["public"]["Tables"]["articles"]["Row"];
 type Suggestion = Database["public"]["Tables"]["suggestions"]["Row"];
@@ -42,6 +43,11 @@ export default function SuggestionReview({
   const [docUrl, setDocUrl] = useState(article.google_doc_id ?? "");
   const [error, setError] = useState<string | null>(null);
   const [reconnectRequired, setReconnectRequired] = useState(false);
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [lastClickedId, setLastClickedId] = useState<string | null>(null);
+  const [showApplyModal, setShowApplyModal] = useState(false);
+  const [showShortcuts, setShowShortcuts] = useState(false);
+  const [mobileTab, setMobileTab] = useState<'article' | 'suggestions'>('article');
   const [toast, setToast] = useState<string | null>(null);
   const [activeSuggestionId, setActiveSuggestionId] = useState<string | null>(null);
   const [anchorPositions, setAnchorPositions] = useState<Record<string, number>>({});
@@ -187,6 +193,72 @@ export default function SuggestionReview({
     }
   }
 
+  // ---------------- Multi-select helpers ----------------
+
+  function toggleSelect(id: string, withShift: boolean) {
+    setSelectedIds((current) => {
+      const next = new Set(current);
+      if (withShift && lastClickedId) {
+        const currentIndex = suggestions.findIndex((s) => s.id === id);
+        const anchorIndex = suggestions.findIndex((s) => s.id === lastClickedId);
+        if (currentIndex !== -1 && anchorIndex !== -1) {
+          const [from, to] =
+            currentIndex < anchorIndex ? [currentIndex, anchorIndex] : [anchorIndex, currentIndex];
+          for (let i = from; i <= to; i += 1) next.add(suggestions[i].id);
+          setLastClickedId(id);
+          return next;
+        }
+      }
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      setLastClickedId(id);
+      return next;
+    });
+  }
+
+  function clearSelection() {
+    setSelectedIds(new Set());
+  }
+
+  function selectAllPending() {
+    setSelectedIds(
+      new Set(suggestions.filter((s) => s.status === "pending").map((s) => s.id))
+    );
+  }
+
+  async function batchUpdateStatus(status: "approved" | "rejected" | "pending") {
+    const ids = Array.from(selectedIds);
+    if (ids.length === 0) return;
+    const previous = suggestions;
+    setSuggestions((current) =>
+      current.map((s) => (selectedIds.has(s.id) ? { ...s, status } : s))
+    );
+    clearSelection();
+
+    const results = await Promise.allSettled(
+      ids.map((id) =>
+        fetch(`/api/mylinks/articles/${article.id}/suggestions/${id}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ status }),
+        })
+      )
+    );
+    const failed = results.filter(
+      (r) => r.status === "rejected" || (r.status === "fulfilled" && !r.value.ok)
+    ).length;
+    if (failed > 0) {
+      setSuggestions(previous);
+      showToast(`${failed} update${failed === 1 ? "" : "s"} failed. Reverted.`);
+    } else {
+      showToast(
+        `${ids.length} suggestion${ids.length === 1 ? "" : "s"} ${
+          status === "approved" ? "approved" : status === "rejected" ? "rejected" : "moved to pending"
+        }.`
+      );
+    }
+  }
+
   function findNextPendingSuggestionId(current: Suggestion[], currentId: string) {
     const currentIndex = current.findIndex((suggestion) => suggestion.id === currentId);
 
@@ -208,6 +280,122 @@ export default function SuggestionReview({
 
     return null;
   }
+
+  // ---------------- Keyboard shortcuts ----------------
+  useEffect(() => {
+    function isEditable(el: EventTarget | null): boolean {
+      if (!(el instanceof HTMLElement)) return false;
+      const tag = el.tagName;
+      return (
+        tag === "INPUT" ||
+        tag === "TEXTAREA" ||
+        tag === "SELECT" ||
+        el.isContentEditable
+      );
+    }
+
+    function handleKey(event: KeyboardEvent) {
+      if (isEditable(event.target)) return;
+
+      const key = event.key.toLowerCase();
+
+      // Cmd/Ctrl+A — select all pending (override native page select)
+      if ((event.metaKey || event.ctrlKey) && key === "a") {
+        event.preventDefault();
+        selectAllPending();
+        return;
+      }
+
+      if (event.metaKey || event.ctrlKey || event.altKey) return;
+
+      // ? — show shortcut cheatsheet
+      if (event.key === "?" || (event.shiftKey && key === "/")) {
+        event.preventDefault();
+        setShowShortcuts((v) => !v);
+        return;
+      }
+
+      // Esc — clear selection or close modals
+      if (event.key === "Escape") {
+        if (showShortcuts) setShowShortcuts(false);
+        else if (showApplyModal) setShowApplyModal(false);
+        else clearSelection();
+        return;
+      }
+
+      // Shift+A — select all pending
+      if (event.shiftKey && key === "a") {
+        event.preventDefault();
+        selectAllPending();
+        return;
+      }
+
+      const orderedIds = suggestions.map((s) => s.id);
+      const currentIndex = activeSuggestionId
+        ? orderedIds.indexOf(activeSuggestionId)
+        : -1;
+
+      // J / ArrowDown — next
+      if (key === "j" || event.key === "ArrowDown") {
+        event.preventDefault();
+        const next = orderedIds[Math.min(orderedIds.length - 1, currentIndex + 1)];
+        if (next) scrollToSuggestion(next);
+        return;
+      }
+      // K / ArrowUp — prev
+      if (key === "k" || event.key === "ArrowUp") {
+        event.preventDefault();
+        const prev = orderedIds[Math.max(0, currentIndex === -1 ? 0 : currentIndex - 1)];
+        if (prev) scrollToSuggestion(prev);
+        return;
+      }
+
+      if (!activeSuggestionId) return;
+      const active = suggestions.find((s) => s.id === activeSuggestionId);
+      if (!active) return;
+
+      // A — approve
+      if (key === "a") {
+        event.preventDefault();
+        if (selectedIds.size > 0) {
+          void batchUpdateStatus("approved");
+        } else {
+          void updateStatus(activeSuggestionId, "approved");
+        }
+        return;
+      }
+      // R — reject
+      if (key === "r") {
+        event.preventDefault();
+        if (selectedIds.size > 0) {
+          void batchUpdateStatus("rejected");
+        } else {
+          void updateStatus(activeSuggestionId, "rejected");
+        }
+        return;
+      }
+      // U — move back to pending / undo
+      if (key === "u") {
+        event.preventDefault();
+        if (selectedIds.size > 0) {
+          void batchUpdateStatus("pending");
+        } else {
+          void updateStatus(activeSuggestionId, "pending");
+        }
+        return;
+      }
+      // X — toggle select on focused
+      if (key === "x") {
+        event.preventDefault();
+        toggleSelect(activeSuggestionId, false);
+        return;
+      }
+    }
+
+    window.addEventListener("keydown", handleKey);
+    return () => window.removeEventListener("keydown", handleKey);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeSuggestionId, suggestions, selectedIds, showApplyModal, showShortcuts]);
 
   async function reimportFromGoogleDoc() {
     if (!googleDocId) return;
@@ -475,16 +663,27 @@ export default function SuggestionReview({
               onClick={copyLinkedVersion}
               disabled={copying || approvedSuggestions.length === 0}
               className="inline-flex rounded-full border border-border px-5 py-3 text-xs font-semibold uppercase tracking-[0.12em] transition-colors hover:bg-[var(--muted)] disabled:cursor-not-allowed disabled:opacity-50"
+              title="Copy the article with approved links inline (HTML + plain text). Paste into Docs, Word, Notion, etc."
             >
-              {copying ? "Copying..." : "Copy linked draft"}
+              {copying ? "Copying..." : "Copy as HTML"}
             </button>
             <button
               type="button"
               onClick={exportLinkedVersion}
               disabled={approvedSuggestions.length === 0}
               className="inline-flex rounded-full border border-border px-5 py-3 text-xs font-semibold uppercase tracking-[0.12em] transition-colors hover:bg-[var(--muted)] disabled:cursor-not-allowed disabled:opacity-50"
+              title="Download a Word (.docx) file with approved links baked in."
             >
               Export .docx
+            </button>
+            <button
+              type="button"
+              onClick={() => setShowShortcuts(true)}
+              className="inline-flex items-center gap-2 rounded-full border border-border px-4 py-3 text-xs font-semibold uppercase tracking-[0.12em] transition-colors hover:bg-[var(--muted)]"
+              title="Keyboard shortcuts (?)"
+            >
+              <span>?</span>
+              <span className="hidden sm:inline">Shortcuts</span>
             </button>
           </div>
         </div>
@@ -547,12 +746,13 @@ export default function SuggestionReview({
                 </button>
                 <button
                   type="button"
-                  onClick={applyToGoogleDoc}
+                  onClick={() => setShowApplyModal(true)}
                   disabled={applying || approvedSuggestions.length === 0}
                   className="inline-flex rounded-full px-5 py-3 text-xs font-bold uppercase tracking-[0.12em] text-white transition-opacity hover:opacity-90 disabled:opacity-50"
                   style={{ background: "var(--accent)" }}
+                  title="Send approved links to the linked Google Doc"
                 >
-                  {applying ? "Applying..." : "Apply approved to Google Doc"}
+                  {applying ? "Sending..." : "Send to Google Doc"}
                 </button>
               </>
             ) : (
@@ -644,21 +844,111 @@ export default function SuggestionReview({
         </div>
       ) : null}
 
+      {selectedIds.size > 0 ? (
+        <div
+          className="sticky top-0 z-20 flex flex-wrap items-center justify-between gap-3 border-b px-4 py-2 sm:px-6"
+          style={{
+            background: 'var(--ml-bg-subtle)',
+            borderColor: 'var(--ml-border)',
+          }}
+        >
+          <div className="flex items-center gap-3 text-sm" style={{ color: 'var(--ml-text)' }}>
+            <strong>{selectedIds.size} selected</strong>
+            <span style={{ color: 'var(--ml-text-muted)' }}>
+              <span className="ml-kbd">A</span> approve ·{' '}
+              <span className="ml-kbd">R</span> reject ·{' '}
+              <span className="ml-kbd">U</span> back to pending ·{' '}
+              <span className="ml-kbd">Esc</span> clear
+            </span>
+          </div>
+          <div className="flex gap-2">
+            <button
+              type="button"
+              onClick={() => void batchUpdateStatus('approved')}
+              className="ml-btn ml-btn-primary ml-btn-sm"
+            >
+              Approve {selectedIds.size}
+            </button>
+            <button
+              type="button"
+              onClick={() => void batchUpdateStatus('rejected')}
+              className="ml-btn ml-btn-danger ml-btn-sm"
+            >
+              Reject {selectedIds.size}
+            </button>
+            <button
+              type="button"
+              onClick={() => void batchUpdateStatus('pending')}
+              className="ml-btn ml-btn-sm"
+            >
+              Back to pending
+            </button>
+            <button
+              type="button"
+              onClick={clearSelection}
+              className="ml-btn ml-btn-sm"
+              title="Clear selection (Esc)"
+            >
+              Clear
+            </button>
+          </div>
+        </div>
+      ) : null}
+
+      {/* Mobile-only tab switcher */}
+      <div
+        className="flex gap-1 border-b px-3 py-2 xl:hidden"
+        style={{ background: 'var(--ml-bg-elevated)', borderColor: 'var(--ml-border)' }}
+      >
+        <button
+          type="button"
+          onClick={() => setMobileTab('article')}
+          className="flex-1 rounded-md py-1.5 text-xs font-medium"
+          style={{
+            background:
+              mobileTab === 'article' ? 'var(--ml-bg-subtle)' : 'transparent',
+            color: mobileTab === 'article' ? 'var(--ml-text)' : 'var(--ml-text-muted)',
+          }}
+        >
+          Article
+        </button>
+        <button
+          type="button"
+          onClick={() => setMobileTab('suggestions')}
+          className="flex-1 rounded-md py-1.5 text-xs font-medium"
+          style={{
+            background:
+              mobileTab === 'suggestions' ? 'var(--ml-bg-subtle)' : 'transparent',
+            color:
+              mobileTab === 'suggestions' ? 'var(--ml-text)' : 'var(--ml-text-muted)',
+          }}
+        >
+          Suggestions ({suggestions.length})
+        </button>
+      </div>
+
       <div className="flex-1 overflow-y-auto pb-40 xl:pb-0">
-        <div className="grid min-h-full xl:grid-cols-[minmax(0,1fr)_320px]">
+        <div className="grid min-h-full xl:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)]">
           <div
             ref={articlePanelRef}
             onClick={handleArticleClick}
-            className="border-b border-border px-4 py-6 xl:border-b-0 xl:border-r xl:px-6"
+            className={`border-b border-border px-4 py-6 xl:border-b-0 xl:border-r xl:px-6 xl:block ${
+              mobileTab === 'article' ? 'block' : 'hidden'
+            }`}
           >
             <h2 className="text-2xl font-semibold text-foreground">{article.title}</h2>
             <div
-              className="prose prose-sm mt-6 max-w-none leading-relaxed text-foreground"
+              className="ml-prose mt-6 max-w-none"
+              suppressHydrationWarning
               dangerouslySetInnerHTML={{ __html: highlightedDraft }}
             />
           </div>
 
-          <section className="border-t border-border bg-[var(--muted)]/20 px-4 py-5 xl:hidden">
+          <section
+            className={`border-t border-border bg-[var(--muted)]/20 px-4 py-5 xl:hidden ${
+              mobileTab === 'suggestions' ? 'block' : 'hidden'
+            }`}
+          >
             <div className="mb-4 flex items-center justify-between gap-3">
               <p className="text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">
                 Suggestions
@@ -681,8 +971,10 @@ export default function SuggestionReview({
                     key={suggestion.id}
                     suggestion={suggestion}
                     isActive={suggestion.id === activeSuggestionId}
+                    selected={selectedIds.has(suggestion.id)}
                     onSelect={scrollToSuggestion}
                     onStatusChange={updateStatus}
+                    onToggleSelect={toggleSelect}
                   />
                 ))}
               </div>
@@ -715,8 +1007,10 @@ export default function SuggestionReview({
                   <SuggestionCard
                     suggestion={suggestion}
                     isActive={suggestion.id === activeSuggestionId}
+                    selected={selectedIds.has(suggestion.id)}
                     onSelect={scrollToSuggestion}
                     onStatusChange={updateStatus}
+                    onToggleSelect={toggleSelect}
                     compact
                   />
                 </div>
@@ -726,29 +1020,194 @@ export default function SuggestionReview({
         </div>
       </div>
 
-      {activeSuggestion ? (
-        <div className="pointer-events-none fixed inset-x-4 bottom-4 z-30 xl:hidden">
-          <div className="pointer-events-auto rounded-[1.5rem] border border-border bg-background p-4 shadow-2xl">
-            <div className="mb-3 flex items-center justify-between gap-3">
-              <p className="text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">
-                Selected suggestion
-              </p>
+      {activeSuggestion ? (() => {
+        const orderedIds = suggestions.map((s) => s.id);
+        const activeIndex = orderedIds.indexOf(activeSuggestion.id);
+        const prevId = activeIndex > 0 ? orderedIds[activeIndex - 1] : null;
+        const nextId =
+          activeIndex !== -1 && activeIndex < orderedIds.length - 1
+            ? orderedIds[activeIndex + 1]
+            : null;
+        return (
+          <div className="pointer-events-none fixed inset-x-4 bottom-4 z-30 xl:hidden">
+            <div
+              className="pointer-events-auto rounded-[1.5rem] border p-4 shadow-2xl"
+              style={{ background: 'var(--ml-bg-elevated)', borderColor: 'var(--ml-border)' }}
+            >
+              <div className="mb-3 flex items-center justify-between gap-2">
+                <p
+                  className="text-[10px] font-semibold uppercase tracking-[0.14em]"
+                  style={{ color: 'var(--ml-text-faint)' }}
+                >
+                  {activeIndex + 1} of {orderedIds.length}
+                </p>
+                <div className="flex items-center gap-1">
+                  <button
+                    type="button"
+                    disabled={!prevId}
+                    onClick={() => prevId && scrollToSuggestion(prevId)}
+                    className="ml-btn ml-btn-icon"
+                    aria-label="Previous suggestion (K)"
+                    title="Previous suggestion (K or ↑)"
+                  >
+                    <svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      aria-hidden="true"
+                    >
+                      <path d="M15 18l-6-6 6-6" />
+                    </svg>
+                  </button>
+                  <button
+                    type="button"
+                    disabled={!nextId}
+                    onClick={() => nextId && scrollToSuggestion(nextId)}
+                    className="ml-btn ml-btn-icon"
+                    aria-label="Next suggestion (J)"
+                    title="Next suggestion (J or ↓)"
+                  >
+                    <svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      aria-hidden="true"
+                    >
+                      <path d="M9 18l6-6-6-6" />
+                    </svg>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setActiveSuggestionId(null)}
+                    className="ml-btn ml-btn-sm"
+                    aria-label="Close selected suggestion (Esc)"
+                    title="Close (Esc)"
+                  >
+                    Close
+                  </button>
+                </div>
+              </div>
+              <SuggestionCard
+                suggestion={activeSuggestion}
+                isActive
+                selected={selectedIds.has(activeSuggestion.id)}
+                onSelect={scrollToSuggestion}
+                onStatusChange={updateStatus}
+                onToggleSelect={toggleSelect}
+              />
+            </div>
+          </div>
+        );
+      })() : null}
+
+      {showApplyModal ? (
+        <>
+          <div
+            className="ml-modal-overlay"
+            onClick={() => !applying && setShowApplyModal(false)}
+          />
+          <div className="ml-modal" role="dialog" aria-modal="true">
+            <h3 className="text-base font-semibold">Send to Google Doc?</h3>
+            <p className="mt-2 text-sm" style={{ color: 'var(--ml-text-muted)' }}>
+              <strong>{approvedSuggestions.length}</strong> approved link
+              {approvedSuggestions.length === 1 ? '' : 's'} will be inserted into the linked
+              Google Doc. This edits the live document.
+            </p>
+            <div
+              className="mt-4 max-h-56 overflow-y-auto rounded-md border p-3 text-xs"
+              style={{ borderColor: 'var(--ml-border)', background: 'var(--ml-bg-subtle)' }}
+            >
+              <ul className="space-y-1">
+                {approvedSuggestions.slice(0, 10).map((s) => (
+                  <li key={s.id} className="flex gap-2">
+                    <span className="font-mono">&ldquo;{s.anchor_text}&rdquo;</span>
+                    <span style={{ color: 'var(--ml-text-faint)' }}>→</span>
+                    <span className="truncate" style={{ color: 'var(--ml-accent)' }}>
+                      {s.target_url}
+                    </span>
+                  </li>
+                ))}
+                {approvedSuggestions.length > 10 ? (
+                  <li style={{ color: 'var(--ml-text-faint)' }}>
+                    &hellip; and {approvedSuggestions.length - 10} more
+                  </li>
+                ) : null}
+              </ul>
+            </div>
+            <div className="mt-5 flex justify-end gap-2">
               <button
                 type="button"
-                onClick={() => setActiveSuggestionId(null)}
-                className="text-xs font-semibold uppercase tracking-[0.12em] text-muted-foreground"
+                onClick={() => setShowApplyModal(false)}
+                disabled={applying}
+                className="ml-btn"
               >
-                Close
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={async () => {
+                  await applyToGoogleDoc();
+                  setShowApplyModal(false);
+                }}
+                disabled={applying}
+                className="ml-btn ml-btn-primary"
+              >
+                {applying
+                  ? 'Sending...'
+                  : `Send ${approvedSuggestions.length} link${
+                      approvedSuggestions.length === 1 ? '' : 's'
+                    }`}
               </button>
             </div>
-            <SuggestionCard
-              suggestion={activeSuggestion}
-              isActive
-              onSelect={scrollToSuggestion}
-              onStatusChange={updateStatus}
-            />
           </div>
-        </div>
+        </>
+      ) : null}
+
+      {showShortcuts ? (
+        <>
+          <div className="ml-modal-overlay" onClick={() => setShowShortcuts(false)} />
+          <div className="ml-modal" role="dialog" aria-modal="true">
+            <h3 className="text-base font-semibold">Keyboard shortcuts</h3>
+            <div className="mt-4 space-y-2 text-sm">
+              {[
+                ['J / ↓', 'Next suggestion'],
+                ['K / ↑', 'Previous suggestion'],
+                ['A', 'Approve focused (or selected)'],
+                ['R', 'Reject focused (or selected)'],
+                ['U', 'Move back to pending'],
+                ['X', 'Toggle selection on focused'],
+                ['Shift + A', 'Select all pending'],
+                ['Cmd / Ctrl + A', 'Select all pending (page-wide)'],
+                ['Esc', 'Clear selection / close modals'],
+                ['?', 'Toggle this cheatsheet'],
+              ].map(([key, desc]) => (
+                <div key={key} className="flex items-center justify-between">
+                  <span style={{ color: 'var(--ml-text-muted)' }}>{desc}</span>
+                  <span className="ml-kbd">{key}</span>
+                </div>
+              ))}
+            </div>
+            <div className="mt-5 flex justify-end">
+              <button
+                type="button"
+                onClick={() => setShowShortcuts(false)}
+                className="ml-btn"
+              >
+                Got it
+              </button>
+            </div>
+          </div>
+        </>
       ) : null}
 
       {toast ? (
@@ -763,46 +1222,109 @@ export default function SuggestionReview({
 function SuggestionCard({
   suggestion,
   isActive,
+  selected = false,
   onStatusChange,
   onSelect,
+  onToggleSelect,
   compact = false,
 }: {
   suggestion: Suggestion;
   isActive: boolean;
+  selected?: boolean;
   onStatusChange: (id: string, status: "approved" | "rejected" | "pending") => void;
   onSelect: (id: string) => void;
+  onToggleSelect?: (id: string, withShift: boolean) => void;
   compact?: boolean;
 }) {
-  const statusClass =
+  const statusStyle: React.CSSProperties =
     suggestion.status === "approved"
-      ? "border-green-300 bg-green-50"
+      ? { borderColor: 'var(--ml-success)', background: 'var(--ml-success-bg)' }
       : suggestion.status === "rejected"
-        ? "border-gray-200 bg-gray-100 opacity-70"
-        : "border-yellow-300 bg-background";
-  const justificationPreview =
-    suggestion.justification.length > 120
-      ? `${suggestion.justification.slice(0, 117)}...`
-      : suggestion.justification;
+        ? { borderColor: 'var(--ml-border)', background: 'var(--ml-bg-subtle)', opacity: 0.7 }
+        : { borderColor: 'var(--ml-border)', background: 'var(--ml-bg-elevated)' };
+  const ringStyle: React.CSSProperties = selected
+    ? { boxShadow: '0 0 0 2px #3b82f6 inset' }
+    : isActive
+      ? { boxShadow: '0 0 0 2px var(--ml-accent) inset' }
+      : {};
+  const isPending = suggestion.status === "pending";
+  const isExpanded = !compact || isActive;
 
   return (
     <article
-      className={`rounded-[1.1rem] border ${compact ? "p-3" : "p-4"} shadow-sm transition-shadow ${
-        isActive ? "ring-2 ring-[var(--accent)]" : ""
-      } ${statusClass}`}
+      className={`rounded-md border ${compact ? 'p-2.5' : 'p-3.5'} transition-all cursor-pointer`}
+      style={{ ...statusStyle, ...ringStyle }}
       onClick={() => onSelect(suggestion.id)}
     >
-      <div className="flex items-start justify-between gap-3">
-        <p className={`${compact ? "text-[13px] leading-5" : "text-sm leading-6"} font-semibold text-foreground`}>
+      <div className="flex items-start gap-2">
+        {onToggleSelect ? (
+          <input
+            type="checkbox"
+            checked={selected}
+            onClick={(event) => event.stopPropagation()}
+            onChange={(event) => {
+              onToggleSelect(suggestion.id, (event.nativeEvent as MouseEvent).shiftKey);
+            }}
+            className="mt-0.5 h-4 w-4 shrink-0 cursor-pointer"
+            aria-label="Select suggestion"
+          />
+        ) : null}
+        <p
+          className={`${
+            compact ? 'text-[13px] leading-snug' : 'text-sm leading-snug'
+          } flex-1 font-semibold`}
+          style={{ color: 'var(--ml-text)' }}
+        >
           &ldquo;{suggestion.anchor_text}&rdquo;
         </p>
-        <ConfidenceBadge confidence={suggestion.confidence} />
+        <Tooltip
+          label={
+            <>
+              <strong>
+                {suggestion.confidence === 'high'
+                  ? 'High confidence'
+                  : suggestion.confidence === 'medium'
+                    ? 'Medium confidence'
+                    : 'Low confidence'}
+              </strong>
+              <br />
+              How certain the AI is this destination fits the anchor. High = exact topical match,
+              medium = partial, low = loose.
+            </>
+          }
+        >
+          <ConfidenceBadge confidence={suggestion.confidence} />
+        </Tooltip>
       </div>
 
-      <div className={`flex flex-wrap gap-2 text-[10px] font-semibold uppercase tracking-[0.12em] text-muted-foreground ${compact ? "mt-2" : "mt-3"}`}>
-        <span className="rounded-full border border-border px-2 py-1">{suggestion.page_type}</span>
-        <span className="rounded-full border border-border px-2 py-1">
-          {suggestion.destination_source === "client" ? "client URL" : "site inventory"}
-        </span>
+      <div className="mt-1.5 flex flex-wrap items-center gap-1.5">
+        <Tooltip
+          label={
+            <>
+              <strong>{suggestion.page_type}</strong>
+              <br />
+              The kind of destination page. Product/service/landing pages get priority when the fit
+              is strong.
+            </>
+          }
+        >
+          <span className="ml-chip">{suggestion.page_type}</span>
+        </Tooltip>
+        <Tooltip
+          label={
+            suggestion.destination_source === 'client'
+              ? 'A URL you manually marked as client-approved for this article.'
+              : 'A URL drawn automatically from the crawled site inventory.'
+          }
+        >
+          <span
+            className={`ml-chip ${
+              suggestion.destination_source === 'client' ? 'ml-chip-info' : ''
+            }`}
+          >
+            {suggestion.destination_source === 'client' ? 'client' : 'inventory'}
+          </span>
+        </Tooltip>
       </div>
 
       <a
@@ -810,65 +1332,89 @@ function SuggestionCard({
         target="_blank"
         rel="noopener noreferrer"
         onClick={(event) => event.stopPropagation()}
-        className={`${compact ? "mt-2 text-[13px]" : "mt-3 text-sm"} block truncate text-[var(--accent)] underline-offset-4 hover:underline`}
+        className="mt-2 block truncate text-[12.5px]"
+        style={{ color: 'var(--ml-accent)', textDecoration: 'underline', textUnderlineOffset: 3 }}
       >
         {suggestion.target_url}
       </a>
 
-      <div
-        className={`${compact ? "mt-3" : "mt-4"} flex items-center gap-3`}
-        title="Relevance score: how strong the AI thinks this link is for the reader. Above 70% is usually a safe approval; below 60% is already filtered out."
+      <Tooltip
+        label={
+          <>
+            <strong>Relevance: {Math.round(suggestion.relevance_score * 100)}%</strong>
+            <br />
+            Above 70% is usually safe to approve. Below 60% is already filtered out.
+          </>
+        }
       >
-        <div className="h-1.5 flex-1 rounded-full bg-border">
+        <div className="mt-2.5 flex w-full items-center gap-2">
           <div
-            className="h-1.5 rounded-full"
-            style={{
-              width: `${Math.round(suggestion.relevance_score * 100)}%`,
-              background: "var(--accent)",
-            }}
-          />
+            className="h-1.5 flex-1 rounded-full"
+            style={{ background: 'var(--ml-border)' }}
+          >
+            <div
+              className="h-1.5 rounded-full"
+              style={{
+                width: `${Math.round(suggestion.relevance_score * 100)}%`,
+                background: 'var(--ml-accent)',
+              }}
+            />
+          </div>
+          <span className="text-[11px] tabular-nums" style={{ color: 'var(--ml-text-muted)' }}>
+            {Math.round(suggestion.relevance_score * 100)}%
+          </span>
         </div>
-        <span className="text-xs text-muted-foreground">
-          {Math.round(suggestion.relevance_score * 100)}%
-        </span>
-      </div>
+      </Tooltip>
 
-      {!compact || isActive ? (
-        <p className={`${compact ? "mt-3 text-[13px] leading-6" : "mt-4 text-sm leading-7"} text-muted-foreground`}>
-          {compact ? justificationPreview : suggestion.justification}
+      {isExpanded ? (
+        <p
+          className={`${compact ? 'mt-2 text-[12.5px]' : 'mt-3 text-[13px]'} leading-relaxed`}
+          style={{ color: 'var(--ml-text-muted)' }}
+        >
+          {suggestion.justification}
         </p>
       ) : null}
 
-      {suggestion.status === "pending" ? (
-        <div className={`${compact ? "mt-3" : "mt-4"} flex gap-3`} onClick={(event) => event.stopPropagation()}>
+      <div
+        className="mt-2.5 flex items-center gap-2"
+        onClick={(event) => event.stopPropagation()}
+      >
+        {isPending ? (
+          <>
+            <button
+              type="button"
+              onClick={() => onStatusChange(suggestion.id, 'approved')}
+              className="ml-btn ml-btn-primary ml-btn-sm flex-1"
+              title="Approve (A)"
+            >
+              Approve
+              <span className="ml-kbd" style={{ marginLeft: 'auto' }}>
+                A
+              </span>
+            </button>
+            <button
+              type="button"
+              onClick={() => onStatusChange(suggestion.id, 'rejected')}
+              className="ml-btn ml-btn-sm"
+              title="Reject (R)"
+            >
+              Reject
+              <span className="ml-kbd" style={{ marginLeft: 'auto' }}>
+                R
+              </span>
+            </button>
+          </>
+        ) : (
           <button
             type="button"
-            onClick={() => onStatusChange(suggestion.id, "approved")}
-            className={`inline-flex flex-1 rounded-full ${compact ? "px-3 py-2 text-[10px]" : "px-4 py-2 text-xs"} font-bold uppercase tracking-[0.12em] text-white transition-opacity hover:opacity-90`}
-            style={{ background: "var(--accent)" }}
+            onClick={() => onStatusChange(suggestion.id, 'pending')}
+            className="ml-btn ml-btn-sm"
+            title="Move back to pending (U)"
           >
-            Approve
+            ↶ Back to pending
           </button>
-          <button
-            type="button"
-            onClick={() => onStatusChange(suggestion.id, "rejected")}
-            className={`inline-flex flex-1 rounded-full border border-border ${compact ? "px-3 py-2 text-[10px]" : "px-4 py-2 text-xs"} font-semibold uppercase tracking-[0.12em] transition-colors hover:bg-[var(--muted)]`}
-          >
-            Reject
-          </button>
-        </div>
-      ) : (
-        <button
-          type="button"
-          onClick={(event) => {
-            event.stopPropagation();
-            onStatusChange(suggestion.id, "pending");
-          }}
-          className={`${compact ? "mt-3 text-[10px]" : "mt-4 text-xs"} font-semibold uppercase tracking-[0.12em] text-muted-foreground transition-colors hover:text-foreground`}
-        >
-          Move back to pending
-        </button>
-      )}
+        )}
+      </div>
     </article>
   );
 }
@@ -880,14 +1426,15 @@ function ConfidenceBadge({
 }) {
   const className =
     confidence === "high"
-      ? "bg-green-100 text-green-700"
+      ? "ml-chip ml-chip-success"
       : confidence === "medium"
-        ? "bg-yellow-100 text-yellow-700"
-        : "bg-gray-100 text-gray-600";
+        ? "ml-chip ml-chip-warning"
+        : "ml-chip";
+  const letter = confidence === 'high' ? 'H' : confidence === 'medium' ? 'M' : 'L';
 
   return (
-    <span className={`rounded-full px-2 py-1 text-[10px] font-semibold uppercase tracking-[0.12em] ${className}`}>
-      {confidence}
+    <span className={className} aria-label={confidence}>
+      {letter}
     </span>
   );
 }

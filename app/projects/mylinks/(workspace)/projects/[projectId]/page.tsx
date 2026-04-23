@@ -101,7 +101,11 @@ export default async function ProjectPage({
         <div className="mb-8 grid gap-4 md:grid-cols-4">
           <StatCard label="Total pages" value={totalPagesInDb} />
           <StatCard label="Blog posts" value={typeCounts.blog_post ?? 0} />
-          <StatCard label="Articles" value={articles?.length ?? 0} />
+          <StatCard
+            label="Articles"
+            value={articles?.length ?? 0}
+            href={`/projects/mylinks/projects/${projectId}/articles`}
+          />
           <StatCard label="Commercial pages" value={(typeCounts.product ?? 0) + (typeCounts.service ?? 0) + (typeCounts.landing ?? 0)} />
         </div>
 
@@ -125,14 +129,21 @@ export default async function ProjectPage({
               <div className="divide-y divide-border">
                 {pages.map((pageRow) => (
                   <div key={pageRow.id} className="flex items-center gap-3 px-5 py-4">
-                    <span className={`rounded-full px-2 py-1 text-[11px] font-semibold uppercase tracking-[0.08em] ${pageTypeClass(pageRow.page_type)}`}>
+                    <span
+                      className={`rounded-full px-2 py-1 text-[11px] font-semibold uppercase tracking-[0.08em] ${pageTypeClass(pageRow.page_type)}`}
+                    >
                       {pageRow.page_type}
                     </span>
                     <div className="min-w-0 flex-1">
                       <p className="truncate text-sm font-medium text-foreground">{pageRow.title || pageRow.url}</p>
                       <p className="truncate text-xs text-muted-foreground">{pageRow.url}</p>
                     </div>
-                    <span className="text-xs text-muted-foreground">P{pageRow.priority}</span>
+                    <span
+                      className="text-xs text-muted-foreground"
+                      title="Priority score (higher = AI favors this URL when suggesting links). Product, service, and landing pages rank higher; deeper utility pages rank lower."
+                    >
+                      P{pageRow.priority}
+                    </span>
                   </div>
                 ))}
               </div>
@@ -181,13 +192,23 @@ export default async function ProjectPage({
   );
 }
 
-function StatCard({ label, value }: { label: string; value: number }) {
-  return (
-    <div className="rounded-[1.5rem] border border-border bg-background px-5 py-4">
+function StatCard({ label, value, href }: { label: string; value: number; href?: string }) {
+  const inner = (
+    <>
       <p className="text-3xl font-bold text-foreground">{value}</p>
       <p className="mt-1 text-sm text-muted-foreground">{label}</p>
-    </div>
+    </>
   );
+  const baseClass =
+    'block rounded-[1.5rem] border border-border bg-background px-5 py-4 transition-colors';
+  if (href) {
+    return (
+      <Link href={href} className={`${baseClass} hover:border-accent hover:bg-[var(--muted)]/30`}>
+        {inner}
+      </Link>
+    );
+  }
+  return <div className={baseClass}>{inner}</div>;
 }
 
 function pageTypeClass(type: string) {

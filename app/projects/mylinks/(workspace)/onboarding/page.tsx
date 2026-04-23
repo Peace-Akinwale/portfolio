@@ -15,7 +15,7 @@ export default async function OnboardingPage() {
       <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
         <div>
           <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">
-            First login
+            Step 1 of 2
           </p>
           <h1 className="mt-4 text-4xl font-bold text-foreground">What should I call you?</h1>
           <p className="mt-4 text-sm leading-7 text-muted-foreground">

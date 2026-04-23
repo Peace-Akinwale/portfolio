@@ -1,6 +1,6 @@
 import OpenAI from 'openai';
 import { z } from 'zod';
-import { isRangeInsideHeading, rangeOverlaps } from '@/lib/mylinks/article-preview';
+import { rangeOverlaps } from '@/lib/mylinks/article-preview';
 import type { DestinationSource, PageType } from '@/lib/mylinks/types/database';
 
 export interface ExcludedRange {
@@ -9,7 +9,7 @@ export interface ExcludedRange {
   url?: string;
 }
 
-const SUGGESTION_MODEL = 'gpt-4o-mini';
+const SUGGESTION_MODEL = 'gpt-4o';
 const EMBEDDING_MODEL = 'text-embedding-3-small';
 export const EMBEDDING_DIMENSIONS = 1536;
 const EMBEDDING_MAX_INPUT_CHARS = 7000;
@@ -183,14 +183,18 @@ function buildPrompt(
 
   return `You are an expert internal linking editor helping a content strategist insert as many genuinely useful links as fit naturally in a draft.
 
-## ARTICLE DRAFT
-${draft}
-
 ## DESTINATION INVENTORY (${inventory.length} choices)
 ${inventoryLines}
 
+## ARTICLE DRAFT
+${draft}
+
 ## OBJECTIVE
-Return every link that is genuinely useful — do not cap the count. Your goal is maximum coverage of contextually relevant destinations. Include a suggestion whenever the anchor text appears naturally in the draft AND the destination clearly serves the reader AND relevance_score is at least 0.6. If the draft supports 40+ strong links, return 40+. If it only supports 3, return 3. Returning zero suggestions is correct when no destination clearly fits — do not invent weak matches to hit a number.
+Read the entire article draft above before generating any suggestions — do not stop after the opening paragraphs. Scan every section from start to finish, then return every link that is genuinely useful.
+
+Your goal is maximum coverage of contextually relevant destinations across the whole article. Include a suggestion whenever the anchor text appears naturally in the draft AND the destination clearly serves the reader AND relevance_score is at least 0.6.
+
+If the inventory is rich enough to support 15 or more suggestions, aim for at least 15 and spread them across early, middle, and late sections of the article. If the draft supports 40+ strong links, return 40+. If the inventory is sparse or the article is niche and only 3 links genuinely fit, return 3. Returning zero is correct when no destination clearly fits — do not invent weak matches to hit a number.
 
 ## CRITICAL PRIORITIES
 1. Use only URLs from the provided inventory.
@@ -225,8 +229,8 @@ function estimateCostUsd(promptTokens: number | null, completionTokens: number |
   if (promptTokens == null && completionTokens == null) {
     return null;
   }
-  const inputCost = ((promptTokens ?? 0) / 1_000_000) * 0.15;
-  const outputCost = ((completionTokens ?? 0) / 1_000_000) * 0.6;
+  const inputCost = ((promptTokens ?? 0) / 1_000_000) * 2.5;
+  const outputCost = ((completionTokens ?? 0) / 1_000_000) * 10.0;
   return Number((inputCost + outputCost).toFixed(6));
 }
 
@@ -277,32 +281,45 @@ function salvageTruncatedSuggestions(rawText: string): unknown {
   return { suggestions: objects.map((raw) => JSON.parse(raw)) };
 }
 
-function resolveAnchorRange(text: string, suggestion: Suggestion) {
+function resolveAnchorRange(
+  text: string,
+  suggestion: Suggestion,
+  excludedRanges: ExcludedRange[] = []
+) {
+  const isExcluded = (start: number, end: number) =>
+    excludedRanges.length > 0 && rangeOverlaps(start, end, excludedRanges);
+
+  // Pass 1: exact match
   const exactSlice = text.slice(suggestion.char_start, suggestion.char_end);
-  if (
-    exactSlice === suggestion.anchor_text &&
-    !isRangeInsideHeading(text, suggestion.char_start, suggestion.char_end)
-  ) {
+  if (exactSlice === suggestion.anchor_text && !isExcluded(suggestion.char_start, suggestion.char_end)) {
     return { start: suggestion.char_start, end: suggestion.char_end };
   }
 
   let searchFrom = 0;
   while (searchFrom < text.length) {
     const index = text.indexOf(suggestion.anchor_text, searchFrom);
-    if (index === -1) {
-      return null;
-    }
+    if (index === -1) break;
     const end = index + suggestion.anchor_text.length;
-    if (!isRangeInsideHeading(text, index, end)) {
-      return { start: index, end };
-    }
+    if (!isExcluded(index, end)) return { start: index, end };
+    searchFrom = end;
+  }
+
+  // Pass 2: case-insensitive fallback (positions stay valid since length is unchanged)
+  const lowerText = text.toLowerCase();
+  const lowerAnchor = suggestion.anchor_text.toLowerCase();
+  searchFrom = 0;
+  while (searchFrom < lowerText.length) {
+    const index = lowerText.indexOf(lowerAnchor, searchFrom);
+    if (index === -1) break;
+    const end = index + lowerAnchor.length;
+    if (!isExcluded(index, end)) return { start: index, end };
     searchFrom = end;
   }
 
   return null;
 }
 
-export async function getSuggestions(
+async function getSuggestionsForText(
   draft: string,
   inventory: InventoryPage[],
   excludedRanges: ExcludedRange[] = []
@@ -363,25 +380,46 @@ export async function getSuggestions(
 
   const validated: Suggestion[] = [];
   const seenUrls = new Set<string>();
+  let droppedDupe = 0;
+  let droppedAnchor = 0;
+  let resolvedExact = 0;
+  let resolvedFuzzy = 0;
 
   for (const suggestion of validSuggestions) {
     if (seenUrls.has(suggestion.target_url)) {
+      droppedDupe += 1;
       continue;
     }
-    const range = resolveAnchorRange(draft, suggestion);
+    const range = resolveAnchorRange(draft, suggestion, excludedRanges);
     if (!range) {
+      droppedAnchor += 1;
       continue;
     }
-    if (excludedRanges.length > 0 && rangeOverlaps(range.start, range.end, excludedRanges)) {
+    // Use the actual text from the article so the display code can match it exactly
+    const actualAnchorText = draft.slice(range.start, range.end);
+    // Skip image placeholders and other non-prose artifacts
+    if (/^\[.*\]$/.test(actualAnchorText.trim())) {
+      droppedAnchor += 1;
       continue;
+    }
+    const wasExact = actualAnchorText === suggestion.anchor_text;
+    if (wasExact) {
+      resolvedExact += 1;
+    } else {
+      resolvedFuzzy += 1;
     }
     seenUrls.add(suggestion.target_url);
     validated.push({
       ...suggestion,
+      anchor_text: actualAnchorText,
       char_start: range.start,
       char_end: range.end,
     });
   }
+
+  console.log(
+    `[suggestions] ai=${validSuggestions.length} dupes=${droppedDupe} exact=${resolvedExact} fuzzy=${resolvedFuzzy} anchor_miss=${droppedAnchor} final=${validated.length}`
+  );
 
   const usage = completion.usage;
   const promptTokens = usage?.prompt_tokens ?? null;
@@ -395,6 +433,136 @@ export async function getSuggestions(
       completionTokens,
       totalTokens,
       estimatedCostUsd: estimateCostUsd(promptTokens, completionTokens),
+    },
+  };
+}
+
+// ---------------------------------------------------------------------------
+// Chunked orchestrator — splits long articles so the model reads every section
+// ---------------------------------------------------------------------------
+
+const CHUNK_WORD_THRESHOLD = 1500;
+const CHUNK_TARGET_WORDS = 1200;
+
+function countWords(text: string): number {
+  return text.split(/\s+/).filter(Boolean).length;
+}
+
+function splitIntoChunks(
+  text: string,
+  targetWords: number
+): Array<{ text: string; start: number }> {
+  // Split on paragraph boundaries so we never cut mid-sentence
+  const segments: Array<{ text: string; start: number }> = [];
+  let cursor = 0;
+  for (const part of text.split(/(\n+)/)) {
+    if (/^\n+$/.test(part)) {
+      cursor += part.length;
+    } else {
+      segments.push({ text: part, start: cursor });
+      cursor += part.length;
+    }
+  }
+
+  const chunks: Array<{ text: string; start: number }> = [];
+  let group: typeof segments = [];
+  let wordCount = 0;
+
+  for (const seg of segments) {
+    if (wordCount >= targetWords && group.length > 0) {
+      const first = group[0];
+      const last = group[group.length - 1];
+      chunks.push({ start: first.start, text: text.slice(first.start, last.start + last.text.length) });
+      group = [];
+      wordCount = 0;
+    }
+    group.push(seg);
+    wordCount += countWords(seg.text);
+  }
+  if (group.length > 0) {
+    const first = group[0];
+    const last = group[group.length - 1];
+    chunks.push({ start: first.start, text: text.slice(first.start, last.start + last.text.length) });
+  }
+
+  return chunks;
+}
+
+function adjustRangesForChunk(
+  ranges: ExcludedRange[],
+  chunkStart: number,
+  chunkLength: number
+): ExcludedRange[] {
+  const chunkEnd = chunkStart + chunkLength;
+  return ranges
+    .filter(r => r.start < chunkEnd && r.end > chunkStart)
+    .map(r => ({
+      ...r,
+      start: Math.max(0, r.start - chunkStart),
+      end: Math.min(chunkLength, r.end - chunkStart),
+    }));
+}
+
+export async function getSuggestions(
+  draft: string,
+  inventory: InventoryPage[],
+  excludedRanges: ExcludedRange[] = []
+): Promise<SuggestionResult> {
+  const wordCount = countWords(draft);
+
+  if (wordCount <= CHUNK_WORD_THRESHOLD) {
+    return getSuggestionsForText(draft, inventory, excludedRanges);
+  }
+
+  const chunks = splitIntoChunks(draft, CHUNK_TARGET_WORDS);
+  console.log(
+    `[suggestions] chunking ${wordCount}-word article into ${chunks.length} chunks (${chunks.map(c => countWords(c.text)).join('+' )} words)`
+  );
+
+  const chunkResults = await Promise.all(
+    chunks.map(chunk =>
+      getSuggestionsForText(
+        chunk.text,
+        inventory,
+        adjustRangesForChunk(excludedRanges, chunk.start, chunk.text.length)
+      )
+    )
+  );
+
+  // Merge: deduplicate by URL, re-resolve positions against full article
+  const seenUrls = new Set<string>();
+  const merged: Suggestion[] = [];
+  let promptTokens = 0;
+  let completionTokens = 0;
+  let totalTokens = 0;
+  let totalCost = 0;
+
+  for (const result of chunkResults) {
+    for (const suggestion of result.suggestions) {
+      if (seenUrls.has(suggestion.target_url)) continue;
+      const range = resolveAnchorRange(draft, suggestion, excludedRanges);
+      if (!range) continue;
+      const actualAnchorText = draft.slice(range.start, range.end);
+      if (/^\[.*\]$/.test(actualAnchorText.trim())) continue;
+      seenUrls.add(suggestion.target_url);
+      merged.push({ ...suggestion, anchor_text: actualAnchorText, char_start: range.start, char_end: range.end });
+    }
+    promptTokens += result.usage.promptTokens ?? 0;
+    completionTokens += result.usage.completionTokens ?? 0;
+    totalTokens += result.usage.totalTokens ?? 0;
+    totalCost += result.usage.estimatedCostUsd ?? 0;
+  }
+
+  merged.sort((a, b) => a.char_start - b.char_start);
+  console.log(`[suggestions] merged final=${merged.length}`);
+
+  return {
+    suggestions: merged,
+    usage: {
+      promptTokens,
+      completionTokens,
+      totalTokens,
+      estimatedCostUsd: Number(totalCost.toFixed(6)),
     },
   };
 }

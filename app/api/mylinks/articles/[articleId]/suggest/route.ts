@@ -1,6 +1,9 @@
 import { NextResponse } from 'next/server';
 import { embedText, formatVector, getSuggestions, type InventoryPage } from '@/lib/mylinks/ai';
-import { extractExistingLinkRanges } from '@/lib/mylinks/server/link-ranges';
+import {
+  extractExistingLinkRanges,
+  extractHeadingRanges,
+} from '@/lib/mylinks/server/link-ranges';
 import { requireAuthenticatedUser } from '@/lib/mylinks/auth';
 import { createServiceClient } from '@/lib/mylinks/supabase/server';
 
@@ -121,7 +124,15 @@ export async function POST(
     return NextResponse.json({ error: 'No destination inventory available. Crawl first or add client URLs.' }, { status: 400 });
   }
 
-  const excludedRanges = extractExistingLinkRanges(article.content_html, article.content_text);
+  // Structural exclusions: existing <a> links + real <h1>..<h6> headings from
+  // content_html. Prevents the AI from re-suggesting on already-linked anchors
+  // or placing anchors inside heading text.
+  const existingLinks = extractExistingLinkRanges(article.content_html, article.content_text);
+  const headingRanges = extractHeadingRanges(article.content_html, article.content_text);
+  const excludedRanges = [
+    ...existingLinks.map((r) => ({ start: r.start, end: r.end, url: r.url })),
+    ...headingRanges,
+  ];
 
   let suggestionResult;
   try {
@@ -173,7 +184,7 @@ export async function POST(
     article_id: articleId,
     operation: 'generate_internal_suggestions',
     provider: 'openai',
-    model: 'gpt-4o-mini',
+    model: 'gpt-4o',
     prompt_tokens: suggestionResult.usage.promptTokens,
     completion_tokens: suggestionResult.usage.completionTokens,
     total_tokens: suggestionResult.usage.totalTokens,

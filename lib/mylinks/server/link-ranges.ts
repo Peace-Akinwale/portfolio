@@ -124,3 +124,69 @@ export function rangeOverlaps(
 ): boolean {
   return ranges.some((r) => start < r.end && end > r.start);
 }
+
+/**
+ * Extracts real <h1>..<h6> tag ranges from content_html, mapping them to
+ * char offsets in content_text. Structural heading detection beats heuristics
+ * because it only flags actual document headings, not short body lines.
+ */
+export function extractHeadingRanges(
+  contentHtml: string | null,
+  _contentText: string
+): Array<{ start: number; end: number }> {
+  if (!contentHtml?.trim()) return [];
+
+  const $ = cheerio.load(`<div data-rich-root="true">${contentHtml}</div>`, null, false);
+  const root = $('[data-rich-root="true"]').get(0);
+  if (!root) return [];
+
+  const ranges: Array<{ start: number; end: number }> = [];
+  const state = { cursor: 0, lastChar: '' };
+
+  function walk(node: unknown, parentIsHeading: boolean) {
+    const n = node as {
+      type: string;
+      data?: string;
+      name?: string;
+      children?: unknown[];
+    };
+    if (n.type === 'text') {
+      const value = normalizeRichTextString(n.data ?? '');
+      if (!value) return;
+      state.cursor += value.length;
+      state.lastChar = value.at(-1) ?? state.lastChar;
+      return;
+    }
+    if (n.type !== 'tag') return;
+
+    const tag = (n.name ?? '').toLowerCase();
+    if (tag === 'br') {
+      appendVirtualNewline(state);
+      return;
+    }
+
+    const isHeading = /^h[1-6]$/.test(tag);
+    const isBlock = BLOCK_TAG_NAMES.has(tag);
+    if (isBlock && hasMeaningfulText(n)) {
+      appendVirtualNewline(state);
+    }
+
+    const startBefore = state.cursor;
+    for (const child of n.children ?? []) {
+      walk(child, parentIsHeading || isHeading);
+    }
+
+    if (isHeading) {
+      const endAfter = state.cursor;
+      if (endAfter > startBefore) {
+        ranges.push({ start: startBefore, end: endAfter });
+      }
+    }
+  }
+
+  for (const child of (root as { children?: unknown[] }).children ?? []) {
+    walk(child, false);
+  }
+
+  return ranges;
+}
