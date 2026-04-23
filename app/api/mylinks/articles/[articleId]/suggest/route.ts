@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { embedText, formatVector, getSuggestions, type InventoryPage } from '@/lib/mylinks/ai';
-import { extractExistingLinkRanges } from '@/lib/mylinks/article-preview';
+import { extractExistingLinkRanges } from '@/lib/mylinks/server/link-ranges';
 import { requireAuthenticatedUser } from '@/lib/mylinks/auth';
 import { createServiceClient } from '@/lib/mylinks/supabase/server';
 

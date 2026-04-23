@@ -145,6 +145,17 @@ export default function NewArticlePage({
               </div>
             ) : (
               <div className="space-y-3">
+                <div className="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">
+                  <strong>Heads up:</strong> Google Doc import needs an approved Google connection.
+                  If you haven&rsquo;t connected yet, head to{' '}
+                  <Link
+                    href="/projects/mylinks/settings"
+                    className="underline font-semibold"
+                  >
+                    Settings
+                  </Link>{' '}
+                  first, then come back to this form.
+                </div>
                 <input
                   required
                   value={docId}
@@ -152,9 +163,6 @@ export default function NewArticlePage({
                   className="w-full rounded-2xl border border-border bg-background px-4 py-3 outline-none transition-colors focus:border-accent"
                   placeholder="Paste the Google Doc URL or document ID"
                 />
-                <p className="text-sm text-muted-foreground">
-                  Google Docs import requires an approved Google connection in settings.
-                </p>
               </div>
             )}
           </div>

@@ -10,8 +10,8 @@ export async function POST(request: Request) {
     found_via?: string;
   };
 
-  if (!body.full_name?.trim() || !body.found_via?.trim()) {
-    return NextResponse.json({ error: 'full_name and found_via are required' }, { status: 400 });
+  if (!body.full_name?.trim()) {
+    return NextResponse.json({ error: 'full_name is required' }, { status: 400 });
   }
 
   const serviceClient = await createServiceClient();
@@ -22,7 +22,7 @@ export async function POST(request: Request) {
         user_id: user.id,
         email: user.email ?? null,
         full_name: body.full_name.trim(),
-        found_via: body.found_via.trim(),
+        found_via: body.found_via?.trim() || null,
       },
       { onConflict: 'user_id' }
     )

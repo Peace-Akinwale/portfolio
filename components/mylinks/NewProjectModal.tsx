@@ -8,6 +8,8 @@ export default function NewProjectModal() {
   const [open, setOpen] = useState(false);
   const [name, setName] = useState("");
   const [domain, setDomain] = useState("");
+  const [sitemapUrl, setSitemapUrl] = useState("");
+  const [showAdvanced, setShowAdvanced] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
@@ -18,11 +20,12 @@ export default function NewProjectModal() {
     setError(null);
 
     const cleanDomain = normalizeDomain(domain);
+    const cleanSitemap = sitemapUrl.trim() || null;
 
     const res = await fetch("/api/mylinks/projects", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, domain: cleanDomain, sitemap_url: null }),
+      body: JSON.stringify({ name, domain: cleanDomain, sitemap_url: cleanSitemap }),
     });
 
     const data = await res.json();
@@ -91,6 +94,31 @@ export default function NewProjectModal() {
                   We&apos;ll automatically find and crawl your sitemap.
                 </p>
               </div>
+
+              <button
+                type="button"
+                onClick={() => setShowAdvanced((v) => !v)}
+                className="text-xs font-medium text-gray-600 underline hover:text-gray-900"
+              >
+                {showAdvanced ? "Hide advanced" : "Advanced options"}
+              </button>
+
+              {showAdvanced && (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Sitemap URL (optional)
+                  </label>
+                  <input
+                    value={sitemapUrl}
+                    onChange={(e) => setSitemapUrl(e.target.value)}
+                    placeholder="https://example.com/sitemap.xml"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                  <p className="text-xs text-gray-400 mt-1">
+                    Only set this if auto-discovery fails &mdash; otherwise leave empty.
+                  </p>
+                </div>
+              )}
 
               {error && (
                 <p className="text-sm text-red-600 bg-red-50 px-3 py-2 rounded-lg">

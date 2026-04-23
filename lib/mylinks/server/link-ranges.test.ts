@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { extractExistingLinkRanges, rangeOverlaps } from './article-preview';
+import { extractExistingLinkRanges, rangeOverlaps } from './link-ranges';
 
 describe('extractExistingLinkRanges', () => {
   it('returns [] when html is null or empty', () => {

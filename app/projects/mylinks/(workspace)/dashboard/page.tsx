@@ -54,10 +54,17 @@ export default async function DashboardPage() {
 
         {!projects || projects.length === 0 ? (
           <div className="rounded-[1.8rem] border border-dashed border-border bg-background px-8 py-16 text-center">
-            <p className="text-lg font-semibold text-foreground">No projects yet.</p>
-            <p className="mt-3 text-sm text-muted-foreground">
-              Create a project to crawl a client domain and start routing links into drafts.
+            <p className="text-lg font-semibold text-foreground">Start with a project.</p>
+            <p className="mx-auto mt-3 max-w-md text-sm leading-7 text-muted-foreground">
+              A project holds one client&rsquo;s site. MyLinks crawls it to learn which pages exist,
+              then recommends links when you add a draft. Click <strong>New project</strong>{' '}
+              above to add your first site.
             </p>
+            <ol className="mx-auto mt-6 max-w-sm text-left text-sm text-muted-foreground">
+              <li>1. Add the client domain &mdash; we auto-find the sitemap.</li>
+              <li>2. Add a draft article, paste or via Google Docs.</li>
+              <li>3. Approve the suggested links and export.</li>
+            </ol>
           </div>
         ) : (
           <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">

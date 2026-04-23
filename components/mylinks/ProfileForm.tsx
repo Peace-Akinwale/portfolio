@@ -61,10 +61,9 @@ export function ProfileForm({ email }: { email: string | undefined }) {
 
       <label className="block">
         <span className="mb-2 block text-xs font-semibold uppercase tracking-[0.12em] text-muted-foreground">
-          Where did you find this app?
+          Where did you find this app? <span className="text-muted-foreground/60">(optional)</span>
         </span>
         <input
-          required
           value={foundVia}
           onChange={(event) => setFoundVia(event.target.value)}
           className="w-full rounded-2xl border border-border bg-background px-4 py-3 outline-none transition-colors focus:border-accent"

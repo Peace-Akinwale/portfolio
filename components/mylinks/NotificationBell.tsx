@@ -10,6 +10,7 @@ export function NotificationBell() {
     let cancelled = false;
 
     async function load() {
+      if (document.visibilityState !== 'visible') return;
       try {
         const response = await fetch('/api/mylinks/notifications?count=1');
         if (!response.ok) {
@@ -25,10 +26,15 @@ export function NotificationBell() {
     }
 
     load();
-    const interval = window.setInterval(load, 60_000);
+    const interval = window.setInterval(load, 120_000);
+    const onVisibility = () => {
+      if (document.visibilityState === 'visible') load();
+    };
+    document.addEventListener('visibilitychange', onVisibility);
     return () => {
       cancelled = true;
       window.clearInterval(interval);
+      document.removeEventListener('visibilitychange', onVisibility);
     };
   }, []);
 

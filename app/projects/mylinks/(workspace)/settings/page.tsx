@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { ProfileEditor } from '@/components/mylinks/ProfileEditor';
 import { requireAuthenticatedUser, requireProfile } from '@/lib/mylinks/auth';
 import { createServiceClient } from '@/lib/mylinks/supabase/server';
 
@@ -43,12 +44,11 @@ export default async function SettingsPage() {
           <p className="text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">
             Profile
           </p>
-          <p className="mt-4 text-sm text-muted-foreground">Name</p>
-          <p className="text-lg font-semibold text-foreground">{profile.full_name || user.email}</p>
-          <p className="mt-4 text-sm text-muted-foreground">Found via</p>
-          <p className="text-sm text-foreground">{profile.found_via || 'Not set'}</p>
-          <p className="mt-4 text-sm text-muted-foreground">Email</p>
-          <p className="text-sm text-foreground">{user.email}</p>
+          <ProfileEditor
+            initialFullName={profile.full_name}
+            initialFoundVia={profile.found_via}
+            email={user.email}
+          />
         </div>
 
         <div className="rounded-[1.5rem] border border-border bg-background p-6">
@@ -59,22 +59,30 @@ export default async function SettingsPage() {
             Connect your Google account to import Docs and auto-apply approved links. You can disconnect at any time from your Google account settings.
           </p>
           {token ? (
-            <div className="mt-3 space-y-1 text-xs text-muted-foreground">
-              <p>
-                Connected. Access token rotates automatically (next rotation at{' '}
-                {new Date(token.expires_at).toLocaleString()}).
-              </p>
-              {token.refresh_issued_at ? (
-                <p>
-                  Last connected {new Date(token.refresh_issued_at).toLocaleString()} (
-                  {Math.max(0, Math.round(7 - (refreshAgeDays ?? 0)))} days left in the 7-day
-                  testing window).
+            <div className="mt-3 text-sm text-muted-foreground">
+              {refreshAgeDays !== null ? (
+                <p className="text-foreground">
+                  <strong>Connected.</strong> About{' '}
+                  {Math.max(0, Math.round(7 - refreshAgeDays))} day
+                  {Math.max(0, Math.round(7 - refreshAgeDays)) === 1 ? '' : 's'} until reconnect is
+                  needed.
                 </p>
-              ) : null}
-              <p>
-                This app is still in Google&rsquo;s OAuth testing mode, so refresh tokens expire
-                after 7 days. Reconnect weekly until the app is published.
-              </p>
+              ) : (
+                <p className="text-foreground">
+                  <strong>Connected.</strong>
+                </p>
+              )}
+              <details className="mt-2 text-xs">
+                <summary className="cursor-pointer text-muted-foreground underline">
+                  Why does this expire weekly?
+                </summary>
+                <p className="mt-2 leading-relaxed">
+                  The app is in Google&rsquo;s OAuth testing mode, which limits every connection to
+                  7 days. The access token inside that window rotates automatically every hour
+                  (next rotation at {new Date(token.expires_at).toLocaleString()}). Once the app is
+                  published out of testing, connections will last indefinitely.
+                </p>
+              </details>
             </div>
           ) : null}
           {nearExpiry ? (

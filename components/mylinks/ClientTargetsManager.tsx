@@ -46,39 +46,59 @@ export function ClientTargetsManager({
     setLoading(true);
     setError(null);
 
-    const response = await fetch(`/api/mylinks/articles/${articleId}/link-targets`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        targets: urls.map((url) => ({ url })),
-      }),
-    });
-
-    const payload = (await response.json()) as { error?: string; targets?: ClientTarget[] };
-    if (!response.ok || !payload.targets?.length) {
-      setError(payload.error ?? 'Failed to add client-approved URLs.');
-      setLoading(false);
-      return;
-    }
-
-    setTargets((current) => [...current, ...payload.targets!]);
+    // Optimistic insert with temp IDs. On error we reconcile.
+    const optimistic: ClientTarget[] = urls.map((url) => ({
+      id: `optimistic-${url}`,
+      label: null,
+      url,
+      notes: null,
+    }));
+    const snapshot = targets;
+    setTargets((current) => [...current, ...optimistic]);
     setBulkUrls('');
-    setLoading(false);
+
+    try {
+      const response = await fetch(`/api/mylinks/articles/${articleId}/link-targets`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ targets: urls.map((url) => ({ url })) }),
+      });
+      const payload = (await response.json()) as { error?: string; targets?: ClientTarget[] };
+      if (!response.ok || !payload.targets?.length) {
+        setError(payload.error ?? 'Failed to add client-approved URLs.');
+        setTargets(snapshot);
+        return;
+      }
+      // Swap optimistic rows for real ones.
+      const realUrls = new Set(payload.targets.map((t) => t.url));
+      setTargets(() => [
+        ...snapshot.filter((t) => !realUrls.has(t.url)),
+        ...payload.targets!,
+      ]);
+    } catch {
+      setError('Request failed while saving URLs.');
+      setTargets(snapshot);
+    } finally {
+      setLoading(false);
+    }
   }
 
   async function removeTarget(targetId: string) {
-    const response = await fetch(`/api/mylinks/articles/${articleId}/link-targets/${targetId}`, {
-      method: 'DELETE',
-    });
-
-    if (!response.ok) {
-      setError('Failed to remove target.');
-      return;
-    }
-
+    const snapshot = targets;
     setTargets((current) => current.filter((target) => target.id !== targetId));
+    try {
+      const response = await fetch(
+        `/api/mylinks/articles/${articleId}/link-targets/${targetId}`,
+        { method: 'DELETE' }
+      );
+      if (!response.ok) {
+        setError('Failed to remove target.');
+        setTargets(snapshot);
+      }
+    } catch {
+      setError('Request failed while removing target.');
+      setTargets(snapshot);
+    }
   }
 
   return (

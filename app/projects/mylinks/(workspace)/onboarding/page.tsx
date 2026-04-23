@@ -17,9 +17,10 @@ export default async function OnboardingPage() {
           <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">
             First login
           </p>
-          <h1 className="mt-4 text-4xl font-bold text-foreground">Set up your beta profile</h1>
+          <h1 className="mt-4 text-4xl font-bold text-foreground">What should I call you?</h1>
           <p className="mt-4 text-sm leading-7 text-muted-foreground">
-            Before you enter the workspace, I want one small piece of context: how you found the app. That helps me understand who the beta is reaching.
+            Just your name so the workspace feels personal. The &ldquo;where did you find this&rdquo;
+            question is optional &mdash; skip it if you&rsquo;d rather jump straight in.
           </p>
         </div>
         <ProfileForm email={user.email} />

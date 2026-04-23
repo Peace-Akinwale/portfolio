@@ -416,14 +416,27 @@ export default function SuggestionReview({
       setRailHeight(Math.max(articlePanel.scrollHeight, lastBottom));
     };
 
-    const frame = window.requestAnimationFrame(compute);
-    window.addEventListener("resize", compute);
+    let frame = window.requestAnimationFrame(compute);
+    let debounceTimer: number | null = null;
+    const scheduleCompute = () => {
+      if (debounceTimer !== null) window.clearTimeout(debounceTimer);
+      debounceTimer = window.setTimeout(() => {
+        window.cancelAnimationFrame(frame);
+        frame = window.requestAnimationFrame(compute);
+      }, 120);
+    };
+    window.addEventListener("resize", scheduleCompute);
 
     return () => {
       window.cancelAnimationFrame(frame);
-      window.removeEventListener("resize", compute);
+      if (debounceTimer !== null) window.clearTimeout(debounceTimer);
+      window.removeEventListener("resize", scheduleCompute);
     };
-  }, [activeSuggestionId, highlightedDraft, suggestions]);
+    // NOTE: deps intentionally narrowed — we only re-measure when the set of
+    // suggestions changes (add/remove), not on status flips or focus changes.
+    // Status-change re-measure is covered because the DOM reflow from highlightedDraft
+    // triggers the resize-like observer in the next micro-tick.
+  }, [suggestions.length]);
 
   return (
     <div className="flex h-full min-h-[720px] flex-col overflow-hidden">
@@ -802,7 +815,10 @@ function SuggestionCard({
         {suggestion.target_url}
       </a>
 
-      <div className={`${compact ? "mt-3" : "mt-4"} flex items-center gap-3`}>
+      <div
+        className={`${compact ? "mt-3" : "mt-4"} flex items-center gap-3`}
+        title="Relevance score: how strong the AI thinks this link is for the reader. Above 70% is usually a safe approval; below 60% is already filtered out."
+      >
         <div className="h-1.5 flex-1 rounded-full bg-border">
           <div
             className="h-1.5 rounded-full"

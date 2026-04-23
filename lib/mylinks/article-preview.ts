@@ -1,6 +1,4 @@
 import { marked } from 'marked';
-import * as cheerio from 'cheerio';
-import { BLOCK_TAG_NAMES, normalizeRichTextString } from './rich-text-common';
 
 type SuggestionShape = {
   id: string;
@@ -159,116 +157,6 @@ function escapeAttr(value: string) {
   return value.replace(/"/g, '&quot;').replace(/'/g, '&#39;');
 }
 
-export interface ExistingLinkRange {
-  start: number;
-  end: number;
-  url: string;
-  anchor_text: string;
-}
-
-/**
- * Extracts existing <a href> ranges from content_html, mapping them to char offsets
- * in content_text. The walk mirrors rich-text-client.ts::walkNode so offsets align
- * with what the suggestion engine sees.
- */
-export function extractExistingLinkRanges(
-  contentHtml: string | null,
-  contentText: string
-): ExistingLinkRange[] {
-  if (!contentHtml?.trim()) return [];
-
-  const $ = cheerio.load(`<div data-rich-root="true">${contentHtml}</div>`, null, false);
-  const root = $('[data-rich-root="true"]').get(0);
-  if (!root) return [];
-
-  const ranges: ExistingLinkRange[] = [];
-  const state = { cursor: 0, lastChar: '' };
-
-  function walk(node: unknown, insideLinkUrl: string | null) {
-    const n = node as { type: string; data?: string; name?: string; children?: unknown[]; attribs?: Record<string, string> };
-    if (n.type === 'text') {
-      const value = normalizeRichTextString(n.data ?? '');
-      if (!value) return;
-      if (insideLinkUrl !== null) {
-        ranges.push({
-          start: state.cursor,
-          end: state.cursor + value.length,
-          url: insideLinkUrl,
-          anchor_text: value,
-        });
-      }
-      state.cursor += value.length;
-      state.lastChar = value.at(-1) ?? state.lastChar;
-      return;
-    }
-    if (n.type !== 'tag') return;
-
-    const tag = (n.name ?? '').toLowerCase();
-    if (tag === 'br') {
-      appendVirtualNewline(state);
-      return;
-    }
-
-    // ul/ol are containers — only <li> emits a newline boundary, same as extractDocContent.
-    const isBlock = BLOCK_TAG_NAMES.has(tag);
-    if (isBlock && hasMeaningfulText(n)) {
-      appendVirtualNewline(state);
-    }
-
-    let nextLinkUrl = insideLinkUrl;
-    if (tag === 'a') {
-      const href = n.attribs?.href;
-      if (href) nextLinkUrl = href;
-    }
-
-    for (const child of n.children ?? []) {
-      walk(child, nextLinkUrl);
-    }
-  }
-
-  for (const child of (root as { children?: unknown[] }).children ?? []) {
-    walk(child, null);
-  }
-
-  return mergeAdjacentRanges(ranges, contentText);
-}
-
-function appendVirtualNewline(state: { cursor: number; lastChar: string }) {
-  if (state.cursor === 0 || state.lastChar === '\n') return;
-  state.cursor += 1;
-  state.lastChar = '\n';
-}
-
-function hasMeaningfulText(node: unknown): boolean {
-  const n = node as { type: string; data?: string; children?: unknown[] };
-  if (n.type === 'text') return (n.data ?? '').trim().length > 0;
-  if (n.type !== 'tag') return false;
-  for (const child of n.children ?? []) {
-    if (hasMeaningfulText(child)) return true;
-  }
-  return false;
-}
-
-/**
- * Merges consecutive ranges from the same <a> (text nodes split by inline formatting
- * like <strong> would otherwise produce two adjacent ranges with the same URL).
- */
-function mergeAdjacentRanges(ranges: ExistingLinkRange[], contentText: string): ExistingLinkRange[] {
-  if (ranges.length <= 1) return ranges;
-  const merged: ExistingLinkRange[] = [ranges[0]];
-  for (let i = 1; i < ranges.length; i += 1) {
-    const prev = merged[merged.length - 1];
-    const curr = ranges[i];
-    if (prev.url === curr.url && prev.end === curr.start) {
-      prev.end = curr.end;
-      prev.anchor_text = contentText.slice(prev.start, prev.end);
-    } else {
-      merged.push(curr);
-    }
-  }
-  return merged;
-}
-
 /**
  * Returns true if [start, end) overlaps any range in `ranges`.
  */
@@ -279,3 +167,4 @@ export function rangeOverlaps(
 ): boolean {
   return ranges.some((r) => start < r.end && end > r.start);
 }
+
