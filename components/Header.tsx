@@ -4,24 +4,19 @@ import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
 import { usePathname } from 'next/navigation';
 
-const PORTFOLIO_LINKS = [
-  { href: '/portfolio', label: 'Portfolio', description: 'Featured writing work and selected client projects.' },
-  { href: '/projects/contentdb', label: 'contentDB', description: 'Store high-value content assets and query them inside Claude through MCP.' },
-  { href: '/projects/career-pathway', label: 'Career Pathway', description: 'A quiz that helps young people find a realistic tech career path to start with and grow into.' },
+const WORK_LINKS = [
+  { href: '/case-studies', label: 'Case Studies', description: 'Client engagements, results, and what made them work.' },
+  { href: '/portfolio', label: 'Portfolio', description: 'Writing samples across B2B SaaS clients.' },
+  { href: '/testimonials', label: 'Testimonials', description: "What clients say about working with me." },
+  { href: '/projects', label: 'Projects', description: "Tools and systems I've built." },
 ];
 
 const PRIMARY_LINKS = [
   { href: '/services', label: 'Services' },
-  { href: '/portfolio', label: 'Portfolio', children: PORTFOLIO_LINKS },
-  { href: '/projects', label: 'Projects' },
+  { href: '/portfolio', label: 'Work', children: WORK_LINKS },
   { href: '/about', label: 'About' },
   { href: '/blog', label: 'Blog' },
   { href: '/contact', label: 'Contact' },
-];
-
-const SECONDARY_LINKS = [
-  { href: '/projects', label: 'Projects' },
-  { href: '/testimonials', label: 'Testimonials' },
 ];
 
 export function Header() {
@@ -209,19 +204,6 @@ export function Header() {
                       {item.label}
                     </Link>
                   )
-                ))}
-              </div>
-
-              <div className="border-t border-border/80 py-3 flex flex-col gap-1">
-                {SECONDARY_LINKS.map((item) => (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    className="text-sm uppercase tracking-[0.12em] py-3 text-muted-foreground hover:text-accent transition-colors"
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    {item.label}
-                  </Link>
                 ))}
               </div>
 

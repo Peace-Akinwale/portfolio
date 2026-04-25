@@ -17,8 +17,6 @@ export const metadata: Metadata = {
   },
 };
 
-/* ─── Static data ────────────────────────────────────────── */
-
 const CLIENTS = [
   { name: 'ManyRequests', domain: 'manyrequests.com' },
   { name: 'Jabra', domain: 'jabra.com' },
@@ -33,57 +31,61 @@ const CONTENT_SERVICES = [
     tag: 'Content Refresh',
     name: 'Refresh one article',
     price: '$400',
-    priceNote: 'per article \u00B7 2,000\u20132,500 words',
+    priceNote: 'per article · 2,000–2,500 words',
     features: [
       'Refreshing is most times better than publishing new content.',
-      "I look at gaps in your competitors' content and write to meet the \u2018new\u2019 search intent.",
+      "I look at gaps in your competitors' content and write to meet the ‘new’ search intent.",
       <span key="f3">I weave your product into the article without forcing it, so the reader leaves knowing <strong className="text-foreground font-semibold">what you do</strong> and <strong className="text-foreground font-semibold">when they might need you</strong>.</span>,
       'I swap out old product images, add GIFs, and update alt texts and CTAs where relevant.',
       'I optimize for organic and AI search engines to improve visibility.',
     ],
   },
   {
-    tag: 'Net New Article',
-    name: 'One article, done right',
-    price: '$600\u2013700',
-    priceNote: 'per article \u00B7 2,000\u20133,000 words',
+    tag: '5-Article Bundle',
+    name: 'Product-led articles that move readers',
+    price: '$2,700',
+    priceNote: '5 articles · save 10% · flexible scope',
     featured: true,
     features: [
-      'I evaluate whether we can talk about your product in the article without forcing it, even on a TOFU blog post.',
-      'I use your product and read help docs so I understand where it fits in the assigned topics and how it differs from competitors\u2019.',
-      'I optimize for organic and AI search engines and write to meet search intent.',
-      'I think beyond the brief \u2014 every article has a job to do, and I write to that outcome.',
+      'Well-written, product-led articles that move readers to make a decision about your product.',
+      'Flexible scope — need a 6th or 7th article? Easy to add at the discounted rate.',
+      'You work directly with me. No account managers, rotating writers, or starting from scratch every brief.',
+      <span key="f4">If a draft misses the mark, <strong className="text-foreground font-semibold">we work on it together</strong> until it reads better, usually with two rounds of feedback when we are just starting out.</span>,
+      'Automation or editorial systems work available as an add-on.',
     ],
   },
   {
-    tag: 'Monthly Retainer',
-    name: '5\u00D7 BOFU, product-led articles',
-    price: '$3,000',
-    priceNote: 'per month \u00B7 5 articles',
+    tag: 'Net New Article',
+    name: 'One article, done right',
+    price: '$600',
+    priceNote: 'per article · 2,000–3,000 words · bundle 3+ for 10% off',
     features: [
-      'Every piece is product-led and optimized for organic and AI search.',
-      'BOFU-first content: comparisons, alternatives, and how-to articles where your product is the answer. I also write TOFU content and include product features where relevant.',
-      'You work directly with me. No account managers, rotating writers, or starting from scratch every time you send a brief.',
-      'Workflow automation consulting available as an add-on.',
+      'I evaluate whether we can talk about your product in the article without forcing it, even on a TOFU blog post.',
+      'I use your product and read help docs so I understand where it fits in the assigned topics and how it differs from competitors’.',
+      'I optimize for organic and AI search engines and write to meet search intent.',
+      'I think beyond the brief — every article has a job to do, and I write to that outcome.',
     ],
   },
 ];
 
-const ALL_SERVICES = [
-  ...CONTENT_SERVICES,
-  {
-    tag: 'AI Systems',
-    name: 'Custom system for your team',
-    price: '$1,500\u20135,000',
-    priceNote: 'per project \u00B7 scope-dependent',
-    features: [
-      <span key="f1">I&rsquo;ve built a <a href="https://contentdb.vercel.app/" target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 transition-colors" style={{ color: 'var(--accent)' }}>ContentDB</a>: a database where you save your team&rsquo;s high-value content and query it through Claude via MCP. Anytime you&rsquo;re writing an article, you can pull context directly from the database to improve the credibility of the piece, without manually reading eBooks or listening to podcast sessions for talking points.</span>,
-      <span key="f2">I&rsquo;ve helped a team build a <a href="https://peaceakinwale.com/linkedin-router" target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 transition-colors" style={{ color: 'var(--accent)' }}>LinkedIn Router</a> that turns a founder&rsquo;s rough ideas into polished posts. They write the rough idea in Notion, add context through podcast links, and click approve. The router generates a brief, an editor reviews and approves it, and the post is written using brand guidelines that make the final draft sound exactly like the founder.</span>,
-      'I look for what slows your workflow down and what we can realistically automate.',
-      'Built by a writer who thinks in systems, not a developer who learned to write.',
-    ],
-    cta: true,
-  },
+const WHATS_INCLUDED = [
+  '2,000–3,000 words per article',
+  '1 round of revisions (usually zero by month 2)',
+  'Original research, including Reddit/G2/Capterra',
+  'Internal linking and product-led framing',
+  'Meta title, meta description, alt text, CTAs',
+  'Product screenshots and GIFs where relevant',
+  'Long-tail semantic keyword optimization for LLM search',
+];
+
+const WHATS_NOT = [
+  'Design, illustration, or video production',
+  'Publishing directly to your CMS (+$20 per post)',
+  'Link building or outreach',
+  'Ghostwriting for founders’ LinkedIn',
+  'Whitepapers, eBooks, case studies (ask me to scope separately)',
+  'Rush delivery under 2 business days ($700 per article)',
+  'Keyword stuffing or AI-generated drafts',
 ];
 
 const TESTIMONIALS = [
@@ -92,7 +94,6 @@ const TESTIMONIALS = [
     name: 'Regine Garcia',
     role: 'Head of Content',
     company: 'ManyRequests',
-    domain: 'manyrequests.com',
     initials: 'RG',
     photo: '/images/clients/regine-garcia.png',
   },
@@ -101,7 +102,6 @@ const TESTIMONIALS = [
     name: 'Nathan Vander Heyden',
     role: 'Head of Marketing',
     company: 'Marker.io',
-    domain: 'marker.io',
     initials: 'NV',
     photo: '/images/clients/nathan-vander-heyden.jpg',
   },
@@ -110,7 +110,6 @@ const TESTIMONIALS = [
     name: 'Lily Ugbaja',
     role: 'Head of Content',
     company: 'Spicy Margarita',
-    domain: 'spicymargarita.co',
     initials: 'LU',
     photo: '/images/clients/lily-ugbaja.png',
   },
@@ -119,72 +118,280 @@ const TESTIMONIALS = [
     name: 'Crista Siglin',
     role: 'Editor',
     company: 'Pangea.ai',
-    domain: 'pangea.ai',
     initials: 'CS',
     photo: '/images/clients/crista-siglin.png',
   },
-  {
-    quote: <span>Akinwale is an excellent writer with a keen eye for details. He worked with me at Onigege Ara for about 2 years, where he executed many content writing and copywriting projects with great success. <strong className="text-foreground font-semibold">He is loyal, dedicated, and has an impressive work ethic.</strong> He is a great addition to any writing team.</span>,
-    name: 'Olumide Akinlaja',
-    role: 'Founder',
-    company: 'Onigege Ara',
-    domain: null,
-    initials: 'OA',
-    photo: '/images/clients/olumide-akinlaja.jpg',
-  },
 ];
 
-/* ─── Page ───────────────────────────────────────────────── */
+const FAQS = [
+  {
+    q: 'Do you use AI to write your drafts?',
+    a: 'No. I use AI as a research assistant and to automate part of my process — it helps me process research, gut-check structure, and move faster. The thinking, the opinions, the product depth, and the writing itself are mine.',
+  },
+  {
+    q: 'How long does it take to get a finished article?',
+    a: 'Usually 3–5 business days from brief to first draft. For retainer clients we agree on a fixed delivery cadence upfront that matches your publishing schedule.',
+  },
+  {
+    q: 'What if the first draft misses the mark?',
+    a: 'One round of revisions is included on every article. If it still doesn’t land, we work on it together until it does. I don’t ship drafts I’m not proud of, and I don’t leave clients stuck.',
+  },
+  {
+    q: 'Can I cancel mid-bundle? What’s the notice period?',
+    a: '14 days written notice to cancel or pause. No long contracts. Month-to-month, always.',
+  },
+  {
+    q: 'How do you invoice?',
+    a: 'Per article: 50% upfront, 50% on delivery. Bundle: 50% upfront, 50% on completion. Stripe or wire transfer. Net-15 terms after the first invoice.',
+  },
+  {
+    q: 'What if you’re full when I want to start?',
+    a: 'I cap at 4 active clients at a time. If I’m full, I’ll say so and give you a realistic timeline for the next opening. I won’t take a client I can’t properly serve.',
+  },
+  {
+    q: 'Do you sign NDAs?',
+    a: 'Yes. Mutual NDA available before the discovery call if you need to share sensitive product or roadmap context.',
+  },
+  {
+    q: 'What do you need from me to get started?',
+    a: 'A brief or topic + target keyword, your ICP, and access to your product. If you can’t give me product access, I need access to someone on your team who knows the product well.',
+  },
+  {
+    q: 'Do you write for early-stage startups?',
+    a: 'Yes, with a caveat: early-stage works best when you have a clear ICP and at least one thing you know works for your product. If positioning is still unclear, I’ll flag that before we start — content can’t fix a messaging problem.',
+  },
+  {
+    q: 'What makes a good fit for the bundle?',
+    a: 'You need 3+ articles at a time, care about product-led content rather than just traffic, and want a writer who pushes back when something doesn’t make sense. If you just want execution without question, I’m probably not the right fit.',
+  },
+];
 
 export default function ServicesPage() {
   return (
     <>
-      {/* ── Hero ───────────────────────────────────────── */}
+      {/* ── Hero with price chips ───────────────────────── */}
       <section className="bg-background">
         <div className="max-w-7xl mx-auto px-6 pt-16 sm:pt-24 pb-16">
           <div className="max-w-3xl">
-          <p
-            className="text-xs font-bold uppercase tracking-[0.15em] mb-5"
-            style={{ color: 'var(--accent)' }}
-          >
-            B2B SaaS Content Writer
-          </p>
-          <h1
-            className="text-3xl sm:text-4xl md:text-5xl font-extrabold leading-[1.1] mb-6 text-foreground"
-            style={{ letterSpacing: '-0.03em' }}
-          >
-            Product-led content for B2B&nbsp;SaaS
-          </h1>
-          <p className="text-base sm:text-lg leading-relaxed text-muted-foreground max-w-xl mb-4">
-            If you need a B2B SaaS content writer, I write in a way that naturally shows your product in action and improves your chances of ranking in Google and showing up in LLM search.
-          </p>
-          <p className="text-base sm:text-lg leading-relaxed text-muted-foreground max-w-xl mb-10">
-            I also build lightweight automations to take the manual work off your plate so you can focus on higher-stakes decisions.
-          </p>
-          <span className="inline-flex items-center gap-2 text-xs font-bold px-3 py-1.5 rounded-full mb-6 border border-border text-muted-foreground">
-            <span className="w-1.5 h-1.5 rounded-full bg-green-500 inline-block" />
-            Currently accepting 2 new clients
-          </span>
-          <div className="flex flex-col sm:flex-row gap-3">
-            <Link
-              href="/portfolio"
-              className="inline-block px-7 py-3 text-xs font-bold uppercase tracking-[0.08em] rounded-md transition-all hover:opacity-90 text-center"
-              style={{ background: 'var(--accent)', color: '#fff' }}
+            <p
+              className="text-xs font-bold uppercase tracking-[0.15em] mb-5"
+              style={{ color: 'var(--accent)' }}
             >
-              See the work &rarr;
-            </Link>
-            <Link
-              href="/contact"
-              className="inline-block px-7 py-3 text-xs font-bold uppercase tracking-[0.08em] rounded-md border border-border text-foreground transition-all hover:bg-muted text-center"
+              B2B SaaS Content Writer
+            </p>
+            <h1
+              className="text-3xl sm:text-4xl md:text-5xl font-extrabold leading-[1.1] mb-6 text-foreground"
+              style={{ letterSpacing: '-0.03em' }}
             >
-              Get in touch
-            </Link>
-          </div>
+              Product-led BOFU articles for B2B SaaS companies publishing 4+ articles a month
+            </h1>
+            <p className="text-base sm:text-lg leading-relaxed text-muted-foreground max-w-2xl mb-4">
+              I write articles that rank on Google, surface in LLM search, and naturally show your product solving real problems. No account managers, just you and me.
+            </p>
+            <p className="text-base sm:text-lg leading-relaxed text-muted-foreground max-w-2xl mb-10">
+              I also build automations for the parts of the job that shouldn&rsquo;t need a human.
+            </p>
+
+            {/* Price chip row */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-8 max-w-2xl">
+              <a href="#pricing" className="rounded-lg border border-border px-4 py-3 hover:border-accent/40 transition-colors" style={{ background: 'var(--muted)' }}>
+                <p className="text-[10px] font-bold uppercase tracking-[0.12em] mb-1" style={{ color: 'var(--accent)' }}>From</p>
+                <p className="text-lg font-extrabold text-foreground" style={{ letterSpacing: '-0.02em' }}>$400/article</p>
+                <p className="text-[11px] text-muted-foreground">Refresh</p>
+              </a>
+              <a href="#pricing" className="rounded-lg border border-border px-4 py-3 hover:border-accent/40 transition-colors" style={{ background: 'var(--muted)' }}>
+                <p className="text-[10px] font-bold uppercase tracking-[0.12em] mb-1" style={{ color: 'var(--accent)' }}>From</p>
+                <p className="text-lg font-extrabold text-foreground" style={{ letterSpacing: '-0.02em' }}>$600/article</p>
+                <p className="text-[11px] text-muted-foreground">Net new</p>
+              </a>
+              <a href="#pricing" className="rounded-lg border-2 border-accent/40 px-4 py-3 hover:border-accent transition-colors" style={{ background: 'var(--muted)' }}>
+                <p className="text-[10px] font-bold uppercase tracking-[0.12em] mb-1" style={{ color: 'var(--accent)' }}>Bundle</p>
+                <p className="text-lg font-extrabold" style={{ letterSpacing: '-0.02em', color: 'var(--accent)' }}>$2,700</p>
+                <p className="text-[11px] text-muted-foreground">5 articles &middot; save 10%</p>
+              </a>
+            </div>
+
+            <span className="inline-flex items-center gap-2 text-xs font-bold px-3 py-1.5 rounded-full mb-6 border border-border text-muted-foreground">
+              <span className="w-1.5 h-1.5 rounded-full bg-green-500 inline-block" />
+              Currently accepting 2 new clients
+            </span>
+            <div className="flex flex-col sm:flex-row gap-3">
+              <a
+                href="#pricing"
+                className="inline-block px-7 py-3 text-xs font-bold uppercase tracking-[0.08em] rounded-md transition-all hover:opacity-90 text-center"
+                style={{ background: 'var(--accent)', color: '#fff' }}
+              >
+                See full pricing &rarr;
+              </a>
+              <Link
+                href="/portfolio"
+                className="inline-block px-7 py-3 text-xs font-bold uppercase tracking-[0.08em] rounded-md border border-border text-foreground transition-all hover:bg-muted text-center"
+              >
+                See the work
+              </Link>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* ── Is This You? ───────────────────────────────── */}
+      {/* ── Pricing ─────────────────────────────────────── */}
+      <section id="pricing" className="border-t border-border bg-background">
+        <div className="max-w-7xl mx-auto px-6 py-20 sm:py-24">
+          <p
+            className="text-xs font-bold uppercase tracking-[0.15em] mb-4"
+            style={{ color: 'var(--accent)' }}
+          >
+            What I offer
+          </p>
+          <h2
+            className="text-2xl sm:text-3xl font-extrabold mb-3 text-foreground"
+            style={{ letterSpacing: '-0.02em' }}
+          >
+            Three ways to work together
+          </h2>
+          <p className="text-sm text-muted-foreground mb-14 max-w-md leading-relaxed">
+            Pick what fits where you are. Not sure? One article is always a good place to start.
+          </p>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-10">
+            {CONTENT_SERVICES.map((s) => (
+              <div
+                key={s.tag}
+                className={`rounded-xl border p-7 flex flex-col transition-shadow hover:shadow-md ${
+                  s.tag === '5-Article Bundle'
+                    ? 'border-accent/40 ring-1 ring-accent/10'
+                    : 'border-border'
+                }`}
+                style={{ background: s.tag === '5-Article Bundle' ? 'var(--muted)' : 'var(--background)' }}
+              >
+                <span
+                  className="text-[10px] font-bold uppercase tracking-[0.12em] mb-5 block"
+                  style={{ color: 'var(--accent)' }}
+                >
+                  {s.tag}
+                </span>
+                {s.tag === '5-Article Bundle' && (
+                  <span className="inline-flex items-center self-start rounded-full border border-accent/20 bg-background px-3 py-1 text-[10px] font-bold uppercase tracking-[0.12em] text-foreground mb-5">
+                    Most common choice
+                  </span>
+                )}
+                <p className="text-sm font-bold text-foreground mb-3">{s.name}</p>
+                <p
+                  className="text-3xl font-extrabold mb-1"
+                  style={{ letterSpacing: '-0.03em', color: s.tag === '5-Article Bundle' ? 'var(--accent)' : 'var(--foreground)' }}
+                >
+                  {s.price}
+                </p>
+                <p className="text-xs text-muted-foreground mb-7">{s.priceNote}</p>
+                <hr className="border-border mb-7" />
+                <ul className="flex flex-col gap-3">
+                  {s.features.map((f, j) => (
+                    <li key={j} className="flex items-start gap-2.5 text-[13px] leading-relaxed text-muted-foreground">
+                      <span className="mt-0.5 flex-shrink-0" style={{ color: 'var(--accent)' }}>
+                        &rarr;
+                      </span>
+                      {f}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+
+          {/* ── What's included / What's not ────────────── */}
+          <div className="rounded-xl border border-border p-8 sm:p-10" style={{ background: 'var(--muted)' }}>
+            <p className="text-xs font-bold uppercase tracking-[0.15em] mb-6" style={{ color: 'var(--accent)' }}>
+              What&rsquo;s included &middot; What&rsquo;s not
+            </p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
+              <div>
+                <p className="text-[11px] font-bold uppercase tracking-[0.1em] mb-4 text-foreground">Included in every article</p>
+                <ul className="flex flex-col gap-2.5">
+                  {WHATS_INCLUDED.map((item, i) => (
+                    <li key={i} className="flex items-start gap-2.5 text-[13px] leading-relaxed text-muted-foreground">
+                      <span className="mt-0.5 flex-shrink-0 font-bold" style={{ color: 'var(--accent)' }}>&rarr;</span>
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div>
+                <p className="text-[11px] font-bold uppercase tracking-[0.1em] mb-4 text-foreground">Not included</p>
+                <ul className="flex flex-col gap-2.5">
+                  {WHATS_NOT.map((item, i) => (
+                    <li key={i} className="flex items-start gap-2.5 text-[13px] leading-relaxed text-muted-foreground">
+                      <span className="mt-0.5 flex-shrink-0 font-bold text-muted-foreground/60">✕</span>
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Proof strip (post-price trust anchor) ────────── */}
+      <section className="border-t border-border" style={{ background: 'var(--muted)' }}>
+        <div className="max-w-7xl mx-auto px-6 py-14 sm:py-16">
+          <p
+            className="text-xs font-bold uppercase tracking-[0.15em] mb-10 text-center"
+            style={{ color: 'var(--accent)' }}
+          >
+            Heard from people who&rsquo;ve hired me
+          </p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5 max-w-5xl mx-auto">
+            <div className="rounded-xl border border-border bg-background p-7">
+              <p
+                className="text-sm leading-[1.85] text-foreground mb-6"
+                style={{ fontFamily: 'var(--font-serif)' }}
+              >
+                &ldquo;He <strong className="font-semibold">adapts and reorganizes information on the fly</strong> based on what he knows about our ICP. We never needed more than one round of feedback per article &mdash; and none towards the end of our project.&rdquo;
+              </p>
+              <div className="flex items-center gap-3">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="/images/clients/nathan-vander-heyden.jpg"
+                  alt="Nathan Vander Heyden"
+                  width={36}
+                  height={36}
+                  className="flex-shrink-0 w-9 h-9 rounded-full object-cover"
+                  loading="lazy"
+                />
+                <div>
+                  <p className="text-sm font-bold text-foreground">Nathan Vander Heyden</p>
+                  <p className="text-xs text-muted-foreground">Head of Marketing &middot; Marker.io</p>
+                </div>
+              </div>
+            </div>
+            <div className="rounded-xl border border-border bg-background p-7">
+              <p
+                className="text-sm leading-[1.85] text-foreground mb-6"
+                style={{ fontFamily: 'var(--font-serif)' }}
+              >
+                &ldquo;<strong className="font-semibold">He took feedback really fast and always came back stronger</strong> &mdash; the kind of person who makes your work easier just by being on the team.&rdquo;
+              </p>
+              <div className="flex items-center gap-3">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="/images/clients/lily-ugbaja.png"
+                  alt="Lily Ugbaja"
+                  width={36}
+                  height={36}
+                  className="flex-shrink-0 w-9 h-9 rounded-full object-cover"
+                  loading="lazy"
+                />
+                <div>
+                  <p className="text-sm font-bold text-foreground">Lily Ugbaja</p>
+                  <p className="text-xs text-muted-foreground">Head of Content &middot; Spicy Margarita</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Is this you? ─────────────────────────────────── */}
       <section className="border-t border-border bg-background">
         <div className="max-w-7xl mx-auto px-6 py-16 sm:py-20">
           <p
@@ -208,12 +415,6 @@ export default function ServicesPage() {
                   &ldquo;You&rsquo;re publishing regularly but the articles don&rsquo;t show your product. They&rsquo;re educational, sure. But they don&rsquo;t convert.&rdquo;
                 </p>
               </div>
-              <div>
-                <p className="text-[11px] font-bold uppercase tracking-[0.1em] mb-2 text-foreground">What I do</p>
-                <p className="text-[13px] leading-[1.75] text-muted-foreground">
-                  I weave your product into every article naturally so readers understand what it does, who it&rsquo;s for, and why it matters without feeling like they&rsquo;re reading a sales page.
-                </p>
-              </div>
             </div>
             <div className="rounded-xl border border-border p-7 flex flex-col gap-5" style={{ background: 'var(--muted)' }}>
               <span className="text-3xl block">⏳</span>
@@ -221,12 +422,6 @@ export default function ServicesPage() {
                 <p className="text-sm font-bold mb-3" style={{ color: 'var(--accent)' }}>Founder / Growth Lead</p>
                 <p className="text-[13px] leading-[1.75] text-muted-foreground">
                   &ldquo;You know content is the play. You just don&rsquo;t have time to brief a writer, review drafts, and still run the company.&rdquo;
-                </p>
-              </div>
-              <div>
-                <p className="text-[11px] font-bold uppercase tracking-[0.1em] mb-2 text-foreground">What I do</p>
-                <p className="text-[13px] leading-[1.75] text-muted-foreground">
-                  For every topic, I assess whether it&rsquo;s a real opportunity, where it fits in your customer&rsquo;s journey, and the content gaps in existing pages. You get a writer who thinks about the strategy beyond the brief.
                 </p>
               </div>
             </div>
@@ -238,177 +433,12 @@ export default function ServicesPage() {
                   &ldquo;Your team is using AI to scale output. But the articles sound the same, and your editor is tired of fixing them.&rdquo;
                 </p>
               </div>
-              <div>
-                <p className="text-[11px] font-bold uppercase tracking-[0.1em] mb-2 text-foreground">What I do</p>
-                <p className="text-[13px] leading-[1.75] text-muted-foreground mb-3">
-                  I comb through Reddit, G2, Capterra, thought leadership content on LinkedIn, blogs, and listen to relevant podcasts as part of my research process, and what those leaders say actually makes it into the piece.
-                </p>
-                <p className="text-[13px] leading-[1.75] text-muted-foreground">
-                  I also read good newsletters and wickedly good writers to keep my editorial judgment sharp, so my writing doesn&rsquo;t pick up the flat, generic patterns in AI-generated content.
-                </p>
-              </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* ── Services / Pricing ─────────────────────────── */}
-      <section className="bg-background">
-        <div className="max-w-7xl mx-auto px-6 py-20 sm:py-24">
-          <p
-            className="text-xs font-bold uppercase tracking-[0.15em] mb-4"
-            style={{ color: 'var(--accent)' }}
-          >
-            What I offer
-          </p>
-          <h2
-            className="text-2xl sm:text-3xl font-extrabold mb-3 text-foreground"
-            style={{ letterSpacing: '-0.02em' }}
-          >
-            Four ways to work together
-          </h2>
-          <p className="text-sm text-muted-foreground mb-14 max-w-md leading-relaxed">
-            Pick what fits where you are right now. If you&rsquo;re not sure, one article is always a good place to start.
-          </p>
-
-          {/* ── Content cards: 3-col ── */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-5">
-            {CONTENT_SERVICES.map((s) => (
-              <div
-                key={s.tag}
-                className={`rounded-xl border p-7 flex flex-col transition-shadow hover:shadow-md ${
-                  s.tag === 'Monthly Retainer'
-                    ? 'border-accent/40 ring-1 ring-accent/10 md:order-2'
-                    : s.tag === 'Net New Article'
-                      ? 'border-border md:order-3'
-                      : 'border-border md:order-1'
-                }`}
-                style={{ background: s.tag === 'Monthly Retainer' ? 'var(--muted)' : 'var(--background)' }}
-              >
-                <span
-                  className="text-[10px] font-bold uppercase tracking-[0.12em] mb-5 block"
-                  style={{ color: 'var(--accent)' }}
-                >
-                  {s.tag}
-                </span>
-                {s.tag === 'Monthly Retainer' && (
-                  <span className="inline-flex items-center self-start rounded-full border border-accent/20 bg-background px-3 py-1 text-[10px] font-bold uppercase tracking-[0.12em] text-foreground mb-5">
-                    Most common choice
-                  </span>
-                )}
-                <p className="text-sm font-bold text-foreground mb-3">{s.name}</p>
-                <p
-                  className="text-3xl font-extrabold mb-1"
-                  style={{ letterSpacing: '-0.03em', color: s.tag === 'Monthly Retainer' ? 'var(--accent)' : 'var(--foreground)' }}
-                >
-                  {s.price}
-                </p>
-                <p className="text-xs text-muted-foreground mb-7">{s.priceNote}</p>
-                <hr className="border-border mb-7" />
-                <ul className="flex flex-col gap-3">
-                  {s.features.map((f, j) => (
-                    <li
-                      key={j}
-                      className="flex items-start gap-2.5 text-[13px] leading-relaxed text-muted-foreground"
-                    >
-                      <span className="mt-0.5 flex-shrink-0" style={{ color: 'var(--accent)' }}>
-                        &rarr;
-                      </span>
-                      {f}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
-          </div>
-
-          {/* ── AI Systems: full-width card ── */}
-          <div
-            className="rounded-xl border border-border p-8 sm:p-10 transition-shadow hover:shadow-md"
-            style={{ background: 'var(--background)' }}
-          >
-            <div className="grid grid-cols-1 md:grid-cols-[280px_1fr_auto] gap-8 md:gap-10 items-start">
-              {/* Left: tag, name, price */}
-              <div>
-                <span
-                  className="text-[10px] font-bold uppercase tracking-[0.12em] mb-5 block"
-                  style={{ color: 'var(--accent)' }}
-                >
-                  AI Systems
-                </span>
-                <p className="text-sm font-bold text-foreground mb-3">Custom system for your team</p>
-                <p
-                  className="text-3xl font-extrabold text-foreground mb-1"
-                  style={{ letterSpacing: '-0.03em' }}
-                >
-                  $1,500&ndash;5,000
-                </p>
-                <p className="text-xs text-muted-foreground mb-6">per project &middot; scope-dependent</p>
-                <Link
-                  href="/contact"
-                  className="inline-block px-6 py-2.5 text-xs font-bold uppercase tracking-[0.08em] rounded-md transition-all hover:opacity-90 text-center"
-                  style={{ background: 'var(--accent)', color: '#fff' }}
-                >
-                  Let&rsquo;s scope it &rarr;
-                </Link>
-              </div>
-
-              {/* Right: features in 2-col sub-grid */}
-              <div className="md:col-span-2">
-                <hr className="border-border mb-7 md:hidden" />
-                <ul className="grid grid-cols-1 gap-y-4">
-                  {ALL_SERVICES[3].features.map((f, j) => (
-                    <li
-                      key={j}
-                      className="flex items-start gap-2.5 text-[13px] leading-relaxed text-muted-foreground"
-                    >
-                      <span className="mt-0.5 flex-shrink-0" style={{ color: 'var(--accent)' }}>
-                        &rarr;
-                      </span>
-                      {f}
-                    </li>
-                  ))}
-                </ul>
-                <p className="text-xs text-muted-foreground mt-6 leading-relaxed">
-                  See live examples on my{' '}
-                  <Link href="/projects" className="underline underline-offset-2 transition-colors" style={{ color: 'var(--accent)' }}>
-                    projects page
-                  </Link>.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ── Who I write for ───────────────────────────── */}
-      <section className="border-t border-border" style={{ background: 'var(--muted)' }}>
-        <div className="max-w-7xl mx-auto px-6 py-16 sm:py-20">
-          <p
-            className="text-xs font-bold uppercase tracking-[0.15em] mb-10"
-            style={{ color: 'var(--accent)' }}
-          >
-            Who I write for
-          </p>
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-x-8 gap-y-7">
-            {[
-              { label: 'MarTech', sub: 'Marketing & analytics software' },
-              { label: 'Project Management Software', sub: 'Work management & agency ops' },
-              { label: 'DevTools & QA Software', sub: 'Developer tools & testing platforms' },
-              { label: 'Collaboration Software', sub: 'Workplace & unified communications' },
-              { label: 'Workflow Automation', sub: 'Workflow automation tools' },
-              { label: 'HR Tech & Talent Platforms', sub: 'Hiring, workforce & talent marketplaces' },
-            ].map((item) => (
-              <div key={item.label}>
-                <p className="text-sm font-bold text-foreground leading-snug mb-1">{item.label}</p>
-                <p className="text-xs text-muted-foreground leading-relaxed">{item.sub}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── Client logos ───────────────────────────────── */}
+      {/* ── Client logos ─────────────────────────────────── */}
       <section className="border-y border-border" style={{ background: 'var(--muted)' }}>
         <div className="max-w-7xl mx-auto px-6 py-10">
           <div className="flex items-center gap-4 mb-8">
@@ -423,14 +453,7 @@ export default function ServicesPage() {
               <span key={c.domain} className="flex items-center">
                 <span className="flex items-center gap-2 px-4 py-2 opacity-75 hover:opacity-100 transition-all">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={c.favicon}
-                    alt=""
-                    width={18}
-                    height={18}
-                    className="rounded"
-                    loading="lazy"
-                  />
+                  <img src={c.favicon} alt="" width={18} height={18} className="rounded" loading="lazy" />
                   <span className="text-[13px] font-semibold text-foreground">{c.name}</span>
                 </span>
                 {i < CLIENTS.length - 1 && (
@@ -442,278 +465,127 @@ export default function ServicesPage() {
         </div>
       </section>
 
-      {/* ── Pull quote ─────────────────────────────────── */}
-      <section style={{ background: 'var(--muted)' }}>
-        <div className="max-w-7xl mx-auto px-6 py-10">
-          <div className="max-w-3xl mx-auto text-center">
-          <p
-            className="text-base sm:text-lg leading-relaxed text-foreground mb-3"
-            style={{ fontFamily: 'var(--font-serif)' }}
-          >
-            &ldquo;His top-performing posts are product-led ones, which has led to more traffic and demo requests for ManyRequests.&rdquo;
-          </p>
-          <p className="text-xs text-muted-foreground">
-            Regine Garcia &middot; Head of Content, ManyRequests
-          </p>
-          </div>
-        </div>
-      </section>
-
-      {/* ── Results strip ──────────────────────────────── */}
-      <section className="border-t border-border" style={{ background: 'var(--muted)' }}>
-        <div className="max-w-7xl mx-auto px-6 py-12 sm:py-16">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-            <div>
-              <p
-                className="text-4xl font-extrabold mb-2"
-                style={{ letterSpacing: '-0.04em', color: 'var(--accent)' }}
-              >
-                233%
-              </p>
-              <p className="text-xs text-muted-foreground leading-relaxed">Organic traffic growth for HigherVisibility</p>
-            </div>
-            <div>
-              <p
-                className="text-4xl font-extrabold mb-2"
-                style={{ letterSpacing: '-0.04em', color: 'var(--accent)' }}
-              >
-                6+
-              </p>
-              <p className="text-xs text-muted-foreground leading-relaxed">B2B SaaS brands published at</p>
-            </div>
-            <div>
-              <p
-                className="text-4xl font-extrabold mb-2"
-                style={{ letterSpacing: '-0.04em', color: 'var(--accent)' }}
-              >
-                1 round
-              </p>
-              <p className="text-xs text-muted-foreground leading-relaxed">Average revisions per article (often zero toward end of engagements)</p>
-            </div>
-            <div>
-              <p
-                className="inline-block text-xs font-bold uppercase tracking-[0.08em] px-3 py-1.5 rounded-full mb-3"
-                style={{ background: 'var(--accent)', color: '#fff' }}
-              >
-                Cited in LLM search engines
-              </p>
-              <p className="text-xs text-muted-foreground leading-relaxed">My clients get mentioned in ChatGPT, Perplexity, and Google AI Overviews for relevant queries</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ── Nathan pull quote ──────────────────────────── */}
-      <section style={{ background: 'var(--muted)' }}>
-        <div className="max-w-7xl mx-auto px-6 py-10">
-          <div className="max-w-3xl mx-auto text-center">
-          <p
-            className="text-base sm:text-lg leading-relaxed text-foreground mb-3"
-            style={{ fontFamily: 'var(--font-serif)' }}
-          >
-            &ldquo;We never needed more than one round of feedback per article &mdash; and none towards the end of our project.&rdquo;
-          </p>
-          <p className="text-xs text-muted-foreground">
-            Nathan Vander Heyden &middot; Head of Marketing, Marker.io
-          </p>
-          </div>
-        </div>
-      </section>
-
-      {/* ── How I think (scannable boxes) ─────────────── */}
-      <section className="bg-background">
+      {/* ── Case study ───────────────────────────────────── */}
+      <section className="border-b border-border bg-background">
         <div className="max-w-7xl mx-auto px-6 py-20 sm:py-24">
           <div className="max-w-4xl">
-          <p
-            className="text-xs font-bold uppercase tracking-[0.15em] mb-4"
-            style={{ color: 'var(--accent)' }}
-          >
-            How I think
-          </p>
-          <h2
-            className="text-2xl sm:text-3xl font-extrabold mb-14 text-foreground"
-            style={{ letterSpacing: '-0.02em' }}
-          >
-            How I think about content
-          </h2>
+            <p
+              className="text-xs font-bold uppercase tracking-[0.15em] mb-4"
+              style={{ color: 'var(--accent)' }}
+            >
+              Case study
+            </p>
+            <h2
+              className="text-2xl sm:text-3xl font-extrabold mb-6 text-foreground leading-[1.2]"
+              style={{ letterSpacing: '-0.02em' }}
+            >
+              ManyRequests: 43 product-led articles, including page-1 rankings against Workfront and the design crowd
+            </h2>
+            <p className="text-base leading-relaxed text-muted-foreground mb-6 max-w-3xl">
+              ManyRequests is a B2B SaaS client portal for productized agencies. I&rsquo;ve written 43 articles for them over the past 20 months &mdash; 88% BOFU, each one threading the product through the piece so it&rsquo;s more helpful to the readers.
+            </p>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-8">
-            <div className="rounded-xl border border-border p-7" style={{ background: 'var(--muted)' }}>
-              <p className="text-[11px] font-bold uppercase tracking-[0.1em] mb-3" style={{ color: 'var(--accent)' }}>01</p>
-              <h3 className="text-[15px] font-bold text-foreground mb-2 leading-snug">
-                &ldquo;Will we be able to talk about the product here, without forcing it?&rdquo;
-              </h3>
-              <p className="text-[13px] leading-[1.7] text-muted-foreground">
-                The first question I ask before writing anything.
-                If the answer is no, I&rsquo;ll say so. This is the <a href="https://databox.com/customers-and-revenue-ahrefs" target="_blank" rel="noopener noreferrer" className="underline underline-offset-2" style={{ color: 'var(--accent)' }}>Business Potential Score</a>, a framework Tim Soulo at Ahrefs advocates for, and it should be the first filter in every editorial calendar.
-              </p>
+            <figure className="mb-8 rounded-xl border border-border p-7" style={{ background: 'var(--muted)' }}>
+              <blockquote className="text-base sm:text-lg leading-relaxed text-foreground mb-4" style={{ fontFamily: 'var(--font-serif)' }}>
+                &ldquo;His top-performing posts are product-led ones, which has led to <strong className="font-semibold">more traffic and demo requests</strong> for ManyRequests.&rdquo;
+              </blockquote>
+              <figcaption className="flex items-center gap-3">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="/images/clients/regine-garcia.png"
+                  alt="Regine Garcia"
+                  width={36}
+                  height={36}
+                  className="flex-shrink-0 w-9 h-9 rounded-full object-cover"
+                  loading="lazy"
+                />
+                <div>
+                  <p className="text-sm font-bold text-foreground">Regine Garcia</p>
+                  <p className="text-xs text-muted-foreground">Head of Content &middot; ManyRequests</p>
+                </div>
+              </figcaption>
+            </figure>
+
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 mb-8">
+              <div className="rounded-xl border border-border p-6" style={{ background: 'var(--muted)' }}>
+                <p className="text-3xl font-extrabold mb-1" style={{ letterSpacing: '-0.03em', color: 'var(--accent)' }}>43</p>
+                <p className="text-[12px] leading-relaxed text-muted-foreground">Articles published for ManyRequests over 20 months · 88% BOFU</p>
+              </div>
+              <div className="rounded-xl border border-border p-6" style={{ background: 'var(--muted)' }}>
+                <p className="text-3xl font-extrabold mb-1" style={{ letterSpacing: '-0.03em', color: 'var(--accent)' }}>#6</p>
+                <p className="text-[12px] leading-relaxed text-muted-foreground">Google ranking for &ldquo;Workfront alternatives&rdquo; against the category leaders</p>
+              </div>
+              <div className="rounded-xl border border-border p-6" style={{ background: 'var(--muted)' }}>
+                <p className="text-3xl font-extrabold mb-1" style={{ letterSpacing: '-0.03em', color: 'var(--accent)' }}>#6</p>
+                <p className="text-[12px] leading-relaxed text-muted-foreground">Google ranking for &ldquo;design annotation tools&rdquo;</p>
+              </div>
             </div>
 
-            <div className="rounded-xl border border-border p-7" style={{ background: 'var(--muted)' }}>
-              <p className="text-[11px] font-bold uppercase tracking-[0.1em] mb-3" style={{ color: 'var(--accent)' }}>02</p>
-              <h3 className="text-[15px] font-bold text-foreground mb-2 leading-snug">
-                Do a few things right, and it bangs.
-              </h3>
-              <p className="text-[13px] leading-[1.7] text-muted-foreground">
-                Most companies don&rsquo;t need more content. They need fewer, better pieces &mdash;
-                and to refresh what&rsquo;s already ranking before publishing new.
-                Refreshing is most times better than publishing at scale.
-              </p>
-            </div>
-
-            <div className="rounded-xl border border-border p-7" style={{ background: 'var(--muted)' }}>
-              <p className="text-[11px] font-bold uppercase tracking-[0.1em] mb-3" style={{ color: 'var(--accent)' }}>03</p>
-              <h3 className="text-[15px] font-bold text-foreground mb-2 leading-snug">
-                Good GEO is good SEO.
-              </h3>
-              <p className="text-[13px] leading-[1.7] text-muted-foreground">
-                I optimize for LLM recommendations the same way I optimize for Google &mdash;
-                with thorough semantic structure, real product depth, and specificity.
-                I don&rsquo;t treat them as separate problems.
-              </p>
-            </div>
-
-            <div className="rounded-xl border border-border p-7" style={{ background: 'var(--muted)' }}>
-              <p className="text-[11px] font-bold uppercase tracking-[0.1em] mb-3" style={{ color: 'var(--accent)' }}>04</p>
-              <h3 className="text-[15px] font-bold text-foreground mb-2 leading-snug">
-                I try to understand the &lsquo;why&rsquo; before I write.
-              </h3>
-              <p className="text-[13px] leading-[1.7] text-muted-foreground">
-                I push back on topics, on the intent behind a brief, and on strategies
-                I think are targeting the wrong thing. Once I understand why something matters
-                to the customer journey, the work gets significantly better.
-              </p>
-            </div>
-          </div>
-
-          <p className="text-sm leading-relaxed text-muted-foreground max-w-2xl">
-            On AI workflows: <strong className="text-foreground font-semibold">AI-powered editorial workflows are insanely important</strong> &mdash;
-            they&rsquo;re how I make sure a piece is as specific and resonant as it needs to be.
-            What AI doesn&rsquo;t do is write articles for me.
-          </p>
+            <Link
+              href="/case-studies/manyrequests"
+              className="inline-flex items-center gap-2 text-sm font-bold underline underline-offset-4 transition-opacity hover:opacity-70"
+              style={{ color: 'var(--accent)' }}
+            >
+              Read the full breakdown &rarr;
+            </Link>
           </div>
         </div>
       </section>
 
-      {/* ── Testimonials ───────────────────────────────── */}
+      {/* ── Testimonials ─────────────────────────────────── */}
       <section style={{ background: 'var(--muted)' }}>
         <div className="max-w-7xl mx-auto px-6 py-20 sm:py-24">
           <div className="max-w-5xl">
-          <p
-            className="text-xs font-bold uppercase tracking-[0.15em] mb-4"
-            style={{ color: 'var(--accent)' }}
-          >
-            What clients say
-          </p>
-          <h2
-            className="text-2xl sm:text-3xl font-extrabold mb-14 text-foreground"
-            style={{ letterSpacing: '-0.02em' }}
-          >
-            From the people who hired me
-          </h2>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-            {TESTIMONIALS.map((t, i) => (
-              <div
-                key={i}
-                className={`rounded-xl border border-border bg-background p-7 flex flex-col justify-between${
-                  i === TESTIMONIALS.length - 1 && TESTIMONIALS.length % 2 !== 0
-                    ? ' md:col-span-2'
-                    : ''
-                }`}
-              >
-                <p
-                  className="text-sm leading-[1.85] text-muted-foreground mb-7"
-                  style={{ fontFamily: 'var(--font-serif)' }}
-                >
-                  &ldquo;{t.quote}&rdquo;
-                </p>
-                <div className="flex items-center gap-3">
-                  {t.photo ? (
-                    /* eslint-disable-next-line @next/next/no-img-element */
-                    <img
-                      src={t.photo}
-                      alt={t.name}
-                      width={36}
-                      height={36}
-                      className="flex-shrink-0 w-9 h-9 rounded-full object-cover"
-                      loading="lazy"
-                    />
-                  ) : (
-                    <span className="flex-shrink-0 w-9 h-9 rounded-full flex items-center justify-center text-[11px] font-bold bg-muted text-muted-foreground">
-                      {t.initials}
-                    </span>
-                  )}
-                  <div>
-                    <p className="text-sm font-bold text-foreground">
-                      {t.name}
-                    </p>
-                    <p className="text-xs text-muted-foreground">
-                      {t.role} &middot; {t.company}
-                    </p>
+            <h2
+              className="text-2xl sm:text-3xl font-extrabold mb-14 text-foreground"
+              style={{ letterSpacing: '-0.02em' }}
+            >
+              What clients say
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+              {TESTIMONIALS.map((t, i) => (
+                <div key={i} className="rounded-xl border border-border bg-background p-7 flex flex-col justify-between">
+                  <p className="text-sm leading-[1.85] text-muted-foreground mb-7" style={{ fontFamily: 'var(--font-serif)' }}>
+                    &ldquo;{t.quote}&rdquo;
+                  </p>
+                  <div className="flex items-center gap-3">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={t.photo} alt={t.name} width={36} height={36} className="flex-shrink-0 w-9 h-9 rounded-full object-cover" loading="lazy" />
+                    <div>
+                      <p className="text-sm font-bold text-foreground">{t.name}</p>
+                      <p className="text-xs text-muted-foreground">{t.role} &middot; {t.company}</p>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
-          </div>
-          <div className="mt-10">
-            <Link
-              href="/testimonials"
-              className="text-xs font-bold uppercase tracking-[0.08em] underline underline-offset-4 transition-colors hover:opacity-70"
-              style={{ color: 'var(--accent)' }}
-            >
-              See all testimonials &rarr;
-            </Link>
-          </div>
+              ))}
+            </div>
+            <div className="mt-10">
+              <Link href="/testimonials" className="text-xs font-bold uppercase tracking-[0.08em] underline underline-offset-4 transition-colors hover:opacity-70" style={{ color: 'var(--accent)' }}>
+                See all testimonials &rarr;
+              </Link>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* ── Process ────────────────────────────────────── */}
+      {/* ── Process ──────────────────────────────────────── */}
       <section className="border-t border-border bg-background">
         <div className="max-w-7xl mx-auto px-6 py-20 sm:py-24">
-          <p
-            className="text-xs font-bold uppercase tracking-[0.15em] mb-4"
-            style={{ color: 'var(--accent)' }}
-          >
+          <p className="text-xs font-bold uppercase tracking-[0.15em] mb-4" style={{ color: 'var(--accent)' }}>
             How it works
           </p>
-          <h2
-            className="text-2xl sm:text-3xl font-extrabold mb-14 text-foreground"
-            style={{ letterSpacing: '-0.02em' }}
-          >
+          <h2 className="text-2xl sm:text-3xl font-extrabold mb-14 text-foreground" style={{ letterSpacing: '-0.02em' }}>
             From brief to published
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
             {[
-              {
-                step: '01',
-                name: 'Discovery',
-                desc: 'Short call or async brief to understand your product, audience, and goals.',
-              },
-              {
-                step: '02',
-                name: 'Research',
-                desc: <span>Competitor analysis, intent mapping, <a href="https://databox.com/customers-and-revenue-ahrefs" target="_blank" rel="noopener noreferrer" className="underline underline-offset-2" style={{ color: 'var(--accent)' }}>Business Potential Score</a> check.</span>,
-              },
-              {
-                step: '03',
-                name: 'Draft',
-                desc: 'First draft delivered with internal links, product mentions, and optimized for organic and AI search.',
-              },
-              {
-                step: '04',
-                name: 'Publish-ready',
-                desc: 'One round of revisions, usually fewer as we work together.',
-              },
+              { step: '01', name: 'Discovery', desc: 'Short call or async brief to understand your product, audience, and goals.' },
+              { step: '02', name: 'Research', desc: 'Competitor analysis, intent mapping, Business Potential Score check.' },
+              { step: '03', name: 'Draft', desc: 'First draft delivered with internal links, product mentions, and optimized for organic and AI search.' },
+              { step: '04', name: 'Publish-ready', desc: 'One round of revisions, usually fewer as we work together.' },
             ].map((s) => (
-              <div key={s.step} className="relative">
-                <p
-                  className="text-[11px] font-bold uppercase tracking-[0.1em] mb-3"
-                  style={{ color: 'var(--accent)' }}
-                >
-                  {s.step}
-                </p>
+              <div key={s.step}>
+                <p className="text-[11px] font-bold uppercase tracking-[0.1em] mb-3" style={{ color: 'var(--accent)' }}>{s.step}</p>
                 <h3 className="text-[15px] font-bold text-foreground mb-2">{s.name}</h3>
                 <p className="text-[13px] leading-[1.7] text-muted-foreground">{s.desc}</p>
               </div>
@@ -722,59 +594,32 @@ export default function ServicesPage() {
         </div>
       </section>
 
-      {/* ── FAQ ────────────────────────────────────────── */}
+      {/* ── FAQ ──────────────────────────────────────────── */}
       <section className="border-t border-border bg-background">
         <div className="max-w-7xl mx-auto px-6 py-20 sm:py-24">
           <div className="max-w-3xl">
-          <h2
-            className="text-lg sm:text-xl font-extrabold mb-10 text-foreground"
-            style={{ letterSpacing: '-0.02em' }}
-          >
-            FAQs about me
-          </h2>
-          <div className="flex flex-col">
-            {[
-              {
-                q: 'Do you use AI to write your draft?',
-                a: 'No, I don\u2019t. I use AI as a research assistant and to automate part of my process. It helps me process research, gut-check my structure, tweak poor sentences, and move faster. The thinking, the opinions, the product depth, and the actual writing are mine.',
-              },
-              {
-                q: 'How long does it take to get a finished article?',
-                a: 'Usually 3\u20135 business days from when I get the brief to when I submit the first draft. For retainer clients, we\u2019ll agree on a fixed delivery cadence upfront that makes sense for your publishing schedule.',
-              },
-              {
-                q: 'What do you need from me to get started?',
-                a: 'A brief or a topic and target keyword, your ICP, and access to your tool. If that\u2019s not provided, I need access to someone on your team who knows the product well. I\u2019ll do the rest. You can also provide a fully structured outline, but I can create one and circle back to you.',
-              },
-              {
-                q: 'Do you write for early-stage startups?',
-                a: 'Yes, but with a caveat: early-stage works best when you have a clear ICP and at least one thing you know works for your product. If you\u2019re still figuring out positioning, I\u2019ll flag that before we start. Content won\u2019t fix a messaging problem.',
-              },
-              {
-                q: 'Can you help with topic strategy, not just writing?',
-                a: 'Yes. Topic strategy is part of the retainer by default. I\u2019ll look at what you\u2019re already ranking for, where you have gaps, and which topics actually give your product a reason to show up. I\u2019ll push back on anything I think is targeting the wrong intent.',
-              },
-              {
-                q: 'What makes a good fit for the retainer?',
-                a: 'You\u2019re publishing at least 4\u20136 articles a month (or want to), you care about product-led content, not just traffic, and you want a writer who pushes back when something doesn\u2019t make sense. If you need someone who just executes briefs without question, I\u2019m probably not the right fit.',
-              },
-            ].map((item, i) => (
-              <details key={i} className="group border-b border-border">
-                <summary className="flex items-center justify-between gap-4 py-5 cursor-pointer list-none">
-                  <h3 className="text-sm font-semibold text-foreground">{item.q}</h3>
-                  <span className="flex-shrink-0 text-muted-foreground transition-transform group-open:rotate-45" style={{ color: 'var(--accent)' }}>
-                    +
-                  </span>
-                </summary>
-                <p className="text-[13px] leading-[1.8] text-muted-foreground pb-5">{item.a}</p>
-              </details>
-            ))}
-          </div>
+            <p className="text-xs font-bold uppercase tracking-[0.15em] mb-4" style={{ color: 'var(--accent)' }}>
+              Questions I get a lot
+            </p>
+            <h2 className="text-2xl sm:text-3xl font-extrabold mb-10 text-foreground" style={{ letterSpacing: '-0.02em' }}>
+              Everything you might want to know before we talk
+            </h2>
+            <div className="flex flex-col">
+              {FAQS.map((item, i) => (
+                <details key={i} className="group border-b border-border">
+                  <summary className="flex items-center justify-between gap-4 py-5 cursor-pointer list-none">
+                    <h3 className="text-sm font-semibold text-foreground">{item.q}</h3>
+                    <span className="flex-shrink-0 transition-transform group-open:rotate-45" style={{ color: 'var(--accent)' }}>+</span>
+                  </summary>
+                  <p className="text-[13px] leading-[1.8] text-muted-foreground pb-5">{item.a}</p>
+                </details>
+              ))}
+            </div>
           </div>
         </div>
       </section>
 
-      {/* ── CTA ────────────────────────────────────────── */}
+      {/* ── CTA ──────────────────────────────────────────── */}
       <section className="border-t border-border bg-background">
         <div className="max-w-7xl mx-auto px-6 py-20 sm:py-24">
           <div className="max-w-3xl">
@@ -782,14 +627,11 @@ export default function ServicesPage() {
               <span className="w-1.5 h-1.5 rounded-full bg-green-500 inline-block" />
               Currently accepting 2 new clients
             </span>
-            <h2
-              className="text-2xl sm:text-3xl font-extrabold mb-4 text-foreground"
-              style={{ letterSpacing: '-0.02em' }}
-            >
+            <h2 className="text-2xl sm:text-3xl font-extrabold mb-4 text-foreground" style={{ letterSpacing: '-0.02em' }}>
               Ready to hire a B2B SaaS content writer?
             </h2>
             <p className="text-base leading-relaxed text-muted-foreground mb-10 max-w-xl">
-              Let&rsquo;s talk about your content goals. Book a free 30-minute discovery call. No commitment, no pressure.
+              Book a free 30-minute discovery call. No commitment, no pressure.
             </p>
             <div className="flex flex-col sm:flex-row gap-3">
               <a

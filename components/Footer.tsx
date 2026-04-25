@@ -20,6 +20,7 @@ export function Footer() {
             <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-muted-foreground mb-3">Work</p>
             <nav className="flex flex-col gap-2">
               <Link href="/services" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Services</Link>
+              <Link href="/case-studies" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Case Studies</Link>
               <Link href="/portfolio" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Portfolio</Link>
               <Link href="/testimonials" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Testimonials</Link>
             </nav>
