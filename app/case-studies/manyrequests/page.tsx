@@ -1,7 +1,3 @@
-/**
- * Draft — not indexed until placeholders filled and Peace approves.
- */
-
 import Link from 'next/link';
 import type { Metadata } from 'next';
 import { getFaviconUrl } from '@/lib/ogImage';
@@ -10,7 +6,6 @@ export const metadata: Metadata = {
   title: 'Case Study: ManyRequests | Peace Akinwale',
   description:
     'How I wrote 44 product-led articles for ManyRequests and made the product useful inside the piece.',
-  robots: { index: false, follow: false },
   alternates: {
     canonical: 'https://peaceakinwale.com/case-studies/manyrequests',
   },
@@ -44,13 +39,6 @@ const MR_FAVICON = getFaviconUrl('manyrequests.com', 32);
 export default function ManyRequestsCaseStudyPage() {
   return (
     <>
-      {/* ── Draft banner ────────────────────────────────── */}
-      <div className="bg-yellow-100 dark:bg-yellow-900/30 border-b border-yellow-300 dark:border-yellow-800">
-        <div className="max-w-7xl mx-auto px-6 py-2 text-center text-[11px] font-bold uppercase tracking-[0.12em] text-yellow-900 dark:text-yellow-100">
-          Draft &middot; case study &middot; not indexed
-        </div>
-      </div>
-
       {/* ── Breadcrumb ──────────────────────────────────── */}
       <div className="bg-background border-b border-border/50">
         <div className="max-w-4xl mx-auto px-6 py-3">
