@@ -15,6 +15,7 @@ import { ImageLightbox } from '@/components/ImageLightbox';
 import { CodeBlockEnhancer } from '@/components/CodeBlockEnhancer';
 import { ArticleEndCta } from '@/components/ArticleEndCta';
 import { Comments } from '@/components/Comments';
+import { BlogPageBackground } from '@/components/BlogPageBackground';
 
 interface ArticlePageProps {
   params: Promise<{ slug: string }>;
@@ -348,6 +349,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
 
   return (
     <>
+      <BlogPageBackground />
       <ReadingProgress />
       <TableOfContents />
       <ImageLightbox />
