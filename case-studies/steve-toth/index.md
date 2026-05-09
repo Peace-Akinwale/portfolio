@@ -517,6 +517,76 @@ The work also shows two patterns worth selling:
 
 ---
 
+## 2026-05-09 — On-demand RSS picker + Editorial Feedback DB; pre-push audit caught 4 production-breakers
+
+Two architectural shifts after the May 8 Steve catch-up surfaced gaps in the pipeline that the previous design had obscured.
+
+### What shipped
+
+**On-demand RSS picker** (replaces the weekly Sundays-6am `feedly-rss-ingest` job):
+- Industry News DB schema migration: dropped `Brief Ready` checkbox; added `Status` select (Proposed/Approved/Used), `Steve's Angle` rich_text, `Proposed For Slot` relation to Posts
+- industry-news-reminder rewritten as the all-in-one trigger: at T-48h before each Industry News calendar slot, fetches all RSS feeds in parallel, scores by Topics overlap with the slot's intended theme, runs source-metadata-agent on the top 5 to extract Topics + Author Credit + Steve's Angle (1-2 sentence agent-generated preview of how Steve would react), creates 5 Industry News rows with Status: Proposed, pings Peace via Telegram + Slack with all 5 candidates
+- Peace flips ONE row Status: Proposed → Approved; status-watcher fires runIndustryNewsBrief (which now reads `Proposed For Slot` directly to land the brief on the right Posts row); brief job sets Status: Used; on Posts row Status: Scheduled, status-watcher cleanup deletes the 4 unselected Proposed siblings
+- source-metadata-agent prompt extended to generate the `angle` output field for Industry News inputs
+- The weekly RSS pre-staging pool is gone; candidates are always fresh
+
+**Editorial Feedback DB** (replaces the legacy Feedback DB + parent page model):
+- New Notion DB at `d9696aad4e6b425fb1e786c09aa9e927`. One row per month (Month=YYYY-MM). Row content holds `## Synthesized Rules` (top, by rubric dimension) + `## Edit Log` (bottom, chronological per-edit BEFORE/AFTER). Properties: `synthesis_pending_until` (date), `last_synthesis_at` (date)
+- feedback-capture: stops writing to Feedback DB. Appends Edit Log entry blocks (heading_3 + 4 bullets per edit) to the current month's Editorial Feedback DB row content. Sets `synthesis_pending_until: now + 1h`
+- feedback-synthesis: stops querying Feedback DB. Reads the current month's row, splits blocks on the `## Edit Log` heading_2, parses entries into structured records, clusters via synthesis-agent, rewrites only the Synthesized Rules section in place. Clears the debounce flag, sets `last_synthesis_at`
+- status-watcher: new 6th poller checks Editorial Feedback DB every 5 min for rows where `synthesis_pending_until` is past due. Sunday weekly synthesis stays as a safety net
+- loadAllFeedbackPages rewritten: queries the DB, fetches each row's content, optional `stripEditLog` (default true) returns only the Synthesized Rules section so draft/brief/calendar agents see curated rules instead of raw edit noise
+- Backfill script written to migrate existing Feedback DB rows into Editorial Feedback DB monthly rows (Day 1 operational step post-deploy)
+
+**Model selection cleanup:**
+- diff-agent (runs per Steve edit, mechanical pattern extraction) downgraded from Sonnet → Haiku 4.5. Saves ~$1-7/month
+- synthesis-agent stays on Sonnet (cluster quality matters; rules go into every draft prompt)
+- Steve's Angle generation in industry-news-reminder uses `modelFor('source-metadata-agent')` (Haiku) — was incorrectly using `MODEL` (Sonnet) directly. The `modelFor()` registry is now the canonical lookup
+
+**Slack pings wired:**
+The cron service's `notify()` already supports Telegram + Slack in parallel via `ALL_NOTIFICATIONS_SLACK_WEBHOOK`. Boot-time check warns if neither channel is configured. Watch-for patterns documented in CLAUDE.md and memory.
+
+### Frictions worth recording
+
+**1. Started Editorial Feedback as a parent page; had to redo it as a DB.**
+First implementation (Task 8 of the May 8 plan, two days earlier) made Editorial Feedback a parent page with monthly child pages. When the on-demand redesign needed a `synthesis_pending_until` property to drive the debounced synthesis trigger, that fell over: Notion non-database pages can ONLY have `title` and cover/icon properties — no custom properties. Conversion was the right move. Cost: ~30 min of rework on loadAllFeedbackPages and ~5 caller sites that had to switch from `feedbackParentPageId` to `editorialFeedbackDbId`.
+
+**2. Bug crept back: Ryan Law's "wrong slot" failure mode.**
+A previous incident had Steve flag that an Industry News brief landed on May 20 when May 13 was open. The fix at the time was to filter Posts by `Scheduled Date >= today` and sort ascending so the soonest-unfilled wins. The on-demand redesign added a `Proposed For Slot` relation that ties each candidate batch to a specific slot — but the new industry-news-brief implementation kept the OLD soonest-unfilled query unchanged. So with two pending Industry News slots and 10 Proposed candidates, if Peace approved a 5/14 candidate first, the brief still landed on 5/13. Same failure mode, different code path. The audit caught this before push. Lesson: when a new field exists explicitly to disambiguate routing, retire the heuristic that previously did the job.
+
+**3. 179 passing tests. 4 production-breakers.**
+The audit found four bugs that mocked-only tests couldn't catch:
+- `fetchBlockChildren` had no pagination loop. Notion's default page size is 100. Once a monthly Editorial Feedback row accumulates 17+ Edit Log entries (5 blocks each + ~18 rules blocks), the fetch silently truncates. Synthesis would delete the first 100, rebuild from those, and leave orphaned blocks past the cap on the page
+- `appendBlockChildren` didn't chunk. Notion rejects appendBlockChildren when `children.length > 100`. The synthesis rebuild can easily exceed 100 blocks. Whole synthesis write would 400 in production
+- industry-news-brief ignored `Proposed For Slot` (above)
+- synthesis-agent.md prompt was stale. Referenced Feedback DB schema (`Pattern`, `Diff Notes`, `Pattern Locked In`, `processed_row_ids`) but the new flow passes Edit Log entries with different field names. Agent would improvise — output may parse but cluster decisions made against the wrong field map
+
+All 4 fixes shipped in commit `e19479c` before push. The audit also flagged 3 lower-priority race conditions (synthesis pending overwrite, concurrent ensureCurrentMonthRow, cold-restart cleanup gap) — Sunday safety net + manual cleanup cover them.
+
+**4. The mocks-hide-contract-bugs rule keeps proving itself.**
+Per the memory rule from earlier work: "a service whose job is calling external APIs needs at least one real-sandbox smoke test per write path; mock-only tests + tsc clean is not 'production ready'." The 179 tests passed because the mocks used the same shapes the code expected. Notion's actual API — page-size limits, child-block deletion semantics, relation filter syntax — got exercised only by the smoke-status-watcher script (reads only, not writes). For the write paths (Editorial Feedback append, Industry News creates with 9 properties each), the audit was the only real check before push.
+
+**5. Audit finds bugs whose root cause is "previous audit didn't find this one."**
+The 2026-05-06 evening audit found 5 production bugs the first audit had missed. Today's audit found 4 that the on-demand redesign added. Pattern: every audit catches real bugs, no audit catches all of them. Treating audits as a recurring discipline that compounds — every finding becomes a regression test or a memory rule — is the right frame.
+
+### Numbers
+
+- **Plan tasks shipped:** 13 (P2 Tasks 1-12 + audit fix)
+- **Commits this session:** 14 commits on top of the May 8 plan's 33 = **47 total unpushed on `feat/linkedin-engine`**
+- **Tests:** 176 (start of audit) → 179 (after audit fix). All 27 test files green
+- **Build:** clean tsc throughout
+- **Smoke status-watcher:** PASS — all 6 watcher DBs reachable
+- **Audit findings:** 4 critical bugs + 3 documented races
+- **Architecture artifacts updated:** 1 spec, 1 plan, pipeline-architecture.md, CLAUDE.md, db-ids.md, .env.example, memory reference doc
+
+### Why this matters for the portfolio
+
+This is the day the engine moved from "weekly batch with stale candidates" to "fresh candidates on demand, decided 48 hours before publish, with the agent's Steve-voice take previewing each option." The Industry News slot is no longer a placeholder Peace fills manually; it's a proposal Peace approves. The Feedback architecture moved from "DB ledger + monthly child pages + on-disk fallback" — three layers with synchronization gaps — to "one Notion DB, one row per month, both rules and edit log on the same page." Less infrastructure, fewer sync gaps, the same data accessible to both Peace (human-readable Notion page) and the engine (queryable DB rows).
+
+It's also the day the audit-as-discipline pattern paid for itself again. 4 production-breakers caught before push. The two pagination bugs alone would have caused data loss within ~2 weeks of normal use. The Proposed For Slot routing fix is the kind of regression that happens silently and gets blamed on "the AI is being weird again" when it's actually a copy-paste error in routing logic.
+
+---
+
 ## How this log is used
 
 When the Steve Toth engagement wraps or when adding a portfolio case study, this log holds the raw material:
