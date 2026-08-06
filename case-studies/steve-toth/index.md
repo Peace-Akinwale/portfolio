@@ -1343,3 +1343,46 @@ The distinction the session turns on is between suppressing a failure and removi
 The second point is about what counts as evidence. Three separate claims in this session were confidently wrong and each was caught by re running the check rather than by thinking harder: a test that could not fail, a deployment check that could not distinguish versions, and a performance number built from mismatched measurements. All three would have survived a careful review, because each was internally consistent. The habit that catches them is mechanical, not intellectual. Verify the thing, against the state it is actually in, at the moment you want to claim it.
 
 ---
+
+## 2026-08-06 (continued), the case-study log itself: rescue, backfill, and a skill so it stops going stale
+
+This log had not been touched since 2026-05-13, an 85-day gap covering most of the
+strongest work in the engagement. Closing it turned out to have three parts: rescue
+what was never saved, reconstruct the gap, then remove the reason it happened.
+
+### What shipped
+
+- **Four entries rescued that existed only on disk.** The working file had 15 dated entries, `HEAD` had 11: 2026-05-10 through 05-13 had never been committed. Committed as `a46a4f2`.
+- **The push carried four commits, not one.** `origin/master` was still at `03ec56d` from 2026-04-27, so three earlier May commits were also unpushed. Everything from 05-06 onward had been sitting local-only for three months.
+- **16 backfill entries** for 2026-05-14 to 2026-08-06 (`c455c72`), 392 lines, taking the log from 15 entries to 31. Marked as retrospective in a backfill note, with their sources named.
+- **A `portfolio-log` skill** (`a7de11e` on `Peace-Akinwale/writing`), which encodes a bar for what earns an entry, an evidence-before-writing rule, the house format, and the account-switch and check-origin steps.
+- **The skill is wired into two rituals already in use**, `/update` and `/handoff`, as their final step.
+
+### Decisions worth recording
+
+- **Reconstructed from records, not memory.** The backfill was built from 68 dated handoffs, three `decisions.md` files, the session memory index, and the git history of four repos (743 commits in the main repo, 76 in coaching-portal, 151 in notebook-okf). Test and migration counts were re-run rather than recalled. Three months of detail is exactly where invented specifics would creep into a document that gets shown to clients.
+- **Retrospective entries are labelled as retrospective.** This log's own header promises entries are written as deliverables land. Passing a backfill off as contemporaneous would quietly undermine every other entry in the file.
+- **A standalone skill that `/update` calls, rather than folding it into `/update`.** Project memory and a career log have different audiences, different content and different destination repos, so merging them would make one file do two jobs. But a standalone skill is precisely what failed for 85 days, so the wiring is the actual fix, not the skill.
+- **Versioned in one repo, loaded everywhere, via a symlink.** A skill under a repo's `.claude/skills/` only loads inside that repo, and `~/.claude/` is global but not version controlled. Symlinking the directory gets both: one file under git, available in every project. Copying it was rejected because two copies drift.
+- **A diverged repo was not rebased.** The skill's home repo had 2 local commits the remote lacked and 10+ remote commits the local lacked, meaning it is being edited from more than one place. Reconciling that is the owner's decision, so the commit was built in a throwaway worktree on top of `origin/main` and fast-forwarded instead. Nothing was rewritten.
+
+### Frictions and course corrections
+
+- **The skills repo cannot reliably transfer.** `git fetch` died with `fetch-pack: unexpected disconnect` and `early EOF`; `git push` died with `RPC failed; HTTP 408`. Measured cause: 605 tracked `node_modules` files and a `.git` that is now 237 MB. The workaround that succeeded was a bounded `--no-tags --depth=20` fetch plus a one-file commit built in a worktree.
+- **That workaround left the repo shallow**, and `git fetch --unshallow` failed with the same transfer error. A self-inflicted side effect, recorded rather than hidden, with the fix (untrack `node_modules`, then retry) filed separately.
+- **A concurrent session was writing to this same file.** By the time this entry was added, another session had appended its own 2026-08-06 entry and pushed, moving the log to 32 entries. Caught by comparing against `origin/master` before editing rather than assuming the local copy was current.
+
+### Why this matters for the portfolio
+
+The failure was not laziness, it was a process with no trigger. A log that depends on
+remembering to write it will go stale, so the fix was not discipline, it was attaching
+it to something already being run.
+
+The second point is what "verified" means in practice. Three separate claims made this
+session were wrong until checked: the log was four entries behind (it was four commits
+behind), the repo was assumed pushable (it cannot fetch), and a redaction was assumed
+complete (a scanner found two leaks). In each case the check was cheap and the
+assumption was confident. That pattern is the whole argument for measuring instead of
+reasoning.
+
+---
