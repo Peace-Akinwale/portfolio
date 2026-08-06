@@ -587,6 +587,288 @@ It's also the day the audit-as-discipline pattern paid for itself again. 4 produ
 
 ---
 
+## 2026-05-10 — Pipeline rebuild + two-wave monthly batch
+
+A planned full rebuild after Steve's May 8 catch-up. Two major shifts: the 5-agent pipeline got replaced with a leaner draft → brutal-editor → revision → scorer chain, and the monthly batch got split into two waves to avoid Anthropic rate limits firing 20+ posts in parallel.
+
+### What shipped
+
+**Pipeline rebuild (Deploys A/B/C):**
+
+- Old 5-agent chain replaced with draft → brutal-editor → revision → scorer. The brutal-editor pass applies a mechanical checklist (banned patterns, hook strength, length, colon usage, sentence splits) and emits inline flags like `[TOO LONG]`, `[NEEDS PROOF]`, `[WEAK HOOK]`. The revision pass clears flags where source content permits.
+- Voice file consolidated from 4 separate files (`steve-toth.md`, `voice-fingerprint.md`, `example-posts.md`, `rubric.md`) into single `brand/steve-toth-voice.md`. 7 verbatim top-performer posts replace the previous 5. Voice file is injected inline into draft + brutal-editor + revision steps to fix voice drift.
+- Rubric moved out of markdown and into Notion Rubric DB (6 dimensions: Hook 25, Proof 20, Value 20, Structure 15, Voice 10, Close 10, with per-band score descriptions). Editing the rubric no longer requires a code deploy.
+- Monthly batch endpoint: `POST /generate-monthly-batch` on the Express server (now living alongside the cron in the same process). Auto-fires on the 25th when ≥15 slots eligible; nudges Peace with a curl command otherwise.
+- calendar-generator and voice-calibrate jobs removed. Peace builds calendars manually in the writing workspace, runs `npm run sync-kb` + `npm run import-calendar` to push to Notion.
+- feedback-synthesis rewired: synthesis cron writes promoted rules DIRECTLY into `## Synthesized Rules` section (no intermediate "Proposed Rules" step). Watermark dedup via `last_synthesis_at`. Telegram lists new rule patterns so Peace can delete the ones she disagrees with.
+- Hashtag matrix added (#seonotebook tactical SEO, #ainotebook AEO/AI-search, #grateful client announcements, no hashtag default). Brutal-editor + revision agents enforce.
+- First Comment three-mode rewrite: Mode A (resource attribution), Mode B (NONE default), Mode C (per-slot CTA opt-in via `First Comment CTA` field on Content Calendar slot row).
+- MISSING_LINK sentinel: when draft-agent promises a resource but no Source Page URL is available, it emits `[MISSING_LINK: <description>]`. draft-job converts that to a Steve's Notes annotation instead of writing junk to First Comment.
+- Word target tightened to 200-280 across all agents and the batch job.
+- Archetype recipes (Jake Ward formulas) injected into draft-agent via inline `ARCHETYPE RECIPE:` block per brief.
+
+**Two-wave monthly batch:**
+
+The single-pass batch had been hitting Anthropic rate limits when 20+ posts fired in parallel. Split into Wave 1 (first 10, fire immediately at Status: Peace Approved) and Wave 2 (remaining, Status: Deferred + Fire After timestamp 2 hours out). A new `*/30` cron job (`deferred-batch-check`) flips Deferred briefs to Peace Approved once Fire After passes. Initially Wave 2 state lived in a JSON file under `cron/data/deferred-batches/YYYY-MM-wave2.json` — moved to Notion the next day (see May 11) because Railway's filesystem is ephemeral and a restart between the wave fires would lose the deferred queue.
+
+### Numbers
+
+- Tests: 179 → 211 passing across 31 files
+- Commits: ~14 across the deploys
+- Architecture artifacts updated: 1 spec, 1 plan, CLAUDE.md, db-ids.md, .env.example, pipeline-architecture.md
+
+### Why this matters for the portfolio
+
+The agent chain got simpler AND the voice got more reliable in the same change. Five agents (each with its own context and prompt) is harder to debug than four where one is a mechanical checklist runner. Voice consolidation means the source of truth for "how Steve sounds" is one file Peace can read top-to-bottom in ten minutes, not four scattered across the repo. The two-wave batch is the kind of detail that only matters in production: it doesn't affect functionality, only the rate at which functionality executes. Steve never sees the deferral; he just sees a steady drip of drafts arriving across a 2-hour window instead of an "all 20 at once or 0" outcome.
+
+---
+
+## 2026-05-11 — Real-time Notion webhook, image pipeline rewrite, Buffer cancellation flow, and a Buffer GraphQL schema saga
+
+Long day. Real-time Notion webhook (so Peace doesn't wait 60s for a status flip to fire), full image-pipeline rewrite (notebook images now render the entire post body, not just hook + 3 bullets), a 12-issue hardening pass against the May 10 rebuild, the Buffer cancellation feature, a multi-attempt GraphQL schema saga that finally got solved by introspection, and four stale test files repaired in CI.
+
+### What shipped
+
+**Real-time Notion webhook**
+
+- New endpoint: `POST /webhooks/notion` on the cron's Express server. Notion-side automations now push status changes to the engine in <1s, instead of waiting up to 60s for the next poll tick.
+- `inflight.ts` shared module so the webhook route and the polling loop use the same `once()` guard — a webhook firing and a poll firing within seconds of each other won't double-dispatch the same handler.
+- `dispatchPageEvent`: fetches the Notion page, resolves its parent DB, routes to the matching StatusWatcherHandler.
+- Polling stays at 60s as a safety net for transition-based handlers (onPostEdited, onPostUnapproved) that require prev-status comparison — webhooks don't include the previous state.
+
+**Image pipeline rewrite (Canva is gone, notebook images render the full post body)**
+
+- Previously the notebook image showed only the hook + 3 bullets — a static template that didn't reflect the actual post structure.
+- New parser walks the post body into an ordered `BodyBlock[]` (p / lede / signal / arrow / numbered / closing). Lede detection: a paragraph immediately preceding a list gets bolded as a lead-in. IMAGE_HINT for notebooks overrides the title; for newspapers it's a 20-45 word dek under the headline.
+- Font reduced 21→18px and back up to 20px after testing — 18 was too tiny on screen, 20 fits a full 200-280 word post on the 1100px page without overflow.
+- `extract-inputs.ts` rewritten and extracted so draft-job and image-retry share the same parser.
+- Old Canva-format IMAGE_HINTs (sentences starting "Notebook-style page." or >15 words) are detected and discarded — they were being used as the notebook title heading, producing garbled output for backfilled posts.
+- All Canva references removed from active pipeline (client-announcement archetype no longer references Canva Connect API).
+
+**Status-watcher tightened**
+
+- Poll cadence dropped from 5 minutes to 1 minute. Matches the LinkedIn Router's default. Status changes (Approved, Peace Approved, Rejected) now trigger pipeline within ~60 seconds instead of ~5 minutes.
+- Posts stuck at `Needs Image` (image gen failed silently in draft-job) get one automatic retry per Railway session after a 5-min grace window. On success → Status: Image Ready (so Peace knows to review the new image, not the whole post) + Telegram ping with the image URL. On failure → Telegram ping with the error so Peace can attach manually.
+- Manual `Needs Image` flip (post had a real previous status like Draft/Approved) fires on the next poll tick with no grace period. New posts (no previous status) keep the 5-min grace to avoid racing the draft job's own inline image attempt.
+- `post:image-retried` cache key cleared when a post transitions back to Needs Image so manual re-triggers (different IMAGE_HINT, new prompt) aren't permanently blocked by the first-run sentinel.
+
+**12-issue hardening pass against the May 10 rebuild**
+
+Smoke-testing the rebuild surfaced a cluster of small bugs. Twelve fixed in one push:
+
+- Issue 1: industry-news-reminder was reading from Posts DB schema (`Post Title`, `Scheduled Date`) but the slots actually live in Content Calendar DB (`Topic`, `Date`, `Angle`). 5 candidates per slot now generated correctly.
+- Issue 3: **Wave 2 state moved from `cron/data/deferred-batches/*.json` (ephemeral filesystem) into Notion Briefs DB** (`Status: Deferred` + `Fire After` date property). A Railway restart between Wave 1 and Wave 2 no longer loses the deferred queue. This was the May 10 design's biggest weakness, caught within 24 hours.
+- Issue 4: Post Body and Original Engine Draft use `chunkRichText` to bypass Notion's 2000-char-per-rich-text-element limit. Posts over 2000 chars were getting silently truncated.
+- Issue 8: `isEligibleSlot` extracted as a shared function so `countEligibleSlots` and `runGenerateMonthlyBatch` use the same filter. Was diverging — the reminder said "20 eligible slots" but the batch processed 8 because they disagreed on what "eligible" meant.
+- Issue 9: handleBriefRejected escalation flips Posts to `Needs Peace` (was `Draft` — overwrote Peace's review with a generic Draft state).
+- Issue 10: status-watcher seeds source cache with current timestamp on cold restart so a Railway redeploy doesn't re-fire every Brief Ready source.
+- Issue 12: feedback-synthesis preserves preamble blocks above the `## Synthesized Rules` heading (was overwriting them).
+- Plus: feedTitle uses RSS channel title not the URL; client-announcement archetype name fixed in both Brief and Posts rows; `Myth-Buster` → `Myth Buster` typo fix in generate-image; feedback-capture/synthesis timestamp parsers accept both legacy `YYYY-MM-DD HH:MM` and new `YYYY-MM-DDTHH:MM` formats.
+
+**Supabase / Node 20 fix**
+
+- supabase-js 2.105+ eagerly initialises Realtime, which throws on Node 20 (no native WebSocket). First attempt: downgrade to 2.104.0 + `auth.persistSession: false`. Second attempt (the real fix): wire `ws` package as the realtime transport, matching the LinkedIn Router pattern. The first attempt was a stopgap; the second is the fix the SDK error message itself suggests.
+
+**Buffer cancellation flow (the headline feature)**
+
+- When Peace flips a Posts row from `Scheduled` → `Draft`, the engine cancels the already-scheduled Buffer post via Buffer's `deletePost` GraphQL mutation. Previously this only worked for `Approved → Draft` — once a post was in Buffer's queue, you'd have to delete it manually in Buffer's UI.
+- status-watcher's `onPostUnapproved` condition extended: fires on `(cachedStatus === 'Approved' || cachedStatus === 'Scheduled')` when Status flips to `'Draft'`.
+- handle-post-unapproved reads the stored Buffer Update ID off the Posts row, calls Buffer to cancel, clears the Buffer Update ID on the row so re-approval re-schedules cleanly, and Telegram-pings Peace.
+- index.ts notify message no longer hardcodes "Approved → Draft" wording; it says "moved back to Draft" so it's accurate for either transition path.
+
+**Stale test repair (4 files, 12 silently-failing tests)**
+
+The full Vitest suite revealed 12 silently-red tests that had been broken for weeks. Production code had been refactored but tests weren't updated. CI was passing on the files with no failures — the runner doesn't fail the build for stale tests, only failing assertions.
+
+- `deferred-batch.test.ts`: tests were for the May 10 file-based Wave 2. Rewrote fully for the Notion-DB-based version (queries Deferred + Fire After). Dropped temp-dir + file-fixture helpers; mocked `notion.queryDatabase` + `createPage` + `updatePage`.
+- `draft-job.test.ts`: one test asserted `createPage` was called with `Status: Draft` directly. Updated to assert the create-then-update flow: `createPage` with `Status: Needs Image`, then `updatePage` with `Status: Draft` + Image external URL.
+- `handle-brief-rejected.test.ts`: tests expected escalated posts to flip to `Status: Draft`. Updated to `Status: Needs Peace` matching Issue 9 above.
+- `industry-news-reminder.test.ts`: tests used slot mocks with `Post Title` / `Scheduled Date` (Posts DB schema). Updated to `Topic` / `Date` (Content Calendar schema) and added `contentCalendarDbId` to the config.
+- Final state: 224/224 passing across 32 files.
+
+### The Buffer GraphQL schema saga (the day's deepest lesson)
+
+Buffer's `deletePost` mutation rejected the first three attempts. The same mistake at each step: guessed at the schema instead of asking for it.
+
+- **Attempt 1:** Selected a `success: Boolean` field on the response. Error: *"Cannot query field 'success' on type 'DeletePostPayload'."* The guess that the payload has a `success` field was wrong.
+- **Attempt 2:** A web search said `DeletePostPayload` is a union of `DeletePostSuccess { id }` and `NotFoundError { message }`. Used inline fragments. Error: *"Fragment cannot be spread here as objects of type 'DeletePostPayload' can never be of type 'NotFoundError'."* The search was wrong. `NotFoundError` is not a member of this union — and the error message even *implies* `DeletePostPayload` isn't a union at all, which I read as fact when it was actually misleading.
+- **Attempt 3:** Stripped the fragments back to just `__typename` (always valid on any GraphQL type). It deployed. But: no actual signal whether the mutation worked, and if it failed in production no real error would surface to Peace.
+
+**The fix that worked:** a one-off `scripts/introspect-buffer.mjs` running GraphQL introspection against `api.buffer.com` directly. Three queries answered everything:
+
+1. `Mutation.deletePost` returns `DeletePostPayload!`
+2. `DeletePostPayload` IS a UNION (despite attempt 2's error message implying otherwise) with two members: `DeletePostSuccess` and `VoidMutationError` — not `NotFoundError`.
+3. `DeletePostInput.id` is `PostId!` — not `String!` or `ID!`.
+
+**Attempt 4** used the verified schema and worked first time. The script got deleted after one use; no introspection artifact left in the repo.
+
+End-to-end test: scheduled a real post via the engine, flipped Notion Status `Scheduled → Draft`, watched the Buffer-side scheduled post disappear within ~60s. Buffer's `VoidMutationError.message` will now surface in Telegram if a future cancellation fails (post already published, auth issue, etc.) instead of a generic 400.
+
+### Frictions worth recording
+
+**1. Three wrong guesses about Buffer's schema before one right introspection.** The lesson is uncomfortable but clean: when a GraphQL API rejects your mutation, introspect the schema in one query instead of pattern-matching from search results or prior projects. The web search was *wrong*. The error message in attempt 2 was actively *misleading* (it sounded like "DeletePostPayload is not a union" when it really meant "NotFoundError is not a member of this union"). Reacting to each error individually compounded the back-and-forth across three deploys. Cost: maybe an extra 25 minutes and three deploys; benefit: the eventual fix is provably correct because it came from Buffer's own introspection endpoint, not from any external source.
+
+**2. 12 silently-failing tests in CI.** Discovered because the Buffer cancellation feature added one new test and Peace ran the whole suite as a sanity check. Without that, the failing tests would have stayed silently red indefinitely. Four files had drifted from production behavior over the prior week's refactors. **Lesson: a green CI badge isn't proof the test suite reflects current behavior, and "run the full suite at least weekly" is cheap insurance.**
+
+**3. Auto-fix loops without verification.** Peace's note: *"you sure this is going to work now?"* came after Attempt 3. The honest answer was "the GraphQL is now valid; I don't know if it actually deletes the post." That uncertainty is a smell — implementations should ship with a verifiable check, not "looks plausible." The introspection script made the next attempt verifiable.
+
+**4. .env path tripped me up — again.** The introspection script first failed reading `.env` because `import.meta.url` resolves to the script's directory, not `cron/`. Same class of bug as the backfill .env failure on May 8. Pinned the path to `cron/.env` explicitly. Same bug, second time — worth a memory rule or a project-wide helper.
+
+**5. The Supabase fix was two attempts deep.** First attempt (downgrade + persistSession:false) was a stopgap that worked but ignored what the SDK was actually saying. The error message literally said "pass `ws` as the realtime transport." Reading and trusting the error message would have been the first move. **Lesson: SDK error messages that suggest a specific fix are doing you a favor; take them at face value before reaching for downgrades.**
+
+**6. Race between Buffer's "scheduled" and "publishing now" states.** Not encountered today but worth flagging: if Peace flips `Scheduled → Draft` within seconds of Buffer's publish trigger, the cancellation might fire after Buffer has already begun publishing. The Buffer API will return `VoidMutationError`; Peace will see the real error message in Telegram and need to manually pull the post from LinkedIn. Documented as a known edge case; no engine-side mitigation needed.
+
+### Decisions worth recording
+
+- **Don't sync Buffer → Notion automatically for `Published` status (yet).** When Buffer actually publishes a post, the Notion row stays at `Scheduled` indefinitely. Two ways to fix: poll Buffer every 15 min for scheduled posts whose `Scheduled Date < now` and flip to Published if Buffer confirms, or wire a Buffer webhook. Polling is the simpler path and matches existing architecture; deferred for a future session.
+- **Two-step `Needs Image → Draft` flow stays.** When draft-job creates a Posts row, it always creates at Status `Needs Image` and only flips to `Draft` after image generation succeeds. This guarantees the row exists even if image gen blows up — Peace can then manually retry images instead of losing the entire draft. Counter-intuitive at first glance (why not just retry image gen inline?) but the right invariant for an async pipeline.
+- **GraphQL union types are the modern API default.** Buffer uses unions for every mutation result. The pattern (`DeletePostSuccess | VoidMutationError`, `PostActionSuccess | NotFoundError | UnauthorizedError | ...`) is more verbose than `{ success, errors }` but lets the caller exhaustively handle each failure shape. Worth treating as the default assumption next time a new mutation gets wired up — and introspect the schema first to confirm.
+- **Introspection scripts are throw-away tooling, not committed assets.** The `introspect-buffer.mjs` script lived for the duration of one debugging session and got deleted afterward. The artifact that stays in the repo is the corrected `cancel-update.ts` with a comment line explaining the schema (verified via introspection 2026-05-11). The script's value was the one-time answer it produced; the comment carries that answer forward.
+
+### Numbers
+
+- **Commits:** 17 pushed today on `feat/linkedin-engine`
+- **Tests:** 211 → 224 passing across 32 files (12 newly passing after stale-test repairs + 1 new Buffer test)
+- **Files changed in 12-issue hardening:** 8 source files + 4 test files
+- **Buffer GraphQL introspection queries:** 4 (1 to find the return type, 3 to inspect type fields)
+- **Deploys to Railway:** 5 (12-issue hardening + Supabase fix + image pipeline + Buffer cancellation v1–v4)
+- **End-to-end verification:** real post scheduled in Buffer, then cancelled via Notion status flip, confirmed gone from Buffer's queue within 60s
+
+### Why this matters for the portfolio
+
+The Buffer cancellation flow closes a real operator pain point: before today, if Steve looked at a scheduled post and said "kill it," Peace had to delete it manually in Buffer's UI AND flip the Notion status, with no guarantee both happened. After today: one Notion status flip, the engine handles the rest, Peace sees a Telegram confirmation. The cancellation feature itself is ~30 lines of code; the value is in the workflow it removes from Peace's plate.
+
+The GraphQL schema saga is the day's deepest lesson and worth a paragraph in the eventual case study. The honest pattern: **when an API rejects your call, the right first move is to ask the API what it accepts, not to pattern-match against guesses.** GraphQL has the rare property that the API can describe itself programmatically — and that capability should be the first move, not the last resort. Three wrong attempts before one right introspection is the kind of cost that compounds invisibly when you treat APIs as black boxes.
+
+The 12 stale tests are the kind of debt that builds up in any fast-moving codebase. The remediation cost was about 90 minutes; the alternative was finding out about the divergences six months later when a real regression slipped through CI silently because it landed in a file where the *other* tests were also broken. **Auditing the full test suite is a checkpoint, not a build-step assumption.**
+
+---
+
+## 2026-05-12 — Notebook Agency homepage interactive preview artifact
+
+Built a 214 KB self-contained HTML preview of the redesigned notebook.agency homepage so Steve and Karla can click through the redesign in concrete terms before any Webflow work begins. 14 sections, all photos and the notebook image and the "N" mark embedded as base64, vanilla-JS interactivity, no build step.
+
+### What shipped
+
+- Single `.html` file at `Website Update/notebook-agency-redesign-preview.html`. Opens by double-click from any folder; no localhost paths inside, so it travels cleanly.
+- 14 sections, top to bottom: sticky nav with N-mark + red `Let's Talk` pill / hero ("Be the answer AI gives." + live-site H1 preserved verbatim) / auto-scrolling client logo marquee (Clearbit) / 4×2 services grid with custom SVG icons / Brand Truth Framework with scroll-triggered word reveal + animated bar chart / Results with three animated bar-chart cards (Base / Growth / Peak phases) / Industries vertical card stack / SEO IRL 2026 credential card with the CXL AEO Cohort badge / Team section with a text-column-matches-photo-grid-height fix (CSS `align-items: stretch` + `object-fit: cover` so neither side hangs short) / scroll-tied horizontal testimonial carousel / Claude-Powered Agency 4-card grid / From Steve's Notebooks (real `steve-notebook.avif` fetched from `cdn.prod.website-files.com` + base64-embedded so the section renders offline) / red CTA panel / footer.
+- The Notebook Agency "N" mark — the real production 3-path SVG (`#ff4646`, viewBox `0 0 1000 778`) — inlined in the nav, footer, and as the favicon data URI.
+- All four `Let's Talk` CTAs route to `https://notebook.agency/contact` (new tab).
+
+### The section that took the most iteration: testimonials
+
+Final implementation: **horizontal carousel tied to scroll**. Section is ~210vh tall, the sticky inner frame is one viewport, three slides (Will Cannon / Hongwei Liu / Jeff Collins) translate left as the user scrolls. A red progress dot row in the header shows the active slide; dots are clickable to jump.
+
+Rejected alternatives:
+- Auto-rotate every 7s — Steve called it passive ("the user has to wait for the page to do something")
+- Stack of three cards with no slider — functional but loses the "this is a featured section" weight
+- Vertical sticky scroll with crossfade — worked, but produced a lot of vertical black space below the sticky frame that read as broken
+- Click-to-switch tabs only — matches the live site exactly but loses the scroll-driven discovery Steve originally asked for
+
+### Decisions worth recording
+
+- **Hero eyebrow killed.** Old "CLAUDE-POWERED AEO AGENCY" pill removed per Steve. The red tagline "Be the answer AI gives." replaces it, with the live-site H1 preserved verbatim.
+- **Services subtitle killed.** "Eight services, one growth engine." removed per Steve. Card padding bumped to `40px 32px 44px`, icon size to 64px, title weight 600 — the visual weight now matches the live site rather than the earlier flatter version.
+- **Claude-Powered Agency repositioned later in the page** (replaces the email-course block on the live site) per Steve's feedback that it shouldn't be the first thing after the marquee. From Steve's Notebooks slots in right after it.
+- **Custom SVG over emoji.** The original 📓 ⚡ 🔗 📊 icons in Claude-Powered Agency read as informal — replaced with custom 26px line icons (open book / sparkle / network graph / trending-up chart) in dark rounded squares. Section padding tightened 120→100px and card-grid gap 20→14px to remove the airy black space Steve flagged.
+- **From Steve's Notebooks added** per Steve's feedback that the live-site notebook block was missing. An initial SVG illustration of a notebook was rejected as not realistic; the production `.avif` got fetched and base64-embedded instead.
+
+### What's still placeholder
+
+- Services body copy (transcribed from a small screenshot — needs verification against the design source or the live site text)
+- Services icons (custom SVG placeholders — needs Karla's icon set from the design package)
+- Marie Haynes photo (needs the original production-quality asset)
+- Case-study link destinations on industries / results cards (`href="#"` for now)
+- Team careers section (currently a nav link only — confirm whether a homepage section is required)
+
+### How it's being shared
+
+- Email/Slack the `.html` file directly — recipient double-clicks
+- Or drop on `netlify.com/drop` for a public URL (no signup) — fully interactive when opened from the URL
+- Reachable while in active dev at `http://localhost:49205` via the brainstorming companion server
+
+### Spec
+
+`docs/superpowers/specs/2026-05-12-notebook-agency-preview-artifact.md` — captures section-by-section decisions, placeholders, the post-sign-off path (preview file becomes source of truth for layout / copy / interaction; existing redesign design doc owns the strategic rationale).
+
+### Why this matters for the portfolio
+
+The preview is the moment the redesign moves from concept doc to artifact Steve and Karla can react to in concrete terms instead of abstract feedback. Webflow build follows from sign-off on this file. The artifact also doubles as the QA spec for the build team: every section's layout, motion, and copy decision is already resolved, so the Webflow execution is mechanical rather than re-litigated.
+
+---
+
+## 2026-05-13 — LinkedIn animation style: 8 prototypes, reference analysis, template library plan
+
+Started the day with one prototype direction (v6 — clean vertical step flow on the May 15 post). Steve liked the format but flagged it as "horizontal bars stacked below itself" — not the **shapes, form, personality** he wanted from his reference GIFs. Six more prototypes later, v8 locked the new direction: a cluster-map infographic with a branching SVG tree, pebble-shaped clusters, person-icon illustrations, headline pill annotation with a handwritten Caveat-font callout, and a pull-quote punchline.
+
+### Reference analysis
+
+Steve shared four animated LinkedIn GIFs from his feed as anchors. Two proved central:
+
+- **Tas Bober — "How to Build 5 Landing Pages"** — lavender background, big bold purple display headline, branching tree diagram with a horizontal manifold fanning down to 7 numbered mint tiles, varied pastel pill chips in a second tier below. Photo + signature in the bottom corner.
+- **"How to Create a People-Generated Content Engine" (PGC)** — white background, headline with a rainbow gradient highlight pill on "People-Generated Content" + a tilted speech-bubble callout `PGC`, custom SVG funnel illustrations with person-icons at different fill levels (Execs / Industry Creators / Customers), capsule chips arranged in tiers above and below.
+
+The common thread: **shapes, branching, varied geometry, illustrated elements, headline as visual centerpiece.** Not stacked rectangular cards. Big bold display type that IS the visual element. Multiple shape families per image (tiles + capsules + pills + speech bubbles + custom illustrations).
+
+### Iteration log (all today, all in `outputs/prototypes/`)
+
+| # | Direction | Outcome |
+|---|---|---|
+| v1, v2 | First passes, 1200×628 landscape, AEO content | Wrong format (Steve's references are all portrait) |
+| v3 | 800×1000 portrait, 5-step vertical flow with animated spotlight + marching ants | Format correct; structure still rectangular cards |
+| v4 | 2×2 grid layout | Different arrangement, same rectangular language |
+| v5 | Cycling head-term-vs-variants comparison | **Rejected** — content changes mid-cycle; "everything should be visible at once, you shouldn't have to wait for a bar to load" |
+| v6 | Clean vertical flow on the May 15 post content; archetype label removed | Production-ready but Steve flagged the structure as too uniform |
+| v7 | Dark editorial inversion — graphite bg `#131310`, neon per-node accents, italic Fraunces 52px display, purple bloom radial | Beautiful but still card-stack |
+| **v8** | **Cluster-map infographic — locked direction** | **Branching tree + pebble clusters + headline annotation + pull-quote** |
+
+### What v8 does differently
+
+- **Branching tree diagram (SVG)** — head term → trunk → horizontal manifold → three drops with arrowheads, plus animated `stroke-dasharray` flows that fire down each branch in sequence
+- **Pebble-shaped clusters** (`border-radius: 50% / 38%`) — distinct shape from the lavender rounded-rectangle head term at top. The mint winner cluster (Civil Engineers) is physically lifted `translateY(-12px) scale(1.04)` from the others even on frame 0.
+- **Person-icon SVG illustrations** inside each cluster (4–5 silhouettes per cluster — echoes the PGC funnel figures)
+- **★ BUILD HERE winner badge** — tilted black pill in Outfit 9.5px letterspacing 0.14em, floating off the winner's top-right corner. Bounces on activation.
+- **Headline pill annotation** — "not" highlighted in a tilted (−2.2deg) black ink pill with a dashed inner border, paired with a handwritten "the lie" callout in Caveat 700 24px with a curly SVG arrow pointing back at the pill (Tas Bober's PGC speech-bubble move adapted)
+- **CPC pill chips, multiplier badges, vol-sub kicker labels** — varied micro-typography creating real visual hierarchy inside each cluster
+- **Pull-quote punchline** at the bottom: *"One keyword lies. The cluster tells the truth."* in Fraunces 30px with a mint text-highlight on the second sentence
+- **Warm radial gradient wash + grain** in the background — atmosphere, not flat fill
+
+### Animation orchestration
+
+Same loop as v3–v7, more moving parts. Frame 0 has the full diagram visible. The spotlight then cycles: head term activates → left branch fires + Civil Engineers (winner — longer hold + badge bounce) → middle branch + HR & Onboarding → right branch + Cert Hunters → punchline glow → reset. ~6-second cycle. Marching ants on each shape use JS-injected SVG overlays (rounded rects for the head term, ellipse-style rects for the pebbles to match the pebble border-radius).
+
+### Gallery for Steve's review
+
+`outputs/prototypes/gallery.html` — an interactive dark-themed showcase with all 8 prototypes in scaled iframes. v8 is the full-width hero card at the top; v3–v7 sit below as a reference grid. Each card opens to a full-size modal with the animation running live. Built so Steve can click through the visual options in one place without managing 8 separate file paths.
+
+### The decision: template library, not v8 for every post (Path B)
+
+v8's "head term vs. verticalized cluster" frame fits maybe 40% of Steve's posts. The rest need different visual structures. Forcing every post through v8 would make the agent twist data to fit. Path forward: v8 becomes the first entry in a **template library of ~6 visual patterns** — cluster-map (v8), step-flow (v6 restyled with v8's system), 2×2 grid (v4 restyled), before-after, spectrum, framework-spotlight. A diagram-spec-agent (Haiku) picks the right template per post during the cron pipeline.
+
+Steve confirmed v8 as the locked direction. The other 5 templates and the pipeline integration (template-ize the HTML → diagram-spec-agent in `cron/src/agents/` → wire to the existing HCTI image step → upload to Supabase) are scoped as the next workstream.
+
+### Outputs landed today
+
+- 7 new animated prototypes (`animated-diagram-prototype-v3.html` through `v8.html`)
+- Interactive gallery (`outputs/prototypes/gallery.html`)
+- LinkedIn image template style doc — `docs/linkedin-image-templates/README.md` — covers reference analysis, full iteration log, v8 visual specification, template library plan, and pipeline integration handoff (template-ize + diagram-spec-agent + renderer)
+- Pointer to the style doc added to `CLAUDE.md` under a new "LinkedIn image templates (animation style)" section
+- Memory entry `linkedin_animation_style.md` indexed in `MEMORY.md` so the path is findable across sessions
+
+### Frictions worth recording
+
+**1. "I'll know it when I see it" feedback is expensive but legitimate.** Steve couldn't articulate what was missing from v3–v7 until he saw a version that finally had it. The eight-prototype iteration wasn't waste — each version isolated a different variable (format → grid arrangement → cycling content → archetype labels → dark/light → shape language). The cost wasn't avoidable by asking better questions upfront; it was paid in iteration. **Lesson:** when a stakeholder describes visual feedback in feeling words ("playful," "personality," "shapes"), the fastest path is parallel prototyping with explicit hypotheses per version, not deeper discovery questions.
+
+**2. Reference images don't render via WebFetch.** All four LinkedIn images came back as binary GIF data from WebFetch — useless for the small-model analysis the tool runs on the content. The fix that worked: WebFetch saves binary downloads to disk under `tool-results/`, and the Read tool can open them directly as image input to the multimodal model. **Lesson:** when WebFetch returns binary, look for the on-disk path it logs and Read it directly.
+
+**3. The brainstorming flow's task list doesn't fit iterative design work.** The brainstorming skill creates tasks like "Propose 2–3 approaches with trade-offs" → "Present design sections" → "Write design doc" → "Invoke writing-plans." That's a feature-spec flow, not a "make another iteration of a visual prototype" flow. Stale tasks accumulated in this session before being cleaned up. **Lesson:** brainstorming is the right entry skill for spec work; for iterative design, create a single focused task per iteration and don't carry over the spec-doc tail.
+
+### Why this matters for the portfolio
+
+This was the first time the LinkedIn image system moved beyond "rounded-rectangle card with a bold headline." v8 is closer in spirit to what Steve was actually pointing at when he shared his references — **shapes, form, personality, visual orchestration.** The eight-prototype iteration is the part of the work worth showing: the cost of "I'll know it when I see it" feedback wasn't 8 wasted prototypes — it was 8 prototypes that progressively isolated what "more visual" actually meant for this brand and audience. The template library is the answer to making that visual quality repeatable across 30 posts a month without forcing every post into the same frame — which is the real product, not v8 itself.
+
+---
+
 ## How this log is used
 
 When the Steve Toth engagement wraps or when adding a portfolio case study, this log holds the raw material:
