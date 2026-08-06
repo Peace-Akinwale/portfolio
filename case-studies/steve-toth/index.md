@@ -1272,3 +1272,37 @@ The honest version of a ship: the feature went out, a structured review found fo
 Two habits worth showing: measuring an assumption (the tempo) instead of trusting it, and building a verifier for the safety-critical step rather than eyeballing it, which is what caught both redaction leaks.
 
 ---
+## 2026-08-06, a feature nobody used, rebuilt from the reason nobody used it
+
+Steve had a monthly client newsletter in his content app and had never finished one. Two existed, June and July, both still drafts with the "Add your picks here" placeholder untouched. Peace's read was behavioural rather than technical: "he didn't tell me, but that's the feel I get, because when you like something, he uses it." Measuring the two rows before touching anything turned that instinct into a cause.
+
+### What shipped
+
+- **The newsletter became a composer instead of a summariser.** The old version had no item list at all: it summarised a Notion date range, which is why nothing could be removed, added or reordered. Items are now his own notes from any month and either notebook, plus industry news and starred posts, in one list in his order.
+- **One picker over four sources**, opening pre-filled with suggested picks so accepting is one tap and searching is the exception. Nothing persists until the button, so cancelling costs nothing.
+- **Rewritten for the client, not the practitioner**: a skim block, then per item what changed, what this means for you, what to do about it. One closing ask, picked from presets rather than invented monthly.
+- **Monthly and on demand**, audio, generated subject lines, a personal intro stored separately so it survives every rewrite, and a delete path.
+- **Zero database migrations.** The existing columns from the weekly-roundup feature carried the whole item model, so the work was code only.
+- Live on production, verified by request: the newsletter page returns 200, and 867 tests pass across 96 files with a clean typecheck, lint and build.
+
+### Decisions worth recording
+
+- **Generated copy may never promise work on the client's behalf.** The first approved prototype had a "what we are doing" block under every item, and Peace killed it: "i am concerned we may be promisiing something we won't/don't do. so, what do we do about that? better to not promise shey?" It became "what to do about it", advice the reader can act on, with "ask us" as the strongest wording allowed. Enforced by a lint over the generated text, not by asking the model nicely.
+- **Two rules moved from the prompt into code, because the prompt had already failed.** The July issue shipped 12 em dashes against a system prompt that said "NO em dashes" in capitals. The seven most recent weekly roundups shipped zero, and the difference was the output shape, not the instruction. Both the dash strip and the promise check are now deterministic post-processing with the prompt as a second line.
+- **Legacy rows left in the old format on purpose.** June and July are the evidence of the old behaviour. The scheduled job returns an existing row without recomposing it, so it cannot overwrite them.
+- **The success measure is explicitly not "it shipped".** Steve has still never marked a newsletter ready or sent, and that is recorded as the open item rather than dressed up.
+
+### Frictions and course corrections
+
+- **The first prototype was rejected.** It carried the practitioner voice into a longer format and its builder could only choose weeks of his own notes, not industry news or posts. Rebuilt around the actual reader before any code was written.
+- **Three defects were found by running the thing, not by reading it.** A Notion helper does not populate the field that says which notebook a note came from, only its sibling helpers do, so every auto-suggested note would have been saved under the wrong notebook. The roundup's section-ordering guard fails open on any document with an extra heading, so it silently never applied to newsletters at all. And the audio renderer reuses a stored narration script, so a rewritten newsletter kept audio describing text that no longer existed.
+- **A pre-merge audit found seven more, two of them invisible to review.** The ordering guarantee could degrade silently when the model re-slugged a URL, and auto-built newsletters shipped with no closing ask while the editor showed one selected. All fixed before the merge rather than after.
+- **A test on localhost pushed a real notification to two real phones.** The local environment shares the production database and carries live notification credentials, so exercising an API route created a genuine Notion page and web-pushed Steve and Peace a link to a row that was then deleted. Peace received the dead link and asked "did you trigger this?". That produced a second, real fix: notification deep links are relative, so they open on whichever address the app was installed from, and installs predating the domain move still sat on the old one. Old-address pages now redirect, with the API paths deliberately excluded because an auth header is dropped across a cross-domain redirect and every scheduled job would have failed silently.
+
+### Why this matters for the portfolio
+
+The interesting work was diagnosis, not construction. A reasonable reading of "he does not use the newsletter" is that it needs better copy or more polish. Querying the two rows that existed showed the feature had no selection model, which meant every control the client wanted was downstream of one missing abstraction, and no amount of polish would have produced them.
+
+The second transferable habit is where a rule gets enforced. A written instruction that has already been ignored in production is not a control, so both content rules were moved into code with a verification script that exits non-zero, and the audit was run against the running system before the merge rather than the diff.
+
+---
