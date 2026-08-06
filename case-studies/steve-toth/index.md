@@ -1306,3 +1306,40 @@ The interesting work was diagnosis, not construction. A reasonable reading of "h
 The second transferable habit is where a rule gets enforced. A written instruction that has already been ignored in production is not a control, so both content rules were moved into code with a verification script that exits non-zero, and the audit was run against the running system before the merge rather than the diff.
 
 ---
+## 2026-08-06, a two minute answer, and the difference between mitigating a bug and deleting one
+
+The Ask feature on Steve's OKF Brain broke while a demo was being recorded. Two unrelated defects surfaced in the same request: one answer took two minutes and six seconds instead of forty seconds, and the server logged a crash when the tab was closed. Both were fixed the same day, but the more useful half of the session was what happened after the fix, when the first patch turned out to have introduced a quieter bug than the one it cured.
+
+### What shipped
+
+- **Eight commits, all deployed to production and each verified by matching the live deployment's commit hash**, not by asking the server whether it was awake.
+- **The two minute answer.** The answerer intermittently replied in prose beginning "I need to", the parser rejected it as invalid, and the model was re-run twice. Root caused to the prompt rather than the parser: the answerer was only permitted to say "these files do not answer the question" when the caller had already flagged the material as weak, so on a normal question with unhelpful sources it had no legal way to raise a concern and improvised prose instead. That response is now permitted on every call.
+- **The crash on disconnect**, where a client that gave up mid answer caused the server to write to a closed connection and log it as a genuine failure.
+- **The bug class deleted rather than mitigated.** The answerer moved to a model that supports schema constrained output, so the reply is now constrained to a JSON schema by the API. Prose is not discouraged, it is impossible. On the one question measured on production before and after, the answer went from 40.9 seconds to 28.8 seconds, about 30 percent faster, with two more like for like pairs on the development server showing 31 and 43 percent.
+- **Abandoned answers stopped costing money.** A disconnect now cancels the model call rather than only silencing the output, so closing the tab no longer pays for an answer nobody reads.
+- **The test suite reached zero known failures for the first time, 1048 passing across 79 files.** One test had been failing since the calendar month rolled over.
+- **A one command health check**, `scripts/watch-ask.sh`, and a 496 line handoff so the next session starts from evidence rather than memory.
+
+### Decisions worth recording
+
+- **Fix the prompt, not the parser.** A tolerant parser was written as well, but treating the malformed output as a parsing problem would have left the cause in place. The question worth asking about a model that leaves its contract is what it was trying to say and whether the contract gave it any way to say it.
+- **Keep every mitigation after the root cause was removed.** Once schema constrained output made prose impossible, the prompt rules, the tolerant parser and the retry logic were all redundant. They stayed, because they still protect any future change to a model without that capability, and removing them would make such a change silently dangerous.
+- **A liveness endpoint cannot verify a deployment.** The documented check was to poll `/api/health`, which returns the same 200 on old and new code. It was polled green twenty times over seven minutes while the actual question, did this commit deploy, went unanswered. The rule now reads the deployment record and matches the commit hash. Documented in the repo so the lesson outlives the session.
+- **Fix the production code for the clock bug, never re pin the test's date.** The failing test had pinned a date correctly; the production code underneath ignored it and read the real clock. Re pinning would have bought another month and hidden it again. The replacement tests pin the clock on both sides of a month boundary and assert opposite outcomes, so they cannot pass by accident whatever the date.
+- **Scope the model change to one agent.** Extraction, tagging and lint kept their models. They were not implicated, and a wider swap would have needed its own quality evaluation.
+- **Gate the model change on quality, not on it working.** Five real questions were run and compared against the same day's answers from the previous model before anything was pushed, with an explicit instruction to stop and report rather than ship a worse answerer.
+
+### Frictions and course corrections
+
+- **The first fix introduced a quieter bug than the one it cured, and a self audit caught it before it shipped.** The tolerant parser can succeed on a JSON object that is not the payload, and one of the two call sites had no check on what it extracted. The result would have been a confident "not covered in the brain yet" on content that does exist, which is worse than the crash it replaced because nothing reports it. Found by reviewing the fix rather than by testing it, and locked with a test proven to fail without the check.
+- **A regression test passed against known broken code, twice, for two different reasons.** The first version asserted on an unhandled rejection that the stream machinery absorbs. The second read the captured error calls after restoring the spy, and restoring a spy also clears its recorded calls, so the assertion read an empty list and passed trivially. The habit that caught it is now a rule: stash the fix, run the new test, watch it fail with the original symptom, then restore. A test written after a fix and never run against the bug asserts only that today equals today.
+- **A claim in the plan was wrong and re checking caught it.** A 13MB file was described as live code consumed by the search tools, on the strength of a search whose match was a substring of an unrelated function name. It is parked work with no consumers, and committing it would have added 13MB to the repository and triggered a pointless redeploy.
+- **A speed claim in this session's own reporting was overstated and is corrected here.** The first write up compared 40.9 seconds against 17.0 seconds and called it 2.4 times faster. Those were two different questions, one substantially harder than the other. Re measuring the same question on both models gives 40.9 to 28.8 seconds. The corrected figure is about 30 percent, and the task log has been amended. The error came from comparing the most flattering pair of numbers available rather than the matching pair.
+
+### Why this matters for the portfolio
+
+The distinction the session turns on is between suppressing a failure and removing the conditions that allow it. Three layers of defence were built against the malformed output, and all three were still guesses about a model's behaviour. Moving to a model whose API enforces the output shape converted a probabilistic problem into a structural one. Knowing when a fix is a mitigation and saying so is what makes the eventual removal a deliberate decision rather than an accident.
+
+The second point is about what counts as evidence. Three separate claims in this session were confidently wrong and each was caught by re running the check rather than by thinking harder: a test that could not fail, a deployment check that could not distinguish versions, and a performance number built from mismatched measurements. All three would have survived a careful review, because each was internally consistent. The habit that catches them is mechanical, not intellectual. Verify the thing, against the state it is actually in, at the moment you want to claim it.
+
+---
