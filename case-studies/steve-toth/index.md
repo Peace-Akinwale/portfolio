@@ -880,3 +880,395 @@ When the Steve Toth engagement wraps or when adding a portfolio case study, this
 
 Each entry should be specific. Generic bullet points get pruned. Named tools, named clients, dated decisions, measurable outcomes.
 
+
+## Backfill note, written 2026-08-06
+
+The entries below were reconstructed on 2026-08-06 to close an 85-day gap between
+2026-05-13 and 2026-08-06. They are **retrospective**, which breaks this log's own
+rule of writing entries as deliverables land, so they are marked as such rather
+than passed off as contemporaneous.
+
+Reconstructed from records written at the time, not from recollection: 68 dated
+handoff documents in `Steve Toth/docs/plans/handoffs/`, the session memory index
+and its per-workstream files, `decisions.md` in the root and in `radar/` and
+`web/`, and the git history of four repositories (743 commits in `Steve Toth`,
+76 in `coaching-portal`, 151 in `notebook-okf`, plus this one). Where a number
+could not be verified against a record or a live check it is called out instead
+of estimated.
+
+New entries drop the em dash per the standing house rule; existing entries above
+were left as written.
+
+---
+
+## 2026-05-14 to 2026-05-21, animated diagram pipeline, prompt caching, and the Railway account question
+
+Short stretch between the LinkedIn animation prototypes and the pipeline rebuild.
+
+### What shipped
+
+- Animated diagram pipeline: a `diagram-spec` agent, a `render-video` step, five templates, and a nixpacks image carrying Chromium and ffmpeg so Railway could render video at all.
+- The video pipeline wired into the Buffer publish path and the image-retry path, so a failed image did not strand a post.
+- Prompt caching added to the writing pipeline, the first of several passes at getting per-run cost down.
+
+### Decisions worth recording
+
+- **Railway account migration scoped, not executed.** Requirements captured in `docs/brainstorms/2026-05-21-railway-account-migration-requirements.md`. Worth noting because the whole video and cron surface depended on that account.
+
+### Why this matters for the portfolio
+
+This is the last work built on the assumption that the LinkedIn engine was the product. Ten days later the image direction was thrown out, and a month later the engine itself was.
+
+---
+
+## 2026-05-25 to 2026-05-28, image pipeline rebuilt, calendar goes propose-then-approve, RAG anchors, and the content ops PWA
+
+The heaviest build stretch of May: 86 commits across four days.
+
+### What shipped
+
+- **Image pipeline replaced.** HCTI and the video pipeline removed, `diagram-spec-agent` retired, and a `gpt-image-2` notebook image pipeline wired into every call site behind a new `image-prompt-agent` with retry and moderation handling.
+- **Calendar became a two-phase flow.** `runCalendarProposal` then `runCalendarFromProposal`, with the status watcher doing a dual-transition poll so Steve proposes, reviews, then approves, rather than a calendar appearing fully formed.
+- **RAG anchors for briefs.** A citation requirement in the brief agent, an `ANCHOR_THIN` and `REQUIRES_REFRAME` trigger, citations plumbed through the notebook, idea, industry-news and client-announcement briefs, and Phase A and B migration scripts to roll it out over existing rows.
+- **Sources catalogue got usable.** Goal Fit, Archetype Fit, Key Scenarios, Notion URL, and a per-track filter, plus a backfill script for existing rows.
+- **`softUpdatePage`**, a Notion helper for non-fatal property writes, so one bad optional field could not fail a whole page update.
+- **The content ops PWA** (`web/`): briefs review, post pipeline view, image upload, login with a show and hide password toggle.
+- Brutal-editor and revision merged into a single editor pass carrying full brand-kit context.
+- Business positioning injected as a cached `stablePrefix` for the notebook and industry-news brief agents, so they knew Steve's named frameworks before reading a source.
+
+### Frictions and course corrections
+
+- Four brief-pipeline quality fixes landed the day after the batch, then a Sources DB fan-out in the idea brief was replaced outright by a generative positioning-doc agent.
+- The writing model gained an explicit ban on the word "gap" and a what, why, how claim discipline, then per-archetype reasoning requirements a day later.
+
+### Why this matters for the portfolio
+
+Propose-then-approve is the pattern that survived everything else. Every later system, Radar's briefs, the roundups, the LinkedIn Posts engine, the Coaching Portal's cohort duplication, puts a human checkpoint in the same place: the machine proposes, the human approves, nothing publishes on its own.
+
+---
+
+## 2026-05-30 to 2026-06-01, PWA review fixes, and the trial font that had to go
+
+### What shipped
+
+- LinkedIn Ops PWA review fixes plus M1 to M8 hardening, held local rather than deployed.
+- Idea-reject reasons surfaced in the app, ending silent `REQUIRES_REFRAME` failures where a rejected idea simply vanished.
+- A PWA update-available banner, the first version of an update instrument that kept reappearing in later apps.
+- **Trial Roobert swapped for the licensed Roobert variable web font.** Shipping a trial font in a client product is a licensing problem, not a cosmetic one.
+
+### Why this matters for the portfolio
+
+"Silent failure" is the recurring bug class across this whole engagement. An idea that disappears with no reason shown is the same defect as a phantom Docs Watch alert two months later: the system knew something and did not say it.
+
+---
+
+## 2026-06-02 to 2026-06-04, three client-feedback waves and Steve Memory
+
+### What shipped
+
+- **Client feedback waves 1 and 3**: an Ideas tab, edit sizing, a 9am default, numbered key points, picker removal, a fast approve-to-post trigger, and a grow-only post editor that could not silently shrink Steve's text.
+- **Multi-device push** with reliable enable and a self-serve test, plus a clock-style time picker for scheduling.
+- **Steve Memory**, built across U2 to U9: a Supabase schema (`memory_events`, `steve_profile_versions`), fire-and-forget event capture on high-signal actions, a daily append-mostly `memory-refresh` agent on cron, injection of the profile into the five generation and brief agents but deliberately **not** the scorer, a PWA Memory screen with a server-side byte cap, a deterministic seed from May's synthesised rules, and a weekly liveness canary.
+- The frozen Sunday synthesis job retired in favour of the daily refresh loop.
+- 20 numbered units (U1 to U20) shipped on 06-03 alone: a 50k character idea limit with a live counter, the Jake Ward playbook imported as the canonical archetype source, a canonical 8-archetype set with legacy aliases, a loud fallback so no draft ships recipe-less, on-demand rubric scoring, a non-destructive revise path, a grounding and relevance gate with visible `[VERIFY]` markers, SSRF-hardened URL reading, and Buffer deletions reconciled back to Draft.
+
+### Decisions worth recording
+
+- **The scorer does not see the memory profile.** Injecting Steve's profile into the judge as well as the writers would let the system grade itself against its own drift.
+- **The canary is separate from the job it watches.** A liveness check inside the thing that can freeze cannot report that it froze. The same reasoning later put Radar's feed alarm in a different Railway service from the crawler.
+
+### Why this matters for the portfolio
+
+Steve Memory is the clearest example of the engagement's actual technical problem: the system had to learn a specific person's voice from his corrections without being able to ask him. The design constraints, append-mostly, byte-capped, canaried, judge excluded, are all about making an automated learning loop safe to leave running.
+
+---
+
+## 2026-06-05 to 2026-06-08, Opus for the voice agents, archive RAG, and the chat rebuild
+
+### What shipped
+
+- **Model tiering locked**: Opus 4.8 for the agents that write or judge brand voice (draft, editor, scorer, revise), cheaper tiers for synthesis and mechanical extraction. This became `AGENT_MODELS` in `cron/src/claude/models.ts` as the single source of truth.
+- **Voice rules tightened** over three commits in one day: an absolute no-emoji rule replacing a carve-out, unicode bold restricted to links and URLs with attribution names left plain, then emoji reduced to "sparingly, default none" with four more voice anchors.
+- **Archive RAG grounding** for the draft pipeline: an `embedText` seam, a structural chunker, and Supabase-backed retrieval over Steve's own archive.
+- **Compose chat, U1 to U10**: a conversations store, a state machine, archetype and brief and draft turns, a feedback-rewrite loop, score and image turns, approve into Notion Posts and on to Buffer, the UI, and memory events.
+- **Then it was rebuilt.** Round 2 renamed it `/chat` with a Chat and Draft canvas, and on 06-08 Phase 1 collapsed the whole thing into a single conversational thread, with chips, free-text routing, auto-pick and a finished-post card.
+- Push dispatch moved to FCM HIGH urgency for Android heads-up delivery, with tag and renotify dedup and haptics.
+
+### Frictions and course corrections
+
+- The chat surface was designed, shipped, ungated in production, then restructured twice inside four days. The multi-screen wizard was the wrong model; one thread was right.
+
+### Why this matters for the portfolio
+
+Shipping something, watching it get used, and then deleting its structure rather than defending it. The rebuild was not a bug fix.
+
+---
+
+## 2026-06-09, LinkedIn image direction thrown out and rebuilt deterministically
+
+Three handoffs in one day (`HANDOFF_linkedin-image-pipeline_2026-06-09`, `_2`, `_3`) mark a direction change rather than a build.
+
+### What changed
+
+- Image-AI generation abandoned for LinkedIn diagrams. Replaced with **deterministic HTML and CSS rendering** through `cron/src/image/render/` and `cron/src/image/templates/`, output as 1080x1350 JPEG or animated GIF.
+- Direction pivoted to light and colourful "clean infographic", with the red asterisk footer mark kept as the single brand anchor.
+- Six templates plus a palette specified. Superseded v1 to v8 explicitly marked do-not-read so the old direction could not leak back in.
+
+### Decisions worth recording
+
+- **Deterministic beats generative for brand assets.** An image-AI diagram cannot be regenerated identically, cannot be corrected surgically, and cannot be held to a palette. HTML and CSS can.
+- Recolouring the remaining templates and wiring the pipeline was deliberately **blocked on Steve's sign-off** rather than pushed through.
+
+### Why this matters for the portfolio
+
+A reversal on a tool choice, made on quality grounds, with the earlier work explicitly retired rather than left lying around to confuse the next session.
+
+---
+
+## 2026-06-10, the pivot: Notebook Radar
+
+The day the engagement changed shape. Steve's call redirected everything: his own Claude project would write his personal posts, so the system's job became (1) replacing his all-day LinkedIn checking and (2) generating the weekly slate.
+
+### What shipped
+
+- **Notebook Radar**, a standalone Next.js 16 PWA, scaffolded and shipped the same day across 28 commits: the curation suite, a custom brand mark (signal-ping icon set plus social logos), trash with restore, week history navigation, and a perceived-speed and data-safety wave.
+- Idea dump on the old PWA, so half-formed ideas could be saved from the New tab, plus a dedicated Ideas tab and a running-build versus live-build display in Settings.
+
+### Decisions worth recording
+
+- **Account safety is non-negotiable and predates the code.** No LinkedIn credentials or cookies anywhere, ever. Manual link-out engagement only. No LinkedIn write path. Steve had prior warnings and a lockout, so this constraint is a business fact, not a preference. It is duplicated in the root instructions rather than living only in the lazily-loaded `radar/AGENTS.md`, because a safety rule must not depend on which directory you happen to be working in.
+- **Provider seams stay mock-by-default** (`SCRAPE_ENABLED`, `TTS_ENABLED`, `BUFFER_ENABLED`), so going live is an environment flip, never a code rewrite.
+
+### Why this matters for the portfolio
+
+The strongest single moment in the engagement: a client call invalidated six weeks of direction, and the response was a working replacement app the same day rather than a defence of the existing one. Everything from here to August is Radar.
+
+---
+
+## 2026-06-11 to 2026-06-17, real data, real crawl, real notifications, real audio
+
+### What shipped
+
+- **714 ideas imported** from Steve's task-queue export, with the ideas list given the capacity to hold them.
+- **Apify go-live on 06-15**: a daily LinkedIn crawl with author-comment capture, a hardened cron, and a pre-Steve cleanup pass. This is the moment Radar stopped being a shell and started carrying live data (roughly $37/month).
+- **Friday full automation**: an auto industry-news post, RAG-grounded and voice-locked, plus Buffer write-back so the Week board reflected true post status, and an Unschedule button.
+- **Web push via VAPID**, so Steve got PWA notifications rather than only Telegram, plus a Settings page with on/off and send-test, heads-up notifications that pop over the current app, and deep-linked taps.
+- **Note audio**, the first-class feature for an auditory learner: migration 008 (`notes-audio` bucket, `note_audio_log`, `radar_notifications`), a Notion notes library, body and promo segmentation, a `renderNoteAudio` orchestrator, a serial render cron, and notify-on-ready across in-app, push and Slack.
+- A **notification centre**: Alerts feed, bell badge, mark-read API.
+- **Railway heartbeat drives note-audio**, a deliberate workaround for Vercel Hobby's cron limits.
+
+### Frictions and course corrections
+
+- The branded walkthrough HTML was built, then redesigned to button-and-function because Steve's feedback was "too much text", then embedded inside `/guide` via iframe.
+- An em dash was dropped from the post-card footer, and instant cache-first Ideas landed the same day.
+
+### Why this matters for the portfolio
+
+Audio is not a nice-to-have here, it is an accessibility-shaped product decision: the client learns by listening, so the digest had to be listenable before it had to be pretty.
+
+---
+
+## 2026-06-23 to 2026-06-30, multi-user access, curation that learns, and the feed performance fight
+
+The densest Radar stretch: dark mode, auth, newsletters, and 41 commits on 06-30 alone.
+
+### What shipped
+
+- **Multi-user access**: Supabase Auth via `@supabase/ssr`, migration 011 (accounts, roles, approval, domains, ideas owner) and 012, session middleware with fail-closed admin gating, auth routes, authz helpers with per-handler gating, role-gated nav, preview-as-reader, owner-scoped private reader Ideas, an Admin tab, and per-user feed read and starred state.
+- **Weekly roundups** with Notion push, separated digests, a nav redesign, and star-driven roundup selection.
+- **Monthly Client Newsletter**, admin-only, on a Notion-first model.
+- **SEO and AEO post labels with auto-translation.**
+- **Curation that learns**: post-quality classification riding the existing Haiku pass, default-feed curation hiding noise and off-topic posts with a "show everything" escape hatch, thumbs up and down rating, and a maturity-lag crawl ingesting only posts at least a day old (Steve's call).
+- **Ask Radar**: synthesised Q&A over the collected corpus, then made a floating widget, then made conversational with history.
+- **Topics Radar**, ranking SEO and AEO topics by engagement, with real clustering and a weekly matured-engagement re-pull so rankings settle on final numbers.
+- Reshare pull-through capturing the quoted source post, `lnkd.in` links unfurled to real URLs at crawl time with a backfill, and post images cached to Supabase so they stop expiring.
+- Team surfaces: submit-a-person with abuse controls, a readable `/profiles` with Suggest-a-person and an admin pending queue, and nominate-a-news-source.
+- **Feed performance, three attempts**: windowed render painting ~30 cards, then paginated fetch shipping page 1 and streaming the rest, then a manual "Load more" button replacing infinite scroll outright because infinite scroll was the lag.
+
+### Decisions worth recording
+
+- **Auth fails closed.** Admin gating denies by default; a transient database blip must not promote anyone.
+- **Curation needs an escape hatch.** Hiding posts by default is only acceptable alongside "show everything" and a review view, otherwise the system is silently deciding what the client never sees.
+
+### Why this matters for the portfolio
+
+Three separate performance approaches, with the winner being the one that removed a feature rather than optimised it.
+
+---
+
+## 2026-07-01 to 2026-07-08, the feedback loop closes, and the feed goes multi-source
+
+### What shipped
+
+- **The learning loop**: a migration for thumbs-down notes and `feed_tuning_rules`, optional reasons captured on the post PATCH, a "Tell us why" prompt on the toast, a nightly job distilling reasons into rules, and the classifier consuming those rules fail-open.
+- **Admin corrections as authoritative signal**: `feed_post_corrections` (migration 027), a global re-classify endpoint, a Correct UI on filtered posts, and corrections fed back into the loop as an authoritative KEEP.
+- **YouTube as a first-class feed source**: 16 seed channels over free channel RSS, thumbnails, an in-app player, ingest-time about-lines, `@handle` URL resolution, a stricter video quality bar, and channel removal with purge.
+- **X as a first-class source**: 15 seeded SEO and AEO accounts with a strict tweet quality bar, then merged with LinkedIn into one feed with cross-source dedup.
+- **Verification surfaces**: comment-thread summaries so corrections surface before a claim ships, server-side YouTube transcripts so Claude reads the actual video (via Supadata, so it runs from Vercel without yt-dlp), and an independent web fact-check agent on Sonnet with search.
+- Ideas got drag-to-reorder with owner-verified positions, and Studio gained note-creator injection and "Copy full pack".
+- "Chat with this post" across Claude, ChatGPT, Gemini and Perplexity, on the feed and in roundups, with reader-facing versions in roundup notes and the client newsletter using Steve's verbatim preamble wording.
+- A coaching-student role tier, and an admin-only Feedback view showing Steve's curation feedback and what Radar learned from it.
+- Timely-news posts aging out after 7 days on every platform.
+- Button lag killed via an `iad1` region fix, a retracting header, and optimistic idea saves.
+
+### Frictions and course corrections
+
+- The newsletter TTS provider was switched from ElevenLabs to Speechify on 07-07. As of today production is still on ElevenLabs, so that switch did not hold; the blocker turned out to be manual approval of Steve's voice key, not a missing release.
+
+### Why this matters for the portfolio
+
+The thumbs-down loop is the part worth showing a client: a curation system that gets a reason, distils it nightly, and lets an admin overrule it with a correction that outranks the model.
+
+---
+
+## 2026-07-13 to 2026-07-17, note video, reader tier, and the LinkedIn Posts engine
+
+### What shipped
+
+- **Note video**: an AI-narrated audiogram MP4 pipeline for Notion notes, with frames streamed straight into ffmpeg for near-zero scratch disk, carrying the official Notebook N monogram. Runs on a Railway worker.
+- **Reader equals student**: one consumer UI, reader Star and Fetch fixes, then a reader-tier lockdown with invite-only signup by domain, no good/bad rating, no Ask Radar or Profiles, reader-aware copy and a role-gated guide.
+- **The LinkedIn Posts engine, U1 to U8**: a vendored skill contract, a Perplexity Search API client, a fetch stage into `news_items`, selection with primary-source verification, drafting under the skill contract, `li_posts` persistence with review APIs, a `/li-posts` review UI, and a daily cron with an @Steve notify, a no-news path and a canary. Migrations 046 and 047.
+- **Feed performance via the database**: a fast Unread feed and badge counts through anti-join RPCs (migration 050), then migration 051 so those RPCs honour the owner-post curation exemption.
+- Global feed search (full-text search, API and UI), then search results made actionable in place with expand, Good, Star and Idea.
+- Roundup rework: editable sources, bump to next week, a smart YOUR NOTE, an include-picker, a held-for-next-week list with move-back, auto-generated subject lines, and a week navigator spanning this week plus three ahead.
+- Deep-linked notifications: every notification routes to its exact resource, with per-item push URLs and digests in the bell.
+- Steve's own posts bypass all curation and always land in a feed.
+
+### Decisions worth recording
+
+- **`proxy.test.ts` asserts every reader tab is reachable by a reader.** A new reader-facing tab pointing at a gated path now fails CI instead of dead-ending a real user.
+- **Roundup honesty**: "Write it now" reports whether it created or refreshed, rather than implying fresh work either way.
+
+### Why this matters for the portfolio
+
+Two things a reviewer can check: performance solved in the database rather than the client, and a permissions tier with a test that fails the build when the navigation lies.
+
+---
+
+## 2026-07-20 to 2026-07-24, the crawl death, Docs Watch, and SEO IRL
+
+### What shipped
+
+- **Library nav v2**: a vertical badge-annotated section list replacing the horizontal switcher, with a rollback path through a `NAV_V1` environment flag.
+- **Feed staleness root-fixed.** The crawl had been dying silently. Fixed at the mechanism: crawl moved to a dedicated Railway `radar-crawler` service, chunk size cut from 25 to 12, and feed-health monitoring added, plus a tight same-day freshness alert firing about 50 minutes after the expected crawl.
+- **Docs Watch**: an AI-provider documentation change tracker with advisory briefs, expanded on 07-24 with Perplexity and Google structured data, and a wayback backfill guarded to new pages only.
+- **"What's in the link" article summaries**, with honest feed failure states rather than blank cards.
+- Steve's own note promoted to a first-class roundup source, pinned first, with manual-only generation.
+- **SEO IRL sponsor-leads watcher**: a Slack ping mentioning Steve and Peace on every new sponsorship inquiry.
+
+### Decisions worth recording
+
+- **The crawler deploys by snapshot, not git push** (`railway up radar --path-as-root -s radar-crawler`). Worth writing down because a git push looks like it deployed and does not.
+- **The feed alarm runs out-of-process**, later moved to `note-video-worker`, so a dead crawler cannot suppress its own alarm.
+
+### Why this matters for the portfolio
+
+A silent-death bug fixed at the mechanism rather than patched: the fix was a separate service, a smaller chunk size, and an alarm that lives somewhere the failure cannot reach.
+
+---
+
+## 2026-07-24 to 2026-07-31, the Coaching Portal, built in its own repo
+
+A second product, 76 commits in eight days, in its own repository (`stevetoth/coaching-portal`) against its own Supabase project.
+
+### What shipped
+
+- **Bootstrap on Next 16 with OpenNext on Cloudflare Workers**, then a core schema covering identity, cohorts, content, an allowlist hook and audited mutations.
+- **The login door**: three methods with a viewer-context DAL as the single authority, failing closed everywhere. Google SSO was later removed, leaving password, magic link and reset.
+- **Week-gated cohorts** with sandboxed session HTML and a presentation mode using the real Fullscreen API, full week pages with progress tracking, and the four-tab week detail.
+- **Admin surfaces**: content versioning, trash, an access UI, preview-as-role, a link catalog (the most repeated ask from the client call), and cohort template duplication with per-item propagation and lineage-computed divergence, later made selective.
+- **Power 25 buyer pages** with a locked coaching teaser and proven cross-prospect isolation.
+- **Cloudflare Stream playback** with locally signed per-video tokens, and **Zoom webhook-first recording ingestion** with a cron-executed resumable drain.
+- **An installable, self-updating PWA that is structurally unable to cache gated content.**
+- **Design pass**: Notebook design tokens, a dark theme, Roobert, UI primitives, then light-by-default with a dark toggle. The licensed Roobert woff2 came in at 112 KB, replacing a 723 KB trial ttf, which fixed both a licensing exposure and a payload problem in one change.
+- **The live content test**, which found eight real bugs, then a 16-item ledger remediation on 07-31 whose deepest root cause was a port split causing CSRF 403s.
+- A sign-up flow (`/create-account`, emailed link, forced `/set-password`) and an instructor dashboard ordered quietest-first.
+
+### Verified today
+
+- 1,091 tests passing across 85 test files (`npx vitest run`, 2026-08-06), 26 migrations.
+
+### Decisions worth recording
+
+- **A password sign-up form was refused.** The allowlist checks the address, not the typist, so a form that accepts a password from whoever is at the keyboard does not prove identity. The flow became email-link then forced password set.
+- **The PWA cannot cache gated content**, enforced structurally rather than by policy.
+
+### Why this matters for the portfolio
+
+The strongest standalone artefact in the engagement: a second product with its own repo, database, auth model, video pipeline and 1,091 tests, built in eight days, with a security decision made by refusing a requested feature.
+
+---
+
+## 2026-07-01 to 2026-08-05, Notebook OKF Brain, and the trust-signal release
+
+A third product in its own repository (`stevetoth/notebook-okf`), 151 commits, hosted on Railway.
+
+### What shipped
+
+- **A bundle library** with a read-through GitHub layer, atomic Trees commits, forward revert and a hierarchical index. Git as the store, so every change to the knowledge base is a commit.
+- **An extraction pipeline**: a Sonnet extractor, a Haiku tagger, a taxonomy hard-gate, held routing for anything that failed the gate, and a writer stage.
+- **A navigation-precision gate before scaling**, passing 8 of 12 and 6 of 6 on gold-tier, run as the go or no-go on Wave 2 rather than ingesting first and measuring later.
+- **Wave 1** of 26 gold-tier concepts held for review, then **Wave 2** ingested in resumable batches of 25.
+- **Surfaces**: a browse home, a reading view, a public `/okf/` bundle route, `llms.txt`, an interactive knowledge graph (vendored Cytoscape, type colours, collapse-at-scale), and an agentic index-navigation answerer with per-citation provenance and an explicit refusal when coverage is thin.
+- **An MCP connector for Claude** with an in-app OAuth 2.1 authorisation server (PKCE and DCR), four tools, and consult logging.
+- **Ops**: a weekly ingest cron, a liveness canary, a deterministic lint job, a stuck sweep, a freshness banner and a runbook.
+- **OKF v0.2 trust signals, live 2026-08-05**: trust badges, a mark-as-verified button, 470 concepts migrated, 150 flagged stale, and the graph corrected from 726 to 470 nodes once phantom index-concepts were purged. Independently spec-audited as conformant.
+
+### Decisions worth recording
+
+- **No LLM ever writes a trust field.** Verification happens only through a real identity, and the dev bypass stamps nothing. A trust signal an LLM can set is not a trust signal.
+- **Thin coverage produces a refusal, not an answer.** The answerer says it does not know rather than synthesising from insufficient material.
+
+### Why this matters for the portfolio
+
+The provenance model is the point: every claim carries a source, a date and a trust state, and the system is built so the machine cannot promote its own confidence.
+
+---
+
+## 2026-08-03 to 2026-08-05, iOS performance, honest auth, and audits that measure
+
+### What shipped
+
+- **717 KB of unused `raw` stopped shipping on every feed load**, cutting the default feed page from 851 KB to 90.6 KB. Cause: a `returns setof` RPC sends every column unless the call site projects them.
+- **Refresh on resume plus a freshness stamp**, because iOS PWAs have no pull-to-refresh, and a deferred-persist helper so cache writes left the tap path.
+- **Docs Watch for readers and students**, then a Docs Watch admin surface with add and manage pages and a before-and-after change view, plus **two-tier fetching**: cookie-aware plain fetch first, escalating to Apify for JS-only pages.
+- **Real self-service password reset via Resend** on `notebookers.com`, a deliberate, scoped exception to the password-only rule. Magic-link login stays dropped.
+- **Branded auth emails live for the Coaching Portal** on 08-04, after moving `notebookers.com` to Cloudflare, verifying the Resend domain, and configuring Supabase custom SMTP. Three login-flow fixes shipped alongside, including honest but uniform sign-in failure copy and an email that survives a wrong-password retry.
+- **A UI audit harness**, which uncovered two auth siblings that had drifted apart.
+- **SEO IRL speaker cards** and the sponsorship page work.
+
+### Frictions and course corrections
+
+- The Docs Watch release shipped, then a six-reviewer review and a measured UX audit found what shipping had missed: four production change rows that were pure noise (two graded behavioural, so Steve received Opus briefs and Slack mentions for non-events), a false green "Now watching this page" for a page that had failed to fetch, a `{data}`-only Supabase read that could erase a real change, and roughly 40 sub-44px tap targets on the admin page, now zero.
+- Supabase's own auth Site URL had been stale at a `vercel.app` address since the domain move, which no amount of application-side work would have surfaced.
+
+### Decisions worth recording
+
+- **Audit against reality, not source.** Querying production rows and measuring the rendered DOM found all of the above. Reading the components would have produced opinions instead.
+- **Never destructure only `{ data }` from a Supabase query.** Failures arrive as `{ data: null, error }` without throwing, so ignoring `error` conflates "the read failed" with "the value is absent". That exact gap silently bounced admins on every transient blip until 08-03.
+
+### Why this matters for the portfolio
+
+The honest version of a ship: the feature went out, a structured review found four classes of defect the build had missed, and the remediation is documented alongside the release rather than quietly folded in.
+
+---
+
+## 2026-08-06, portfolio reel, and this backfill
+
+### What shipped
+
+- **A 67.2 second vertical portfolio reel** (1080x1920, 30fps) built from real screen recordings of four running apps: Notebook Radar, the Coaching Portal, Notebook OKF Brain and the AEO Site Auditor. 18 cuts, every cut frame-exact on a 100 BPM beat grid.
+- A reusable capture and edit toolchain in `radar/scripts/`: `reel-capture.mjs` (Playwright video capture with DOM-level client anonymising and a per-scene redaction leak scanner), `reel-overlays.mjs`, `reel-build.mjs` (per-segment renders so any one cut can be swapped without a full re-render), `reel-music.mjs`, `reel-shotlist.mjs` and `reel-datascan.mjs`.
+- **This backfill**, plus four rescued log entries that existed only in the working tree.
+
+### Frictions and course corrections
+
+- The first cut ran 45 seconds and was rejected as too fast and unclear: 12 of 16 screens carried no explanatory text at all. Recut to 67.2 seconds with a product intro card per app, a plain-language label on every screen, and slower in-capture scrolling.
+- The music was assumed to be 120 BPM. Measuring it gave 100 BPM (comb score 0.3012 against 0.0004 at 120), so the entire cut grid was re-timed.
+- The redaction leak scanner caught two real failures before delivery: `stevetoth.ai` was blurring only "steve" and leaving "toth.ai" readable, and `PATTERN.test()` on a global regex was advancing `lastIndex` and silently skipping every other match.
+
+### Why this matters for the portfolio
+
+Two habits worth showing: measuring an assumption (the tempo) instead of trusting it, and building a verifier for the safety-critical step rather than eyeballing it, which is what caught both redaction leaks.
+
+---
