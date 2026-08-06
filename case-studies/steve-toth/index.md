@@ -1386,3 +1386,29 @@ assumption was confident. That pattern is the whole argument for measuring inste
 reasoning.
 
 ---
+## 2026-08-06 (continued), a domain move, and two assumptions that were wrong in opposite directions
+
+Steve wanted his coaching portal off its temporary hosting address and onto a subdomain of the domain he had bought for coaching. The move itself was routine. The two things worth recording are that the blocker everyone had planned around did not exist, and that the deploy which fixed the address silently broke a different one.
+
+### What shipped
+
+- **The portal is live at `coaching.notebookers.com`**, commit `ab665fc`. Verified after the fact: the new address returns 200 on `/login`, and the old address returns 308 to the same path on the new one.
+- **A redirect from the old host that preserves the path and the query string**, in `src/lib/legacy-host.ts` with 10 unit tests. The query string is the entire point: password-reset emails sent before the move carry a token in it, and dropping that would have turned every one of them into a dead end.
+- **The login system's own address settings moved in the same pass, additively.** The new domain was added while the old entries were kept, so links already sitting in inboxes still resolve.
+- 1101 tests pass, up from 1091, with a clean typecheck.
+
+### Decisions worth recording
+
+- **The apex was left alone, and that answered a question the client never did.** He was asked twice where the landing page should live and did not reply. Checking the domain rather than waiting showed it was already serving a live pre-launch page for a different product of his, complete with a waitlist and trust logos. So "landing page on the apex" was never a clean option, and the sensible default became obvious without him: portal and its landing page on the subdomain, apex untouched.
+- **The old address redirects everything, including the API paths.** This is deliberately the opposite of the rule applied to the sibling product earlier the same day, where API paths are excluded because scheduled jobs call them with an authorisation header that is stripped across a cross-domain redirect. This app has no such caller: its scheduled work runs inside the worker with no HTTP hop. Same shape, opposite answer, and the reasoning is written at both sites so neither gets "corrected" to match the other.
+
+### Frictions and course corrections
+
+- **The blocker in the plan did not exist.** The plan carried a dashboard fallback and a "needs the client" step, because the API credential was documented as read-only on DNS and a custom domain seemed to need a DNS record. Attaching the domain is a different permission, which the credential had. The platform then created the DNS record and the certificate itself, about ten minutes later. A direct attempt to write a DNS record still fails. So a documented limitation on a neighbouring operation had been treated as proof about this one, and the workaround was never needed. The plan had at least sequenced this as the first step precisely because it was unproven, which is why finding out cost minutes rather than a session.
+- **The deploy that added the new address silently removed the old one.** Declaring an explicit route made the tooling disable the default hosting address by default, and the old URL went to a hard 404. That URL had been given to the client and his operations lead six days earlier, and it was the host every pre-move email link pointed at. It was caught within a minute because the cutover check requested the old address as well as the new one. The tooling had in fact printed a warning about it, in the middle of successful deploy output. Fixed by re-enabling it explicitly, with the reason written at that line so it does not get deleted as redundant.
+- **Two test failures were mine, not the product's.** An automated check of the reset-email flow failed twice because it filled the login form's email field instead of the reset panel's, which only exists once the panel is expanded. Reading the component settled it. Separately, five sign-in tests fail because the stored password is out of date, which was distinguished from a real authentication break by noticing that a reset email had succeeded from the same code path seconds earlier: a configuration fault would have taken both down.
+- **Twice I described the first-time login flow without reading it, and was wrong both times**, on copy that was about to be sent to the client. Allowlisted people who have never signed up have no password at all, so neither "enter your password" nor "use forgot password" applies: there is a separate create-account door that emails a link, creates the account, and then forces a password to be set. The client caught it. It is now a standing rule for this work: describe a flow from the source, not from inference, and treat anything going to a third party as a hard gate.
+
+### Why this matters for the portfolio
+
+Two symmetrical failures in one session, worth more than the shipped feature. One assumption said something was impossible when it was not, and cost a fallback plan that was never used. The other assumed nothing else would change, and cost a live URL. The habit that limited both is the same one: probe the uncertain operation first, and after any cutover check the thing you moved away from, not only the thing you moved to.
