@@ -1440,3 +1440,33 @@ The OKF Brain holds 470 concept cards that an AI condensed from Steve's Notion n
 ### Why this matters for the portfolio
 
 The transferable point is the distinction between two questions that look like one: is this claim true, and did the system invent it. Conflating them sent me to the wrong fix owner and into a commit message that was confidently wrong. Reading the source answered both correctly and turned a vague "the AI hallucinates" into a precise, sorted list: 85 safe to ship, 133 one trim from safe, 14 that must not ship, and a separate flag that belongs with the client's newsletters rather than the codebase. The second point is restraint on the mechanism: the fastest way to clear 470 badges was to let a script write them, and that was the one thing the design existed to forbid, so the tool was built to make the honest path a two-paste job instead.
+
+## 2026-08-07 (continued), a security review that passed, staff 2FA shipped, and a 403 that was never about credentials
+
+A security consultant sent a 10-vector brief for building the coaching student portal safely. The session audited the live portal against all ten, then acted on the gaps and shipped the missing controls.
+
+### What shipped
+
+- **The portal passed all 10 vectors, verified three ways rather than by reading alone:** three parallel code audits across the route handlers, live database checks (RLS on all 15 tables with zero client policies, so the anon key reads nothing), and a live no-session probe against production that returned 401 or a login redirect on every sensitive endpoint. No broken object-level access: every student route filters by session user id or active cohort membership.
+- **Migration 027** (security linter hardening): revoked EXECUTE on the two signup trigger functions from anon and authenticated, and pinned `search_path` on six SECURITY INVOKER helpers. Applied to the live database and verified. 27 migrations total.
+- **Staff TOTP two-factor, built end to end:** one `/mfa` screen that both enrolls (QR plus verify) and does the step-up from aal1 to aal2, server actions only, with a single shared rule (`staffNeedsAal2`) driving both the API 403 and the page-layout redirect so the two cannot drift. 1121 tests pass (30 new), typecheck and build clean. Peace enrolled her own admin account on the live app, confirmed in the database (one verified TOTP factor, aal2).
+- **PWA fix:** the installed app now opens `/home` (the portal) instead of `/` (the marketing page), commit `f958912`.
+- An **architecture document** for the consultant's pre-build review, and a **two-student access-control test spec** for the pre-launch gate. Six commits, all pushed and live.
+
+### Decisions worth recording
+
+- **MFA cadence: a code on every fresh sign-in, no "remember this device".** A trusted-device cookie was considered and rejected for v1: it is custom code and slightly weaker, and Supabase has no built-in remember-device (checked against their docs, aal2 lives only for the session's life). The installed PWA keeps a session alive, so a code is felt only on a genuinely new sign-in.
+- **`MFA_ENFORCED` ships OFF.** Flipping it before staff enroll would lock out a factor-less admin, so the sequence is enroll first, enforce second.
+- **Two controls were declined and recorded rather than forced.** Leaked-password protection is Supabase Pro-only on this free-tier project, so it was left off and flagged as a paid decision, not silently skipped. And two actions stayed with the humans by rule: entering API-token secrets into GitHub, and purchasing the Cloudflare Stream plan on the client's card. Both were requested, both were declined with the reason stated.
+
+### Frictions and course corrections
+
+- **A 403 that three theories got wrong before the dashboard settled it.** Video upload kept failing with a Cloudflare authorization failure. First theory: wrong token value. Second: the token creator's account role was capped. The client corrected a wrong assumption (she uses the account directly, not as a limited member), and only then did opening the Stream dashboard show the real cause: Stream was never subscribed on the account, so every token 403s regardless of scope or who runs it. Lesson recorded: check whether the product is enabled before blaming the credential, and a bearer-token API call is authorized only by the token, never by whose terminal runs it.
+- **A "$0 per month" that was actually $5 per month.** The Stream plan advertised starting at zero; the purchase screen forced a minimum one 1,000-minute block at $5. Caught it at the config step and backed out rather than committing the client to a cost she was told was free.
+- **A nav trap introduced and then fixed in the same session.** The new `/mfa` screen had no way back, which in a standalone PWA (no browser back button) would strand a staff member who opened it and changed their mind. Added a "Not now, back to the portal" link, shown only when enforcement is off.
+
+### Why this matters for the portfolio
+
+An audit is only worth something if it is acted on and checked against reality: this one was verified with a live production probe and a database read, not a reading of the source. It also shows where the safety line sits, declining to mint or paste credentials and declining to spend on a client's payment method even when asked, and routing those to the person who owns them. And it shows the discipline of root-causing to the actual mechanism, a product that was never enabled, instead of shipping the first plausible story about tokens and permissions.
+
+---
