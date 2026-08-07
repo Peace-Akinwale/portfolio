@@ -1412,3 +1412,31 @@ Steve wanted his coaching portal off its temporary hosting address and onto a su
 ### Why this matters for the portfolio
 
 Two symmetrical failures in one session, worth more than the shipped feature. One assumption said something was impossible when it was not, and cost a fallback plan that was never used. The other assumed nothing else would change, and cost a live URL. The habit that limited both is the same one: probe the uncertain operation first, and after any cutover check the thing you moved away from, not only the thing you moved to.
+
+---
+## 2026-08-07, verifying an AI-built knowledge base against its own sources, and the difference between a wrong fact and a fabricated one
+
+The OKF Brain holds 470 concept cards that an AI condensed from Steve's Notion notes. Every card's trust badge read "Unverified" because nobody had re-checked the cards against the notes. This session built the mechanism to move that badge honestly and then did the checking: 394 of 470 cards read against their real Notion sources.
+
+### What shipped
+
+- **A batch-verify tool so the trust badge can actually move.** `/api/concept/verify-batch` takes a reviewed list and stamps it in one atomic commit; `/admin` gained a Batch verify panel that normalizes a pasted list and confirms once. The per-concept button already existed, but 470 individual clicks is not a workflow anyone completes, so the badge had stayed Unverified everywhere. Commit `60a32cf`, 31 new tests for the two routes, 1079 in the suite, clean typecheck.
+- **The verify mechanics were extracted into one shared module** (`lib/bundle/verify-concept.ts`) so the batch route and the single route cannot drift to different rules. The single route was refactored onto it with its behaviour and tests unchanged.
+- **394 of 470 cards carry a recorded verdict** in a resumable ledger: 85 verified and stampable, 92 needing a one-line fix, 194 challenged, 20 stale-but-true, 3 unauditable. 67 of those were hand-checked this session against the live Notion notes; the rest were recovered from an earlier interrupted run.
+- **Four bundle fixes, pushed:** the citation corrections (`e330517`), a name spelling fixed bundle-wide (`a3ba93a`, "Wil" not "Will" Reynolds), and five precise accuracy fixes (`03b2ffd`, e.g. a wrong URL parameter, a dropped co-credit, a dimension count that said twelve where the source had thirteen).
+
+### Decisions worth recording
+
+- **Stamping stays a human action, and a request to script it was declined.** The whole v0.2 trust system refuses any non-human writer: the API 403s a dev-bypass session, and writing a verified stamp from a script would be exactly the fabrication the badge exists to prevent. When asked to "use a script to approve" the 85, the answer was no, with the reason: the batch panel is the one-action equivalent, run under the reviewer's own login. The tool was built to make the honest path fast, not to bypass the identity check.
+- **Point-in-time facts are date-qualified, not called wrong.** A card sourced from a 2021 note saying "a 20-person agency" is a dated snapshot, not an error. The review brief was changed mid-pass to sort these separately from real defects, because arguing with a note about a fact that was true when written wastes the reader's attention and buries the defects that matter.
+- **Card quality tracks source-note substance, and that became the whole finding.** Cards extracted from a real essay, book summary, or case study are faithful. The invented content clusters entirely in cards built from thin weekly-roundup blurbs, where the extractor manufactured the reasoning the note never contained. The judgment is not "is this card good" but "what did its source actually contain."
+
+### Frictions and course corrections
+
+- **I called Steve's own statistics fabrications before I had read the source, in a commit message.** An earlier review flagged figures like "76.4% of cited pages" and "NavBoost outweighs the rest combined" as AI hallucinations, and I shipped a commit describing them that way. Then I fetched the actual Notion notes: every one of those stats is in Steve's own published newsletters, with those attributions, carried faithfully by the extractor from secondary SEO blogs. They are wrong in the world, but they were not fabricated by the AI. The correction matters two ways: the fix owner is different (this is a content-accuracy flag for Steve's newsletters, not an OKF pipeline bug), and I had asserted the opposite in writing. The edits still stand because they make the cards more accurate than their source.
+- **The scary number shrank under scrutiny.** "194 challenged" sounds like a third of the bundle is broken. Re-sorted from the recorded evidence, it is 164 genuine card defects and, of those, 133 are salvageable by deleting a single invented paragraph. Only 14 are true fabrications that cannot be trimmed clean, and 2 of those are empty dedup stubs that need re-ingestion, not editing. The actionable problem is 14 cards, not 194.
+- **The session could not finish in one sitting and I said so rather than degrading.** The remaining 76 cards each need an 8-to-15k-token source-note fetch, which would exhaust context partway and stop mid-card. I checkpointed with everything saved to the ledger and spawned the remainder as a tracked task, instead of pushing until the work got sloppy.
+
+### Why this matters for the portfolio
+
+The transferable point is the distinction between two questions that look like one: is this claim true, and did the system invent it. Conflating them sent me to the wrong fix owner and into a commit message that was confidently wrong. Reading the source answered both correctly and turned a vague "the AI hallucinates" into a precise, sorted list: 85 safe to ship, 133 one trim from safe, 14 that must not ship, and a separate flag that belongs with the client's newsletters rather than the codebase. The second point is restraint on the mechanism: the fastest way to clear 470 badges was to let a script write them, and that was the one thing the design existed to forbid, so the tool was built to make the honest path a two-paste job instead.
