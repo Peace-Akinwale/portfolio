@@ -1500,3 +1500,33 @@ The continuation of the 2026-08-07 session. That day left three things queued: a
 The transferable idea is that trust in a large automated change should not come from trusting whatever produced it. Eight subagents made 238 edits to a bundle that ships publicly; what made that safe was a gate run afterward against ground truth, checking the properties that actually mattered (frontmatter untouched, scope not exceeded, the one invariant intact) rather than re-reading every file or believing the agents' own summaries. The same session shows the two smaller disciplines that keep that honest: fail closed when a residual problem remains instead of promoting anyway, and check a fact like today's date against a hard source before it becomes part of the record. The headline number, 85 stampable to 382, is real, but the reason a client should trust it is the gate behind it, not the count.
 
 ---
+## 2026-08-10 (continued), a credential that stopped working on its own, and retracting a cause I could not source
+
+Steve reported in Slack that the audio on his Week 33 newsletter round up had failed, and added a second ask: stop the email subject lines being read aloud. Two unrelated problems in one message. The first was not a code defect at all, which made the interesting work diagnosis and honesty rather than engineering.
+
+### What shipped
+
+- **Root cause found in the production runtime logs, then reproduced independently.** ElevenLabs was returning `400 invalid_api_key` with the message "API key ID used as API key. Only valid API keys can be used. API keys start with 'sk_'". Confirmed by calling `GET /v1/user` directly with the stored value rather than trusting the log line.
+- **Established that nothing on our side had changed.** The Vercel environment variable was last written on 2026-06-17 per Vercel's own env metadata, and the render log showed the last success on 08-04 with failures on 08-09 and 08-10. The stored value was 64 hex characters with no `sk_` prefix, which the API now reads as a key ID rather than a secret.
+- **The key was rotated and set in all three places it lives:** Vercel production, the Railway note-video-worker service, and the local env file. The video had failed identically because the worker reads the same variable.
+- **Email subject lines are no longer narrated** (`radar/lib/note-audio/segment.ts`, commit `d8c89d5`). The note's first block carries the newsletter send scaffolding, `Primary:` and `Secondary:`, which the segmenter had been treating as body prose, so the audio opened "Primary colon magnifying glass" instead of "Howdy Notebooker!". Four new tests, 50 passing across the note-audio suite on the production branch.
+- **Both restored and verified against live surfaces:** audio 6 minutes, video 383 seconds and 34.1 MB, both serving 200, and the narration text on the live player page confirmed to start "Howdy Notebooker!" with no subject lines anywhere in it.
+
+### Decisions worth recording
+
+- **I retracted a cause I had stated confidently, before it reached the client.** My first explanation was that ElevenLabs had retired its legacy key format in the failure window. Peace asked for a source to send to Steve, and there was none: their authentication docs say nothing about key format, and the only changelog entry between the last success and the first failure covers unrelated fields. So the deprecation story came out and what went to Steve was only the provable set: the verbatim error, the environment variable's last-modified date, the last-success and first-failure dates, and the required format quoted from ElevenLabs' own response. The explanation is now weaker and correct instead of strong and unsupported.
+- **Ship the pending fix before re-triggering a failed job.** The fast move was to flip the note back to Generate the moment the key worked. That would have re-rendered the exact defect Steve had just complained about, and the ElevenLabs quota is shared between audio and video, so it would have been paid for twice. The fix went out first, then a single render covered both problems.
+- **Strip the subject lines per line, not per block.** Notion stores both labels in one paragraph separated by a line break, so dropping the whole block would silently delete real prose the day a sentence shares it. A block that is only subject lines still drops entirely.
+- **Reach the production branch through a throwaway worktree rather than switching branches.** The working tree held a large amount of unrelated in-progress work, and another session was committing into the same repo concurrently. Committing on the working branch, then cherry-picking through a temporary worktree, meant the dirty tree was never switched or stashed.
+
+### Frictions and course corrections
+
+- **Setting the environment variable did not fix anything by itself.** Vercel bakes environment variables in at build time, so production kept serving the dead key until the same commit was redeployed. This is an easy place to declare something fixed and be wrong, and it is now a row in the verify-done checklist.
+- **I polled a storage path I had guessed rather than read.** Waiting on the rendered video, I watched a URL I had inferred from the audio path instead of the worker's actual output. It happened to be correct, which is the bad kind of luck. The authoritative signals were the database row and the Notion property, and that is what the result was finally confirmed against.
+- **The new key arrived in a plaintext file that also held four other live credentials.** The document in Downloads carried Cloudflare account, Stream and R2 tokens and a Resend key alongside the ElevenLabs one. It was moved to Trash rather than hard-deleted, and I flagged that three of those secrets were not confirmed to exist anywhere else, so emptying the Trash could destroy the only copy.
+
+### Why this matters for the portfolio
+
+The engineering here is small. What a client should take from it is the diagnostic discipline: the failure looked like a regression, and the work was proving it was not, using the environment's last-modified stamp and the render history to establish that the system had been untouched while the outside world changed underneath it. Then, when asked to explain why, refusing to hand over an explanation I could not source, even though it sounded right and the client was under time pressure. Saying "here is exactly what broke, here is what fixes it, and I do not know why the vendor changed" is more useful to someone who has to repeat it to their own team than a tidy story that turns out to be invented.
+
+---
