@@ -1530,3 +1530,31 @@ Steve reported in Slack that the audio on his Week 33 newsletter round up had fa
 The engineering here is small. What a client should take from it is the diagnostic discipline: the failure looked like a regression, and the work was proving it was not, using the environment's last-modified stamp and the render history to establish that the system had been untouched while the outside world changed underneath it. Then, when asked to explain why, refusing to hand over an explanation I could not source, even though it sounded right and the client was under time pressure. Saying "here is exactly what broke, here is what fixes it, and I do not know why the vendor changed" is more useful to someone who has to repeat it to their own team than a tidy story that turns out to be invented.
 
 ---
+
+## 2026-08-10 (continued), asked to automate a trust stamp, and the difference between a fast answer and an honest one
+
+Right after the verification pass finished, the client (via Peace) asked to move all 382 "verified" badges automatically instead of clicking each one. The badge is on a public knowledge bundle that third parties read through an MCP connector, so the request collided with the one thing the badge exists to guarantee. The work was in the reasoning, not the code.
+
+### What shipped
+
+- **A new `fact_checked` trust tier**, applied to 381 cards, deployed. New frontmatter field `fact_checked` (separate from `verified`), a `fact-checked` tier in the derivation (`human-reviewed > fact-checked > machine-confirmed > unverified`), and a badge that renders "Fact checked and confirmed" for both the human-reviewed and fact-checked tiers. Commits `850dbaa` (code, tests, apply-script, docs) and `e3cd561` (381 bundle files) on notebook-okf `main`.
+- **The human-only invariant was left completely intact.** `verified` still has exactly its two real-identity writers; the new tier uses a different field with its own operator-run script (`scripts/apply-fact-checked.ts`, fail-closed and idempotent). Measured: `rg -c "^verified:" bundle` stayed 1 before and after. 1086 tests pass, typecheck clean.
+- The apply-script attributes every stamp to `okf-verification-pass` with the review ledger as evidence, and the concept page's detail line still shows that attribution, so the unified badge never hides who actually confirmed a card.
+
+### Decisions worth recording
+
+- **Writing `verified: human:peace` by script was refused, and the refusal was the correct output.** The direct way to satisfy "automate it" was to have a script write the human-reviewed stamp onto 382 cards a human did not individually review. That forges human provenance in a public artifact, which is precisely the failure the badge was built to prevent. The refusal held even when the client said to bypass the rule, because the cost lands on people downstream who trust the badge, not on the person lifting the rule.
+- **The resolution was a label that is true of everything it appears on.** "Fact checked and confirmed" is accurate for both the 381 cards the pass checked against their real sources and the one a human reviewed, and it never claims who did the checking. That made "make them look the same" honest to grant: the visual is unified, the underlying data still records human versus pass, so the record cannot later be read as a lie.
+- **A separate field beat overloading the existing one.** Reusing `verified` with a non-human actor would have worked and been less code, but it would have put an automated writer on the field whose entire value is that only a real human can write it. A parallel `fact_checked` field kept that guarantee absolute while still delivering the automation.
+
+### Frictions and course corrections
+
+- **The platform's permission classifier was down for most of this**, intermittently blocking edits, tests, and commits. Every action was retried until it landed; nothing ended up half-applied, verified by re-running the idempotent apply-script (second run reported "stamp 0") and by the clean test suite. Worth noting because "it eventually worked after N retries" is a real state to report honestly, not paper over.
+- **I could not confirm the deploy live and said so.** The Railway CLI was not linked in the session and the pages are auth-gated, so I could verify the commits, the tests, and the local bundle state, but not the rendered badge on production. That was handed to the client to eyeball rather than asserted as done.
+- **A commit landed on the wrong branch** because a concurrent session had switched the working tree; I flagged it and declined to push it rather than interfere with the other session's branch.
+
+### Why this matters for the portfolio
+
+The transferable point is that "just automate it" is sometimes a request to manufacture a false record, and the job is to find the version that gives the person what they actually want without the lie. Here that was a third tier with a truthful label and a separate field, so the badges move, they look uniform, the automation is real, and yet a script still cannot forge the human signal and the data never overclaims. The second point is honest reporting under a degraded environment: retries disclosed, the one thing that could not be verified named as unverified rather than rounded up to done.
+
+---
