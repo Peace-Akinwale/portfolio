@@ -1470,3 +1470,33 @@ A security consultant sent a 10-vector brief for building the coaching student p
 An audit is only worth something if it is acted on and checked against reality: this one was verified with a live production probe and a database read, not a reading of the source. It also shows where the safety line sits, declining to mint or paste credentials and declining to spend on a client's payment method even when asked, and routing those to the person who owns them. And it shows the discipline of root-causing to the actual mechanism, a product that was never enabled, instead of shipping the first plausible story about tokens and permissions.
 
 ---
+
+## 2026-08-10, finishing the OKF verification, and why a mass edit to a public bundle is only as trustworthy as the gate you run after it
+
+The continuation of the 2026-08-07 session. That day left three things queued: audit the last 76 of 470 cards, apply the ~92 one-line fixes, and apply the 133 salvageable trims once Peace approved a batch. All three are done, and the stampable count went from 85 to 382. The interesting part was not the edits, it was building enough of a safety net that 238 edits to a public knowledge bundle could be trusted without me reading all 238 by hand.
+
+### What shipped
+
+- **The last 76 cards were audited to 470/470.** Eight read-only researcher subagents ran the four gates against the real Notion notes, each writing its own partial ledger so parallel writers could not corrupt a shared file. Result: 58 verified, 15 needing a one-line fix, 3 challenged.
+- **104 one-line fidelity fixes** committed as `312ed42` (102 files): quoted strings made verbatim to the source, invented connective claims removed.
+- **136 salvageable trims** committed as `2ac6918` (136 files, 427 insertions, 722 deletions): the manufactured "why this works" paragraph deleted from each card, verbatim hedges and attributions restored (Glen Allsopp, Ian Lurie), and fabricated specifics corrected, for example a card that stated "Bruce Clay (1946 to 2025)" when the source gave no years and the real dates are 1948 to 2026.
+- **10 held cards' frontmatter overclaims fixed** as `45add34`, and the session logged to the bundle's decisions.md (`a17c498`, date corrected in `2af2481`).
+- **Final tally: 382 verified and stampable, 4 needing a human decision, 61 challenged, 20 stale-but-true, 3 unauditable.** The `verified:` key count in the bundle stayed exactly 1 (a single real production click) across all four commits: nothing was machine-stamped, every promotion is a review verdict, and a human still stamps through the admin panel.
+
+### Decisions worth recording
+
+- **Fail closed on the frontmatter, do not flip a card whose title still overclaims.** For 12 trimmed cards the body was clean but an invented claim survived in the title or description ("penalizing hallucinations," "originally built for analytics," a "single superior" schema, a sole attribution). Those were held at "needs edit" rather than promoted to verified, because a verified badge on a card whose summary still overclaims launders exactly the thing the badge exists to prevent. Eleven were then fixed and flipped; one stays held because resolving it needs a spreadsheet I could not open, and guessing was not an option.
+- **The ledger became the single source of truth for the triage, so a derived file could never diverge again.** The category lists were plain text files derived from the review ledger. After I damaged two of them (below), I moved the categorisation into the ledger itself and regenerate the text files from it, so the authoritative copy is the one that cannot drift.
+- **The safety of a 238-file edit comes from a mechanical gate, not from trusting the editors.** Before either commit I checked the actual git diff against ground truth: frontmatter byte-identical to the previous version on every file (proving the edits were body-only), zero files touched outside the intended set, zero em dashes introduced, and the verified-key count unchanged. Subagents can be persuasive in their reports; the diff cannot.
+
+### Frictions and course corrections
+
+- **I overwrote two triage files with empty ones and had to recover them.** Regenerating the category lists, I used tag names that did not match what the earlier session had actually stored, so two files (17 and 10 entries) were rewritten to nothing. They were gitignored, so there was no git history to restore from. I recovered the 17 exactly by re-deriving from the ledger, reconstructed the 10 by definition and flagged that it was a reconstruction not a byte-for-byte restore, and then closed the hole by making the ledger authoritative. The rule this reinforces: before overwriting a file, look at what is in it, and derive views from a source of truth rather than hand-maintaining parallel copies.
+- **I dated the whole completion 08-08, and it was actually 08-10.** A system notification mid-session announced the date had changed to 08-08; I took it at face value and stamped it into the decisions entry, the memory, the always-on context, and a handoff filename. The git commit timestamps said 08-10, and so did the machine clock when I finally checked it. I corrected every reference. The lesson is narrow and concrete: verify a date against the commit timestamps or the clock, never against a notification, before writing it into a record.
+- **I over-held one card that was already clean.** One of the 12 I flagged for a frontmatter fix turned out to need none: the earlier trim had already removed the offending phrase from the body and the description never carried it. Checking each flag against the live file rather than the report caught it before it cost a needless edit.
+
+### Why this matters for the portfolio
+
+The transferable idea is that trust in a large automated change should not come from trusting whatever produced it. Eight subagents made 238 edits to a bundle that ships publicly; what made that safe was a gate run afterward against ground truth, checking the properties that actually mattered (frontmatter untouched, scope not exceeded, the one invariant intact) rather than re-reading every file or believing the agents' own summaries. The same session shows the two smaller disciplines that keep that honest: fail closed when a residual problem remains instead of promoting anyway, and check a fact like today's date against a hard source before it becomes part of the record. The headline number, 85 stampable to 382, is real, but the reason a client should trust it is the gate behind it, not the count.
+
+---
