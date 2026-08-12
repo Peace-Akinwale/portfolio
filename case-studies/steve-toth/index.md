@@ -1664,3 +1664,35 @@ The strongest evidence here is what the audits found after everything shipped an
 The second point is about scope discipline with a client who thinks out loud. A ninety minute call contains commitments, wishes, and things being decided in real time, and treating them as one undifferentiated list is how teams build the wrong thing enthusiastically. Sorting them, quoting the client's own line against each one, and keeping a written bucket for the things he said not to build yet, is what let a single day close nearly all of it without touching anything he had explicitly parked.
 
 ---
+
+## 2026-08-12, the day after shipping: what live users found, and a campaign packaged for approval
+
+The day after the big ship, Peace tested everything as a real admin and Steve's outreach campaign moved from research to presentation. The pattern of the day: every defect she found by using the product was a design gap no test suite had modelled, and each fix was verified back on production the same hour.
+
+### What shipped
+
+- **Radar, main feed: add anything with a destination choice.** Fetching starts the instant a link lands; while it fetches, one question: feed only, or feed plus a notebook roundup. The choice is stored server side and the worker finishes the add, so choosing and closing the app loses nothing. Migration 065, deployed.
+- **The star that lied, fixed at the design level.** An added article showed "not starred" while it sat in the roundup pool. Cause: the add stars the post as Steve, the owner whose stars drive the roundup, but the card shows the viewer's own star. Peace's unstar toggled a personal star that controlled nothing. Now the adder's row is starred too, and an admin's star toggle mirrors onto the owner row: what an admin sees is what the pool reads.
+- **Docs Watch capture fidelity.** Peace found one archived page rendering on the wrong background and one change whose before and after were identical. The identical sides were real: the Internet Archive capture chosen for the before side was taken after the edit. The fix verifies every candidate capture by content against the version it claims to be, rather than trusting timestamps. Sweep of all 18 watched pages: 4 changes had the defect, all repaired, 18 own captures backfilled, zero remain.
+- **Coaching portal, batch 3:** auto-growing description boxes everywhere, a visible clickable confirmation on every content add, back navigation that returns where you came from, manual week unlock, and cohort cloning verified against production, which caught it silently dropping the rich-text context on every clone since that column existed. A coverage guard now makes the next new column fail loudly. 1,496 tests.
+- **OKF: YouTube and PDF ingestion.** Transcripts fetched at submission, PDFs uploaded and text-extracted in front of the admin, the pasted-PDF-URL binary trap closed, and a no-transcript case that refuses loudly instead of ingesting a thin stub. 1,174 tests.
+- **The outreach campaign packaged for Steve:** a repeatable one-target skill, sample-run on a real target by a smaller agent, and a collapsible HTML game plan whose loudest section is the seven decisions only Steve can make. Nothing has been sent to anyone.
+
+### Decisions worth recording
+
+- **Timestamps are a prior, not a verdict.** The obvious fix for the wrong-side capture was a tighter time window. Measured against all stored captures first: the window bound would have discarded five faithful captures and kept all four unfaithful ones. Content verification replaced proximity. Measuring the fix before shipping it is what caught that.
+- **The skill was tested by the kind of agent that will run it.** The outreach skill was written for a smaller model at medium effort, then sample-run by a delegated agent following it literally. The run surfaced seven ambiguities, including a conflict between the skill's word cap and the template's, and a step that could never succeed. All seven went back into the skill the same hour. A skill that has not been run by its intended operator is a draft.
+- **The client names the framework.** Steve was advised toward one name and deliberately kept his own, the Brand Truth Framework. Every internal file was updated the same day, with one flag left standing: the live site still carries the old name and must change before outreach ships, because publishing two names into the engines the campaign targets would seed the exact confusion it exists to fix.
+- **A refresh that cannot reach client state is a repo-wide class, not a one-off.** The composer list not updating after an add was the third component in the codebase with the same mechanism, and the first fix attempt was disproven in a browser before the documented in-repo pattern was reused. The class went into the bug pattern library with a detector.
+
+### Frictions and course corrections
+
+- **The presentation failed before the plan did.** Peace read the campaign game plan and did not understand it: campaign shorthand with no map, and she could not find the six files it referenced because they lived on disk, unannounced. The fix was an orientation table mapping Steve's ask, piece by piece, to where each answer lives, and opening the folder on her screen. A deliverable the reviewer cannot navigate is not delivered.
+- **A published artifact link 404ed** because it was created under a different login mid-account-switch. Republished under the current account; the fallback lesson is to always name the on-disk paths alongside any hosted link.
+- **The review pack was too long, and she said so.** The response was not a shorter summary of the same shape but a different shape: collapsible HTML for Steve, orientation-first markdown for her.
+
+### Why this matters for the portfolio
+
+Two disciplines carried the day. First, verification against measured reality over plausible mechanism: the capture fix and the timestamp measurement, the clone verified by a real production run, the skill hardened by an actual run rather than a read-through. Second, audience-shaped delivery: the same campaign exists as six research files for the operator, one collapsible page for the founder, and one mechanical skill for the agent that will do the work. The content is identical; the shapes are not interchangeable, and treating them as such is how good work gets rejected.
+
+---
