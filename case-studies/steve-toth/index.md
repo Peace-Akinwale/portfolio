@@ -1696,3 +1696,34 @@ The day after the big ship, Peace tested everything as a real admin and Steve's 
 Two disciplines carried the day. First, verification against measured reality over plausible mechanism: the capture fix and the timestamp measurement, the clone verified by a real production run, the skill hardened by an actual run rather than a read-through. Second, audience-shaped delivery: the same campaign exists as six research files for the operator, one collapsible page for the founder, and one mechanical skill for the agent that will do the work. The content is identical; the shapes are not interchangeable, and treating them as such is how good work gets rejected.
 
 ---
+
+## 2026-08-13, making one item shareable without widening who can see it
+
+The operator wanted to send the founder a single item, not a tour of the app. Two asks in her words: share each Docs Watch change, and share a LinkedIn draft by its own link, with the constraint that Docs Watch "should be shareable by everyone".
+
+### What shipped
+
+- A Share control on every Docs Watch change page, including the thin cosmetic-change layout that has no brief. Touch devices get the OS share sheet, desktop copies headline plus URL with explicit success or failure feedback.
+- `app/li-posts/[id]/page.tsx`, a per-draft page that renders the same draft card the review queue renders, with the id parameter shape-guarded so a mistyped shared link returns not-found rather than a 500.
+- `lib/liposts/view.ts`, a single row-to-view mapper now used by both the list and the detail page.
+- Both existing deep-link producers, the change page and the background worker's push notification, repointed from a list anchor to the draft's own URL. Old anchor links still resolve.
+- Product guide updated in the same commit, per the repo's own rule.
+- Commit `b6e2dc8`, 8 files, +163 / -23. 1160 tests passing, typecheck and production build clean, Vercel deployment confirmed READY on that SHA, background worker confirmed booted in its logs.
+
+### Decisions worth recording
+
+- **"Shareable by everyone" required no permission change, and saying so mattered more than building something.** Those pages had already been readable by every account since an earlier change. The missing piece was a way to hand out the URL, not a wider door. The opposite instinct, loosening access to satisfy the words of the request, would have been both unnecessary and unsafe.
+- **Drafts stayed admin-only, deliberately, in the same feature.** Unpublished posts in the client's voice are not the same asset class as a public vendor documentation page. One request, two different access answers, both written into the decision record so a future session does not "fix" the asymmetry.
+- **The shared draft page reuses the real card rather than a read-only twin.** A simplified duplicate is cheaper today and drifts from the original within weeks. Export was also rejected as a share format: a link keeps the content inside authentication, a PDF does not.
+- **Desktop does not call the native share API.** On desktop browsers it surfaces an extension list, not a share sheet. That was learned on a previous feature in July and applied here rather than rediscovered.
+
+### Frictions and course corrections
+
+- One file's worker-side change meant the deploy was not finished by the git push. That repository deploys its background worker by snapshot upload, not from git, so the push alone would have left the notification links pointing at the old URL shape while the web app used the new one. Caught by tracing which side of the system each edited file runs on before deploying.
+- The mobile share sheet is the one path no test suite can reach. It is stated as unverified in the handoff with a twenty second manual check, rather than folded into the passing test count.
+
+### Why this matters for the portfolio
+
+The interesting work in a sharing feature is not the button. It is knowing which content can safely travel, which cannot, and being able to prove the difference from the existing access rules rather than guessing. This session shipped one feature with two different access answers inside it, and wrote down why, which is what stops the next person from flattening them.
+
+---
