@@ -1762,3 +1762,34 @@ Video hosting for the client's coaching portal had been blocked for six days on 
 Two things here are worth a client's attention, and neither is the feature. The first is that a wrong diagnosis was held publicly, twice, and then corrected by changing the question rather than repeating the experiment: not "is this credential right" but "how does this value actually reach the running process". The second is that the work was audited adversarially after it shipped, the audit found real defects, and those defects were fixed at the mechanism and then converted into reusable detectors so the same class cannot recur silently. A record that only listed the shipped feature would be shorter and considerably less true.
 
 ---
+## 2026-08-14, the judge was writing the commentary, and a diagnosis that reversed its own fix plan
+
+The client asked for two things in Slack the day before: make the app's auto-drafted LinkedIn posts factual instead of opinionated, and start watching the AI vendors' terms-of-service pages. Both shipped and were verified on production the same day. The third piece of work was not asked for: an audit of the alert channel's own noise, whose fix plan was killed by its own diagnosis and replaced with a different, smaller fix.
+
+### What shipped
+
+- News mode on the post-scoring judge: for documentation-change posts, the 10 rubric points paid for emotional positioning move to source-traceable proof, same 100-point total, same pass mark. Scoped to that one post type on the operator's explicit ruling. Proof by redraft of the exact post the client had complained about: 214 words against roughly 330, one labelled interpretation line against four commentary paragraphs, 90/100 on the first pass with no revise loop.
+- Eight OpenAI advertising and commerce policy pages added to the daily documentation watch, each admitted only after its live text was read through the real fetch pipeline. Thirteen candidates were cut on the same evidence, including every Google and Anthropic policy page, which turned out to be safety documents with no search or marketing content.
+- A quiet lane for legal churn (migration 066): on policy pages, effective-date bumps and renumbering are stored and rendered but ping nobody, while a clause that changes what someone may do still alerts. Dry-run on live pages: 3 of 3 housekeeping edits stayed quiet, 8 of 8 substantive edits alerted.
+- A container-flip guard (migration 067): when a vendor restructures its page markup, the watcher now re-baselines instead of reporting a phantom edit. Verified on production after deploy: 26 of 26 watched pages stamped, zero false changes, zero notifications fired.
+- Three commits on the deploy branch, `c2eeb84`, `1a46bc3`, `bb60d84`. Test suite 1177 to 1182, verified by running it. Two Vercel deploys confirmed READY, two crawler snapshots deployed, both migrations applied to production.
+- One new detector pattern (C33) added to the bug-hunting skill: a defect diagnosed from its historical artifacts must be re-proven against current code before a fix is planned.
+
+### Decisions worth recording
+
+- **The prompt was not the lever, the scoring rubric was.** The drafting prompt could be edited to say "less commentary", but the judge paid 10 points for contrarian positioning against a 90 pass mark, and the revise loop re-added whatever the judge named as missing. A factual post structurally could not pass. The fix went into the code that scores, not the words that ask, the third time this codebase has proven that a prompt does not hold against code that rewards the opposite.
+- **A relevance bar decided which legal pages to watch, applied by reading sentences, not counting keywords.** The operator's rule: crawl a terms page only where it touches search, marketing, or buyer behaviour. That cut OpenAI's own usage policy, 1,072 words with zero search terms, even though terms pages were the client's literal request.
+- **The operator's pushback found real gaps.** She challenged the first four-page list with "I just wanted to double-check them so that you don't not crawl things that you should crawl", and the re-check found four more pages, including the 6,067-word master advertising agreement, which is absent from OpenAI's own sitemap and only discoverable by reading their policy index as prose. The index itself is now watched so the next invisible page surfaces on its own.
+- **The planned noise fix was cancelled by its own diagnosis.** Six alerts in three weeks were provably the system's own capture wobbling, and the approved plan was an extraction change plus a full re-baseline. Diffing the stored versions showed four of the six had already been fixed nine days earlier, the remaining two were a one-time event, and the planned fix would have silenced detection of page renames, which are real signal. The shipped fix was different and smaller: record which container the extractor chose, re-baseline when it moves, no re-baseline pass needed at all.
+
+### Frictions and course corrections
+
+- **The wrong fix was proposed confidently before the diagnosis, twice.** First an Apify cost estimate built on a raw curl 403 that the real fetcher does not hit, then an extraction fix built from reading alert headlines instead of current code. The occurrences had stopped six days before the fix was proposed, a recency check that alone would have killed the plan. Both corrections are recorded in the decision log with the method error named.
+- **A visual explainer built mid-session now carries a superseded section.** The operator asked for an HTML page explaining the noise mechanism; it was built and published, and its fix section describes the plan that was later reversed. Flagged in the handoff for correction before it is shared onward.
+- **Verification chased three wrong theories because of a mid-run database read.** After deploy, five pages appeared unstamped with contradictory timestamps. The boring truth: the verification query ran while the crawl was still in flight, one page's browser-tier fetch takes up to 200 seconds. Written into the risk notes: check the run lock before diagnosing a half-finished pass.
+
+### Why this matters for the portfolio
+
+Two habits carried this session. The first is refusing to fix a reported defect before proving it still exists: the approved, plausible, client-visible fix plan was thrown away because the stored evidence said the problem was already solved, and the replacement fix was smaller and did not break rename detection. The second is treating a client's vague ask, "check the terms of service too", as a filtering problem rather than a fetching problem: what got shipped watches eight pages that can change a client's visibility in AI answers and deliberately ignores forty that cannot, with the reasoning for every cut written down and testable.
+
+---
