@@ -1727,3 +1727,38 @@ The operator wanted to send the founder a single item, not a tour of the app. Tw
 The interesting work in a sharing feature is not the button. It is knowing which content can safely travel, which cannot, and being able to prove the difference from the existing access rules rather than guessing. This session shipped one feature with two different access answers inside it, and wrote down why, which is what stops the next person from flattening them.
 
 ---
+## 2026-08-13 to 2026-08-14, a feature that worked but never said so, and the rule that came out of it
+
+Video hosting for the client's coaching portal had been blocked for six days on what everyone believed was a billing step. The billing step had actually been done on day one. What followed was a diagnosis, a shipped feature, an audit that found two defects in that same feature, and a process change written into the tooling so the next feature does not repeat it.
+
+### What shipped
+
+- Cloudflare Stream video working end to end on the live portal: upload, encode, signed playback, poster frame, and an encoding state that resolves itself. Verified on production with a real clip that reached Cloudflare ready, with signed URLs required and playback locked to the portal's own origin, then deleted so the account was left clean.
+- The admin editor now embeds the same player a student sees, so a recording being ready is something an operator can look at rather than a status word to trust.
+- `GET /api/video-status/[videoId]`, a new route that answers "is this playable yet" without minting a playback credential as a side effect, gated by the same authorisation function as its sibling route.
+- Six Cloudflare secrets moved to platform runtime bindings, where the running code actually reads them.
+- Three commits on the portal's main branch, `ae17bbc`, `e193423`, `9d7e79b`. **1515 tests passing**, verified by running the suite, up from 1160 at the start of the arc. Typecheck clean, production build compiling, deploys green.
+- On the separate outreach workstream: the founder's decision document rebuilt on line by line feedback and delivered to him, with his required decisions cut from seven to four plus one confirmation. Nothing has been sent to any third party.
+- Four new detector patterns added to the bug hunting skill, taking it from 55 to **59**, each distilled from a bug confirmed this session.
+
+### Decisions worth recording
+
+- **Two wrong diagnoses were made publicly before the right one, and the correction is the lesson.** The credential worked from a laptop, so the deployed credential was blamed. Twice. The operator was sent to re-paste a secret that was correct both times. The actual cause was that server side environment variables reach that platform as runtime secret bindings, while the deployment pipeline was passing them as build variables, which only affects values inlined at build. Four deploys went green with a correct secret and a broken feature. The rule extracted: **when a credential works locally and fails in production, verify the delivery mechanism before the credential.** Listing the running service's actual bindings answered in one call what two theories had not.
+- **A shared credential was deliberately not replaced.** A narrower token would have fixed local deploys for this project and silently broken two others that read the same file. A separate file was created instead, and the trade off was stated rather than assumed.
+- **A production deploy credential was kept out of the project folder.** Nothing local needs it, the pipeline does the deploying, and a token that can deploy to production does not belong in a project directory even a git-ignored one.
+- **A research figure in the client's own decision document was disproven rather than repeated.** It claimed 57 lists worth pitching. Opening all 99 candidate pages showed **59** are lists that could actually be joined, and only **9** of those are genuinely independent rather than self-ranking. Forty are not lists at all: company landing pages, paid directories, academic papers, forum threads, two cookie consent pages and nine dead links. A number that has been in three internal files for days is exactly the kind that gets quoted to a client.
+- **Automated reminders were removed on measured evidence, not preference.** Two nudges had fired on every prompt for two and a half months. Checking the actual command history across 3,858 prompts showed zero uses and no resulting artifacts, while burying the one reminder that demonstrably worked. Removed, with the evidence recorded.
+
+### Frictions and course corrections
+
+- **The feature shipped silent and that is the real failure of the session.** Upload worked, but there was no acknowledgment in the interface, no error state, and the surface a student sees had not been checked. The operator found it, not a test.
+- **An adversarial review of the same day's work found two defects after it was deployed.** A video whose encoding failed would have polled "still processing" forever, because a four state status had been collapsed into a yes or no, directly beneath a row reading "error". And the readiness check failed open, so a transient network error minted a token for an unplayable asset and re-entered the exact retry loop that check existed to prevent. Both were fixed the same night at the mechanism, in a tested module rather than patched at the call site, with the retry paths given explicit caps.
+- **A test suite for the tooling had been failing 0 of 13 for months** because it invoked `python` on a machine that only has `python3`, a leftover from an old operating system assumption. Fixed to 12 of 12 while in the file. One test was deleted rather than fixed, because it asserted the presence of a reminder that had just been deliberately removed, and that deletion was called out rather than quietly made.
+- **A concurrent session committed this session's documentation into an unrelated feature commit.** Nothing was lost, but the handoff and decision records are now filed under a commit message about something else. Noted rather than rewritten, since history does not get edited.
+- **The rule this produced was written into three places, not just noted.** Map what depends on a file before editing it and fix the dependents in the same pass; before calling a capability done, walk its full loop as its user, confirming it gives feedback, persists, and appears on every surface that consumes it. It now sits in the global instructions, as a gate in the planning skill that refuses to start a build without a dependency map, and as detectors in the bug hunting skill.
+
+### Why this matters for the portfolio
+
+Two things here are worth a client's attention, and neither is the feature. The first is that a wrong diagnosis was held publicly, twice, and then corrected by changing the question rather than repeating the experiment: not "is this credential right" but "how does this value actually reach the running process". The second is that the work was audited adversarially after it shipped, the audit found real defects, and those defects were fixed at the mechanism and then converted into reusable detectors so the same class cannot recur silently. A record that only listed the shipped feature would be shorter and considerably less true.
+
+---
