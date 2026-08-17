@@ -1793,3 +1793,37 @@ The client asked for two things in Slack the day before: make the app's auto-dra
 Two habits carried this session. The first is refusing to fix a reported defect before proving it still exists: the approved, plausible, client-visible fix plan was thrown away because the stored evidence said the problem was already solved, and the replacement fix was smaller and did not break rename detection. The second is treating a client's vague ask, "check the terms of service too", as a filtering problem rather than a fetching problem: what got shipped watches eight pages that can change a client's visibility in AI answers and deliberately ignores forty that cannot, with the reasoning for every cut written down and testable.
 
 ---
+## 2026-08-17, two silent failures reported as deletions, and a deploy pipeline that lied
+
+The client reported two things about the same weekly roundup in Slack: a Facebook link he had added produced a hollow paragraph, and the note had no email subject lines. Both were investigated against the production database rather than the screenshots, and in both cases the visible symptom was the opposite of the cause. Nothing had been removed. In one case the content was never read, in the other it was never written.
+
+### What shipped
+
+- Facebook posts became a first-class source in the curation app, read at add time through a paid scraping actor instead of by fetching the page. Migration 068 widened the source-type constraint; six other files carry the new type. Commits `4d5989d` and `8a24666`.
+- The actor choice was verified live against the client's own link before any code was written: 6.4 seconds, about a third of a cent, and the full 2,004 character post with author, engagement counts and a correct date. The stored row it replaced held 221 characters of a login wall preview, cut mid sentence.
+- A recovery path and a visible empty state for the missing subject lines, plus a one-shot script that wrote them for the affected note. Commit `aae3d19`. The note the client complained about now carries both subject lines and the standout picks, written from the note that already existed rather than by regenerating his copy.
+- Two debugging scripts that turn an unknown failure into one command: one parses and fetches a single social URL, one writes subject lines for a single note.
+- Test suite 1199 to 1206, verified by running it. Type check and production build clean. The end to end path was then demonstrated in the live app in the browser, and the demonstration post was deleted afterward along with its per-user state rows.
+- Two new detector patterns for the bug-hunting skill, C34 and C35, both derived from the two defects above.
+
+### Decisions worth recording
+
+- **The Facebook post is a social post, so it gets no summary.** The existing pipeline summarises articles and transcribes videos. A social post needs its own words, which is exactly what the roundup writer already receives for every LinkedIn item, so the fix was to make the text arrive, not to add a summarisation step.
+- **The bigger, more popular scraping actor was rejected.** The official one with forty million runs takes a page URL and returns that page's timeline, which for a single pasted link means adding whatever happens to be at the top of it. The smaller actor takes post URLs. Popularity was not the criterion, input shape was.
+- **A page or profile root is refused rather than fetched.** Same reasoning: handing the actor a page URL would silently add the wrong post, and a wrong post added quietly is worse than a refusal the operator can see.
+- **The missing subject lines were not added to the required-field check.** Failing the whole expensive generation over a secondary field would trade a silent gap for a loud outage. Instead a dedicated call produces just the missing field from the note that was already written, and the interface offers that as a button where it previously showed nothing.
+- **A hidden card is indistinguishable from deleted data, and that is a product bug.** The client used the word removed about something that had never existed. The empty state now says so in words.
+
+### Frictions and course corrections
+
+- **The first live demonstration failed in front of the operator.** The fix had been pushed and built, but the production domain was still serving an older build, so the app ran pre-fix code and rejected the link. Diagnosed from the queue row, which had stored the URL with its identifier missing, proving which code path had run.
+- **A real URL found a bug that the synthetic tests had passed.** Brand and publisher pages put a search-engine-friendly slug between the marker and the numeric identifier, so the parser had been reading the slug as the identifier. Every hand-written test fixture used the personal-account shape and passed. Caught before the first live add only because a real publisher link was run through the one-shot script first.
+- **A late-replayed webhook stole the production domain back mid-session** and the app served the old build again. All four production aliases had to be reassigned by hand. The lesson written down: after any manual deploy during a provider outage, verify the alias record itself, because two different builds each reported owning the domain.
+- **The deploy pipeline was not at fault and had to be proven so.** None of the three pushes auto-deployed. The provider's configuration was checked first and was correct; the actual cause was an open critical incident affecting webhooks at the source control provider, confirmed against its status API and corroborated by zero checks attached to the commits. The workaround, and the fact that one documented promotion endpoint returns a 404, is now a reference note.
+- **One tool call wasted about eleven thousand tokens of context** to retrieve a single value, and the operator called it out. The same answer came back in three lines from a direct query immediately afterward. Noted because it is a real cost, and the cheaper call should have been first.
+
+### Why this matters for the portfolio
+
+Both defects looked like data loss to the person using the product, and neither was. The habit that resolved them is the same one: query the production record before believing the screenshot, and let the stored value name the cause. `[]` rather than `null` in one column said the field had been written empty rather than never written, which is what separated a rare model miss from a code change or an edited prompt, and ruling the prompt out took one query rather than an argument. The second habit is deciding what a fix is allowed to cost: neither repair regenerates the client's copy or fails his note, because the thing that broke was secondary to the thing he cares about. And the session's most useful hour went to proving the deploy pipeline innocent, because the alternative was fixing a configuration that was never wrong.
+
+---
