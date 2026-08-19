@@ -1864,3 +1864,59 @@ The outreach campaign's production pass: turn months of research into a review-r
 The work product was 25 folders. The value was in refusing to trust the documents the work was based on. Every serious problem this session came from a research file that was accurate when written and wrong by the time it was used: a page format recorded from one entry, a contact who had changed jobs, a source directory that held a competitor's words, a premise nobody had tested. None of it would have surfaced from careful writing, only from re-checking the live artifact and correcting the internal file in the same pass so the error does not get inherited. The second theme is making standards mechanical rather than aspirational: a build gate that refuses to produce a file with a banned phrase in it is worth more than a style note, and a similarity score is worth more than an assurance that the copy varies. Both were added the moment a defect proved they were needed, and both then caught things a careful reader had missed.
 
 ---
+## 2026-08-19, a QA pass on a product the client had never signed into, and two bugs that succeeded while reporting failure
+
+The coaching portal had been live since 2026-08-06 and the client had still never logged in. The first paying student was about to. So the app was driven end to end in a real browser as both an administrator and a student, before either of them touched it. It produced 29 findings, and the two most serious ones shared a shape: the system did the correct thing and then told the operator it had failed.
+
+### What shipped
+
+- A 29-finding report, severity ranked P0 to P3, with a root cause and a file and line reference for each. Written as one consolidated document after the working notes had been appended across three passes, and published as a private page so it could be handed to a developer as a link.
+- 26 of the 29 fixed the same day in commits `6395d50`, `661bddb`, `9555db8`, with a performance follow up in `7dd8dc9`. Migration 032 restores a dropped return field, migration 033 adds the missing name column.
+- Test suite 1121 to 1551, verified by running it: 97 files, 1551 passing, 2 skipped. 33 migrations, counted.
+- One new detector pattern for the bug-hunting skill, C36, derived from the first defect below.
+- Verified working rather than assumed, each by opening the artifact rather than trusting a 200: cohort duplication, all five content types, uploaded HTML served through its sandboxed route, video by link and by upload through Cloudflare Stream, and file downloads confirmed by reading the bytes off disk. Student authorisation held on both checks: the admin area redirected, and a cohort the student was not enrolled in redirected.
+
+### Decisions worth recording
+
+- **The magic link fix is an interstitial, not a longer expiry.** Sign in verified the one time token on a GET request, and Gmail's link scanner fetches delivered mail, so the token was consumed 60 to 80 seconds after sending, every time, before any human clicked. Lengthening the expiry would not have helped for a single moment: the link was being spent, not timing out. Verification moved behind a button and a POST, because scanners issue GETs and humans click. A source scan test now keeps verification out of the GET path.
+- **Two findings were ruled not application code, which is a result worth publishing.** The intermittent 503s on administrator navigation were the hosting provider's request placement feature, not this codebase, though the wasted work behind them was real and was fixed. The blank scheduling widget turned out to be bot protection shipped by the scheduling vendor, which means no automated browser can ever verify that embed. It needs one human click, and saying so stops the next person re-investigating it.
+- **The greeting bug could not be fixed in the template.** A first time student was greeted "Welcome back, Thewritersmoney", the email local part title cased, in the wrong tense. There was no name column on the profile at all, so a prettifier over the email address would have shipped the same bug in better clothing. It took a migration and a capture step. The rule recorded: never derive a display name from an email address anywhere.
+- **Credentials stayed with the operator.** Entering a password to authenticate was declined throughout, so the work was split: a test password was set at the database level and the operator typed it. The same boundary shaped the sign in testing, which used an email link flow instead, and that constraint is what surfaced the scanner defect.
+
+### Frictions and course corrections
+
+- **A confident diagnosis was wrong and had to be retracted mid session.** The first failed sign in link was attributed to the flow being browser bound, which would have made it break for anyone reading mail on a phone. The evidence did not fit: a later attempt ran in the same browser that requested the link and failed anyway, while the database showed the token had already been spent three minutes earlier. The claim was withdrawn and the real cause, consumption on delivery, was established from timestamps across three attempts rather than from the first plausible theory.
+- **1121 passing tests had never touched the broken function.** A migration weeks earlier had rewritten a database function for a behavioural fix and rebuilt its return value from scratch, dropping one key. The typed wrapper required that key and converted its absence into a clean user facing failure, so every successful addition to the access list reported "That didn't work", and the buyer flow silently marked every new buyer as unable to sign in. The suite passed because it mocked the wrapper with the exact field the live function had stopped returning. A green suite was evidence of nothing here.
+- **The cleanup did not finish.** A test cohort, its seven items and an account whose password was set during testing are still in production, and the password passed through a session transcript, so it needs resetting. These are recorded as named, assigned leftovers in the handoff rather than left to be discovered.
+- **The fixes were already in the repository by the time the documentation pass ran**, applied by a separate session working from the report. That was checked against the commits and migrations before anything was written, which stopped a stale handoff being published claiming the findings were open.
+
+### Why this matters for the portfolio
+
+The valuable output was not the count of bugs. It was that both of the serious ones were invisible to tests and visible only to a person using the product: the write succeeded, the row was in the database, and the screen said it had failed. Finding those requires driving the real thing as the real user and then checking the record underneath, which is why every claim here was settled against Postgres or by opening the downloaded file rather than by reading a status code. The second point is a discipline one. A wrong theory was published mid session and withdrawn when the timestamps contradicted it, and two findings were handed back as not our code. A report that only accuses is cheap. One that says which three items are somebody else's problem, and which one of its own conclusions was wrong, is the one worth acting on.
+
+---
+## 2026-08-19, the same day, part two: the remediation session audited its own fixes and found two of them slow
+
+Follow up to the entry above, written from the remediation side. The 26 fixes landed in four commits and deployed with CI green, and the client asked one question worth recording the answer to: audit everything you just did for performance regressions.
+
+### What shipped
+
+- All four fix commits deployed, and the P0 fix verified against production: the sign in link now lands on a page that spends nothing, confirmed by requesting it with a token and reading the rendered interstitial.
+- The performance audit of the day's own work found two real regressions, both fixed in `7dd8dc9` and both proven by measurement rather than reading: a browser tab title fix had doubled a database read on two admin pages because the new metadata function skipped the codebase's per request memoization, and the new trash page query filtered a forever growing audit table by the second column of its composite index, confirmed by running EXPLAIN on the live database before and after.
+- The cleanup recorded as unfinished in the entry above finished the same evening once the client approved it in chat: the test cohort and its items hard deleted and verified at zero rows, the leaked test password rotated to a random value. What remains is genuinely human only: a saved browser password and one manual click of the scheduling page.
+- The bug hunting skill was taught the full set, not just one pattern: six new detectors covering the return shape regression, tokens consumed by mail scanners on GET, framework triggered duplicate reads, index prefix mismatches, prefetch amplification on dynamic routes, and identity fabricated from machine identifiers, plus a verification rule that no automated browser can settle a bot gated third party embed in either direction.
+
+### Decisions worth recording
+
+- **A committed write must never render as failure, encoded three layers deep.** The database function returns the row again, the client rebuilds the row if a future rewrite drops it again, and only a response with neither field throws loudly. The fix that only patched the migration would have been undone by the next rewrite, which is exactly how the bug arrived.
+- **The audit corrected its own claim.** The index finding was initially reasoned as a sequential scan; EXPLAIN showed the planner was using the index either way, just walking all of it instead of a bounded prefix. The fix was identical but the report was corrected to match the measurement, because a report that overstates a mechanism teaches the wrong lesson.
+
+### Frictions and course corrections
+
+- A security invariant test rejected the first version of the name capture feature for importing the database client outside the data layer, and the fix was to satisfy the invariant rather than allowlist past it. The blocked delete of production test data stayed blocked until the client said yes in plain words, and then ran.
+
+### Why this matters for the portfolio
+
+Fixing 26 findings in a day is throughput. Turning the same scrutiny on the fixes themselves, finding two of them measurably worse than what they replaced, and correcting one of the audit's own explanations against a query plan, is the part a client should care about. The session also closed the loop that makes the next one cheaper: every root cause became a mechanical detector in a reusable skill, so the same class of bug costs thirty seconds to find next time instead of a QA round.
+
+---
