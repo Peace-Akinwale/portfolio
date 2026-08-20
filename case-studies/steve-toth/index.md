@@ -1920,3 +1920,33 @@ Follow up to the entry above, written from the remediation side. The 26 fixes la
 Fixing 26 findings in a day is throughput. Turning the same scrutiny on the fixes themselves, finding two of them measurably worse than what they replaced, and correcting one of the audit's own explanations against a query plan, is the part a client should care about. The session also closed the loop that makes the next one cheaper: every root cause became a mechanical detector in a reusable skill, so the same class of bug costs thirty seconds to find next time instead of a QA round.
 
 ---
+## 2026-08-20, a rejected link becomes four production fixes, and a bug that was invisible from every direction except the user's
+
+The client pasted a Facebook link into the product he uses daily and it was refused. The message asking to fix it arrived at 19:00; by end of day the link parsed, a deeper bug hiding every Facebook post from the feed was found and fixed, and a feature request the fix surfaced was specced, built and deployed. Four commits, two database migrations, all verified live. The same day also produced the sales campaign assets for the client's conference, behind pace at 77 tickets against 83 the year before.
+
+### What shipped
+
+- The parse fix (`f644b16`): Facebook's share sheet mints a bare `/share/<slug>/` form the 08-17 feature never saw. One word in a marker list, plus tests locking the group-link refusal. Proven end to end by running the client's actual link through the live scraping actor before claiming anything.
+- A researched hardening pass (`ec87105`): every share shape Facebook currently mints, run against the parser. fb.watch video links now parse (they 302 to a login wall, so the only viable path is handing them to the actor untouched), the app's second click-wrapper host unwraps, and ephemeral Stories refuse explicitly because they expire in 24 hours and sit behind a session. Video posts verified live against the actor.
+- The invisible bug (`cd4fe11`, migration 069): the user reported she could not find the added post in the feed. Search found it, the deep link pinned it, the database had it starred and classified, and the feed never showed it. The feed's SQL function had drifted from the app-side filter when Facebook was added: its membership test still read `in ('linkedin','x')`. Third occurrence of the same drift on the same function pair, each one silent because no test spans the two languages.
+- The pin feature (`d85799f`, migration 070): manually added posts now pin above the feed per user until read, rated, hidden or dismissed, surviving refresh and reinstall because release is server state rather than a URL parameter. Manual adds also render full text with no Show more, since the clamp keyed on a classifier field that fresh adds never have. Verified in the browser against production data, including the dismissal write, which was then reverted so the client's own state stayed untouched. 1,214 tests pass.
+- Conference campaign assets: send-ready promotion kits for all 12 speakers (cards in two formats, three finished captions each, per-speaker tracked links), five finished testimonial posts, a ranked list of attendee-experience ideas, and AI trip-planning prompts extending a pattern the client had invented on his own site. One speaker on the live site had no assets anywhere in the repo; she does now.
+
+### Decisions worth recording
+
+- **Starring is not a pin-release signal, and a test locks it.** Adds are auto-starred for the weekly roundup at creation, so treating any interaction as release would have unpinned every add instantly. The one interaction with no existing state, dismissing the pin itself, got its own column that releases the pin and nothing else.
+- **Four of the client's own twelve testimonials were rejected.** They praise named speakers from 2024 who are not on the 2026 lineup; quoting them to sell 2026 tickets implies a lineup that does not exist. The client supplied them himself, and the vetted bank records which are usable and why.
+- **Two live defects on the client's own sales page outranked every new idea.** The prewritten boss email promises session recordings that the general admission ticket does not include, and assigns talk titles to an event whose entire positioning is that talks have no titles. Both were reported ahead of the feature list they were found while researching.
+
+### Frictions and course corrections
+
+- The bare share-link shape was a gap in work shipped three days earlier and verified live at the time. The lesson written into the pattern library: a URL parser tested against the shapes you have seen is not tested against the shapes the platform mints.
+- A parser fix deployed to the web tier alone would have kept failing, because the background worker re-parses every URL and deploys by snapshot, not git push. Both surfaces shipped, twice.
+- The drift bug became a mechanical detector in the reusable bug-hunting skill: wherever the same membership predicate lives in application code and a database function, diff the two lists. It also corrected the project's own checklist, which named six files for a new source type when the silent seventh was the one that failed.
+- A synthetic click from the browser console did not fire the framework's handler and briefly read as a dead button; a real click worked. Recorded so a future session does not diagnose a working feature as broken from the wrong test.
+
+### Why this matters for the portfolio
+
+The user's report was the only visible symptom of a bug that every internal check said did not exist: the row was present, searchable, deep-linkable and correctly classified. Treating "I cannot find it" as evidence rather than user error, and tracing it to a filter that exists twice in two languages, is the difference between closing a ticket and fixing a class. The same session turned the incident into three durable guards: a regenerated checklist, a reusable detector, and a pin feature that makes the next successful add visibly successful.
+
+---
