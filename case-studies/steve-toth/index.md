@@ -2054,3 +2054,27 @@ The client's operator asked one question after the previous night's incident: "w
 The through-line is evidence over intent. A notification system that says what the code intended is cheap; one that can only say what verifiably happened requires the return contracts, the persistence, and the tests that pin every wording to its outcome, and that is what got built. The same discipline pointed inward: the closing audit treated my own day of fixes as untrusted input, and it was right to, catching a silent ten-day regression of the client's own request and a rule violation inside my own remediation. And the repair agent shows the operator's ideas becoming architecture: she described the behavior she wanted in plain language, the design iterated against her corrections, and by midnight a failing user action gets an investigating engineer before it gets an excuse.
 
 ---
+
+## 2026-08-25 (late), a link-shell post learns to carry its article, and the client's own edits become the writer's rules
+
+Same evening, after the day's main entry. The operator caught a second live edge case: the client added a post that was only a headline plus a shortened link to a trade-press article, so the weekly roundup would have had nothing but the headline to write from.
+
+### What shipped
+
+- Short-bodied posts carrying a link (or "link in the comments") now get the linked article read at add time, and the roundup generator receives that article as full source text with attribution kept on the original author. The client's actual failing row was backfilled with the 9,862-character article and the exact generator input block was rendered to prove the text reaches the next generation.
+- The four edit patterns the client applied in all three published weeks were baked into the roundup writer's system prompt on both lanes: cut hedges and asides, theme lines vivid and concrete, attribute analysis to its author, close with a bare sign-off. The eight judgment-call patterns stay held for his review of the pattern list.
+
+### Decisions worth recording
+
+- **Unanimous evidence ships, judgment calls wait.** Patterns the client enforced three weeks out of three went live without his sign-off; anything he applied inconsistently waits for him. His next generated issue is the test: fewer of his standard edits sells the rest of the list.
+- **The link shortener does not redirect.** The platform's short links serve an interstitial page whose click-through anchor holds the real URL, so any tooling that "follows redirects" resolves to a 338-character stub and calls it the article. The extractor reads the anchor instead, and the trap is now written down where the next resolver will look.
+
+### Frictions and course corrections
+
+- First enrichment attempt came back effectively empty because of exactly that interstitial. The fix came from reading the fetched bytes rather than trusting the HTTP status.
+
+### Why this matters for the portfolio
+
+Two closing moves on the same principle: feed the writer real substance instead of letting it improvise around a headline, and encode only the editorial rules the client has already proven he holds. Both were verified at the artifact, the rendered generator input and the deployed prompt, before being reported as done.
+
+---
