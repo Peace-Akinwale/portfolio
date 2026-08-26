@@ -2078,3 +2078,33 @@ Same evening, after the day's main entry. The operator caught a second live edge
 Two closing moves on the same principle: feed the writer real substance instead of letting it improvise around a headline, and encode only the editorial rules the client has already proven he holds. Both were verified at the artifact, the rendered generator input and the deployed prompt, before being reported as done.
 
 ---
+
+## 2026-08-26, the day the client assigned a browser extension, and a research pass showed ChatGPT never searches for his agency
+
+Two threads in one day. The client's core team call ended with a new assignment for Peace: lead a Chrome extension version of a teammate's ChatGPT retrieval-capture bookmarklet. Separately, a colleague reported the client's newsletter video showing "Failed" the day before a campaign.
+
+### What shipped
+
+- A research pass, not code, on the extension: Lily Ray's fan-out article distilled with every researcher attributed; the teammate's Loom watched frame by frame; his bookmarklet installed and run on four live ChatGPT prompts about the agency itself; the two free competitor extensions (FanoutFox by Suganthan Mohanadasan, Resoneo by Olivier de Segonzac) researched and gap-tabled; a zero-context briefing with both transcripts; a message to the client in Peace's own register. All saved to a tracked folder because the usual output directory is gitignored.
+- The finding the client can act on tomorrow: on unbranded "best AEO agency for B2B SaaS" prompts ChatGPT named its shortlist inside its very first search string and never searched for the agency at all (0 of 12 passes, 0 of 143 pages). In a forced head to head it asked the agency's site for case studies four times, got the same three pages back, cited all three, and still chose the competitor whose site returned fourteen, writing "case-study evidence: limited" in its own comparison table. Not a page-quality problem; a page-count problem.
+- The Claude.ai skill the client had uploaded org-wide was run for real on one capture and found the bookmarklet's parser drops an entire citation class (ChatGPT's full-page "view" reads): 6 citations reported where 10 existed, two of the agency's cited pages marked never-cited. Verified against the raw stream, the finding was corrected before the client saw it.
+- The video: a 13-minute note rendered clean at 73.5 MB and hit Supabase Storage's free-plan 50 MB cap after 22 minutes of work. Fixed in `b426811` with a producer-side size budget: a second fast ffmpeg pass re-encodes any over-cap MP4 at a computed bitrate, audio copied, frames never re-rendered, with a named error if even the floor cannot fit. 6 new tests, 1265 suite green, deployed, then the real note pushed through it: 67.8 MB to 38.3 MB, full 13:08 length, Done in Notion.
+
+### Decisions worth recording
+
+- **Research before code.** Both competitors are free, one is built by the author of the research the whole method rests on, and one shipped a release the same day. The only lane neither occupies is an LLM analysis as the output. Building first would have reproduced FanoutFox with fewer features.
+- **The operator's hands-on handoff outranks the desk research.** Her 767-line product handoff, written in parallel, contradicted the sub-agent's findings on two points and won both. It is the build brief; the research doc is context.
+- **Answer the regenerate question with the cause, not a retry.** A retry would have reproduced the 413 exactly and spent another 13 minutes of shared TTS quota. The colleague got "don't regenerate, here is why, I'll ping you when it's done", and the loop was finished from our side.
+- **Enforce output budgets where the work happens.** Every earlier note had fit the storage cap by luck. The cap is now read by the producer and lives in config, so a plan upgrade is a one-line change.
+
+### Frictions and course corrections
+
+- **Substituting a local equivalent for the surface the operator named.** She asked for the captures to be analysed in Claude.ai with the uploaded skill. I ran the skill's scripts locally, reported, and footnoted the gap. She asked twice why. The real run then found a parser bug the local run had inherited, which reversed a headline number. Now a standing rule: when the instruction names a surface, that surface is part of the deliverable; substitute only after saying so.
+- **Browser automation could not install a bookmark or read the ChatGPT session token.** Three approaches failed (internal Chrome pages are blocked, OS keystrokes need an Accessibility grant, editing the profile file needs Chrome quit with 78 tabs open). The honest answer was a 10-second manual procedure and a documented constraint that shapes the extension: it will have token access that page scripts do not.
+- **Two drafts of the client message.** The first was a data-led brief. The operator supplied her own draft with the register she wanted, thesis first and product reasoning, and the rewrite kept her structure and added only the facts that earned a line.
+
+### Why this matters for the portfolio
+
+The through-line is knowing when not to build. A day that could have produced a half-finished extension instead produced a competitor map, a client-grade diagnostic of the agency's own AI visibility, a corrected parser finding for the teammate whose tool this rests on, and a build brief written by the person who will own it. The video fix is the same discipline pointed at production: diagnose from the logs before advising, fix the mechanism rather than retry, prove it on a synthetic clip and a unit test, then watch the real 13-minute render go through the gate before saying done.
+
+---
