@@ -2108,3 +2108,36 @@ Two threads in one day. The client's core team call ended with a new assignment 
 The through-line is knowing when not to build. A day that could have produced a half-finished extension instead produced a competitor map, a client-grade diagnostic of the agency's own AI visibility, a corrected parser finding for the teammate whose tool this rests on, and a build brief written by the person who will own it. The video fix is the same discipline pointed at production: diagnose from the logs before advising, fix the mechanism rather than retry, prove it on a synthetic clip and a unit test, then watch the real 13-minute render go through the gate before saying done.
 
 ---
+## 2026-08-27, from research to a complete first build of the fan-out extension in one day, with every unverified claim labelled
+
+The day after the client assigned the Chrome extension, the whole thing went from a deepened plan to code: its own repository, a shared team pool, the extension and a phone-first dashboard. It ended with the honest line that nothing had yet run on a real Chrome.
+
+### What shipped
+
+- A new private repository, `stevetoth/fanout-notebook`: 15 commits, 14 plan units, 204 vitest tests green, both apps build, CI green on the feature branch (typecheck, tests, parser parity, extension build, dashboard build, artifact upload).
+- A canonical parser that replays ChatGPT's live stream as its own delta protocol instead of regexing the text, so the live stream and the stored conversation share one code path. Verified against the client team's 08-26 captures (Q01: 4 passes, 21 queries, pool 34, cited 14) and against the teammate's bookmarklet core, vendored verbatim into a parity harness.
+- Two defects in that bookmarklet found by the parity harness and pinned as tests, on top of the "view" class found the day before: its search-result regex has no type guard, so a news entry's URL was paired with the NEXT search entry's id (the "Guardian cited" error in capture NB-03 was really help.openai.com), and its block regex dropped the tail of a tool call that streamed in two deltas. Documented in the harness README rather than silently diverged from.
+- A `fanout` Postgres schema live on the client's existing Supabase project: 4 migrations applied through the Management API and read back, row-level security on every table, an anonymous read returning an empty set, the client's own tables untouched.
+- The extension: a MAIN-world fetch tee that only arms after the user's Private choice is known, an isolated relay that survives the service worker being killed mid-answer (reconnect, resume from the acked sequence, replay), a side panel and onboarding rendered from the locked prototype, pool sync with redaction and backoff. Claude and Perplexity capture the site's stored conversation after the answer finishes.
+- A mobile-first dashboard behind the client's existing password plus allow-list auth: every rate carries its run count, below three runs a card shows behaviour instead of a number, a mixed set names the field that differs, and the "score" is labelled AI-only with two of four inputs shown as not connected.
+
+### Decisions worth recording
+
+- **A separate Postgres schema instead of a separate project.** The client's Supabase tier allows two projects and both are taken. Isolation by schema (own tables, own RLS, own migration ledger, the API exposure widened by one name) kept the pool clearly apart from the client's product while sharing its sign-in, and it follows a precedent already in that project.
+- **Message ids stay in shared artifacts; identity fields and token shapes go.** The first redaction list blanked message ids too, and the exports test showed the redacted file re-parsing to a pool of zero because every message had collapsed into one. Structural keys are not secrets; conversation ids, account ids and anything JWT-shaped are.
+- **Ship the Claude and Perplexity adapters on synthetic fixtures, and say so everywhere.** The browser extension needed to save the real payloads was disconnected all afternoon. The adapters follow the spike documents, the tests are labelled synthetic, a PENDING file per engine gives the exact URLs to capture, and the product copy is required to say "verified on synthetic shape only" until then.
+- **Railway, not Vercel, for the dashboard.** Peace's call at the end of the day, before anything was deployed, so it cost one line in three files rather than a migration.
+- **Stop at the runbook.** The acceptance runbook was written with every sign-off empty on purpose. The next session starts with a live run, not more code.
+
+### Frictions and course corrections
+
+- **Three wrong assumptions about tooling, each caught by a failing build or test.** Dexie 4 swallows the version error a downgrade check relied on (the native database version had to be read instead); the extension framework treats two entrypoints with the same prefix as one file; the dashboard's bundler cannot map `.js` imports onto `.ts` sources in shared packages, which forced 44 files to extensionless imports.
+- **A test committed while red.** One commit landed before its last test passed because the shell chain did not gate on the result; the failing assertion was a wrong assumption (the payload's conversation id is authoritative, not the request's) and was fixed in a follow-up.
+- **A stored-route watcher that captured too early.** "Complete" originally accepted an empty answer with no search activity; the test showed it firing on the first poll. Complete now means the final message exists and has text.
+- **A roster file refused.** The allow-list seed carrying the whole team's names and emails was blocked; the seed shrank to the three admins and members are added from the product.
+
+### Why this matters for the portfolio
+
+A complete first build in a day is only worth something if the report about it is exact. This one names what is proven (parity with the team's own captures, a live schema, green CI, 204 tests) and what is not (no real Chrome run, guessed selectors on two sites, no real sign-in), in that order, and leaves a runbook with empty sign-offs as the next step. The parser work shows the other half of the discipline: when two implementations disagree, the harness does not paper over it; it finds which one is wrong on the wire and pins the answer as a test.
+
+---
