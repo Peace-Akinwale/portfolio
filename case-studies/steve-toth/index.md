@@ -2174,3 +2174,33 @@ The client's fan-out extension had 204 passing tests and had never run on a real
 A green suite proves the code agrees with its own fakes. The two things that found real defects here were a single real payload and a deliberate read of the code against the runtime's actual dispatch rules, and both were done before the client saw a failure rather than after. The deploy decision is the other half: knowing the operator's reaction to the previous day's surprise, the right move was to finish the preparation, prove it locally, and leave the last click to her.
 
 ---
+
+## 2026-08-28 (evening), the extension captured its first real answer on the client's account, after three defects that no test could see
+
+The operator came back and drove the first live run herself. Every earlier check had been green: 305 tests, CI, headless Chrome with the same build. Three things stood between that and a saved capture on her signed-in ChatGPT, and none of them was visible from tests.
+
+### What shipped
+
+- The first real capture: 46 pages found, 14 cited, sources grouped by domain with working links, on the client's ChatGPT Plus account. Runbook section 1 signed for the walked rows.
+- Three root fixes with tests, in the order found: content scripts carried a Unicode non-character from a database library through a package index re-export, which Chromium refuses as "isn't UTF-8 encoded", so the extension could not load in any Chrome; the signed-in page re-assigns `window.fetch` after load, which displaced the plain-assigned tap, so the answer streamed past an armed hook (the slot is now accessor-owned, later writers become the downstream fetch, with a re-entrancy latch the test caught on the first draft); and the manifest had no `action` key, so `chrome.action` was undefined and the badge paint inside the run start threw before the worker ever replied, which meant no run had ever saved anywhere.
+- On her first look: the toolbar badge became a coloured dot (green capturing, red error, nothing after a save), every source URL renders in full, and the Summary tab was rebuilt to say what happened (passes, pool, cited, the two findings, per-pass queries, fetched to cited per domain) after she said an interactive mock looked busy and named the two blocks to drop.
+- Claude and Perplexity measured live: Claude's stop control and streaming flag are what the guesses hoped; Perplexity shows no stop control at all, so the turn count carries the trigger, and the first-turn rule was fixed the same evening. 314 tests, CI green.
+
+### Decisions worth recording
+
+- **Diagnose from the page, never the worker console.** The browser bridge cannot open chrome:// or extension pages, so the relays now stamp their port life, rejection counts and DOM verdict onto the document root, readable from any tab. Every diagnosis of the day ran through those stamps or through a headed Playwright run reading the worker's unhandled rejections. It stays in the build.
+- **A badge can never kill a capture.** Decoration runs after the reply, guarded, with its promise rejections swallowed; a missing platform API cannot take the data path down with it.
+- **The mock is the spec review.** An interactive mock of the Summary tab with the run's real numbers got the two cuts (a duplicate fold, a stamp line) before any code was written.
+
+### Frictions and course corrections
+
+- **Five headless reproductions passed while her Chrome failed.** Each contrast turned out to be a harness artefact (probe timing, a broken observer in the init script), not a profile difference; the real defect was in a path the fakes never exercised. The lesson recorded: read the worker's unhandled rejections, not just its console.
+- **"It worked lol" arrived only after the third fix.** The operator's patience was spent on two rounds of "still not working"; the honest answer each time was a narrower "here is what is now proven and here is the one hop left."
+- **A stale unpacked folder masked a fix for a while.** Chrome reads an unpacked extension only on Update; one round was lost to a rebuild she had not yet reloaded.
+
+### Why this matters for the portfolio
+
+The value here is the discipline after "all green": treating the client's real account as the only evidence that counts, building the instrumentation to read it when the tooling could not, and fixing each mechanism at its root with a test rather than working around the symptom. The three defects were invisible to 305 passing tests and every synthetic profile; they fell within an hour once the real runtime could be read.
+
+---
+
