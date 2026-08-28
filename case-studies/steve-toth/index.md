@@ -2141,3 +2141,34 @@ The day after the client assigned the Chrome extension, the whole thing went fro
 A complete first build in a day is only worth something if the report about it is exact. This one names what is proven (parity with the team's own captures, a live schema, green CI, 204 tests) and what is not (no real Chrome run, guessed selectors on two sites, no real sign-in), in that order, and leaves a runbook with empty sign-offs as the next step. The parser work shows the other half of the discipline: when two implementations disagree, the harness does not paper over it; it finds which one is wrong on the wire and pins the answer as a test.
 
 ---
+
+## 2026-08-28, the day before the first live run: one real fixture and one adversarial read found six defects the green suite had missed
+
+The client's fan-out extension had 204 passing tests and had never run on a real Chrome. With the client's operator away, the session did the parts that did not need her keyboard: turn one synthetic fixture real, read the code the way the browser will execute it, and prepare the deploy without performing it.
+
+### What shipped
+
+- The real Claude payload for the spike conversation, read from the operator's signed-in browser and committed as a redacted fixture (`packages/parser/test/fixtures/claude/ahrefs-vs-semrush.stored.json`, account settings emptied, ids kept). True numbers replaced the spike's estimate: 2 queries, rounds of 8 and 8, pool 15 (the spike said 17), 7 citation markers all resolved, 5 unique cited pages, 10 uncited.
+- Six root fixes, each with a test, in three commits on `stevetoth/fanout-notebook` (`d1d6fa5`, `e2296a2`, `5ddf172`): 204 to 221 tests, parity 6 of 6, CI run 33183732219 green.
+- A Railway configuration at the repository root, proven from a clean clone with the exact build and start commands (health endpoint 200, a protected page redirecting to login), and a README with the click-through steps. No service was created.
+- A ten-step DevTools checklist in the acceptance runbook for the first live run, written so the operator can tell a dead hook from a sleeping worker from a wrong selector.
+
+### Decisions worth recording
+
+- **No deploy while the operator is away.** The day before, an unrequested Vercel deploy had drawn a sharp reaction. Preparing the Railway service and stopping one click short cost nothing and avoided a second surprise.
+- **The parser tolerates redaction instead of the redactor learning paths.** Claude's payload uses the one key `uuid` for the conversation and for every message, and the redactor strips by key name, so a shared copy blanked the pointer to the final message. Teaching the redactor a path-aware rule for one engine (plus its clean-check guard) was rejected in favour of a parser rule: trust an id only when exactly one message carries it, otherwise use document order.
+- **A sync row that fails for a permanent reason is kept, not deleted.** Deleting it emptied the queue, and an empty queue rendered as "synced" in the header after the very failure a first run is most likely to hit (a member not yet on the allow-list). The row now stays with its error and a one-hour hold; the panel's Sync now retries every row at once; a duplicate-key conflict from a second install is named as such instead of backing off forever.
+- **Agents do not commit and do not write the decisions file.** Three agents worked one tree in parallel; the orchestrator staged explicit paths per logical group and wrote every decision line, so nothing landed half-reviewed.
+
+### Frictions and course corrections
+
+- **The real fixture disagreed with the spike, and with the adapter.** Someone had typed "Thanks" in the Claude chat after the spike. That one extra turn showed the adapter collecting tool names over every message while measuring only the last one, so a plain follow-up classified as an unrecognised shape. The synthetic fixtures, all single-exchange, could not have shown it.
+- **The most likely first-run failure was a listener attached after an await.** The worker awaited its database before registering the port's message handler; a Chrome port drops anything sent while no listener exists. After the worker's thirty-second idle kill, the user's next prompt would reconnect, post its start into that gap, and the header would sit on "armed" with no error. Fixed with a small gate that attaches synchronously and replays in order; the fakes in 204 tests had all resolved readiness first.
+- **The second real fixture did not make it.** The Perplexity payload is 94 KB; the browser bridge caps page text at 50 KB and an output guard blocked the chunked read. Rather than work around a guard, the facts were written into the pending file and the save was handed to the operator with the exact URL. She saved the rendered page instead of the JSON endpoint on the first try; the instruction now says what the correct page looks like.
+- **A "required" label that had never been rendered.** The runbook and the decisions file both required the panel to say "verified on synthetic shape only" for engines without a real fixture. A grep showed no such string in the product. It now renders, for Perplexity only.
+
+### Why this matters for the portfolio
+
+A green suite proves the code agrees with its own fakes. The two things that found real defects here were a single real payload and a deliberate read of the code against the runtime's actual dispatch rules, and both were done before the client saw a failure rather than after. The deploy decision is the other half: knowing the operator's reaction to the previous day's surprise, the right move was to finish the preparation, prove it locally, and leave the last click to her.
+
+---
