@@ -2205,3 +2205,90 @@ The value here is the discipline after "all green": treating the client's real a
 
 ---
 
+## 2026-09-01, an external review remediated, a storage cliff cleared for nothing, and a working feature deliberately parked
+
+A contractor reviewed the coaching portal on a screen-share call and left six asks. Partway through
+addressing them, an unrelated Supabase warning surfaced: the account had passed its free storage
+limit and both live products would be restricted in three days. The evening ended with the storage
+problem closed at zero cost, the review remediated, and one finished feature switched off on
+purpose.
+
+### What shipped
+
+- **Supabase storage cut from 1.34 GB to 610 MB**, under the 1 GB free cap with 39 percent headroom.
+  116 objects totalling 735 MB moved to Cloudflare R2, 102 originals deleted, 14 deliberately kept.
+  Verified live after the deletion: the audio and media routes return HTTP 206 with range headers,
+  the player and watch pages return 200.
+- **A placement module that makes the next migration a config change.** One file decides where each
+  media kind lives; a build-failing test fails the build if any other file names a storage bucket.
+  Public media URLs are now the product's own routes, never a vendor hostname.
+- **The contractor's six asks, all built.** An icon vocabulary keyed by action rather than by
+  picture, one back control per screen, loading skeletons that show the page title they already
+  know instead of a grey bar, a form-field placeholder, and one label component replacing 31
+  hand-written copies of the same class string across 22 files.
+- **Google sign-in, working end to end**, then parked. Proven with a real sign-in: one click,
+  consent, landed as admin, one account row with two linked identities, no duplicate, existing
+  password intact.
+- Test suites after the work: 1665 passing on the portal branch, 1293 on the feed product.
+
+### Decisions worth recording
+
+- **Declined the contractor's library recommendation, with the reason given to him.** He offered a
+  full authentication framework and a repo. The portal's allow-list is a BEFORE INSERT database
+  trigger that fails closed, so the platform's own provider inherits that gate with no new code,
+  while a second framework owning its own user tables bypasses it entirely. Adopting it would also
+  have meant rebuilding two-factor auth and password reset on a live product mid-cohort. He had made
+  the suggestion without knowing the stack, because he had been told the database was somewhere it
+  is not.
+- **Declined his suggestion to delete the in-app back button.** He was right that it moved around.
+  The cause was not position: two controls were both relabelling themselves to the word "Back" while
+  pointing at different destinations. Deleting it would have re-created a defect fixed three weeks
+  earlier, because the product installs as a PWA and an installed PWA has no browser chrome. Fixed
+  the ambiguity instead and left the control.
+- **Chose free infrastructure over a 25 dollar per month subscription**, on the client's constraint
+  that the fix must not add cost or anything for the founder to administer. Priced with measured
+  numbers rather than estimates: growth of 111, 250 and 383 MB over three months, against a 10 GB
+  free tier, is roughly 23 months of headroom. The larger structural win is bandwidth, which is
+  metered on the old platform and free on the new one at any volume.
+- **Refused to enter API credentials into any field**, including when asked directly, and again when
+  the request was repeated. Wrote a masked script for the client to run instead, so the secrets
+  moved from her file to her infrastructure without passing through the assistant.
+- **Parked a finished feature rather than shipping it.** Google sign-in works, but letting students
+  use it needs a privacy policy and terms page the founder has to approve. The client judged the
+  wait not worth the stress that week. The work was preserved on a branch with a written resume
+  document, and the shippable half was re-cut without it so it could go out alone.
+
+### Frictions and course corrections
+
+- **Two confident readings were wrong, and both were caught before acting.** A 403 MB bucket was
+  called retired output: it backs 1,356 live posts and every object in it was written in the last
+  60 days. A 77 MB archive was called dead: a migration note said plainly those files were kept
+  because four are hot-linked from a live page. Neither would have been recoverable after deletion.
+- **A self-run bug hunt after the build found a defect the migration plan could not have caught.**
+  Every stored player page had the old storage URLs baked into its own markup. A faithful copy
+  preserves them, and the planned pre-deletion check would have passed because the old platform was
+  still serving. Deleting would then have killed the player inside every previously published page.
+  The fix rewrites those URLs during the copy and verifies by content rather than by file size,
+  because the size legitimately changes.
+- **Work was nearly parked on a false blocker.** A merge reported the branches had diverged badly,
+  and the deploy was called off for the night. The client pushed back and asked what was actually
+  wrong. One fetch showed the local branch reference was simply stale and the remote was the correct
+  base all along. The deploy was clean.
+- **A branding change was made, tested, and found not to work.** Adding an authorised domain to fix
+  an unbranded consent screen saved successfully and changed nothing, because the platform displays
+  the redirect URL's domain. Recorded as a negative result so the next person does not repeat it.
+- A plaintext file holding roughly nine live production secrets was found in the client's Downloads
+  folder while locating one credential. Flagged, not acted on.
+
+### Why this matters for the portfolio
+
+Three of the six review items had a different cause than the one reported. The icons were already
+installed and unused; the back button was a naming problem, not a layout one; the loading skeleton
+was covering text it already had. Taking a reviewer seriously means finding the real defect rather
+than implementing the stated symptom, and saying so when the recommendation does not fit.
+
+The rest is the discipline around a destructive change on a live product: measure before deciding,
+verify the copy independently of the tool that made it, gate the deletion on a fresh per-file check,
+and get a human to confirm the one thing the automation cannot see before anything is destroyed.
+
+---
