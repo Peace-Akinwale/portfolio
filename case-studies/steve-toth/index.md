@@ -2562,3 +2562,109 @@ enough to watch all three videos and separate the transferable mechanic from the
 not survive contact with the audience.
 
 ---
+## 2026-09-02 (afternoon and evening), a filing that reverted itself overnight, a guessed limit that had cost the product a step, and a competitor comparison that turned out to be definitions
+
+A morning session had diagnosed a defect and stopped there: a capture filed to a new client on the
+team dashboard was back on the old client twelve hours later with nobody touching it. The client
+demos this tool to his team tomorrow, so the job was to close that, then find what else would
+embarrass us on screen. He watched most of it happen live in his own browser.
+
+### What shipped
+
+- **The revert, root-caused to the comparison itself.** The extension pushes whole rows and, before
+  pushing, adopts the server's version if the server's is newer. It compared the row's `updated_at`.
+  A parser fix that morning had re-parsed every capture in history, which moved that timestamp on
+  every row, so every local filing looked newer than the server's and the guard handed the stale side
+  the win. The fix is a per-field decision time (`client_set_at`, migration 008) set only by a
+  person's action and never by the automatic detector, compared instead of the row timestamp. A test
+  pins the exact production shape: local row newer, local decision older, server's filing survives.
+- **The same hole on a second field, found by sweeping for it.** A dashboard Remove or Restore was
+  undone the same way. Migration 010 and a matching guard closed it, with tests in both directions.
+  Nobody had reported this one.
+- **Perplexity Incognito, which we had been telling ourselves captured nothing.** It had never been
+  measured. Measured on the client's own browser: an Incognito thread is readable at the same stored
+  endpoint we already use (HTTP 200, `privacy_state: INCOGNITO`), and the relay had in fact captured
+  one, 30 pages considered and 10 cited, sitting in the shared pool. The only real defect was the
+  stamp: the code hard-coded every Perplexity run as a normal chat. One planned unit of work was
+  dropped outright as a result.
+- **Send to Claude stopped asking for an attachment.** It used to download a JSON file and tell the
+  user to attach it, because the link budget was a guessed 6,000 characters. Measured against the real
+  browser: a 48,635-character link loads whole, 73,035 is refused. The budget is now 40,000 with the
+  measurement written into the code comment, the message carries the brief and the parsed evidence
+  inline, and a typical run comes to 27,237 characters, so nothing is trimmed. Where a run is large
+  enough to trim, cited pages are never dropped and the message states what it left out.
+- **A production defect the client hit on screen while I worked.** A deep link from the extension
+  landed on `https://localhost:3400`. The dashboard built its redirect from the request's own origin,
+  which behind the host's proxy is the container, not the site; the cookie it set on that redirect was
+  lost for the same reason, which had been filed as a separate mystery. One helper now owns the public
+  origin for every redirect, link and email. Then I checked the whole deployed site rather than the
+  one route: 54 internal links, all answering 200, none naming a local host.
+- **Two retrieval signals adopted from the competitor, one rejected.** Search results the engine
+  returned but never opened are now recorded (parser 1.0.5, migration 009), kept apart from "pages
+  considered" so that count keeps meaning pages the engine actually read. Publish dates per page came
+  next (parser 1.0.6) after measuring the field on real captures: it arrives as epoch seconds and is
+  present on 130 of one fixture's 244 result entries, absent on the rest, and an absent date never
+  becomes a date.
+- **The dashboard stopped leaking internal field names.** A card meant to explain why numbers are not
+  averaged was printing raw internal keys (`claude|unknown|temporary|unknown|p1`). It now reads
+  "engine Claude vs Perplexity; temporary chat vs normal chat".
+- **The shared library cleaned before the demo:** 23 runs down to 12. Eight were unrepairable
+  truncations from a second browser running an old build, and eleven were the client's own article
+  editing chats, captured under a client's name because that browser had "new captures follow" set.
+  Deleted as team-wide tombstones, which is the only durable delete the design allows.
+- 509 tests passing, three migrations added and applied, ten in total.
+
+### Decisions worth recording
+
+- **A last-writer-wins guard must compare when the field was decided, not when the row was touched.**
+  This is the generalisable form of the defect, and it applies to any sync where two surfaces edit the
+  same field and one pushes whole rows. A guard for exactly this case already existed and was believed
+  correct: its test only covered the case where nothing else had touched the row. It is now a pattern
+  with a detector recipe in my bug-hunting skill, along with the two others this session produced.
+- **The competitor's numbers were not better, they were different.** On the identical prompt we
+  reported 18 searches, 33 pages considered, 9 cited; the competitor reported 12, 220, 10. Their own
+  exported JSON says 18 searches, so their list under-reports. Of their 220 sources, 187 are search
+  results the engine never opened, which we deliberately do not count as read. Their cited count
+  includes one page twice, with and without a tracking parameter. I adopted the signal they had that
+  we lacked and kept our counts as they were, rather than inflating a number to match a headline.
+- **Measure the platform before designing around it.** The download-then-attach step existed for a
+  fortnight because of a defensive constant nobody re-tested. Reading the tool author's four published
+  studies the same afternoon was the other half of this: it told me which of their fields were worth
+  copying and which had been removed by the vendor and would stay empty for everyone.
+- **A parser version bump with no parser change.** Version 1.0.4 changed no parsing logic. It exists so
+  every installation re-reads its history through the corrected adapter on next start, because the
+  wrong rows were the newest rows and the dashboard shows the newest.
+
+### Frictions and course corrections
+
+- **I stated one thing from memory and it was wrong.** I wrote that we stamp the model as unknown on
+  live ChatGPT captures, as a point in the competitor's favour. One query against the pool showed every
+  live ChatGPT capture carrying the real model name. Corrected in the same session's notes rather than
+  left standing, and the correction is now in the record above it.
+- **A defect I introduced while fixing another.** The parser fix earlier in the day re-read a live
+  Claude capture through the wrong adapter, because the raw format was passed through for one engine
+  only. It surfaced as a run reading "unrecognised shape" on the dashboard while the correct parse sat
+  underneath it. Found by querying the pool rather than by reading the code.
+- **Two things I could not do myself and said so.** The browser automation cannot open Chrome's own
+  extension pages, so every build still needs the client's Update click, and the competitor's panel
+  could never be opened for a side-by-side on screen; that comparison rests on his pasted export and on
+  our own database. Saying which half was measured and which was reported matters more than the
+  comparison itself.
+- **The always-on memory index had grown past its own limit** and was being silently truncated, so
+  entries were dropping out of context unread. Trimmed under the limit by moving detail into the topic
+  files it points at, after checking each fact existed there first. Three facts existed only in the
+  index line and were relocated before anything was cut.
+
+### Why this matters for the portfolio
+
+- The two defects that mattered most this session were both invisible: a filing that reverted itself
+  overnight and a Remove that never stuck. Neither had an error message, neither was reproducible on
+  demand, and one had already been declared fixed. Both were found by querying the live shared database
+  and asking what else writes to this row, which is a different habit from reading the code.
+- When a competitor's headline number is bigger, the first question is what they are counting. Here the
+  answer was three different definitions and one double count. I adopted the one real signal they had
+  and left our numbers honest.
+- A guessed constant can quietly cost a product a whole step of user work. It took four measurements in
+  a browser to delete a download-and-attach flow that had been treated as a platform limitation.
+
+---
