@@ -2668,3 +2668,107 @@ embarrass us on screen. He watched most of it happen live in his own browser.
   a browser to delete a download-and-attach flow that had been treated as a platform limitation.
 
 ---
+
+## 2026-09-02, a parked feature unblocked by elimination, shipped to two products, then rebuilt because the sign-in screen could never carry the client's name
+
+The previous session had built Google sign-in for both of the client's products, proven it worked,
+and switched it off: publishing the app out of test mode needed a privacy policy and terms page
+nobody had written, and test mode caps an app at 100 users for its lifetime. A contractor replied
+overnight saying those pages were not mandatory and sent screenshots of his own published app with
+the fields empty. That claim turned out to be true for him and false for us, and the day ended with
+the feature live on both products and then rebuilt on a different authentication flow entirely.
+
+### What shipped
+
+- **The OAuth app published, lifting a 100-user lifetime cap.** The platform's console refuses to
+  publish with a banner that names no field: "OAuth configuration is incomplete, visit the Branding
+  page". Found by elimination, each candidate saved and re-checked: authorized domains, the client,
+  the sign-in scopes, the home page URL. The two policy URLs were the only remaining gap. The
+  verification centre then confirmed no review is required, because the app requests only email,
+  profile and openid.
+- **Real privacy and terms pages, live and public.** Both return HTTP 200, are reachable with no
+  session by construction, are linked from the sign-in footer, and carry a test that fails the build
+  if either page later grows an authentication dependency. The copy was written against the actual
+  database tables the product uses, not from a template.
+- **Google sign-in live on both products**, and the contractor's earlier interface review shipped in
+  the same deployment: the icon vocabulary, one back control per screen, real loading titles, and the
+  shared label component.
+- **Both products rebuilt on Google Identity Services the same evening.** The vendor's own button now
+  runs on the client's own domains and returns a signed token that goes straight to the database
+  provider. 1695 tests passing on the portal, 1332 on the feed product, both builds clean, both
+  verified live after deployment.
+- **Two data faults found by a self-run audit and fixed.** 48 of 51 rows in the media logs still
+  named storage files deleted during the previous day's migration; a migration rewrote them and four
+  of the rewritten links were loaded to prove it. Separately, a consumer email domain was removed
+  from the feed product's auto-approve list, where it had quietly turned an invite-only gate into
+  open signup.
+
+### Decisions worth recording
+
+- **Treated a colleague's working configuration as a hypothesis, not a specification.** He was
+  published with all three fields empty and said they were not mandatory. Reproducing his setup
+  exactly, the publish button stayed disabled. His app is almost certainly grandfathered from before
+  the rule was enforced on newer projects. Ten minutes of testing his claim both found the real
+  blocker and stopped a wrong fact being written down twice. He was right about the user cap, which
+  is why the work was worth doing at all, and telling him both halves mattered.
+- **Built real policy pages rather than satisfying the form.** The platform never fetches those URLs,
+  so the home page or a dead link would have passed. It would also have put a broken or dishonest
+  link on the one screen whose entire purpose is telling a student what happens to their data.
+- **Rejected a 10 dollar per month per project subscription in favour of half a day of work.** When
+  the client saw the consent screen on her phone it read "Sign in to
+  lffafeqydexbjcnuctew.supabase.co", which looks like a phishing page. Researched rather than
+  guessed: the platform prints the redirect address's domain until the app's brand is verified, and
+  brand verification requires proving ownership of every domain in the configuration, redirect
+  addresses included. Two of those belong to the database vendor and can never be owned, so no name
+  could ever appear there. The paid escape was a custom domain add-on on a paid plan, per project,
+  so two. Rebuilt on a flow where the vendor leaves the picture entirely instead.
+- **Routed the policy contact to the founder, not to the operator.** Students have no relationship
+  with her address, and on a privacy policy the contact line is the single element that has to work.
+  The guard test was updated in the same commit so it cannot drift back.
+- **Stopped one step short of finishing, on purpose.** The old redirect entries are still registered
+  because rollback is "redeploy the previous commit" and that commit needs them. They come off after
+  a human sign-in proves the new flow, not before.
+- **Refused to handle the client secret again**, including when asked to place it on her clipboard.
+  The management API returns a masked value rather than the real one, so the attempt would have been
+  useless as well as against the rule; the clipboard was cleared before she could paste a dead
+  string into a dashboard.
+
+### Frictions and course corrections
+
+- **Publishing did not deliver the outcome it was pursued for.** The cap was the stated blocker and
+  removing it was real progress, but the screen a student actually sees was unchanged, and the client
+  said so plainly: "It shouldn't be showing this. You worked too hard for this to be happening."
+  The correct response was not to defend the work but to go and find out why, which produced a better
+  fix than the original plan contained.
+- **A layout defect that a green test suite could not see.** The vendor's button takes a pixel width,
+  the container measured zero before the browser had laid the page out, and the vendor silently fell
+  back to its 400 pixel maximum inside a 334 pixel card. 1695 and 1332 tests passed throughout. A
+  screenshot caught it and a live measurement named it. Fixed by measuring after layout, and written
+  up as a reusable detector so the next occurrence is found by a rule rather than by eye.
+- **An earlier session in this same log recorded that branding could never fix the consent screen.**
+  That was true of the old flow and is now superseded: the reason was the redirect address, not
+  branding, and changing the flow changes the answer. The always-on project instructions were
+  corrected rather than left to mislead.
+- **Two of the operator's own assumptions were checked before acting on them, and one was wrong.**
+  She flagged that a consumer email domain probably was not on the auto-approve list and said it was
+  her problem if it was. It was on the list, had never been in the founder's original set, and would
+  have become a one-click door the moment Google sign-in shipped.
+- **Working in a repository three other sessions were writing to at the same time.** Every commit
+  went through a detached copy cut from the deployed branch, so none of their uncommitted work was
+  staged or overwritten.
+
+### Why this matters for the portfolio
+
+- A console that says "something is incomplete" without naming the field is a common shape, and
+  elimination with a save and a re-check per candidate is a general method for it. Guessing there
+  would have cost days.
+- The difference between removing a stated blocker and delivering the outcome the blocker was
+  standing in front of is the difference between a task closed and a problem solved. Publishing was
+  necessary and insufficient, and only the client's screenshot revealed that.
+- Cost constraints are design constraints. "No spend without the founder's approval" ruled out the
+  obvious purchase and produced a better architecture, because the free path also removed a vendor
+  from the trust boundary entirely.
+- Green tests are not evidence that a user-facing surface is right. The one defect that reached the
+  screen was invisible to 3,027 passing tests across two products and obvious in a single screenshot.
+
+---
