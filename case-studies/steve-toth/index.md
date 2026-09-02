@@ -2384,3 +2384,81 @@ The platform ceiling is the transferable lesson: a host limit is invisible while
 fast, and the right response when it appears is to move the work, not to trim it until it fits.
 
 ---
+
+## 2026-09-02, a skill handed to a teammate was rebuilt to work on any agent, and cold-tested by an agent forbidden to ask questions
+
+A colleague had been sitting on a client knowledge-base build since 25 August, blocked behind
+other work. She had the tooling already: an OKF knowledge-brain skill sent to her on 14 August.
+The ask was to check whether that skill was actually usable for what she needed, then fix it.
+
+### What shipped
+
+- **An audit of the skill as sent**, against the copy she received (unchanged on disk since the
+  hour it was sent). The format and the gates were sound: its verification script passed on its
+  own fixture, exit 0, Python 3.9 standard library only. Five usability gaps were in the
+  packaging, not the substance.
+- **A rebuild for any agent, not one product.** The frontmatter `name` was `okf-brains` inside a
+  folder called `okf-skill`, which the Agent Skills specification rejects even though the
+  authoring tool had tolerated it for months. Added the spec's `license`, `compatibility` and
+  `metadata` fields, and replaced product-specific wording throughout.
+- **A QUICKSTART with per-agent install paths**, each taken from that agent's own documentation
+  rather than assumed: Claude Code, Codex and ChatGPT, GitHub Copilot, Gemini CLI, Cursor, and
+  the hosted Claude apps. One shared path covers four of them.
+- **A defaults table in place of a seven-question design interview.** Two of those questions
+  (who may mark a page verified, who reviews the stale list) belong to the client, not to the
+  colleague building for them, so the build would have stalled at question one.
+- **A de-branded example bundle**, so the skill carries no client or internal names.
+- **Four fixes the cold run earned:** the compression test now covers sources that are not
+  greppable after the session ends (docx, PDF, video), an identity prefix for organisations as
+  source authors, a third freshness horizon, and a single retry on a transcript tool that
+  crashed once and succeeded on an identical rerun.
+- **Shipped to three places, each verified against the remote rather than the working tree:** the
+  live skills directory, her personal skills repository (`9f4b0e3`), and the product repository
+  whose copy was still the old version (`9a47571`, live service answering 200 afterwards).
+
+### Decisions worth recording
+
+- **The human should not read the skill; the agent should.** The first review was written as
+  though the colleague had to read 40 KB across five files before creating a file. She corrected
+  it: she drops the folder in and points the agent at the sources. That reframing is what turned
+  a documentation patch into an operating mode, where the skill applies stated defaults and
+  pauses exactly once, for plan approval, and treats "do not stop to ask" as pre-approval.
+- **Portability is a requirement, not a nicety.** The skill was written for one product. Anyone
+  might run it on a different coding agent, so the install, the vocabulary and the delegation
+  advice all had to stop naming one vendor.
+- **Defaults, never a question the person cannot answer.** An unnamed verification stamp is still
+  refused in every mode. Everything else got a default and a logged open item.
+- **A documentation-only change was committed locally and pushed only when asked.** A push to the
+  product repository triggers a deploy, and no one had asked for one.
+
+### Frictions and course corrections
+
+- **The first pass fixed the install section but left the skill product-specific.** It took a
+  direct correction to see that "make it easy to install" and "make it work on any agent" are
+  different jobs.
+- **The name mismatch had been shipped and was invisible from the inside.** The authoring tool
+  never complained, so a skill sent to a colleague three weeks earlier carried a defect that a
+  stricter client would have rejected outright.
+- **The cold run found what the author could not.** A fresh agent that had never seen the format
+  was given the skill, five deliberately awkward sources (markdown, a Word document, a pasted
+  social post, a video, and a PDF on a machine with no PDF tool) and one rule: the user is
+  unavailable, so log any question you wanted to ask instead of asking it. The questions file
+  came back empty, the bundle passed its gate, and the PDF was correctly refused with an install
+  command instead of being invented from the filename. The four gaps above came from its
+  "things I had to guess at" list.
+- **The same check, generalised into the pre-ship audit skill, immediately found nine more
+  skills in the personal library with the same name-folder mismatch.** Reported, not silently
+  changed, because renaming folders changes how they are invoked.
+
+### Why this matters for the portfolio
+
+The thing that made this work was not the rewrite. It was testing the deliverable the way its
+recipient would meet it: a fresh agent, no author present, no one to ask. Every question that
+agent wanted to ask was a place a real colleague would have stalled, and the fix for each was a
+stated default rather than a better-worded question.
+
+The transferable point is that an artefact handed to someone else fails in ways its author
+cannot see, because the author supplies the missing context without noticing. The cheap way to
+find those failures is to remove the author from the loop and watch what breaks.
+
+---
