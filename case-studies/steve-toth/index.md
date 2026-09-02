@@ -2292,3 +2292,95 @@ verify the copy independently of the tool that made it, gate the deletion on a f
 and get a human to confirm the one thing the automation cannot see before anything is destroyed.
 
 ---
+
+## 2026-09-01 to 2026-09-02, a voice clone went live, the audio got 12 dB louder, and a three-month-old platform ceiling surfaced the moment the provider changed
+
+The client's newsletter audio (Steve reading his own SEO Notebook and AI Notebook issues, in a cloned
+voice, attached to every Notion note) had been running on ElevenLabs. A cheaper Speechify clone had
+been evaluated since July and blocked on a consent flow. Karla, the client's operations lead, got the
+clone made on 2026-09-01. This arc took it from "a voice id exists" to the live production narrator,
+and found two real defects in the existing pipeline on the way.
+
+### What shipped
+
+- **Loudness mastering** in the audio pipeline: `radar/lib/note-audio/master.ts`, pure JS (wasm MP3
+  decode, soft-knee compressor, gain to target, lookahead limiter, re-encode), because the render ran
+  inside a Vercel function with no ffmpeg. Every note had been shipping at about -28 LUFS, roughly
+  12 dB under spoken-word norm. Measured before and after with ffmpeg's loudnorm, not the code's own
+  meter: -29.2 to -16.56 LUFS on the Week 36 issue, -27.7 to -16.78 on the Aug 27 issue, true peak
+  held at -1.4 to -1.6 dBFS, duration unchanged to within 50 ms. Applied to all three paths that ship
+  provider audio (note audio, digests and client newsletter, the note video's soundtrack), each
+  failing open so a mastering error can never lose a render the TTS quota already paid for.
+- **The Speechify clone as the production voice**, voice `e1031377`, model `simba-3.2`, with the
+  ElevenLabs path left intact as an automatic fallback behind a single environment variable.
+  Paragraph seams become real SSML pauses, a trailing Sources section is no longer narrated, the
+  client's own domains are spelled out as letters, and a social CTA ("support the TL;DR ... like,
+  reshare or comment") that had been read aloud is dropped.
+- **Note audio moved from the Vercel route to the Railway worker** that already rendered the videos,
+  on its own 60 s interval so a 20 minute video render cannot starve it. Ownership is an environment
+  flip in both directions, not a deploy. Live proof: a January note rendered on the worker in 43 s,
+  worker log `-28.3 -> -16.2 LUFS`, published file measured at -16.78 LUFS.
+- Five production commits on `feat/linkedin-engine`: `1016aeb`, `5f02fac`, `9bb52fa`, `d2878e9`,
+  `5bed046`. 1305 tests passing on the deployed tree, including new tests for concurrent chunk
+  fetching, chunk order under out-of-order completion, the mastered-bytes-uploaded path, the fail-open
+  path, and the route's ownership gate in both directions.
+
+### Decisions worth recording
+
+- **Mastering had to be pure JS, and its loudness meter had to be designed for the real sample
+  rate.** The published BS.1770 K-weighting constants are for 48 kHz; the providers return 24 kHz.
+  Reused as-is, the meter read 1.1 dB hot and would have quietly under-mastered every note. The filter
+  is now derived for the actual rate, and the meter agreed with ffmpeg's to 0.08 dB on a 12 minute
+  file. The alternative, fudging the target to compensate, was rejected as a band-aid.
+- **A vendor engineer's guidance was tested and overruled.** Speechify's own engineer had advised
+  dropping the hyphen spelling of acronyms on the new model. Transcript-checked on the client's clone:
+  bare "SEO" expands to "search engine optimization", the hyphenated "S-E-O" reads correctly. The
+  existing pronunciation layer was kept unchanged.
+- **The client's ear decided the target.** Two full renders were produced from the same note: one
+  through the production code path, one through a hand-built pipeline with pauses and mastering. They
+  were 94.6% word-identical; the client preferred the hand-built one. The production pipeline was then
+  changed to produce that sound deterministically, rather than shipping the one-off.
+- **Moved the work to the host without a ceiling instead of shaving it to fit.** Parallelising the
+  provider calls cut TTS from 49.3 s to 18.5 s and still left the chain at about 50 s of a 60 s budget.
+  Fitting under a cliff by a few seconds is not a fix; the render moved to the worker.
+
+### Frictions and course corrections
+
+- **Two live production renders failed at exactly 60 seconds.** The cause was the host, not the
+  voice: the project is on Vercel's Hobby plan, which kills a function at 60 s regardless of the
+  `maxDuration = 300` the route declares. Speechify takes about 18 s per 1800-character chunk and the
+  provider awaited chunks one at a time; ElevenLabs answered in seconds and had hidden the ceiling for
+  three months. Vercel's log retention had already dropped the window, so the diagnosis was a local
+  replay of the exact chain with per-step timers.
+- **An early "proof" was wrong, and the client caught it.** A live render was presented as evidence
+  the switch worked. The client pointed out it was still the ElevenLabs voice. Checked: the Speechify
+  key had never been set on the production environment, so the provider seam had silently fallen back.
+  Only the deployed environment tells you what runs.
+- **A first-pass render had audible jumps.** An attempt at the vendor's prosody-continuity idea,
+  synthesising each paragraph inside its neighbours and slicing it back out, produced hard cuts.
+  A transcript diff showed zero missing words; the artefact was the slicing. Dropped.
+- **The pipeline's promo detector was misclassifying prose.** Any dollar amount marked a paragraph as
+  promotional, so a paragraph about link prices was rewritten by the shaping model into "short,
+  upbeat, persuasive" sell copy and moved to the end of the audio. Found by comparing the production
+  output against the source note, not by reading the code.
+- **Env parity was checked before moving the work, and it was not there.** The worker lacked the web
+  push keys; moving audio to it without them would have silently ended the client's "audio ready"
+  notifications. Copied first.
+- **A concurrent session was mid-operation in the same working tree.** Uncommitted edits were pulled
+  out and every commit was made from an isolated worktree, then cherry-picked; one import-block
+  conflict had to be resolved by hand because the branch under it had moved.
+- Still open: a re-render duplicates the note's player blocks (cleaned by hand once), and the shaping
+  model drops two "P.S. here's the link" lines non-deterministically.
+
+### Why this matters for the portfolio
+
+The vendor switch was the small part. The valuable work was refusing each unverified claim in turn:
+measuring loudness instead of describing it, transcribing renders to prove what was and was not
+spoken, testing an engineer's advice against the actual model, and checking the deployed environment
+before calling a proof a proof. When the client corrected a wrong conclusion, the correction was
+taken and the evidence re-gathered rather than defended.
+
+The platform ceiling is the transferable lesson: a host limit is invisible while every dependency is
+fast, and the right response when it appears is to move the work, not to trim it until it fits.
+
+---
