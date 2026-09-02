@@ -2462,3 +2462,103 @@ cannot see, because the author supplies the missing context without noticing. Th
 find those failures is to remove the author from the loop and watch what breaks.
 
 ---
+
+## 2026-09-02, six defects a client heard, a QA gate so the next one needs no ear, and a video format found by watching the references
+
+The voice clone had gone live the day before. The client then listened to a full five-minute render
+start to finish and reported six things wrong with it. Fixing them mattered less than what came out
+of the session: an automated check that does by itself every listening test I had been doing by hand.
+
+### What shipped
+
+- **Six reported defects, each traced to a mechanism before anything was changed.** "4.8 star rating"
+  read as "4 8" and "1.2k member" as "1 2k" (the vendor's own normaliser: a raw probe of "1.2k" came
+  back as "one-point-tweak"). "aka" read as a word in one sentence and as "also known as" in the next.
+  "ainotebook.com" read as "A 1 notebook", which was my own alias, because the dash form "A-I" is read
+  as "A one". Video captions displayed "A-E-O" and "L-L-M" instead of "AEO" and "LLM". One section was
+  audibly louder than the rest. And the voice changed timbre mid-sentence at one exact phrase.
+- **The caption bug had two causes, one of them mine.** Captions are paired to the audio by sentence
+  COUNT, and the pipeline falls back to the machine spelling when the counts differ. They differed
+  because the text splitter separated a closing quote from its sentence and rejoined it with a space,
+  manufacturing an extra sentence boundary: 64 spoken against 62 displayed. Then the fix I wrote for
+  the domain name, "A. I. Notebook dot com", added two more boundaries and broke it again at 70
+  against 68. The rule that came out of it, now enforced by a test, is that no spoken substitution may
+  contain a period followed by a space.
+- **The timbre change was a chunk seam.** The provider synthesises long text in pieces and levels each
+  piece independently, so seams land wherever the character count runs out, and the client heard one
+  land mid-list. Pieces are now packed by paragraph so a seam falls where a pause already is, and a
+  short-term loudness leveller runs before mastering: measured spread across the file went from
+  2.64 dB to 1.36 dB.
+- **A post-render QA gate** (`lib/note-audio/qa.ts`): every audio and video render is transcribed and
+  checked for the phrases the voice must never say, for spoken-against-displayed sentence parity, for
+  machine spelling in caption text, and for loudness spread. It alerts rather than blocking, because a
+  false positive that hid the client's audio would cost more than the defect, and it stores the
+  transcript beside the media so a future "it said X" report is checked by reading instead of
+  re-listening. First live run on a real note: `OK (spread 0.82 dB, 62 sentences)`.
+- **A stale-playback bug found while verifying a fix.** The client reported "aka" still wrong in a file
+  that already said "also known as", and word-level timestamps proved the correct words were at 77.5 s
+  and 155.0 s. Media is re-rendered under the same URL and was served with a one-hour public cache, so
+  players kept the previous render for up to an hour after every fix. Now revalidated on every play.
+- **Two more silent bugs in the same pass:** the duplicate-player guard read only the first five blocks
+  of a note, so on one live note the existing player sat at position nine and a re-render added a
+  second one; and a "P.S. here's the link" line was being dropped or kept depending on the mood of the
+  language model, so that decision is now deterministic. Commits `5176cb9` and `d20a8ef`, 1335 tests.
+- **Two YouTube prototypes for the same content**, built from the pipeline's own outputs so no second
+  synthesis spend was needed. A five-minute kinetic-typography cut (rendered in 3 min 20 s) and, after
+  watching the client's reference videos, a sixty-second narrative cut (rendered in 42 s) where a
+  document flies in and gets stamped, one card knocks another over, and a single product card
+  accumulates attributes until a rating lands. Neither is in production.
+
+### Decisions worth recording
+
+- **The QA gate alerts, it does not block.** A render that fails a check still publishes. The client's
+  audio going missing because a transcription service was down would be worse than any defect the check
+  catches, and the transcript is stored either way so the failure is diagnosable in seconds.
+- **Overruled the vendor engineer, on evidence.** Their engineer had advised dropping the hyphen
+  spelling of acronyms on the new model. A transcript of the actual clone showed bare "SEO" expanding
+  to "search engine optimization" while the hyphenated form read correctly, so the existing layer was
+  kept unchanged.
+- **Evaluated the vendor's seam-free endpoint and did not adopt it.** It accepts a whole note in one
+  request, which would remove chunk seams entirely, but the same text came back 427 s long against 307 s
+  chunked, with 96 s of silence across 141 gaps. A different pacing profile, not a drop-in. Recorded as
+  a negative result with the numbers.
+- **Rejected cartoon characters for the video format** despite the client's references being cartoon
+  channels. Wrong register for an audience buying a $597 playbook, and per-note illustration cannot be
+  automated for a weekly newsletter. The transferable part of those references is not the art style, it
+  is that the narration carries the argument while the picture dramatizes one idea per beat.
+- **Named the scaling constraint rather than hiding it.** The reference channels hand-author every scene.
+  A weekly pipeline cannot. The honest path is a library of scene types selected by what the note says,
+  and the prototype's eight beats are seven such types placed by hand.
+
+### Frictions and course corrections
+
+- **I presented a render as proof and the client caught that it was the wrong voice.** The new provider's
+  key had never been set in the production environment, so the provider seam silently fell back to the
+  old one. The seam tells you what could run; only the deployed environment tells you what does.
+- **My own fix broke the thing it was next to.** The domain-name alias repaired one defect and re-broke
+  caption pairing, found only because I re-ran the same diagnostic that had caught the first cause.
+- **Three animations in the video prototype were dead on arrival and every automated gate passed.** Two
+  animation properties I used belong to paid plugins that were not loaded. The library logs a console
+  warning and skips the tween, so a curve never drew and a label never changed for its whole twenty
+  second scene, while the linter, layout, motion and contrast checks all reported clean. Only the
+  runtime console section of the check showed it.
+- **The first video prototype was the wrong format and took a full render to find out.** It animated the
+  words being spoken. The client's references never do that. Rebuilt.
+- **A concurrent session was working in the same repository throughout.** Every commit came from an
+  isolated worktree with explicitly staged paths, and one push was rejected and rebased onto work that
+  had landed in between.
+
+### Why this matters for the portfolio
+
+Six defects reported by ear became one automated gate. That is the shape of the work: not fixing what
+was reported, but removing the need for a human to catch that class of defect again. The transcript
+stored next to every render is the same idea, one layer down, because the next report can be verified by
+reading rather than by listening to five minutes of audio.
+
+The other half is refusing to accept a claim without evidence, including my own. A render was called
+proof and was not. A vendor's advice was tested and was wrong for this case. A promising endpoint was
+measured and rejected with numbers. And a client's reference to cartoon channels was taken seriously
+enough to watch all three videos and separate the transferable mechanic from the art style that would
+not survive contact with the audience.
+
+---
