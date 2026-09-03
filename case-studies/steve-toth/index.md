@@ -2818,3 +2818,34 @@ The retrieval-capture product went live for the team the day before and the oper
 - Deleting something built the same day, on the client's reasoning, is cheaper than defending it. The heuristic lasted 68 minutes and its removal changed no number on any screen.
 
 ---
+
+## 2026-09-03, a sign-in that worked in the code and failed in the browser, then a pattern doc so the next app skips the arc
+
+Steve reported his Google sign-in bounced back to the login page. The fix was two lines in two files, but the root cause generalizes to any Next.js app that exchanges an auth token on the client and then navigates with the framework router.
+
+### What shipped
+
+- **Root cause: soft RSC navigation races cookie commit.** `signInWithIdToken` sets session cookies via `document.cookie`. `router.replace('/') + router.refresh()` fires a server-side RSC fetch that can execute before the browser has committed the cookies. The server sees no session and redirects to `/login`. The email form in the same app already used `window.location.assign('/')` (full page load), which guarantees cookies are sent. The Google button and the /pending page did not. Fixed in `056aa93` and `95132dc`.
+- **Full auth-path audit across both apps.** Eight navigation paths checked (four Radar, four coaching portal). Only the two Radar client-side paths had the bug. The coaching portal uses server actions with `redirect()`, which is inherently a full navigation.
+- **Auth pattern doc at `docs/patterns/google-sign-in-pattern.md`.** Implementation checklist for adding Google Identity Services sign-in to a future Notebook app: the GIS architecture, nonce contract (sha256 to Google, raw to Supabase, silent when reversed), post-sign-in navigation rule, allow-list trigger integration, source-scan tests to prevent regression, brand verification steps, and seven traps we hit.
+- **Google branding verified and published.** Consent screen now shows "Notebook Agency" instead of the Supabase domain. Search Console TXT for `notebookers.com`, two stale supabase.co redirect URIs removed.
+- **Verified at close:** 1,340 Radar tests passing, build clean, fix deployed to production via `feat/linkedin-engine`.
+
+### Decisions worth recording
+
+- **`window.location.assign` is the only safe post-auth navigation.** Not a preference: `router.replace` and `router.refresh` are documented Next.js APIs that happen to race `document.cookie` writes. The bug is invisible in dev (localhost cookies commit faster) and produces no error, just a redirect loop that looks like the server rejected the session. Pinned by a source-scan test that fails the build if `router.replace` reappears in the auth flow.
+- **The pattern doc exists because this arc took three sessions.** The GIS migration, the branding verification, and the SSO fix each required knowledge from the prior step. Without a written pattern, the next app rebuilds that arc from scratch, including the traps (nonce direction, grandfathered peer configs, trigger message swallowing).
+
+### Frictions and course corrections
+
+- **The email form already had the correct pattern, and the Google button did not copy it.** The two forms sit in the same directory. The email form was written first and used `window.location.assign` from the start; the Google button was written later and used the framework router, which reads as the "right" way in a Next.js app. The source-scan test now prevents this from drifting again.
+- **The bug was invisible during development and testing.** Google sign-in was tested by five people across two apps over two days. Nobody hit it until Steve did, because the race is timing-dependent and often resolves in the browser's favour. The fix is deterministic, not probabilistic.
+- **A "still open" block in CLAUDE.md had gone stale.** It still said branding verification was pending and the supabase.co URIs were kept for rollback. Both were done earlier in this session. Stale always-on context is worse than missing context because it actively misdirects.
+
+### Why this matters for the portfolio
+
+- The hardest bugs to catch are the ones where every automated check passes. The test suite was green, the build was clean, the token exchange succeeded, the session was created. The failure was in the navigation that happened 50 milliseconds later, in a timing window that CI cannot reproduce.
+- Writing a pattern doc is not documentation work, it is preventing a three-session arc from becoming a six-session arc the next time. The nonce contract alone would have cost a debugging session if it were not pinned.
+- A stale "still open" note in a context file that loads on every turn is a live defect in the system, not a formatting issue. Updating it is the same class of work as fixing the code.
+
+---
