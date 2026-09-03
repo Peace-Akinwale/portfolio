@@ -2772,3 +2772,49 @@ the feature live on both products and then rebuilt on a different authentication
   screen was invisible to 3,027 passing tests across two products and obvious in a single screenshot.
 
 ---
+
+## 2026-09-03, a tool that measured correctly and read badly: five tiles instead of six, one vocabulary across every surface, and a heuristic deleted 68 minutes after it shipped
+
+The retrieval-capture product went live for the team the day before and the operator spent this day using it rather than demonstrating it. The numbers were already defensible. What was not defensible was the language around them, and she said so in one sentence: "all the pages are not very, very clear in terms of readability and understandability." Twenty-eight commits followed, none of which changed a single measurement.
+
+### What shipped
+
+- **The overview became a scoped report.** Per client, or every client at once, filterable by engine with a capture count on each pill, five stat tiles, a verdict sentence, and split tables by client and by engine. Built against a competitor screenshot the operator pasted, on our own design system rather than theirs.
+- **Six tiles cut to five, and the caveat stated once.** Three tiles had each restated the same rule ("a rate appears at 3 runs") in different words. One line under the row now carries it, and names the four fields that must match for two runs to be averaged together: engine, plan, chat mode, country.
+- **One vocabulary carried across every surface in the same pass.** "Comparable run" became "runs measured the same way", "research round" became "search round", "pages considered" became "pages opened", applied to the dashboard, the browser side panel, list rows, findings, next actions and the human-readable exports. Field names in the JSON export were deliberately left alone, because a partner tool reads them.
+- **Rows lead with the outcome.** A run now says "cited", "read, not cited" or "not cited" for that client, instead of "parsed". Parser version numbers moved to a hover title, and failure states read "could not be read" and "cut short".
+- **True dark mode on both surfaces**, black ground and one accent, with a switch in each header that follows the operating system until a person chooses, then remembers.
+- **A prompt of 28,273 characters stopped flooding a page.** Long prompts clamp to four lines behind "Show the whole prompt", list rows clamp to two.
+- **A demo prompt file**, 328 lines, six buyer questions for each of 29 clients, every one grounded in that client's own stored product vocabulary rather than invented.
+- **Verified at close:** 541 tests passing, typecheck clean across four workspaces, live deployment `fa1ea16c` answering 200, twenty-two live captures in the shared pool (twelve at the start of the day), nineteen of them parsed by the current parser.
+
+### Decisions worth recording
+
+- **A heuristic was built at 16:43 and deleted at 17:51, on the client's reasoning.** It flagged runs where the engine searched for a client by name that the prompt never mentioned, reading that as the account's own history contaminating the result. She saw it fire on a temporary chat, where no history can exist, and concluded the signal was not detecting memory at all: the engine names category leaders unprompted. Softening the wording and gating it to non-temporary chats were both rejected, because a wrong inference in gentle words is still wrong. Deleted end to end, with its tests.
+- **Colour carries a verdict and nothing else.** Asked to make the interface "colourful like the competitor, but with our own design quality", and holding a five-colour brand palette, the answer was to spend colour on meaning: red is a loss, ink is a win, grey is no verdict yet, and words always say the same thing. One loud element per page, so the verdict sentence reads as the conclusion rather than as decoration.
+- **Below the measurement floor a tile shows its count, not the word "withheld".** "Withheld" as a headline read as a dead tile and hid the actual finding. The count is the finding; the missing percentage is the caveat, and a caveat belongs in one line under the row rather than repeated inside three tiles.
+- **One metric was demoted rather than explained better.** Asked what "runner-up rate" meant and why it deserved highlighting, the honest answer was that it did not: its red fired on runs that had been cited, which inverted the meaning, and the name is jargon. It survives as a plain sentence in the footnote when it happens.
+- **The team-wide verdict names two clients, not all of them.** Five names in one sentence was unreadable. The table below already names every account.
+- **A capability appears only where it can work.** A "re-read this chat" control shows on the two engines whose saved conversations can be read again, and never on the third, which has no such route, or on a private chat, which is saved nowhere. Showing it everywhere and failing was rejected as worse than not showing it.
+- **Dark mode keeps its token names and swaps their values**, so no component needed rewriting, with two semantic pairs added because a naive swap turns the loudest inverted block white.
+
+### Frictions and course corrections
+
+- **The dark mode shipped that morning trapped the client in it by that evening.** The dashboard got a theme switch in the same commit as the default; the browser panel did not, and her Mac is dark, so the panel went dark with no way back and she had to ask how to leave. A new default that follows an environment signal is not finished until the override ships beside it, on every surface, and the two surfaces here are separate origins so each needed its own. Written up as a reusable detector.
+- **She corrected the order of operations, and was right.** After an answer given from inference rather than from the code: "i think before you answer, research what has happened first, then your answers can be helpful." Every later answer opened with a search of the source or a query against the live data. That habit is what caught the next item.
+- **She reported a defect that the records contradicted, and the check found a real hole anyway.** She believed a capture had been created after the guard that should have prevented it. The data said one such row existed, created two hours before the guard shipped. Rather than stopping at "your timeline is off", the guard itself was re-read: it only matched its trigger phrase at the start of a message, so an edited or pasted variant would still slip through. Broadened, with a test.
+- **The first interview attempt was rejected outright.** Asked to gather requirements as a quiz rather than prose, the quiz used the product's internal vocabulary and she replied "I'm not sure I understand these options", then described the design she wanted better than the quiz had. Requirements questions have to be phrased as behaviour a person can picture.
+- **A sweep for readability found a scope defect that no amount of reading components would have.** With the client selector set to "all clients", three pages labelled every run "no client set". Found by opening each page on the live site, not by inspecting the code.
+- **Three tests failed and the function under test was correct.** A hand-built fixture was missing the three fields an upstream filter reads, so every row was dropped before the new code ran. Also written up as a detector: when a pure function returns nothing unexpectedly, check the fixture against the filter before touching the function.
+- **She had to ask twice for work already discussed.** "i have given other feedback you are yet to act on. act on it now. reitereate them before you do them so i know what you are doing." Several things had been explained rather than built. The fix was to read the list back and ship all five in one pass, which is now the pattern for accumulated feedback.
+- **One root cause was not found and was not claimed.** Two of four private-mode captures failed that day with an empty prompt and a missing chunk, while a deliberate reproduction succeeded. Rather than guess, the failure path now records its own state (expected chunk, bytes held, seconds elapsed, resume count) into the stored row, so the next occurrence explains itself.
+
+### Why this matters for the portfolio
+
+- A measurement product can be correct and unusable at the same time. Every number on these screens was already defensible after the prior session; the work that made the tool credible to a strategist was entirely in the words around those numbers.
+- Vocabulary is a contract with a blast radius. Changing a term on one screen and not its siblings is worse than leaving the old term, which is why a naming change here touched the dashboard, the browser panel, the exports and the tests in a single commit.
+- The most useful client feedback is often a question about a metric, not a bug report. "What is a runner-up rate, and why does it deserve highlighting?" was a verdict on the metric, and the right response was to agree and demote it rather than to explain it better.
+- A user report that contradicts the records still deserves the investigation. Checking hers cost one query, proved the timeline wrong, and found a genuine gap in the same pass.
+- Deleting something built the same day, on the client's reasoning, is cheaper than defending it. The heuristic lasted 68 minutes and its removal changed no number on any screen.
+
+---
