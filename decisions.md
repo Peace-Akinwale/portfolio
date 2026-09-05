@@ -53,3 +53,14 @@ Make peaceakinwale.com read as top-tier editorial craft (Godly / Siteinspire reg
 | / | 95 | 95 | 100 | 100 | 1.5 s | 0 |
 
 The redesign must not drop below these.
+
+## After (2026-09-05, same method, branch `redesign/editorial`)
+
+| Page | Performance | Accessibility | Best practices | SEO | LCP | CLS |
+|---|---|---|---|---|---|---|
+| / | 96 | 96 | 100 | 100 | 1.4 s | 0 |
+| /services | 97 | 100 | 100 | 100 | 1.3 s | 0 |
+
+Also verified: `npm run build` (webpack) passes, `npm test` 58 tests pass, `tsc --noEmit` clean, screenshot strips of every in-scope route in light, dark, 390px and reduced motion, theme toggle persists across reloads, token contrast (ink 16.4:1, muted 6.2:1, olive 4.6:1, brick 5.2:1 on paper). Remaining ESLint errors are pre-existing in `components/TableOfContents.tsx`, `components/ImageLightbox.tsx` and comment code (setState in effects); untouched by this work.
+
+Nothing pushed, no PR, no deploy. Peace reviews locally first.
