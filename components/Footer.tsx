@@ -1,69 +1,86 @@
 import Link from 'next/link';
+import { Container, ThemeToggle } from '@/components/ui';
+
+const COLUMNS = [
+  {
+    heading: 'Work',
+    links: [
+      { href: '/services', label: 'Services' },
+      { href: '/case-studies', label: 'Case studies' },
+      { href: '/portfolio', label: 'Portfolio' },
+      { href: '/testimonials', label: 'Testimonials' },
+    ],
+  },
+  {
+    heading: 'Projects',
+    links: [
+      { href: '/projects', label: 'All projects' },
+      { href: '/projects/contentdb', label: 'ContentDB' },
+      { href: '/projects/mylinks', label: 'MyLinks' },
+      { href: '/career-pathway', label: 'Career Pathway' },
+    ],
+  },
+  {
+    heading: 'Writing',
+    links: [
+      { href: '/blog', label: 'Blog' },
+      { href: '/about', label: 'About' },
+      { href: '/contact', label: 'Contact' },
+    ],
+  },
+  {
+    heading: 'Elsewhere',
+    links: [
+      { href: 'https://www.linkedin.com/in/peaceakinwale/', label: 'LinkedIn' },
+      { href: 'https://x.com/PeaceAkinwaleA', label: 'X' },
+      { href: 'https://github.com/Peace-Akinwale', label: 'GitHub' },
+      { href: '/rss.xml', label: 'RSS' },
+    ],
+  },
+];
 
 export function Footer() {
-  const currentYear = new Date().getFullYear();
+  const year = new Date().getFullYear();
 
   return (
-    <footer className="border-t border-border mt-0">
-      <div className="max-w-7xl mx-auto px-6 py-12">
-        <div className="grid grid-cols-1 gap-8 md:grid-cols-5">
-          {/* About */}
-          <div className="md:col-span-1">
-            <h3 className="font-bold text-lg mb-3">Peace Akinwale</h3>
-            <p className="text-sm text-muted-foreground leading-relaxed">
-              Product-led B2B SaaS content writer for software and enterprise companies.
+    <footer className="border-t border-border">
+      <Container className="py-14">
+        <div className="grid grid-cols-2 gap-x-6 gap-y-10 md:grid-cols-6">
+          <div className="col-span-2">
+            <p className="font-display text-lg font-bold text-foreground">Peace Akinwale</p>
+            <p className="mt-2 max-w-[28ch] text-sm leading-relaxed text-muted-foreground">
+              Product-led content for B2B SaaS. Lagos, Nigeria, working with teams everywhere.
             </p>
           </div>
-
-          {/* Work */}
-          <div>
-            <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-muted-foreground mb-3">Work</p>
-            <nav className="flex flex-col gap-2">
-              <Link href="/services" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Services</Link>
-              <Link href="/case-studies" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Case Studies</Link>
-              <Link href="/portfolio" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Portfolio</Link>
-              <Link href="/testimonials" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Testimonials</Link>
-            </nav>
-          </div>
-
-          {/* Projects */}
-          <div>
-            <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-muted-foreground mb-3">Projects</p>
-            <nav className="flex flex-col gap-2">
-              <Link href="/projects" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Projects</Link>
-              <Link href="/projects/contentdb" className="text-sm text-muted-foreground hover:text-foreground transition-colors">contentDB</Link>
-              <Link href="/projects/career-pathway" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Career Pathway</Link>
-            </nav>
-          </div>
-
-          {/* Writing */}
-          <div>
-            <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-muted-foreground mb-3">Writing</p>
-            <nav className="flex flex-col gap-2">
-              <Link href="/blog" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Blog</Link>
-              <Link href="/about" className="text-sm text-muted-foreground hover:text-foreground transition-colors">About</Link>
-              <Link href="/contact" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Contact</Link>
-            </nav>
-          </div>
-
-          {/* Connect */}
-          <div>
-            <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-muted-foreground mb-3">Connect</p>
-            <div className="flex flex-col gap-2">
-              <a href="https://x.com/PeaceAkinwaleA" target="_blank" rel="noopener noreferrer" className="text-sm text-muted-foreground hover:text-foreground transition-colors">X (Twitter)</a>
-              <a href="https://linkedin.com/in/peaceakinwale" target="_blank" rel="noopener noreferrer" className="text-sm text-muted-foreground hover:text-foreground transition-colors">LinkedIn</a>
-              <a href="https://github.com/Peace-Akinwale" target="_blank" rel="noopener noreferrer" className="text-sm text-muted-foreground hover:text-foreground transition-colors">GitHub</a>
+          {COLUMNS.map((col) => (
+            <div key={col.heading}>
+              <p className="t-label mb-4 text-muted-foreground">{col.heading}</p>
+              <ul className="flex flex-col gap-2">
+                {col.links.map((l) =>
+                  l.href.startsWith('http') ? (
+                    <li key={l.href}>
+                      <a href={l.href} target="_blank" rel="noopener noreferrer" className="text-sm text-muted-foreground hover:text-foreground">
+                        {l.label}
+                      </a>
+                    </li>
+                  ) : (
+                    <li key={l.href}>
+                      <Link href={l.href} className="text-sm text-muted-foreground hover:text-foreground">
+                        {l.label}
+                      </Link>
+                    </li>
+                  ),
+                )}
+              </ul>
             </div>
-          </div>
+          ))}
         </div>
 
-        {/* Copyright */}
-        <div className="mt-12 pt-8 border-t border-border">
-          <p className="text-sm text-muted-foreground text-center">
-            © {currentYear} Peace Akinwale. All rights reserved.
-          </p>
+        <div className="mt-14 flex items-center justify-between gap-4 border-t border-border pt-6">
+          <p className="text-sm text-muted-foreground">© {year} Peace Akinwale</p>
+          <ThemeToggle />
         </div>
-      </div>
+      </Container>
     </footer>
   );
 }
