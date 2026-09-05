@@ -15,7 +15,7 @@ export const metadata: Metadata = {
     type: 'website',
     images: [
       {
-        url: '/contentdb/opengraph-image',
+        url: '/projects/contentdb/opengraph-image',
         width: 1200,
         height: 630,
         alt: 'contentDB preview image',
@@ -27,7 +27,7 @@ export const metadata: Metadata = {
     title: 'contentDB',
     description:
       'contentDB stores customer conversations, research, and content in one place so you can query it through MCP in Claude, ChatGPT, or the contentDB web chat while you research, write, or update an article.',
-    images: ['/contentdb/opengraph-image'],
+    images: ['/projects/contentdb/opengraph-image'],
   },
   icons: {
     icon: '/images/contentdb/logo.svg',
