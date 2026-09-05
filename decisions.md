@@ -60,6 +60,7 @@ The redesign must not drop below these.
 |---|---|---|---|---|---|---|
 | / | 96 | 96 | 100 | 100 | 1.4 s | 0 |
 | /services | 97 | 100 | 100 | 100 | 1.3 s | 0 |
+| /how-to-optimize-for-aeo | 96 | 100 | 96 | 100 | 1.3 s | 0 |
 
 Also verified: `npm run build` (webpack) passes, `npm test` 58 tests pass, `tsc --noEmit` clean, screenshot strips of every in-scope route in light, dark, 390px and reduced motion, theme toggle persists across reloads, token contrast (ink 16.4:1, muted 6.2:1, olive 4.6:1, brick 5.2:1 on paper). Remaining ESLint errors are pre-existing in `components/TableOfContents.tsx`, `components/ImageLightbox.tsx` and comment code (setState in effects); untouched by this work.
 
