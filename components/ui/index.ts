@@ -9,3 +9,4 @@ export { IndexRow, IndexList } from './IndexRow';
 export { ChapterTitle } from './ChapterTitle';
 export { Reveal } from './Reveal';
 export { ThemeToggle } from './ThemeToggle';
+export { PageHeader } from './PageHeader';
