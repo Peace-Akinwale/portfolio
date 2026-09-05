@@ -1,14 +1,16 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useSyncExternalStore } from 'react';
 import { useTheme } from 'next-themes';
 import { cx } from '@/lib/cx';
+
+const subscribeNoop = () => () => {};
+const useMounted = () => useSyncExternalStore(subscribeNoop, () => true, () => false);
 
 /** Light / dark switch. Neutral until mounted, so server and client markup match. */
 export function ThemeToggle({ className }: { className?: string }) {
   const { resolvedTheme, setTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => setMounted(true), []);
+  const mounted = useMounted();
 
   const isDark = mounted && resolvedTheme === 'dark';
   const label = mounted ? (isDark ? 'Switch to light mode' : 'Switch to dark mode') : 'Toggle colour scheme';

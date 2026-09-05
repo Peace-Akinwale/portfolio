@@ -38,41 +38,38 @@ const sizes: Record<Size, string> = {
   md: 'text-sm px-6 py-3',
 };
 
-function classes(variant: Variant, size: Size, className?: string) {
-  return cx(base, variants[variant], variant === 'text' ? 'px-0 py-0' : sizes[size], className);
-}
-
 export function Button(props: ButtonProps) {
-  const { variant = 'solid', size = 'md', className, children } = props;
-  const cls = classes(variant, size, className);
+  const { variant = 'solid', size = 'md', className, children, href, external, ...rest } = props;
+  const cls = cx(base, variants[variant], variant === 'text' ? 'px-0 py-0' : sizes[size], className);
 
-  if (props.href !== undefined) {
-    const { href, external, variant: _v, size: _s, className: _c, children: _ch, ...rest } = props;
-    const isExternal = external || href.startsWith('http') || href.startsWith('mailto:');
+  if (href !== undefined) {
+    const anchorRest = rest as Omit<ComponentPropsWithoutRef<'a'>, 'href' | 'className' | 'children'>;
+    const isMail = href.startsWith('mailto:');
+    const isExternal = external || href.startsWith('http') || isMail;
     if (isExternal) {
       return (
         <a
           href={href}
           className={cls}
           data-pressable=""
-          target={href.startsWith('mailto:') ? undefined : '_blank'}
-          rel={href.startsWith('mailto:') ? undefined : 'noopener noreferrer'}
-          {...rest}
+          target={isMail ? undefined : '_blank'}
+          rel={isMail ? undefined : 'noopener noreferrer'}
+          {...anchorRest}
         >
           {children}
         </a>
       );
     }
     return (
-      <Link href={href} className={cls} data-pressable="" {...rest}>
+      <Link href={href} className={cls} data-pressable="" {...anchorRest}>
         {children}
       </Link>
     );
   }
 
-  const { variant: _v, size: _s, className: _c, children: _ch, href: _h, external: _e, ...rest } = props;
+  const buttonRest = rest as Omit<ComponentPropsWithoutRef<'button'>, 'className' | 'children'>;
   return (
-    <button className={cls} type={rest.type ?? 'button'} {...rest}>
+    <button className={cls} type={buttonRest.type ?? 'button'} {...buttonRest}>
       {children}
     </button>
   );

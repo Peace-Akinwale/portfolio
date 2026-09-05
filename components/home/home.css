@@ -1,0 +1,78 @@
+/* ============================================================================
+   Homepage: the redline chapter.
+   Editor's marks arrive as the visitor scrolls. Final state is the default
+   styling; the animation runs from the "before" state, so a browser without
+   scroll-driven animations, and a reader who prefers reduced motion, see the
+   finished markup.
+   ========================================================================== */
+
+.redline {
+  --strike: var(--accent-2);
+}
+
+/* 1. The struck line. A terracotta rule through the filler sentence, following every line it wraps to. */
+.redline-strike {
+  color: var(--muted-foreground);
+  text-decoration: line-through;
+  text-decoration-color: var(--strike);
+  text-decoration-thickness: 2px;
+}
+
+/* 2. The product sentence, arriving. */
+.redline-insert {
+  display: inline;
+  text-decoration: underline;
+  text-decoration-color: var(--strike);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
+  color: var(--foreground);
+}
+
+/* 3. The margin note. */
+.redline-note {
+  color: var(--accent-2);
+}
+
+@keyframes redline-strike {
+  from { color: var(--foreground); text-decoration-color: transparent; }
+  to { color: var(--muted-foreground); text-decoration-color: var(--strike); }
+}
+@keyframes redline-insert {
+  from { opacity: 0; transform: translateX(14px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+@keyframes redline-note {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .redline-strike {
+      animation: redline-strike 1ms linear both;
+      animation-timeline: view();
+      animation-range: entry 100% cover 32%;
+    }
+    .redline-insert {
+      display: inline-block;
+      animation: redline-insert 1ms var(--ease-out) both;
+      animation-timeline: view();
+      animation-range: cover 22% cover 46%;
+    }
+    .redline-note {
+      animation: redline-note 1ms var(--ease-out) both;
+      animation-timeline: view();
+      animation-range: cover 30% cover 52%;
+    }
+  }
+}
+
+/* Manuscript column: measure, generous leading, tabular figures in the margin. */
+.manuscript {
+  max-width: 60ch;
+  font-size: 1.125rem;
+  line-height: 1.85;
+}
+.manuscript p + p {
+  margin-top: 1.25rem;
+}

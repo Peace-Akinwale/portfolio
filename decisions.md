@@ -37,6 +37,11 @@ Make peaceakinwale.com read as top-tier editorial craft (Godly / Siteinspire reg
 ## Structural changes log
 
 - 2026-09-05: created `decisions.md` and `docs/design/visual-reference.md` (Phase 0).
+- 2026-09-05: `components/ui/` primitives and `lib/content/` shared data added; `lib/cx.ts` helper. Header, Footer, AppChrome consume them. Homepage no longer receives the fixed Header (chaptered editorial carries its own masthead).
+- 2026-09-05: removed `app/contentdb`, `app/test`, `app/services-v2`, starter SVGs, duplicate case-study images, `graphql` + `graphql-request`. ContentDB OG image now lives at `app/projects/contentdb/opengraph-image.tsx`.
+- 2026-09-05: homepage rebuilt as `components/home/*` chapters (TitlePage, TheQuestion, Redline, TheRecord, TheSystems, InTheirWords, Colophon) composed by `app/page.tsx`; chapter CSS in `components/home/home.css`. The planned fixed-margin Folio primitive was dropped in favour of a sticky marker inside each chapter's grid, which tracks the chapter without overlapping content at narrower widths.
+- 2026-09-05: `scripts/dev/shoot.mjs` added: Puppeteer screenshot strip (light/dark/mobile/reduced-motion) used for verification. The Browser pane's screenshots go blank after programmatic scroll, so this is the visual check.
+- Known dev-server gotcha: Turbopack's persistent cache under `.next/dev` served stale `globals.css` after the token rewrite. Fix was stop server, `rm -rf .next`, restart.
 
 ## Baseline (before, 2026-09-05, dev server, Lighthouse 12 desktop preset)
 

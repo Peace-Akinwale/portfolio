@@ -29,13 +29,16 @@ export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isWorkOpen, setIsWorkOpen] = useState(false);
   const [isDesktopWorkOpen, setIsDesktopWorkOpen] = useState(false);
+  const [menuPath, setMenuPath] = useState(pathname);
   const desktopWorkRef = useRef<HTMLDivElement | null>(null);
 
-  useEffect(() => {
+  // Close every menu when the route changes (state adjusted during render, not in an effect).
+  if (menuPath !== pathname) {
+    setMenuPath(pathname);
     setIsMenuOpen(false);
     setIsWorkOpen(false);
     setIsDesktopWorkOpen(false);
-  }, [pathname]);
+  }
 
   useEffect(() => {
     if (!isDesktopWorkOpen) return;
