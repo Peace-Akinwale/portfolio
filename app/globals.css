@@ -11,10 +11,10 @@
   --foreground: #171614;
   --muted: #eae8e1;
   --muted-foreground: #5d5b54;
-  --border: #d6d3ca;
+  --border: #cac7bc;
   --accent: #64734f;
   --accent-foreground: #ffffff;
-  --accent-2: #b55e3d;
+  --accent-2: #a1502d;
   --ok: #3f7a4a;
 
   --font-sans: var(--font-body, ui-sans-serif, system-ui, sans-serif);

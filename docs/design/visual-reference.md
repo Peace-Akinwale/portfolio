@@ -31,10 +31,10 @@ Six roles plus one secondary accent. Olive owns links, rules, and the primary ac
 | `--foreground` | `#171614` | `#ebe8e0` | ink |
 | `--muted` | `#eae8e1` | `#232320` | quiet fills |
 | `--muted-foreground` | `#5d5b54` | `#a6a399` | secondary ink, tinted from foreground |
-| `--border` | `#d6d3ca` | `#34332e` | hairlines |
+| `--border` | `#cac7bc` | `#34332e` | hairlines |
 | `--accent` | `#64734f` | `#97a57d` | olive: links, rules, primary action |
 | `--accent-foreground` | `#ffffff` | `#141413` | ink on accent |
-| `--accent-2` | `#b55e3d` | `#d38561` | terracotta: redline marks, one emphasis per page |
+| `--accent-2` | `#a1502d` | `#d38561` | brick: redline marks, one emphasis per page. Darkened from `#b55e3d` (4.12:1) to clear 4.5:1 on paper as text |
 | `--ok` | `#3f7a4a` | `#7fb58a` | availability dot only |
 
 Contrast targets, measured on the render: body ink on ground ≥ 4.5:1, muted ink on ground ≥ 4.5:1, olive text on ground ≥ 4.5:1 at 14px bold or larger, borders ≥ 1.5:1.
