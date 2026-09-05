@@ -1,6 +1,8 @@
 'use client';
 
 import { useState } from 'react';
+import { Button, Pill } from '@/components/ui';
+import { AVAILABILITY, CALENDLY_URL } from '@/lib/content/clients';
 
 const PROJECT_TYPES = [
   'Select a type',
@@ -29,8 +31,8 @@ const STAGES = [
   'We don\'t have a content strategy yet and need help building one.',
 ];
 
-const inputClass = 'w-full rounded-md border border-border bg-background px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-accent transition';
-const labelClass = 'text-xs font-bold uppercase tracking-[0.08em] text-muted-foreground mb-1.5 block';
+const inputClass = 'w-full rounded-sm border border-border bg-surface px-4 py-3 text-[15px] text-foreground placeholder:text-muted-foreground focus:border-foreground focus:outline-none';
+const labelClass = 't-label mb-2 block text-muted-foreground';
 
 export default function ContactForm() {
   const [form, setForm] = useState({
@@ -60,73 +62,54 @@ export default function ContactForm() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-6 py-20 sm:py-28">
-      <div className="max-w-3xl mx-auto">
-
-      {/* ── Header ─────────────────────────────────── */}
-      <div className="mb-10">
-        <p className="text-xs font-bold uppercase tracking-[0.15em] mb-4" style={{ color: 'var(--accent)' }}>
-          Get in touch
+    <div className="mx-auto max-w-6xl gutter pb-24 pt-10 sm:pt-16">
+      <div className="mx-auto max-w-3xl">
+      <div className="reveal-group mb-10 max-w-[62ch]">
+        <p className="t-label mb-6 text-accent" style={{ ['--i' as string]: 0 }}>Contact</p>
+        <h1 className="t-h1 text-foreground" style={{ ['--i' as string]: 1 }}>Let&rsquo;s work together.</h1>
+        <p className="t-lede mt-6 text-muted-foreground" style={{ ['--i' as string]: 2 }}>
+          Book a free 30-minute discovery call below. No commitment, no pressure. Or scroll down and send a message instead.
         </p>
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <h1
-            className="text-3xl sm:text-4xl font-extrabold text-foreground leading-[1.1]"
-            style={{ letterSpacing: '-0.03em' }}
-          >
-            Let&rsquo;s work together.
-          </h1>
-          <span className="inline-flex items-center gap-2 text-xs font-semibold px-3 py-1.5 rounded-full border border-border text-muted-foreground whitespace-nowrap self-start sm:self-auto">
-            <span className="w-1.5 h-1.5 rounded-full bg-green-500 inline-block" />
-            Currently accepting 2 new clients
-          </span>
+        <div className="mt-6" style={{ ['--i' as string]: 3 }}>
+          <Pill>{AVAILABILITY}</Pill>
         </div>
-        <p className="text-sm leading-relaxed text-muted-foreground mt-4 max-w-lg">
-          Book a free 30-minute discovery call below. No commitment, no pressure. Or scroll down to send a message instead.
-        </p>
       </div>
 
-      {/* ── Calendly embed ─────────────────────────── */}
-      <div className="rounded-xl border border-border overflow-hidden mb-16" style={{ background: 'var(--muted)' }}>
+      <div className="mb-16 overflow-hidden rounded-md border border-border bg-surface">
         <iframe
-          src="https://calendly.com/akindayopeaceakinwale/30min?embed_domain=peaceakinwale.com&embed_type=Inline"
+          src={`${CALENDLY_URL}?embed_domain=peaceakinwale.com&embed_type=Inline`}
           width="100%"
           height="680"
-          frameBorder="0"
+          title="Book a 30-minute call"
           className="w-full"
         />
       </div>
 
-      {/* ── Divider ────────────────────────────────── */}
-      <div className="flex items-center gap-4 mb-12">
-        <span className="flex-1 h-px bg-border" />
-        <p className="text-xs font-bold uppercase tracking-[0.15em] text-muted-foreground whitespace-nowrap">
-          Prefer to write first?
-        </p>
-        <span className="flex-1 h-px bg-border" />
-      </div>
+      <p className="t-label mb-8 border-t border-border pt-8 text-muted-foreground">Prefer to write first?</p>
 
       {/* ── Form ───────────────────────────────────── */}
       {status === 'sent' ? (
         <div className="flex flex-col gap-4 py-10">
-          <p className="text-2xl font-extrabold text-foreground" style={{ letterSpacing: '-0.02em' }}>Message sent.</p>
-          <p className="text-sm text-muted-foreground leading-relaxed">Thanks for reaching out. I&rsquo;ll get back to you within one business day.</p>
-          <button
-            onClick={() => { setStatus('idle'); setForm({ name: '', email: '', company: '', projectType: '', stage: '', about: '', message: '', budget: '' }); }}
-            className="text-xs font-bold uppercase tracking-[0.08em] underline underline-offset-2 mt-2 self-start"
-            style={{ color: 'var(--accent)' }}
-          >
-            Send another message
-          </button>
+          <p className="t-h2 text-foreground">Message sent.</p>
+          <p className="text-muted-foreground">Thanks for reaching out. I will get back to you within one business day.</p>
+          <div>
+            <Button
+              variant="text"
+              onClick={() => { setStatus('idle'); setForm({ name: '', email: '', company: '', projectType: '', stage: '', about: '', message: '', budget: '' }); }}
+            >
+              Send another message
+            </Button>
+          </div>
         </div>
       ) : (
         <form onSubmit={handleSubmit} className="flex flex-col gap-5">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
             <div>
-              <label className={labelClass}>Full Name <span style={{ color: 'var(--accent)' }}>*</span></label>
+              <label className={labelClass}>Full Name <span className="text-accent">*</span></label>
               <input name="name" required value={form.name} onChange={handleChange} placeholder="Your name" className={inputClass} />
             </div>
             <div>
-              <label className={labelClass}>Work Email <span style={{ color: 'var(--accent)' }}>*</span></label>
+              <label className={labelClass}>Work Email <span className="text-accent">*</span></label>
               <input name="email" type="email" required value={form.email} onChange={handleChange} placeholder="you@company.com" className={inputClass} />
             </div>
           </div>
@@ -138,7 +121,7 @@ export default function ContactForm() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
             <div>
-              <label className={labelClass}>Type of project <span style={{ color: 'var(--accent)' }}>*</span></label>
+              <label className={labelClass}>Type of project <span className="text-accent">*</span></label>
               <select name="projectType" required value={form.projectType} onChange={handleChange} className={inputClass}>
                 {PROJECT_TYPES.map((t) => (
                   <option key={t} value={t === 'Select a type' ? '' : t}>{t}</option>
@@ -156,7 +139,7 @@ export default function ContactForm() {
           </div>
 
           <div>
-            <label className={labelClass}>Where are you in the process? <span style={{ color: 'var(--accent)' }}>*</span></label>
+            <label className={labelClass}>Where are you in the process? <span className="text-accent">*</span></label>
             <select name="stage" required value={form.stage} onChange={handleChange} className={inputClass}>
               {STAGES.map((s) => (
                 <option key={s} value={s === 'Where are you in the process?' ? '' : s}>{s}</option>
@@ -165,7 +148,7 @@ export default function ContactForm() {
           </div>
 
           <div>
-            <label className={labelClass}>Tell me about your company <span style={{ color: 'var(--accent)' }}>*</span></label>
+            <label className={labelClass}>Tell me about your company <span className="text-accent">*</span></label>
             <textarea name="about" required value={form.about} onChange={handleChange} rows={3} placeholder="What you do, who you serve, links to helpful resources..." className={inputClass + ' resize-none'} />
           </div>
 
@@ -175,17 +158,19 @@ export default function ContactForm() {
           </div>
 
           {status === 'error' && (
-            <p className="text-sm text-red-500">Something went wrong. Try emailing me at <a href="mailto:akindayopeaceakinwale@gmail.com" className="underline">akindayopeaceakinwale@gmail.com</a></p>
+            <p className="text-sm text-accent-2" role="alert">
+              Something went wrong. Try emailing me at{' '}
+              <a href="mailto:akindayopeaceakinwale@gmail.com" className="underline underline-offset-4">
+                akindayopeaceakinwale@gmail.com
+              </a>
+            </p>
           )}
 
-          <button
-            type="submit"
-            disabled={status === 'sending'}
-            className="w-full py-3 text-xs font-bold uppercase tracking-[0.08em] rounded-md transition-all hover:opacity-90 disabled:opacity-60"
-            style={{ background: 'var(--accent)', color: '#fff' }}
-          >
-            {status === 'sending' ? 'Sending...' : 'Send message'}
-          </button>
+          <div>
+            <Button type="submit" disabled={status === 'sending'}>
+              {status === 'sending' ? 'Sending' : 'Send message'}
+            </Button>
+          </div>
         </form>
       )}
       </div>

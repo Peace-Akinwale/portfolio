@@ -62,8 +62,9 @@
 }
 
 @theme {
-  /* One radius scale. The Tailwind defaults (lg, xl, 2xl...) are retired. */
-  --radius-*: initial;
+  /* The marketing surface uses three radii only: sm, md, full. The larger
+     Tailwind defaults stay defined because the MyLinks workspace and the
+     career-pathway app (out of scope) still use them. */
   --radius-sm: 4px;
   --radius-md: 10px;
   --radius-full: 9999px;

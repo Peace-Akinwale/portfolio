@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { Button } from '@/components/ui';
 
 interface ShareButtonsProps {
   url: string;
@@ -18,29 +19,20 @@ export function ShareButtons({ url, title }: ShareButtonsProps) {
   };
 
   return (
-    <div className="flex gap-3">
-      <a
+    <div className="flex flex-wrap gap-2">
+      <Button
+        variant="outline"
+        size="sm"
         href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent(title)}`}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="px-4 py-2 border border-border text-sm hover:bg-muted transition-colors"
       >
-        Twitter
-      </a>
-      <a
-        href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="px-4 py-2 border border-border text-sm hover:bg-muted transition-colors"
-      >
-        LinkedIn
-      </a>
-      <button
-        onClick={handleCopyLink}
-        className="px-4 py-2 border border-border text-sm hover:bg-muted transition-colors"
-      >
-        {copied ? 'Copied!' : 'Copy Link'}
-      </button>
+        Share on X
+      </Button>
+      <Button variant="outline" size="sm" href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`}>
+        Share on LinkedIn
+      </Button>
+      <Button variant="outline" size="sm" onClick={handleCopyLink}>
+        {copied ? 'Copied' : 'Copy link'}
+      </Button>
     </div>
   );
 }

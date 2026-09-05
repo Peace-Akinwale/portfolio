@@ -57,12 +57,9 @@ export default async function MarkerioPage() {
   return (
     <>
       <PortfolioGrid parsed={markerioPortfolio} pageTitle="Content for Marker.io" ogImages={ogImages} />
-      <div className="max-w-4xl mx-auto px-6 pb-16 text-center">
-        <Link
-          href="/portfolio"
-          className="inline-block text-sm uppercase tracking-wide border-b-2 border-foreground hover:border-muted-foreground hover:text-muted-foreground transition-colors"
-        >
-          ← Back to Portfolio
+      <div className="mx-auto max-w-6xl gutter pb-16">
+        <Link href="/portfolio" className="text-sm font-semibold text-accent underline decoration-accent/50 underline-offset-4 hover:decoration-accent">
+          Back to the portfolio
         </Link>
       </div>
     </>

@@ -176,7 +176,7 @@ export function Comments({ postSlug, postTitle }: CommentsProps) {
 
     return (
       <div className={depth > 0 ? 'mt-5 ml-5 border-l border-border pl-5' : 'mt-6'}>
-        <div className="rounded-[1.2rem] border border-border bg-background px-5 py-5">
+        <div className="rounded-md border border-border bg-background px-5 py-5">
           <div className="flex items-start gap-4">
             {comment.author.avatarUrl ? (
               // eslint-disable-next-line @next/next/no-img-element
@@ -243,7 +243,7 @@ export function Comments({ postSlug, postTitle }: CommentsProps) {
         </p>
 
         {commentsOpen ? (
-          <form onSubmit={handleSubmit} className="rounded-[1.5rem] border border-border bg-[var(--muted)]/70 p-6 sm:p-7">
+          <form onSubmit={handleSubmit} className="rounded-md border border-border bg-[var(--muted)]/70 p-6 sm:p-7">
             {replyParent ? (
               <div className="mb-5 flex items-center justify-between gap-3 rounded-full border border-border bg-background px-4 py-2 text-xs font-semibold uppercase tracking-[0.12em]">
                 <span>Replying to another comment</span>
@@ -266,7 +266,7 @@ export function Comments({ postSlug, postTitle }: CommentsProps) {
                   value={form.authorName}
                   onChange={(event) => updateField('authorName', event.target.value)}
                   required
-                  className="w-full rounded-xl border border-border bg-background px-4 py-3 outline-none transition-colors focus:border-accent"
+                  className="w-full rounded-sm border border-border bg-background px-4 py-3 outline-none transition-colors focus:border-accent"
                 />
               </label>
 
@@ -279,7 +279,7 @@ export function Comments({ postSlug, postTitle }: CommentsProps) {
                   value={form.authorEmail}
                   onChange={(event) => updateField('authorEmail', event.target.value)}
                   required
-                  className="w-full rounded-xl border border-border bg-background px-4 py-3 outline-none transition-colors focus:border-accent"
+                  className="w-full rounded-sm border border-border bg-background px-4 py-3 outline-none transition-colors focus:border-accent"
                 />
               </label>
             </div>
@@ -293,7 +293,7 @@ export function Comments({ postSlug, postTitle }: CommentsProps) {
                 value={form.authorUrl}
                 onChange={(event) => updateField('authorUrl', event.target.value)}
                 placeholder="https://linkedin.com/in/yourname"
-                className="w-full rounded-xl border border-border bg-background px-4 py-3 outline-none transition-colors focus:border-accent"
+                className="w-full rounded-sm border border-border bg-background px-4 py-3 outline-none transition-colors focus:border-accent"
               />
             </label>
 
@@ -306,7 +306,7 @@ export function Comments({ postSlug, postTitle }: CommentsProps) {
                 onChange={(event) => updateField('content', event.target.value)}
                 required
                 rows={5}
-                className="w-full rounded-2xl border border-border bg-background px-4 py-3 outline-none transition-colors focus:border-accent"
+                className="w-full rounded-md border border-border bg-background px-4 py-3 outline-none transition-colors focus:border-accent"
               />
             </label>
 
@@ -325,7 +325,7 @@ export function Comments({ postSlug, postTitle }: CommentsProps) {
             </div>
           </form>
         ) : (
-          <div className="rounded-[1.5rem] border border-border bg-[var(--muted)]/70 p-6 text-muted-foreground">
+          <div className="rounded-md border border-border bg-[var(--muted)]/70 p-6 text-muted-foreground">
             Comments are currently closed on this article.
           </div>
         )}

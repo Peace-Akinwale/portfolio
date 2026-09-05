@@ -15,7 +15,8 @@ import { ImageLightbox } from '@/components/ImageLightbox';
 import { CodeBlockEnhancer } from '@/components/CodeBlockEnhancer';
 import { ArticleEndCta } from '@/components/ArticleEndCta';
 import { Comments } from '@/components/Comments';
-import { BlogPageBackground } from '@/components/BlogPageBackground';
+import { ArticleList } from '@/components/ArticleCard';
+import { Button } from '@/components/ui';
 
 interface ArticlePageProps {
   params: Promise<{ slug: string }>;
@@ -108,7 +109,7 @@ export async function generateMetadata({ params }: ArticlePageProps): Promise<Me
   const { slug } = await params;
 
   // Try fetching as a blog post first
-  let post = await getPostBySlug(slug);
+  const post = await getPostBySlug(slug);
 
   if (post) {
     return {
@@ -156,7 +157,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
   const { slug } = await params;
 
   // Try fetching as a blog post first
-  let post = await getPostBySlug(slug);
+  const post = await getPostBySlug(slug);
   let isStaticPage = false;
   let staticPage = null;
 
@@ -206,52 +207,32 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
           <ImageLightbox />
           <CodeBlockEnhancer />
 
-          <article className="max-w-4xl mx-auto px-6 py-16">
-            <header className="mb-12">
-              <div className="mb-4">
-                <Link
-                  href="/projects"
-                  className="text-sm uppercase tracking-wider text-muted-foreground hover:text-accent transition-colors"
-                >
+          <article className="mx-auto max-w-4xl gutter py-12 sm:py-16">
+            <header className="reveal-group mb-12 max-w-[62ch]">
+              <p className="t-label mb-6 text-muted-foreground" style={{ ['--i' as string]: 0 }}>
+                <Link href="/projects" className="hover:text-foreground">
                   Projects
                 </Link>
-              </div>
-
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
+              </p>
+              <h1 className="t-h1 text-foreground" style={{ ['--i' as string]: 1 }}>
                 {staticPage.title}
               </h1>
-
-              <div className="flex items-center gap-4 text-muted-foreground mb-8">
-                <span className="text-sm font-medium px-3 py-1 bg-muted rounded-sm">
-                  {readTime} min read
-                </span>
-              </div>
-
-              {coverImage && (
-                <div className="relative aspect-[16/9] overflow-hidden bg-muted mb-12">
-                  <Image
-                    src={coverImage}
-                    alt={staticPage.title}
-                    fill
-                    className="object-cover"
-                    priority
-                  />
-                </div>
-              )}
+              <p className="mt-6 text-sm text-muted-foreground" style={{ ['--i' as string]: 2 }}>
+                {readTime} min read
+              </p>
             </header>
 
-            <div
-              className="prose prose-lg max-w-none"
-              dangerouslySetInnerHTML={{ __html: renderedStaticHtml }}
-            />
-
-            <footer className="mt-16 pt-8 border-t border-border">
-              <div className="mb-8">
-                <h3 className="text-sm uppercase tracking-wider text-muted-foreground mb-3">
-                  Share
-                </h3>
-                <ShareButtons url={pageUrl} title={staticPage.title} />
+            {coverImage && (
+              <div className="relative mb-12 aspect-[16/9] overflow-hidden rounded-sm bg-muted">
+                <Image src={coverImage} alt={staticPage.title} fill sizes="(min-width: 896px) 56rem, 100vw" className="object-cover" priority />
               </div>
+            )}
+
+            <div className="prose" dangerouslySetInnerHTML={{ __html: renderedStaticHtml }} />
+
+            <footer className="mt-16 max-w-[65ch] border-t border-border pt-8">
+              <ShareButtons url={pageUrl} title={staticPage.title} />
+              <ArticleEndCta />
             </footer>
           </article>
         </>
@@ -270,13 +251,10 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
       return (
         <>
           <PortfolioGrid parsed={parsed} pageTitle={staticPage.title} ogImages={ogImages} />
-          <div className="max-w-4xl mx-auto px-6 pb-16 text-center">
-            <Link
-              href="/portfolio"
-              className="inline-block text-sm uppercase tracking-wide border-b-2 border-foreground hover:border-muted-foreground hover:text-muted-foreground transition-colors"
-            >
-              ← Back to Portfolio
-            </Link>
+          <div className="mx-auto max-w-6xl gutter pb-16">
+            <Button variant="text" href="/portfolio">
+              Back to the portfolio
+            </Button>
           </div>
         </>
       );
@@ -289,27 +267,17 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
         <ImageLightbox />
         <CodeBlockEnhancer />
 
-        <article className="max-w-4xl mx-auto px-6 py-16">
-          <header className="mb-12">
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
-              {staticPage.title}
-            </h1>
+        <article className="mx-auto max-w-4xl gutter py-12 sm:py-16">
+          <header className="mb-12 max-w-[62ch]">
+            <h1 className="t-h1 text-foreground">{staticPage.title}</h1>
           </header>
 
-          {/* Static Page Content */}
-          <div
-            className="prose prose-lg max-w-none"
-            dangerouslySetInnerHTML={{ __html: staticPage.content.html }}
-          />
+          <div className="prose" dangerouslySetInnerHTML={{ __html: staticPage.content.html }} />
 
-          {/* Back to Blog */}
-          <div className="mt-16 text-center">
-            <Link
-              href="/blog"
-              className="inline-block text-sm uppercase tracking-wide border-b-2 border-foreground hover:border-muted-foreground hover:text-muted-foreground transition-colors"
-            >
-              ← Back to Blog
-            </Link>
+          <div className="mt-16">
+            <Button variant="text" href="/blog">
+              All articles
+            </Button>
           </div>
         </article>
       </>
@@ -347,124 +315,108 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
     .slice(0, 3)
     .map((entry) => entry.candidate);
 
+  const articleStructuredData = {
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'Article',
+        headline: post.title,
+        description: post.seo?.description || post.brief,
+        image: post.coverImage?.url ? [post.coverImage.url] : undefined,
+        datePublished: post.publishedAt,
+        dateModified: post.updatedAt,
+        author: { '@type': 'Person', name: post.author.name, url: 'https://peaceakinwale.com' },
+        publisher: { '@type': 'Person', name: 'Peace Akinwale', url: 'https://peaceakinwale.com' },
+        mainEntityOfPage: `https://peaceakinwale.com/${post.slug}`,
+        keywords: post.tags?.map((t) => t.name).join(', '),
+      },
+      {
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+          { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://peaceakinwale.com' },
+          { '@type': 'ListItem', position: 2, name: 'Blog', item: 'https://peaceakinwale.com/blog' },
+          { '@type': 'ListItem', position: 3, name: post.title, item: `https://peaceakinwale.com/${post.slug}` },
+        ],
+      },
+    ],
+  };
+
   return (
-    <>
-      <BlogPageBackground />
+    <div data-surface="paper">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleStructuredData) }} />
       <ReadingProgress />
       <TableOfContents />
       <ImageLightbox />
       <CodeBlockEnhancer />
 
-      <article className="max-w-4xl mx-auto px-6 py-16">
-        {/* Article Header */}
-        <header className="mb-12">
-        {/* Tags */}
-        {post.tags && post.tags.length > 0 && (
-          <div className="mb-4">
-            <span className="text-sm uppercase tracking-wider text-muted-foreground">
-              {post.tags[0].name}
-            </span>
-          </div>
-        )}
-
-        {/* Title */}
-        <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
-          {post.title}
-        </h1>
-
-        {/* Author & Meta */}
-        <div className="flex flex-wrap items-center gap-4 text-muted-foreground mb-8">
-          <Link
-            href="/blog"
-            className="text-sm font-medium hover:text-accent transition-colors"
-          >
-            By {post.author.name}
-          </Link>
-          <span>•</span>
-          <time dateTime={post.publishedAt} className="text-sm">
-            {formatDate(post.publishedAt, 'MMMM dd, yyyy')}
-          </time>
-          <span>•</span>
-          <span className="text-sm font-medium px-3 py-1 bg-muted rounded-sm">
-            {formatReadingTime(post.readTimeInMinutes)}
-          </span>
-        </div>
-
-        {/* Cover Image */}
-        {post.coverImage?.url && (
-          <div className="relative aspect-[16/9] overflow-hidden bg-muted mb-12">
-            <Image
-              src={post.coverImage.url}
-              alt={post.title}
-              fill
-              className="object-cover"
-              priority
-            />
-          </div>
-        )}
-      </header>
-
-      {/* Article Content */}
-      <div
-        className="prose prose-lg max-w-none"
-        dangerouslySetInnerHTML={{ __html: renderedPostHtml }}
-      />
-
-      {/* Article Footer */}
-      <footer className="mt-16 pt-8 border-t border-border">
-        {/* Tags */}
-        {post.tags && post.tags.length > 0 && (
-          <div className="mb-8">
-            <h3 className="text-sm uppercase tracking-wider text-muted-foreground mb-3">
-              Tags
-            </h3>
-            <div className="flex flex-wrap gap-2">
-              {post.tags.map((tag) => (
-                <span
-                  key={tag.id}
-                  className="px-3 py-1 bg-muted text-sm hover:bg-accent hover:text-accent-foreground transition-colors"
-                >
-                  {tag.name}
+      <article className="mx-auto max-w-4xl gutter py-12 sm:py-16">
+        <header className="reveal-group mb-12 max-w-[62ch]">
+          <p className="t-label mb-6 text-muted-foreground" style={{ ['--i' as string]: 0 }}>
+            <Link href="/blog" className="hover:text-foreground">
+              Blog
+            </Link>
+            {post.tags?.[0] && (
+              <>
+                <span aria-hidden className="mx-2">
+                  /
                 </span>
-              ))}
-            </div>
+                <Link href={`/tag/${post.tags[0].slug}`} className="hover:text-foreground">
+                  {post.tags[0].name}
+                </Link>
+              </>
+            )}
+          </p>
+          <h1 className="t-h1 text-foreground" style={{ ['--i' as string]: 1 }}>
+            {post.title}
+          </h1>
+          <p className="mt-6 text-sm text-muted-foreground" style={{ ['--i' as string]: 2 }}>
+            By {post.author.name}, <time dateTime={post.publishedAt}>{formatDate(post.publishedAt, 'MMMM dd, yyyy')}</time>,{' '}
+            {formatReadingTime(post.readTimeInMinutes)}
+          </p>
+        </header>
+
+        {post.coverImage?.url && (
+          <div className="relative mb-12 aspect-[16/9] overflow-hidden rounded-sm bg-muted">
+            <Image src={post.coverImage.url} alt={post.title} fill sizes="(min-width: 896px) 56rem, 100vw" className="object-cover" priority />
           </div>
         )}
 
-        {/* Share */}
-        <div className="mb-8">
-          <h3 className="text-sm uppercase tracking-wider text-muted-foreground mb-3">
-            Share
-          </h3>
+        <div className="prose" dangerouslySetInnerHTML={{ __html: renderedPostHtml }} />
+
+        <footer className="mt-16 max-w-[65ch] border-t border-border pt-8">
+          {post.tags && post.tags.length > 0 && (
+            <ul className="mb-8 flex flex-wrap gap-2">
+              {post.tags.map((tag) => (
+                <li key={tag.id}>
+                  <Link href={`/tag/${tag.slug}`} className="inline-block rounded-full border border-border px-3 py-1 text-xs font-medium text-muted-foreground hover:border-foreground hover:text-foreground">
+                    {tag.name}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          )}
           <ShareButtons url={post.url} title={post.title} />
+          <ArticleEndCta />
+        </footer>
+
+        {relatedPosts.length > 0 && (
+          <section className="mt-20">
+            <h2 className="t-h3 mb-6 text-foreground">Related articles</h2>
+            <ArticleList>
+              {relatedPosts.map((relatedPost) => (
+                <ArticleCard key={relatedPost.id} post={relatedPost} />
+              ))}
+            </ArticleList>
+          </section>
+        )}
+
+        <div className="mt-12">
+          <Button variant="text" href="/blog">
+            All articles
+          </Button>
         </div>
-
-        <ArticleEndCta />
-      </footer>
-
-      {/* Related Articles */}
-      {relatedPosts.length > 0 && (
-        <section className="mt-24 pt-12 border-t border-border">
-          <h2 className="text-3xl font-bold mb-8">Related Articles</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {relatedPosts.map((relatedPost) => (
-              <ArticleCard key={relatedPost.id} post={relatedPost} />
-            ))}
-          </div>
-        </section>
-      )}
-
-      {/* Back to Blog */}
-      <div className="mt-16 text-center">
-        <Link
-          href="/blog"
-          className="inline-block text-sm uppercase tracking-wide border-b-2 border-foreground hover:border-muted-foreground hover:text-muted-foreground transition-colors"
-        >
-          ← Back to Blog
-        </Link>
-      </div>
-      <Comments postSlug={post.slug} postTitle={post.title} />
+        <Comments postSlug={post.slug} postTitle={post.title} />
       </article>
-    </>
+    </div>
   );
 }
