@@ -2932,3 +2932,39 @@ Steve forwarded a Supabase email at 22:40 the night before: service restrictions
 - Being wrong in public, precisely. A fix shipped four days earlier was reported as closing this threat. Rather than quietly correcting the documentation, the wrong claim was superseded in place with the reason, the client email led with it, and the distinction between the two metrics was written into a runbook so the confusion cannot repeat.
 
 ---
+## 2026-09-07, four video styles compared on one passage, the client's ear found two bugs the checks passed, then a full five-minute cut with real logos
+
+Steve wants the weekly newsletter postable on YouTube. A 60-second prototype from 2026-09-02 had set the genre but not the look. This session Peace asked for something "much more immersive" and, rather than one polished clip, got four 28-second styles on the same 27 seconds of narration so the comparison was about style alone. Two constraints she set up front shaped everything: no AI-generated imagery, because it cannot be automated and adds a vendor, and the production narration as written, so no new TTS spend.
+
+### What shipped
+
+- **Four motion-graphics styles**, each a self-contained HTML composition rendered with HyperFrames: a top-down paper desk with a travelling camera, a dark "data room" of search panels and node chains, a whiteboard where every mark is a drawn SVG stroke, and a Vox-style editorial cut of full-bleed colour blocks. Music beds and a 15-sound effects bank synthesized in numpy, no samples and no licences; the bed ducked under the voice with the framework's carve tool.
+- **The full 5:08 note in the chosen Data Room style**: 27 scenes, 159 beats resolved from word-level timestamps of the production audio (none typed by hand), the official Notebook Agency mark recoloured to the brand red, Google's and Microsoft's official marks with text labels, 147 sound effects pre-mixed into one track, a 310-second generated bed. Master 308.0 s, 132.8 MB at high quality; a 40 MB web copy and a 16 MB phone copy. Render time 3 m 15 s on a laptop.
+- **Verification recorded against the render, not the source**: automated checks clean at 34 beat timestamps; the voice measured present in every second (no second below -35 dB before the narration ends); 123 frames watched at 2.5-second intervals; five defects found and fixed before delivery.
+- Sources for all five compositions, the audio generator and the timing table committed to the repo; renders kept out of git. Zero Speechify calls in the whole session, confirmed when the client asked.
+
+### Decisions worth recording
+
+- **Compare styles on one shared passage before polishing anything.** The alternative, one polished 60-second clip, would have bet on a look before any alternative existed. The comparison is what made the choice defensible: Data Room won because it is the only style that looks like nobody else in the SEO niche and because every element on screen is a component fed by note content, which is what makes it automatable. Paper Desk was the most charming and the least automatable. Editorial was trivially automatable and read as captions again over five minutes.
+- **Official logo files only.** The prototypes had used a hand-drawn monogram for the agency and CSS stand-ins for Google and Microsoft. The client called them fake, and she was right: the project's own brand rule forbids a drawn lockup. Replaced with the agency's SVG and the official third-party marks, paired with labels.
+- **Beat times are data, never numbers.** Every visual event in the full cut is a phrase looked up in the word timestamps of the audio it plays against. The one exception, a word that occurs twice, is written as an explicit override so the next person can see it.
+- **Sound effects pre-mixed into one track at build time.** 147 audio elements never finished loading in the render browser. One mixed file loads in seconds, and the framework can only wire audio that exists in the static markup anyway.
+- **Watch every render before it reaches anyone.** Written into the tooling skill as a step: extract the render at 2.5-second intervals with burned-in timestamps and read every tile. The automated check samples a handful of moments and is not a review.
+
+### Frictions and course corrections
+
+- **The client could not hear the narrator after 14 seconds, in all four samples.** Cause: the voice was cut with ffmpeg using output-side seeking, so the fade-out filter ran on the source's clock, fired at 13.8 s of the clip, and held silence. The file reported its full duration, and the word timings had been transcribed from a separate cut without the fade, so nothing in the pipeline saw it. Found by measuring per-second level of the render against the source; fixed by seeking on the input side; every render since carries that per-second table.
+- **The whooshes overwhelmed the voice.** They had been normalised to the same peak as every other sound. Rewritten 11 dB lower, low-passed at 3 kHz, placed at a third of the previous level.
+- **"The editing is poor. I don't think you can do this job."** On the chosen style, two caption pills had rendered as full-height red slabs across the frame, one of them over the payoff. A flex default (`align-items: stretch`) inside a full-frame container. The automated check's five sample times all fell outside the two caption windows, and a 480-pixel contact sheet had shown the slab and been misread. Watched at two frames a second, five defects listed back to her, then, on her "fix it then", rebuilt: everything at video scale (roughly 1.5 times larger), two dead-air gaps carried by kicker labels, the second caption deleted, a timecode that had shown "00:6" because GSAP coerces the string "06" to the number 6. Four more defects found on the second watch and fixed before sending.
+- **A "re-render" that measured the old files.** A zsh loop used `set -- $pair`, which does not word-split in zsh, so no render ran; the per-second table still showed the dropout and exposed it. Re-run with explicit calls.
+- **The camera helper added an offset it should have subtracted**, putting every Paper Desk shot 800 by 600 pixels off; caught on the first contact sheet, before the client saw it.
+- **On the full cut, the first watch found five more**: a 4.5-second empty frame while he said "In the guide, Microsoft breaks down how AI shopping works", two collisions with the watermark row, an orphaned arrow, an empty chat window for 4.5 seconds. Fixed, re-rendered, the five spots re-checked.
+
+### Why this matters for the portfolio
+
+- A client with no video background found two defects the tooling had passed, within seconds of pressing play. The response was to build the measurement she had performed by ear into the process (a per-second level table, a frame-by-frame watch) rather than to argue the checks were green.
+- The choice of style was made by comparison on identical material, and the reasoning for it is about automation cost, not taste, because the deliverable is a weekly pipeline, not one video.
+- Brand rules were applied to the work even when the client had not yet noticed: the official mark, the brand red, no third-party stand-ins.
+- The full cut was produced from what already existed in production, the rendered narration and the note's own structure, at zero incremental spend, which is the shape a weekly process has to take.
+
+---
