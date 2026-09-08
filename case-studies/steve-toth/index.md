@@ -2968,3 +2968,43 @@ Steve wants the weekly newsletter postable on YouTube. A 60-second prototype fro
 - The full cut was produced from what already existed in production, the rendered narration and the note's own structure, at zero incremental spend, which is the shape a weekly process has to take.
 
 ---
+## 2026-09-07 to 2026-09-08, a status question that became eleven defects, then five mechanisms instead of eleven patches
+
+The client asked what state the Fanout Notebook product was in. Measuring rather than answering from notes showed it live, healthy and completely unused, with three defects open since the demo five days earlier. Fixing those led to a full-screen audit, and the audit's fifteen findings turned out to be five missing mechanisms, each hand-written a different way on every screen.
+
+### What shipped
+
+- **Six commits** across one working day (`6d15425`, `5628f10`, `336dadb`, `5710ff2`, `bb9ad26`, `005bcdd`), four Railway deploys, all verified live by fetching the served CSS and grepping for a class only the new build could contain.
+- **Five new modules, one owner per job:** `lib/counts.ts` (169 lines) owns every number a badge or heading shows; `lib/view-state.ts` (157 lines) owns the URL parameter vocabulary; `lib/form-action.ts` plus an `ActionForm` component owns form failures; `EmptyState` owns empty views; `BusyButton` owns async controls.
+- **Tests went from 557 to 636 unit tests and from 15 to 39 browser tests** in the session, across five new Playwright specs and four new preview routes. Every spec was run against the old code first and seen to fail on the defect it names.
+- **Parser 1.0.6 to 1.1.0**, reclassifying a chat that never searched from "could not be read" to "no search activity", which reprocesses the affected production row automatically on the next extension start.
+- **A test build zipped and an install guide written** for the client to try the Chrome extension without a store listing: 531,809 bytes, stamped with its commit, plus a five-step guide as a shareable page and a copy in the repo.
+- **Five patterns added to the reusable bug-hunting skill** (C52 to C56), each with the detector that would have caught the defect before a person did.
+
+### Decisions worth recording
+
+- **Five mechanisms, not eleven patches.** The audit returned fifteen findings. Reading them together showed each one was the same job written by hand per screen, with one hand-written copy wrong every time: a badge computing its own total, a form redirecting on failure, a filter held in component state. Patching eleven screens would have left the twelfth screen free to repeat every one. The rules are now written into the repo's own agent instructions, so a screen that hand-rolls its own copy is the visible anomaly.
+- **Progressive enhancement over a shorter loading window.** A control that ignored its first click was fixed by rebuilding it from elements the browser already handles, so it works with JavaScript fully disabled, proven by a test that blocks scripting entirely. Loading skeletons and font preloads were considered and rejected: they shrink the window in which a click is lost rather than closing it.
+- **Declined a paid store listing, for now.** The client offered to pay for a Chrome Web Store account to distribute the extension. Google's own documentation shows every visibility level, including unlisted, goes through the same review, with no published review time, so a listing would not reach the recipient sooner than a zip file. The recommendation was to send the zip today and, when a listing does happen, register it on a company account rather than a personal one, because ownership transfer is a manual form.
+- **A folded page keeps its old address.** One screen was merged into another because the two printed a number under the same word from two different denominators. The removed page became a redirect rather than a deletion, because a browser extension and existing bookmarks still point at it.
+- **Verified every external URL shape rather than assuming it.** Three engine prefill links were needed. One was confirmed by the vendor's own server redirect, one by public documentation, one by a measurement already in the repository. A widely repeated claim that one vendor does not support prefilled links was contradicted by that repository's own prior measurement.
+
+### Frictions and course corrections
+
+- **The reported bug was in a shared stylesheet, not the component.** A sidebar that scrolled away with the page was traced to a horizontal-overflow guard written years earlier: that property makes the element a scroll container, and the specification then promotes the other axis, so the sticky elements had nothing to stick against. Measured before any edit at minus 600 pixels after a 600 pixel scroll, and at zero after a one-keyword fix.
+- **The test was then tested.** Patching the fix back out of the compiled stylesheet failed exactly two of nine scenarios and left seven green. A suite that cannot detect the absence of its own fix is decoration.
+- **A defect the client never reported was worse than the two she did.** Every weekly report export on the team-wide setting was downloading an empty file while the page above it listed the runs and the confirmation dialog named every one of their identifiers. An export route had its own copy of a filter, and the team-wide setting stores a word that is not an identifier.
+- **Two parallel build agents cost as much as they saved.** They shared one build directory and one test port, so a lock was mandatory, and one had to wait twice for the other's code to compile. One reported two failing tests that were not real: they were a snapshot of the other agent's half-finished state. A parallel agent's failure claim needs verifying against the merged tree before acting on it.
+- **One agent was killed mid-verification by a rate limit.** Recovery was cheap because its work was on disk and compiled. Checking the disk before assuming a dead worker lost its output took a minute.
+- **A requested competitor review could not be delivered.** The site returns a sign-in page to any request not already authenticated with its host, and the browser automation was not connected. Reported as blocked with the two specific things the client must do, rather than summarised from the sign-in page's HTML.
+- **A concurrent session moved the branch after the handoff was written.** Two unpushed commits from another session touched seven of the same files. All five mechanisms were checked and had survived, and that session had improved the folded card by gating one rate behind the existing three-run floor. The handoff was corrected rather than left with a stale commit reference.
+
+### Why this matters for the portfolio
+
+- Fifteen findings became five mechanisms. The value was in reading the defects together to find the shape they shared, not in fixing them one at a time, and the result is written into the repository so the next screen inherits it.
+- A measurement before the first edit turned "the sidebar scrolls" into a specification-level cause in about ten minutes, and the fix was one keyword. Guessing would have produced a workaround.
+- Every fix carries a test that was seen to fail first, and the load-bearing one was proven by deliberately removing the fix. That is the difference between a green suite and evidence.
+- Declining paid work is sometimes the right recommendation. The store listing was offered and funded, and the honest answer was that it would not achieve the goal any faster.
+- The defect that would have embarrassed the client in front of her own client was the one nobody reported: a blank deliverable that claimed to contain a week of work.
+
+---
