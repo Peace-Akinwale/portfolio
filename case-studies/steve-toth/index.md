@@ -3087,3 +3087,114 @@ The client had spent a day and a half redesigning the team's AI-visibility dashb
 - The monitoring was built around what the platform truly exposes. The API has no usage endpoint, so the report says in its own words what it cannot see, and a person is asked to read the one number that only the dashboard has.
 
 ---
+
+## 2026-09-09 to 2026-09-10, one reported mispronunciation, five silent failures behind it, and a feature that had never run once
+
+The client generated the narration for a 7,000 word study and reported one thing: the voice said "900
+mo" where his text reads "900 searches/mo". His operator asked for the cause before any fix. Reading
+the artifacts first, rather than adding the obvious pronunciation rule, turned one symptom into five
+separate defects, the largest being that 63 percent of the article had never been narrated at all and
+the audio opened by saying the word "Body". Four renders were needed, because each one exposed the next
+failure. The fourth is live.
+
+### What shipped
+
+- **The full 46 minute narration, live and verified twice.** 6,951 of 6,957 source words, against 2,607
+  before. Verified on the published transcript and again by independently re-transcribing the
+  downloaded audio: opens on the article's own heading, the client's tool names read correctly 8 of 8,
+  the three sections that had been cut off are all present.
+- **A truncated model reply can no longer masquerade as a finished one.** The shared model client now
+  reads the stop reason on both its plain and streaming paths, warns loudly by default across all 28
+  call sites, and lets a caller whose output is worthless when cut fail hard instead. The script writer
+  is now that caller, its budget is four times larger, and a fallback that had been quietly promoting
+  truncated fragments to valid output is deleted.
+- **A coverage floor**, because checking for truncation alone would not catch quiet summarizing: the
+  narrated script must carry at least 85 percent of the source's words or the render refuses before
+  spending anything on speech.
+- **Paragraph pauses, working for the first time since they shipped in July.** The text splitter joined
+  paragraphs with a space, so the code that inserts a pause at each paragraph break found none, returned
+  nothing, and every chunk of every note went to the voice as unbroken text. Two months live, four green
+  unit tests, and a decisions log that recorded the feature as working.
+- **One stated speaking rate on every request**, where previously each of roughly 25 parallel requests
+  picked its own tempo. Measured before: 129 to 220 words per minute across 20 second windows.
+- **A pronunciation lexicon for seven terms** the engine had been mangling, every reversible rule
+  mirrored so the video captions still show the written spelling.
+- **A quality gate that now catches all of it.** The gate had run on the broken render and passed it.
+  It gained a pattern per defect, a leaked-tag check, a speaking-rate measurement, and the ability to
+  transcribe audio over the transcriber's 25 megabyte upload limit by splitting on audio frame
+  boundaries in pure JavaScript, no re-encoding.
+- **A retry classifier for the speech provider.** One upstream 502 on a single chunk had destroyed a
+  whole render, taking every other chunk's paid synthesis with it.
+- Test suites after the work: 1,413 passing across 130 files, up from 1,305. Types clean.
+
+### Decisions worth recording
+
+- **Investigated before touching anything, on the operator's instruction, and that is why four extra
+  defects exist in this entry.** The reported bug was the fifth largest problem on the page. Adding the
+  pronunciation rule alone would have shipped a 37 percent article with a correctly pronounced number
+  in it.
+- **Chose the metric over the threshold.** A rate check failed on the good render: across 142 windows of
+  a 46 minute note, the slowest window is a heading with pauses and the fastest a run of plain prose, so
+  the maximum over minimum ratio grows with length and would alarm on every long note forever. Changed
+  the measurement to the 10th and 90th percentiles rather than relaxing the limit.
+- **Tested the provider's global normalization switch and rejected it on the evidence.** Turning it off
+  looked like it would fix a whole class of mispronunciations at the source. It fixed nothing the
+  aliases fix, broke a different term, and made the phrasing choppier. Kept on.
+- **Rejected the provider's own alias markup for the lexicon.** It only applies where the audio path
+  uses markup, while the pronunciation module feeds both audio and video, so adopting it would have
+  meant two mechanisms doing one job.
+- **Split the audio rather than compressing it** to get under the transcriber's upload limit.
+  Re-encoding would need an encoder on the worker and, worse, would hand the checker a degraded copy of
+  what listeners actually hear.
+- **Declined to fix an adjacent stale limit while in the area.** A size cap on the video path is
+  inherited from a storage provider the videos left months ago, and it would refuse a long video after
+  twenty minutes of rendering. Nobody has asked for one, and an honest fix needs a streaming check, so
+  it was written down as the next session's item instead of bundled in.
+- **Checked a premise instead of building on it.** Asked why no video was being generated "since the
+  client generated one in his initial run", the answer was that he had not: the page carries no video
+  property and the log has no row for it. Said so rather than producing a video nobody asked for.
+- **Chose spellings by ear, not by theory.** Ten probe renders across five candidate spellings for one
+  brand name, machine-transcribed to drop the obvious losers, then four clips sent to the operator. The
+  spelling she named as the target sound is what shipped.
+
+### Frictions and course corrections
+
+- **Four renders, and the reasons are worth separating.** The first was the client's, 37 percent long.
+  The second was complete and correct except for one thing no automated check could have caught: the
+  prompt asserted that every note opens with the client's usual greeting, so on a study that had none,
+  the model invented one, in his cloned voice. The operator read the transcript and caught it. The third
+  died on the provider's 502. Only the fourth was clean.
+- **A fabricated first-person line is the worst defect class in a cloned-voice product**, and it came
+  from a well-meaning instruction in a prompt rather than from a bug. The fix is a deterministic guard:
+  the first words the voice says must exist in the source, or the render fails before spending anything.
+- **A push kills a render in flight.** The deploy branch redeploys the worker, so a mid-render push
+  restarts the process. Discovered the practical way; pushes now sit strictly between renders.
+- **The quality gate had passed every one of these defects.** Its sentence-count check compared two
+  strings that both descended from the same truncated text, so they agreed. A check whose inputs share
+  the defect cannot see it.
+- **A test fixture failed the new coverage floor at 83 percent.** Replaced the fixture with realistic
+  prose rather than lowering the floor: the floor was right and the twelve word fixture was not real.
+- **Answered the same question twice badly.** Asked why the transcriber is in the pipeline at all, the
+  answer got buried inside other work, and the operator had to repeat the question with "you didn't
+  anser". Answer the question asked, first, plainly.
+
+### Why this matters for the portfolio
+
+- **A reported symptom is a starting point, not a specification.** One mispronunciation was the visible
+  edge of a pipeline that had been shipping incomplete work silently. The instruction to investigate
+  before fixing is what made the difference, and it came from the operator.
+- **Two functions can each be correct while the feature between them has never run.** Unit tests on a
+  producer and on a consumer, both green, prove nothing about the seam. The test that would have caught
+  this feeds the real producer's output into the real consumer and asserts the observable effect. That
+  lesson went into a reusable bug-pattern library the same night, as a mechanical detector rather than
+  a note to be careful.
+- **Silence is the expensive failure mode.** Every defect here was invisible: an unread stop reason, a
+  fallback that caught exactly the shape of a truncated reply, a no-op path documented as an
+  optimisation, a checker that could not upload the file it was meant to check. Nothing errored. The
+  work was making each one loud.
+- **Numbers, not adjectives.** 37 percent to 100 percent coverage, 129 to 220 words per minute measured
+  before the rate was pinned, 0.88 decibel loudness spread after, 1,413 tests. Each one was checked in
+  the session it was claimed in, and the claim the data did not support, that stating the rate visibly
+  narrowed the spread, was reported as unsupported rather than dressed up.
+
+---
