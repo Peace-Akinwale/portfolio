@@ -3198,3 +3198,43 @@ failure. The fourth is live.
   narrowed the spread, was reported as unsupported rather than dressed up.
 
 ---
+## 2026-09-09 to 2026-09-10, a product that could only be used one question at a time, and the two bugs a green test suite could not see
+
+The team's AI-visibility product could only record a question if a strategist typed it into ChatGPT by hand with a browser extension watching. That caps a client's measurable question set at whatever a person can type in an afternoon. The client asked whether the engines could be simulated instead, so a hundred questions could run at once. The answer shipped that night: a server-side runner that asks a client's whole prompt set through the engine's own API and files each answer as an ordinary run, labelled so nobody mistakes one for the other.
+
+### What shipped
+
+- **A new service and two migrations, live in production.** Migrations 015 and 016 applied to the shared database; a new Railway service holding the API key and the database credentials, so the dashboard never gains either; the dashboard redeployed. Both health endpoints answer 200. Branch `feat/machine-runs`, 39 commits, 182 files, 51,323 insertions. The suite runs 1,255 tests across 102 files, verified after the last change.
+- **Measurement before a line of code.** Five real commercial questions from the pool were run through the API on four different model and effort settings, 18 calls for $1.28, and every cost and preset claim in the product traces to that table. Then 38 of an independent consultant's 100-prompt scan prompts, $2.18, zero errors: the API agreed with his human scan on 36 of 38 mentions and 30 of 38 citations.
+- **The first production batch, measured.** Three questions, eight searches, $0.114, which is $0.038 per question against a $0.062 estimate. Every job settled clean.
+- **A one-press control on the prompt set**, two presets named by their actual model, a batch card that reports progress and spend, an origin filter on every screen that shows runs, and a calibration section that pairs a hand-captured run against a simulated one for the same question and reports mention and citation agreement separately.
+
+### Decisions worth recording
+
+- **The API, not browser automation.** Driving the consumer chat product would have produced identical data, but it breaks the terms of service, risks the account the team works from, and still runs one question at a time. Declined twice: once for the product, once again when the client asked whether her own personal research could do it.
+- **Simulated runs are ordinary runs with a label, not a separate system.** They file into the same tables, so every existing screen, export and report works on them the day they ship. The alternative created two records of the same question.
+- **The default model was chosen on measurement against the client's own instinct for the cheapest option.** She said plainly that cheap must not mean useless, because this touches real client data. The cheapest setting answered the yes or no but opened no pages and cited a third fewer sources. The chosen setting is the only one that opened pages at all. The most expensive tier was cut from the control entirely: two and a half times the cost and worse agreement with the human scan.
+- **Comparability partitions by origin rather than joining it onto the stored key.** Appending it to the key would have required rewriting every existing row. A review pass then caught a second place in the dashboard that still compared bare keys and would have blended the two kinds of run back together after the split had correctly separated them.
+- **One function is the only way a team member can create a batch.** Direct writes were revoked outright. That closed two problems at once: a two-request insert that could orphan a batch, and a member being able to pre-set the amount already spent or back-date a batch to defeat the monthly cap. The name on the batch is now read from the caller's own row, so nobody can sign someone else's.
+- **Budget is recomputed from the job rows after every change, never adjusted in place.** Read then write leaked money on every failure path and could lose an update across two copies of the service.
+- **Retry the filing, never the paid call.** The raw response is stored before anything is written, so a retry of a half-finished job costs nothing.
+
+### Frictions and course corrections
+
+- **The first real batch failed on its last step, and 117 passing tests had said it would not.** Every paid call succeeded, then every write failed trying to put the word "undefined" into a timestamp column. The claim query selected five columns and the code read a sixth. The tests passed because the hand-written fake database returned whole rows no matter which columns were asked for. The fake now honours the column list, the writer refuses to run without a real value, and the rule is written into the repo's own instructions. No money was lost: the reconciler requeued the work and the retry refiled from the stored response without calling the API again.
+- **A second defect surfaced from reading the filed rows back rather than trusting the green run.** The runner derived each record's identity from the batch but never stored the batch on the record, so the batch filter and the export would both have come back empty. Fixed and backfilled the same night.
+- **The client could not find the Run control, and said so bluntly.** It had been placed below a hundred prompt rows. Her words were that teams cannot bulk upload and bulk run, which is bad. The card moved above the list and the list now folds after five.
+- **The redesigned card then rendered as giant detached circles.** The cause was a global rule making every input full width and 44 pixels tall, correct for text fields and wrong for radio buttons. Second time that rule has needed an exception.
+- **Three choices where two would do.** She asked why a strategist was being offered three, and asked for them to be named by model so the team knows what actually ran.
+- **A number on screen with no explanation.** She asked why the cap read $9.30 when the estimate said $6.20. It is fifty percent headroom so one heavy question cannot end a batch early. The card says that now, in a sentence.
+- **Parallel agents were not isolated the way the tool promised.** The isolation flag creates the working copy inside the session's own repository, not the one the agents were told to work in, so two of them edited the real checkout at the same time. Every later unit used hand-made working copies.
+- **The remaining honest gap.** Nobody has pressed the button in a browser. The whole path from the card to the report is unverified by a person, and the entry says so rather than implying otherwise.
+
+### Why this matters for the portfolio
+
+- The feature reverses two decisions this same log records as deliberate, no batch runner and no paid AI calls. Both reversals are written down with the evidence that changed them, so the record reads as a position that moved for a reason rather than a position that was forgotten.
+- Every recommendation put to the client came with the table it came from. When she pushed back on cheapest-wins, the answer was not a preference, it was which setting opened pages and which did not.
+- Two defects reached production behind a green suite, and both were found by reading the real rows rather than rerunning the tests. The lesson generalises past this codebase: a hand-written test double that is more generous than the real system certifies nothing.
+- The client's four blunt pieces of feedback, all from screenshots, produced four shipped fixes within the hour. The interface problems were real interface problems, not misunderstandings to be explained away.
+
+---
