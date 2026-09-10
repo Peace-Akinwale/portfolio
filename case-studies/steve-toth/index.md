@@ -3238,3 +3238,35 @@ The team's AI-visibility product could only record a question if a strategist ty
 - The client's four blunt pieces of feedback, all from screenshots, produced four shipped fixes within the hour. The interface problems were real interface problems, not misunderstandings to be explained away.
 
 ---
+
+## 2026-09-10, a download button that shipped to the wrong surface first, and a backfill that could not rebuild what it was patching
+
+Steve asked in Slack: "Are these downloadable?" with a link to a /watch page. The first implementation put a native Notion file block on 16 notes. Within hours, the operator caught the mismatch: the URL in Steve's message IS the surface, so the download belongs on the /watch page, not on the Notion note. The file blocks were deleted the same day. The button then shipped as a circular icon on both /watch and /listen player pages, and all 51 existing pages were backfilled.
+
+### What shipped
+
+- **A download button on every /watch and /listen page, verified live.** 17 watch pages rebuilt from template, 34 listen pages patched via HTML injection, 139 tests passing, build clean, two commits pushed to the deploy branch. The button is a 36px circle with an SVG down-arrow icon and a file size label (e.g. "MP4 · 18 MB"). It triggers `?download=1` on the media URL, which the `/media` route answers with `content-disposition: attachment`.
+- **A Notion file block written to 16 notes and removed the same day.** `buildVideoBlocks` stays at two blocks (video embed plus Watch line). The `DOWNLOAD_MARKER` constant remains for the backfill's straggler detection guard.
+- **Shared helpers serving both pipelines.** `fileNameForTitle(title, '.mp4' | '.mp3')` and `downloadUrlFor(url, fileName)` live in one file and generate the slug and the download URL for both video and audio.
+- **Queue poll intervals bumped from 5 seconds to 30 seconds** on both workers (feed-add and draft-post). Projected idle Supabase egress drops from roughly 35,000 reads per day to roughly 5,800.
+
+### Decisions worth recording
+
+- **The download belongs on the player page, not on the Notion note.** Steve's message contained a URL. The URL is the surface. A Notion file block is convenient but puts the feature where the reader is not looking when they want to save a file. The operator's feedback rule, recorded from this incident: "read Steve's words before choosing the surface."
+- **Listen pages are patched, not rebuilt.** Watch pages can be regenerated from their current template because the template holds everything. Listen pages embed speed-reader text and per-sentence timing data from TTS alignment that is not stored separately. Rebuilding would require re-running the alignment or losing the read-along feature. The backfill injects CSS before a deterministic anchor (`footer b{color:var(--red)}`) and HTML before another (`<section class="panel listen"`). Both are template-generated and stable.
+- **The icon circle replaced a bordered text pill.** The operator referenced AllTrails' circular download icon and a music app with inline download arrows. The circle is 36px to match the theme toggle's visual weight, uses stroke-based SVG to match the page's thin line weights, and transitions to red on hover.
+- **No size label when bytes are unknown.** The button renders without the "MP4 · 18 MB" text rather than showing "0 MB". The test suite asserts both paths: `<span class="dl-size">` present when bytes are given, absent when they are not.
+
+### Frictions and course corrections
+
+- **The Notion file block was live on 16 notes for hours before the reversal.** The implementation was correct, the block rendered and the download worked, but it was on the wrong surface. The tell was the URL in Steve's original Slack message, not a technical failure.
+- **`mediaGet` returns a Response, not a Buffer.** The listen backfill script initially called `.toString('utf8')` on the return value. Fixed by reading the actual function signature: `await res.text()`.
+- **Four watch pages are unreachable across every backfill.** The same four July-batch Notion pages (`39d8c368-5191-81*`) return "not found" to the integration. Pre-existing, documented, and consistent across six separate backfill runs over two months.
+
+### Why this matters for the portfolio
+
+- **A feature that works on the wrong surface is a shipped mistake, not a shipped feature.** The file block was technically correct, rendered cleanly and triggered a real download. It was still wrong because the person asking for the download was looking at a URL, not at Notion. Reading the request before choosing the mechanism is the lesson, and it generalises past this product.
+- **A backfill that cannot rebuild must still be safe.** The listen page constraint, that the stored HTML embeds data the pipeline cannot reproduce cheaply, forced a patch-injection approach with deterministic anchors. The alternative was re-running TTS alignment on 34 pages at real cost and real time. The choice to inject rather than rebuild was a design constraint, not a shortcut.
+- **The reversal is in the record.** The file block was written, used, and removed in the same day, and the reason is logged alongside the removal. An entry that only reported the final circular button would miss the part that taught the most.
+
+---
