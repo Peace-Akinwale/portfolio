@@ -3270,3 +3270,40 @@ Steve asked in Slack: "Are these downloadable?" with a link to a /watch page. Th
 - **The reversal is in the record.** The file block was written, used, and removed in the same day, and the reason is logged alongside the removal. An entry that only reported the final circular button would miss the part that taught the most.
 
 ---
+## 2026-09-11, two products rebuilt in a day, a dark mode that read the brand rule too literally, and the bug hunt that shipped the same night
+
+One day, two repos, both live by the end of it. Fanout Notebook's dashboard was rethought from five decisions Peace took in the morning, built on real pool data behind a flag, and promoted over the old pages by evening. Notebook OKF's client surface and the exported client site got a visual lift to the brand, then a dark-mode correction after Peace saw the live Ask page, then a bug hunt over everything touched, with all nine findings fixed and deployed before midnight.
+
+### What shipped
+
+- **Fanout: the v2 dashboard is the dashboard** (`8926f91`, 114 files, +6,533 / -1,290, deployed by Railway snapshot `57d1177a`). A client roster home; one Prompts page with a Suggested tab; "Sources cited" as five toggleable groups (Yours, Competitors, Publishers, Community, Other) with one row per domain; a Brands comparison the code had computed but never shown; a Review queue with a Reviewed button on every row; prompt sets whose runs fold into dated batches ("Sep 10 run", "(2)" numbered from the oldest); Reports with "Send week to Claude" in one click. Seven retired routes redirect with their query strings intact, verified live.
+- **Fanout: the Monday brief reaches Claude with Steve's skill in one click.** Inline when the encoded URL fits a measured 40,000-character ceiling, otherwise one JSON download that carries the brief inside it. Chrome blocks a second automatic download per click, so a two-file design was replaced by one file the same evening.
+- **OKF: the client pages and the exported site lifted** (`10c55cf`, Railway `01d8fc0f`): a 1120 px frame, a hero with the corpus figures, the eight most linked notes as "Start here", kinds capped at six with "See all", search as a view, a note drawer, a note page with a sticky rail, light by default with a dark toggle, the Notebook logo as the mark. Nothing on the client's site fetches anything but its own files; no web font, no model, no request back to the agency.
+- **OKF: dark mode turned the right way up and the Ask composer rebuilt as one bar** (`2a45b25`, Railway `f7477b88`). The ground is Black, cards are Ink, edges one soft step off Ink; the composer is a borderless three-line box with the Ask control inside it and the corpus line as its footer.
+- **Nine bug-hunt fixes deployed in both repos** (`634516e`, Railway `515c4889`; `2eebc22`, Railway `5f333be2`), each with a regression test observed failing before the fix. Test counts after the last change: OKF 2,513 across 167 files with a clean production build; Fanout 2,126 across 121 files with a clean typecheck.
+- **Five new patterns and one verification rule in the bug-hunt skill**, pushed to `Peace-Akinwale/bug-hunt` as `bf3b652`.
+
+### Decisions worth recording
+
+- **Dark mode follows the same depth rule as light: the card sits one step lighter than the ground.** The previous dark palette applied the brand's six-colour rule literally, Black card on Ink ground with the light-grey border colour kept as a border, and every panel read as a sunken slab framed in grey. The fix introduced one documented colour outside the six, a dark edge, listed as an exception in the token test with the reason. Rejected: a translucent grey that the hex scanner would not have caught, because an undocumented exception is the failure mode the test exists to prevent.
+- **Detail never expands inside a table; it opens beside it.** Peace set this on the Sources page after seeing rows fold open in place. Every list in the new dashboard follows it, and drawers render on the server from URL parameters so a strategist can send a link to exactly what they are looking at.
+- **One outcome vocabulary, one classifier.** The HTML week export had grown a private copy of the outcome rules. It now calls the same function and prints the same six words as every chip on screen. A secondary surface that re-derives a verdict is a bug waiting for a comparison.
+- **The client's site is the agency's logo, not a guessed client colour.** Peace's first instruction was the agency red; she corrected it to the logo file. The mark now appears twice on the page, which overrides the product doc's "once", noted as the owner's call.
+- **Kits already on a client's host are never rewritten.** They receive the new site on their next download, and the kit page tells the owner to download again, now compared against the deploy minute rather than the calendar day.
+
+### Frictions and course corrections
+
+- **The first OKF brief was product rules; Peace wanted a visual brief.** "I don't really understand what you have said." Redone as a screen-by-screen visual brief with references, and approved in full.
+- **The first site cut was "still bland."** The second pass added the hero, cards, the drawer and the toggle. The palette then read as a terminal on her dark Mac, which is why light became the default everywhere.
+- **The live dark mode was wrong for about half an hour after the lift deployed**, and the report came from Peace's phone, not from a test. The cause was a token block written a week earlier, not the day's work, and it took every lifted screen with it.
+- **A red test hid for three hours.** The promotion commit broke one existing test with its export redesign; every targeted run that afternoon was green, and only the whole suite, run from the repo root during the bug hunt, showed it. The rule is now in the skill.
+- **Two pushes were rejected because the ref moved between fetch and push.** The OKF repo receives an ingest commit every few minutes at night, and each one redeploys production. Fetch, rebase and push in one motion, then retry.
+- **Nine confirmed findings in code written the same day**: a drawer link captured by the handler that opens the drawer; a date-only compare across a same-day deploy; Enter submitting mid-composition for Japanese, Chinese and Korean input; a grip mark at 1.6:1 contrast after the token change; an export that mislabelled outcomes; a tally missing one of six outcome kinds; a message stating two different totals; a sidebar still calling itself a preview; a heading the redesign dropped.
+
+### Why this matters for the portfolio
+
+- **A rule read literally can produce the defect it was written to prevent.** The six-colour rule is right; the dark palette that obeyed it to the letter was wrong. The correction kept the rule, documented the one exception, and made the test enforce the exception rather than forbid it.
+- **A build day ends with a hunt, not a demo.** Nine real defects, all in that day's code, all reproduced or proven by construction before they were reported, all fixed with a test seen failing first. The hunt took less time than any one of the bugs would have cost a client.
+- **The reversals are in the record.** The two-file download, the agency red, the product-rules brief, the "still bland" first pass and the red test are logged with their reasons beside the fixes.
+
+---
