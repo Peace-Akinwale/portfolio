@@ -3347,3 +3347,45 @@ Two days on Fanout Notebook, Steve's team product for capturing what ChatGPT, Cl
 - **A user report outranked four days of green logs.** "It used to be instant" was true, and the evidence was in Supabase's own auth and edge logs, not in anything the app reported about itself.
 
 ---
+## 2026-09-14, the engine stopped sending its search words, a chart that never falls, and the day the team-scale run path was proven without writing code
+
+One day on Fanout Notebook, opened by a screenshot from Peace at 13:11 UTC: the side panel said "Fan-outs 0" and "0 searches · 12 sources returned" on a run that had plainly searched three times. The cause was on ChatGPT's side, the fix was in the parser, and the day then ran through the panel's stability, the client-facing chart, three shapes of one card, and a written answer to how the CTO's phone sniffer and Fanout relate. Sixteen commits, 2,288 tests across 140 files, nine dashboard deployments and one runner deployment, all verified SUCCESS.
+
+### What shipped
+
+- **Parser 1.4.0.** ChatGPT changed its live stream between 2026-09-09 14:55 and 2026-09-13 16:10 UTC: the `web.run` tool-call message that carried every search query as a pipe-language code block now arrives as an empty text message. The pool still filled from the result groups, so status stayed `parsed` and the zero looked like a fact. The parser now reads the engine's own list, `search_model_queries`, binds it to the next result round and spends it; a code block still wins when present, so every August golden is unchanged and the parity harness against Simon's original is green. The field is a drift token: a non-empty list with no readable results classifies unrecognised, an empty stub is not search activity.
+- **The words for follow-up rounds are gone at the source, and this is now proven three ways.** Peace's own raw of a Fortra run (six empty call messages, two lists, "Searching 7 websites" as a reasoning title) is the committed fixture; the thinking summaries carry counts, not words; and ChatGPT's stored copy of two temporary chats, fetched from Peace's Chrome (200, 349 KB and 539 KB), holds no query text at all, not even the opening list. "Searches not recorded" is the honest label, printed by one helper on three surfaces.
+- **Panel folds and the client picker stop resetting.** Every message from the background worker rebuilt the whole panel, so an expanded round snapped shut and an open menu vanished under the pointer. Folds now remember their state per run; the panel defers its redraw while a menu is open and redraws the moment it closes. Both pure parts are unit-tested.
+- **The Compared "Over time" chart counts citations and never falls.** Before, a running share fell whenever answers arrived without a citation (Fortra: 50% to 25% on one citation in four). Now one red line counts citations, the answers asked are written as the top gridline ("98 answers asked") instead of drawn, tooltips give count and share together, the headline sentence and the table keep the share in words. Verified in the fixture preview with the tooltip working.
+- **Round cards settled on their third shape the same night.** Dashboard: a round shows its queries and folds its returned pages under "Sources returned · N pages", closed by default. Extension: queries plus one line of hosts, each a jump into Sources. One grouping in the model package feeds all three surfaces.
+- **The dashboard's download button was handing out a five-day-old build.** The zip was a hand-committed file from 2026-09-09; no deploy touched it. Rebuilt from the exact installed build, verified byte for byte inside the running Railway container over SSH (sha256 `b80acb92…` on both sides), and the release rule is written: every extension release rebuilds and commits the zip.
+- **Railway container access from this Mac**, set up at Peace's request: an ed25519 key registered with Railway, host key seeded, and a recipe for reading a binary out of a container that has no `unzip`.
+- **The team-scale run path, proven with no code.** An operator prompt for Claude for Chrome on a plain chatgpt.com tab ran 15 commercial Printify prompts (grounded in Ahrefs: "print on demand companies" 13k/mo at #1, "best print on demand sites for beginners" at #2, and so on) in 34 minutes, one temporary chat each, all captured by the extension and filed under the client, at zero API cost. Peace kept working in other tabs while it ran.
+- **Lens, read end to end and written down.** The CTO's Android wire sniffer exports a HAR; Fanout's parser reads its 13 ChatGPT turns directly; every body after the first is exactly 49,153 characters, a 48 KB cap that cuts citations, which is the truncation his own report complained about. The proposal (`docs/brainstorms/2026-09-14-lens-team-runs-requirements.md`): Lens is the capture device, Fanout is the home, the parser is the one implementation, phones are a booked lab of two, the extension on every laptop is the scale.
+
+### Decisions worth recording
+
+- **Bind the engine's query list to the next result round and spend it; never borrow across rounds.** Attributing one list to every following round would have tripled the pass count and invented wording. The rule was written on the August fixtures and verified on the September raw: each list is followed by exactly one result message.
+- **"Searches not recorded", never "0 searches".** The sources prove a search ran; the zero was a gap in the record, and a client-facing page must not state a gap as a fact.
+- **Do not repair a chart that would fall; report it.** The never-falls invariant is tested on the model's own trend, and a violation is reported rather than smoothed, because a repaired line would draw a count that did not happen.
+- **The answers asked are written, not drawn.** Peace's words: "we are still not lying because we are only cited for 30, and for the other 100, we are not cited." Two-line and stacked versions were drawn on one artifact and rejected by her.
+- **Phones per strategist: no.** The phone was never what made the founder's runs free; his subscriptions and his time were. The extension on each laptop is the free path, the API is dollars a month for volume ($53 for 100 twelve-turn journeys), and phones are for what only a device shows.
+- **One list per fact.** Queries live under rounds, pages live under sources; the dashboard folds pages inside a round and the panel points at Sources by host. Drawn three ways before it was right.
+
+### Frictions and course corrections
+
+- **The first round-card fix shipped and was wrong within the hour.** Every page of every round listed inline under the queries read as bloat ("the queries per round look great, the sources returned don't"). Replaced with a host line linking out, which Peace also rejected ("i don't like how it looks in the dashboard, and where it goes to"), then with the fold she described. Three deployments for one card.
+- **A mockup that was a picture of a click-through, and a section nobody asked for.** The second mockup was static and added a "Returned, not cited" section beside Cited pages; Peace: "It is not interactive. I think you are not mindful of what you are doing." The third was clickable, on the real run's data, and drew nothing outside the round cards.
+- **A host line that did not wrap.** Adjacent spans with no whitespace between them became one unbreakable word and ran off the drawer on a ten-host round. Fixed as a wrapping flex row.
+- **A fixture that git silently ignored.** The redacted raw was first saved under a dated folder that the repo ignores for unredacted payloads; the golden test would have failed on any other machine. Moved flat beside the August fixtures.
+- **Two version pins found by the suite.** A script test and a rehearsal script hardcoded "1.3.0"; both now read the constant or the newest version present.
+- **A subagent and a stored-conversation experiment were the two cheapest hours of the day.** The Slack-and-recordings read of Lens took one pass; the experiment in Peace's Chrome answered "can we recover the words" with a no in ten minutes, before anyone built a re-read path.
+
+### Why this matters for the portfolio
+
+- **The break was located from stored evidence before any raw existed.** Forty pool rows with a code-block flag put the change inside a fifteen-hour window; a diff of the capture path since 09-08 cleared the extension's own rebuild as the cause. The raw, when it came, confirmed rather than discovered.
+- **A vendor withholding data is stated as such, on the client's screen.** The product now says "searches not recorded" where it once said "0 searches", and the drift canary was rewritten so a future silent change is caught by the rule "at least one round shows queries".
+- **Taste is data, and the data was real.** Every mockup of the day was built on the client's actual run, with its actual hosts and counts, so a reversal cost a deploy and not a client's trust.
+- **The zero-API-cost claim was demonstrated, not argued.** Fifteen runs, thirty-four minutes, every one in the dashboard, with the operator prompt in the handoff for the next strategist.
+
+---
