@@ -3430,3 +3430,37 @@ One evening on Notebook Radar's Docs Watch and on stevetoth.ai, opened by Steve'
 - **The proposal is something a client can click**, built on their real data and their real styles, with the ownership split written so the other team can say yes without redesigning anything.
 
 ---
+## 2026-09-17, a public research section built in a day on someone else's repo, articles that report and never opine, and two highlighter bugs found by the site that consumed the feed
+
+Steve escalated the stevetoth.ai ask overnight ("high priority, when can we push this live?"). Peace took ownership in Slack: PR only, so the CTO reviews; Wayback-style archived pages on the site's own domain; every page ranks; every change carries an automatic summary. Two Opus agents built the two halves in parallel against one feed contract while the session coordinated, verified and deployed. By evening the branch was complete and reviewed on a local nginx, with the PR deliberately unopened.
+
+### What shipped
+
+- Radar side, live: migration 079 (`published_at`, `article`); auto-publish at detection; an SEJ-style REPORTED article per behavioral change (Opus, 200 to 300 words, dek under 160, JSON body); a secret-gated feed with per-change and per-version archived renders; four Google Search pages added to the watchlist. 36 articles backfilled, 0 guard violations, bodies average 263 words. 1595 tests.
+- Site side, branch `feat/docs-watch` on `stevetoth/stevetoth.ai`, 7 commits: a stdlib Python generator that renders the whole section statically under `/research/docs-watch/`: 74 pages, 100 per-change before/after views, 43 Wayback-style version views, RSS, 60 sitemap URLs, 36 OG cards, NewsArticle JSON-LD. A hand-edit rule (`edited: true` or a marker comment) keeps Steve's commits above the generator. Daily build wired into the existing deploy workflow.
+- End-to-end on real nginx with headless Chromium: 0 failures; 525 archive-bar links all 200; 143 bars unobstructed; 0 horizontal scroll at 390px; 0 dashes in 111 generated files.
+- The coaching portal got its own plan and mockup on the portal's tokens, with a logged decision reversing an earlier "never a second implementation" note. Build parked at Peace's word.
+
+### Decisions worth recording
+
+- **Reporting, not commentary, enforced in code.** The article prompt forbids opinion and a guard rejects "I think / I believe / my take" with one retry. Steve had just posted a Radar-drafted LinkedIn post as-is; a public article in his name that guessed at intent would be a liability, one that only reports is not.
+- **Auto-publish every change; Steve's controls are Unpublish and Rewrite in Radar, and a commit in the repo.** The marketing site is static with no admin role and Steve already publishes by committing (his study's four commits proved it), so building a publish surface on the site was the wrong shape.
+- **One stored capture serves two pages.** A Wayback-style stamp URL cannot carry a before/after highlight pair, so per-change views and version views are different pages over the same bytes.
+- **No PR until Peace says so, and nothing false about the CTO in the PR body.** The body was audited twice; three stale claims ("secrets to add", "feed needs its deploy", the slim line) were corrected before she read it.
+- **Secrets set from the owner's GitHub account, inert until merge.** The value was never written into a message, a doc or the PR.
+
+### Frictions and course corrections
+
+- **Four archive defects surfaced in Peace's local review**: bar links 404ing on the vendor (root-relative under the vendor's `<base href>`), zero highlights on both Claude captures, one copy serving two roles, the vendor's language menu bleeding over the bar. The highlights traced back to Radar's highlighter: `&#x27;` was never decoded, and adjacent text nodes were joined without a space. Both fixed in Radar, verified live (3 marks before, 2 after).
+- **The /research placement went three ways in an hour.** A band, then a slim line, then Peace: "this new change is crap", back to the original card under the LinkedIn study. Her taste was the spec and the revert was immediate.
+- **Radar's web app had moved to Railway that morning**; a `railway up` snapshot after a git push now fails as a duplicate, and subagents cannot run it at all. The push deployed; the failure was noise, and it is written down.
+- **The "before and after button doesn't jump"** report measured true in Chromium, so the one-shot fragment was backed with a script on every link.
+- **The counters and study-indexing triage Gregory then delegated** join the same PR tomorrow, with a written plan, rather than a second one.
+
+### Why this matters for the portfolio
+
+- **A feature was shipped across two repos and two owners without sidestepping either.** Radar changes went live under Peace's ownership; the site changes wait as one reviewable PR for the CTO, with the secrets pre-set so merge is deploy.
+- **The consumer found the producer's bugs.** Building the site from the real feed exposed two highlighter defects that Radar's 1500 tests had not.
+- **Every "done" claim has a number behind it**, from 0 guard violations to 525 link checks, and the one thing code cannot do (a Search Console indexing request) is named as such.
+
+---
