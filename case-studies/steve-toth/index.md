@@ -3464,3 +3464,43 @@ Steve escalated the stevetoth.ai ask overnight ("high priority, when can we push
 - **Every "done" claim has a number behind it**, from 0 guard violations to 525 link checks, and the one thing code cannot do (a Search Console indexing request) is named as such.
 
 ---
+## 2026-09-17, the day Radar went dark and moved hosts by evening, and the night a field that guessed became a field that measures
+
+Two arcs in one session, both on 2026-09-17. At 15:15 Radar answered 402 on every route: Vercel had soft-blocked the whole team for Fast Origin Transfer, and a paid plan was refused. Peace: "we must do the move right now ... you are the orchestrator of this move." Radar served from Railway on its own domain the same evening. Then Simon McMahon challenged a Fanout Notebook field, `firstPartySeenNotOpened`, that implied a read event the export did not seem to contain ("I don't want to hang the reputation of my craft on something like this"). The evening turned that field into a measured fact, and a follow-up audit of every number on the dashboard found the deeper drift behind it. Written the same night from the two handoffs, the decisions logs and the database reads.
+
+### What shipped
+
+- Radar on Railway (`content-ops` / `radar-web`, us-west2 beside its database): a two-stage Dockerfile, six build-time `ARG`s, healthcheck on `/login`, the domain cut over by DNS, the Vercel project paused and its six cron schedules removed. Five Vercel-only cron jobs relocated to the crawler first, so nothing died silently at cutover. 56 production variables moved. `radar.notebookers.com/login` answers 200.
+- The leak fixed on every host: note audio and video routes now 302 to a presigned Cloudflare R2 URL (`MEDIA_DELIVERY=redirect`), so media bytes never cross the app again; R2 egress is free. HEAD stays on-origin because the audio player's probe fails CORS on a cross-origin redirect.
+- A post-move audit found and fixed 7 leftovers (a service-worker build stamp that read only Vercel's commit, a production guard keyed on a Vercel-only variable, a missing timeout on cron pings, two tests pinned to exact fetch options).
+- The player pages could not scroll on short windows (`html,body{height:100%}` pinned the document); the template fixed and 61 stored pages rewritten by a surgical byte replacement, no re-render, no Notion write.
+- Fanout: 22 teammates who "had access" were on the sign-in list but not on Fanout's own list; synced, and an admin Team card added so the next hire needs no SQL. Client invites had never worked end to end (zero client rows ever); a Radar migration plus an account-minting invite through Resend fixed it, proven live with a real inbox.
+- Fanout parser 1.5.0: ChatGPT's open events read from three signals that agree (live `view` records, live `open|` command lines, API `open_page` actions). Database after the reparse: 108 machine runs, 59 opened pages in 43 runs, 17 of them the client's own, 17 opened and then not cited (the drop-off Simon asked for). Live route: 2 opened pages in 33 runs, one captured after ChatGPT's stream change, so the label survived it.
+- Fanout parser 1.6.0, after a read-only audit of 37 displayed numbers against the raw machine-run payloads: one definition of "returned" (returned by a search) on both routes; round header and round list are now the same set (0 of 212 machine rounds and 0 of 29 live rounds disagree on the fixtures; it had been 210 of 212). Mentions no longer count URL text. 2398 tests, typecheck clean across 7 workspaces, dashboard deploy `483186f1` live.
+
+### Decisions worth recording
+
+- **Move hosts the same afternoon rather than wait for a monthly reset**, with the cause fixed on the way (media off the app) so the move was not just a change of address. Rejected: keep Vercel and only fix the leak; a paid tier was not available.
+- **Do not rename the field; read the action instead.** Peace: "we don't have to rename anything if we can crawl the action ... yes or no?" Yes. The name `firstPartySeenNotOpened` stayed and its meaning became true. Rejected: a hedged rename.
+- **Audit the plan before building, and audit the whole surface before fixing one number.** Peace asked for both. The first audit changed four of seven steps (no migration needed; "reparse all 246" was impossible because raw bodies are not stored; the API route already read a real open). The second found 13 defects behind one drift.
+- **"Returned" means returned by a search, and the live route's utm-tagged results are not that.** The build disproved a premise every earlier note had carried: those pages are the answer's own sources footnote (separate message, separate turn namespace, 33 of 77 never returned by any search on the test capture). They now have their own label and stay out of every returned count.
+- **Copy says "no open recorded", never "not opened".** The live route cannot prove absence (34 of 36 live captures record zero opens), so the sentence states what the data holds.
+- **Runner first, reparse second, and then a guard so the order stops mattering.** The runner's background sweep re-derives any freshly written row with whatever parser it runs; it now refuses rows newer than itself and logs that it is behind.
+
+### Frictions and course corrections
+
+- **Env parity was declared done and was not.** Vercel's list endpoint returns ciphertext for encrypted variables; 31 of 56 values were blobs, the app fell back to a password form, and Peace caught it: "i can't sign in with google. i don't even see the option." A key pair had also been written up as "dead" on that evidence; the verdict was reversed in three documents. Rule added: hash-diff a secret against a twin before calling parity done.
+- **Four failed Railway builds** before the first green one: a module-scope secret check that ran at build time, a healthcheck path that did not exist, build arguments that never reached the Dockerfile, and one unlinked command that created a stray project.
+- **The reparse numbers went backwards twice.** A 1.4.0 runner sweep overwrote 98 of 110 freshly reparsed rows within minutes and stamped them trusted; after the runner was upgraded it overwrote them again, because its column list did not load the one field the new derive needed. Two guards now pin that column list and refuse downgrades.
+- **A database write that silently did nothing.** Clearing stale trust keys through the admin tool only bumped a timestamp, because the guard trigger restores the old key for any role that is not the service role. The clear had to run under the runner's own credentials.
+- **An extension "Update" that did not take**: the unpacked install loads from a build folder, and a dashboard button is not a reload. Her heartbeat showed the old build until she reloaded.
+- **A block that was noise to Peace** ("What to explore next", raw captured searches offered as recommendations) was removed from the run page the moment she said so; the Prompts page keeps the only copy until real recommendations exist.
+- **A safety classifier blocked the agent from deploying the runner, applying a migration, and granting repo permissions.** Each time the work continued by handing Peace one exact command or one paste, never by working around the block.
+
+### Why this matters for the portfolio
+
+- **An outage became a migration with an audit, in one afternoon, without a paid escape hatch.** The cause was fixed, not just the host.
+- **A challenge to a number was treated as a specification.** The reply to a senior colleague was not "the field is fine" or "we will rename it"; it was evidence that the event exists, a measured count, and a rebuilt definition that a reader can check round by round.
+- **Every builder's report was verified by a second command before it was believed**, and one builder's proof that the plan was wrong was accepted and recorded instead of worked around.
+
+---
