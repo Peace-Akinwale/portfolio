@@ -3536,3 +3536,42 @@ The CTO had delegated three things the night before: counters that indexed as ze
 - **The CTO receives one issue, one PR, one screen of context, and every deep detail one click away.** Nothing was hidden and nothing was dumped on him.
 
 ---
+## 2026-09-18, one download for the whole team, runs that can be taken back, and a click that stopped waiting for the server
+
+The second arc of 2026-09-18, on Fanout Notebook rather than the public site. Simon McMahon had asked a plain question the day before: "How do I download all of the jsons for all of the client in one go?" The answer was that he could not. By evening the strategist could pick any clients, any date range and any of five formats, remove runs that should never have been captured, and stop waiting on the server for a checkbox to move. Written the same night from the session, the decisions log and reads against the production database.
+
+### What shipped
+
+- An export scope as one object (`lib/export-scope.ts`): clients, a closed UTC day range or hand-picked run ids, engine, origin, format, split. It is parsed from the URL and serialized back to it, and both the count a person reads before the click and the file they get after it are computed from it, so the two cannot drift. Five formats, `fflate` 0.8.3 pinned exactly as the repo's first zip dependency.
+- Proved rather than asserted: a 225-run download came back as one 4.98 MB JSON with every run's full parse inside, after Peace said to make sure that when someone thinks they are downloading many runs in one file, they actually are.
+- Bulk run removal on the Prompts page: select, remove with a 10 second undo, or delete permanently behind a confirm. Migration 030 replaces the owner-only update policy on the captures table with owner-or-admin, rehearsed on an in-process Postgres before it was applied. Members stay owner-only.
+- Parser 1.6.0 finished landing: the runner, the dashboard and Peace's extension all on it, the machine runs reparsed, and 495 of 495 machine rounds and 143 of 143 live rounds verified header-equals-list. The database now reads 110 machine runs with a real open signal on every one, 17 of them the client's own pages opened, and 47 of 105 live runs.
+- A speed and layout pass on Reports after Peace said "clicking is slow, load time is slow when i click stuff": the 28-client list capped at 296 pixels and scrolling inside its own popover (measured at 596 pixels against a 622 pixel viewport, where it had been running off the bottom of the screen), and a tick that lands in 2 milliseconds instead of waiting on the round trip.
+- One database read per request instead of one per selected client, and the parse reads batched in parallel rather than serially. 2517 tests across 150 files green, typecheck and build clean, deployed.
+
+### Decisions worth recording
+
+- **Make the whole scope optimistic, not each checkbox.** The bar holds the server's scope and renders an optimistic copy, set inside the same transition as the navigation, so every label and every tick move together and converge in one render. Rejected: mirroring the scope into local state and syncing with an effect, which is the exact pattern that had already produced stale date boxes earlier in the day.
+- **While the server catches up, say so rather than show the old number.** The count line reads "Updating the count" and both action buttons are held. A stale number presented as current is the same class of untruth the previous night's audit existed to remove.
+- **Move a filter in memory, but carry its hidden rule with it.** The unassigned position had always meant "unfiled captures of mine", enforced in SQL. Narrowing in memory would have silently counted the whole team's while the download held only the reader's. The rule moved into a four-line function and is pinned by a test that hands it another member's capture.
+- **Zero-count clients stay in the list.** They sort last and dim. Peace was explicit that the problem was the list running past the button, not the clients with no runs in the window, and hiding them would have removed a selection a person may still want.
+- **Admins may remove anyone's run; that is a database policy, not an application check.** A rule enforced in the UI is a rule that the next caller forgets.
+- **Every bulk outcome is per run, never one verdict for the batch**, so a partial failure names which run failed and why.
+
+### Frictions and course corrections
+
+- A bug-hunt agent ran `git checkout --` on an uncommitted fix it had not written and reverted it, misattributing the work to itself. Restored from a copy it had left in a temp directory. Peace's response became a standing rule: "I hate that we had to redo the things we had to do. Bug hunting should be done end-to-end by you." Hunts and verification are no longer delegated.
+- Dimming the zero-count rows with the design system's muted color changed nothing on screen. Measured in the browser: the muted token and the ink token both compute to the same hex in the light palette, along with three other "secondary" tokens. Re-shipped using opacity, and the pattern written into the bug-hunt method.
+- The first timing measurement read 878 milliseconds and was thrown out: the page had not finished hydrating, so it measured the framework waking up, not the click. The settled page reads 2 milliseconds. Both numbers are in the record.
+- One global stylesheet rule that sizes every input for touch has now had to be reset in three separate places in this one bar. Noted in the project's working rules so the fourth control does not rediscover it.
+- Three of the day's bugs existed only in the real browser and not in 2517 passing tests: oversized radios, a popover that would not close on an outside click, and unticking "All clients" putting every tick straight back.
+- I told Peace that a collaborator needed Admin to manage repository secrets. That was wrong. She asked directly, the documentation says Write is enough, and the correction was made before any access was granted.
+- Slack and every other connector in the session would not connect, so the message telling Simon the work was live could not be sent from the tooling. It was drafted against his own words, and Peace sent it herself.
+
+### Why this matters for the portfolio
+
+- **A feature request from one person was answered as a contract, not a button.** One scope object, shared by the screen and the API, means the number a client reads and the file they receive cannot disagree. That is the difference between shipping a download and shipping trust in it.
+- **A performance complaint was measured before and after, and a flattering first measurement was discarded** because it measured the wrong thing. The number in the record is the honest one.
+- **The frictions here are mostly about verification, not code.** A revert by an agent, a style that did nothing, a wrong answer about permissions caught by the client asking again. What changed was who is responsible for checking, and that rule is now written down.
+
+---
