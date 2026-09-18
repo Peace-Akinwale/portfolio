@@ -3575,3 +3575,39 @@ The second arc of 2026-09-18, on Fanout Notebook rather than the public site. Si
 - **The frictions here are mostly about verification, not code.** A revert by an agent, a style that did nothing, a wrong answer about permissions caught by the client asking again. What changed was who is responsible for checking, and that rule is now written down.
 
 ---
+## 2026-09-18, a client knowledge bundle rebuilt end to end after a "drift" diagnosis turned out to be a fabricated index
+
+The third arc of 2026-09-18. Patricia had built a 24-page OKF for Lido Advisors and held two pages, fees and conflicts of interest, because the 77 advisor Q&A pairs contradict each other. Two days earlier Peace had told her the mismatch between the pack's provenance table and its spreadsheet looked like speaker-boundary drift in multi-speaker transcripts. Peace's instruction this session was plain: no exaggeration, build the whole thing ourselves, remove whatever causes issues, send one solution. Written the same night from the session and the artifacts in `~/Documents/lido-review/`.
+
+### What shipped
+
+- A complete OKF v0.2 bundle, 25 pages, 40 files, sent to Patricia as one zip. The done gate (`verify_bundle.py`, the same okf-skill v0.3.0 she builds with, byte-identical by `diff -rq`) reads frontmatter 0 errors 0 warnings, links 0 errors 0 orphans, indexes 0 stale.
+- The two held pages rewritten live against Lido's own Form CRS on the SEC record (filed 2025-10-09, CRD 269866), not against the interviews. Six disclosed conflicts in Lido's wording; three interview phrasings ("we have no conflict of interest", "fee-only advisor", "the only potential conflict") listed as do-not-write. The advisor disagreements stay on the page as open items instead of hidden inside a hold, because a held page is invisible to the writer who needs the safe wording.
+- The pack's provenance table replaced by one copied row for row from the spreadsheet, shipped inside the bundle as a reference page.
+- Six sentences on other pages that still said "held" rewritten so the bundle does not contradict itself; one orphan page linked.
+- The fee contradiction re-derived: of eleven fee rows only three state a rate, and only two describe the same thing. Sean Moran 1.25% entry, Walker Williams about 1% entry; Mike Karsa's "about 1% all-in" is a total-cost comparison against other firms. One disagreement between two people, not three answers. A second conflict nobody had flagged (no transaction fees vs occasional custodial costs on alternatives) surfaced from the same pass. The $1 million minimum agrees across three advisors and the CRS.
+
+### Decisions worth recording
+
+- **The provenance table was discarded on internal evidence, without waiting for the transcripts.** 67 of 77 rows carry a different category and topic under the same ID, diverging from LIDO-004; no renumbering from -8 to +8 realigns them; its timestamps run in exactly 25 spans of 30 seconds and 25 of 90 seconds; its source column round-robins three transcripts every other row; its header credits an advisor who appears in zero rows. Labeled as inference in every artifact. Rejected: holding for Elijah, which would have kept two compliance pages dark for nothing.
+- **Build the bundle, not a patch.** The first deliverable was three files plus a README telling Patricia which commands to run. Peace: "Pat still needs to run this? why?" and then "so we didn't build the okf?" The 24 page bodies were recovered from the only copy that existed outside Patricia's machine, a readable export with broken titles and broken links, frontmatter reconstructed from each page's named sources, and the whole thing regenerated and verified.
+- **Compliance wording comes from the filing, not the sales floor.** Lido's Form CRS states the fee basis, the minimum, the separate fixed fees for tax and trust services, and every conflict in plain terms. The pages quote that and record where the advisors differ.
+- **Sources that were named but not in hand were entered by document name with no date, never invented.** Four internal briefs the pages rely on were not in the 25 August pack. Each carries a title and an organisation and no `last_modified`, and the gap is logged as open. The skill's rule: absent is a valid value, invented is a forged citation.
+- **No `verified` stamp anywhere.** Every page is agent-generated tier and says so. Suggested verifiers logged, unassigned.
+
+### Frictions and course corrections
+
+- The 2026-09-16 diagnosis was wrong and is withdrawn in writing, in the report and in the message to Patricia. Drift within a transcript changes who is credited; it cannot change what a row is about, and the first divergence sits inside a single-speaker recording.
+- The first report this session overstated the damage ("every citation past LIDO-004 may point at the wrong pair"). Peace: "I don't want any exaggeration." All 20 citations in Patricia's draft were then checked against the spreadsheet; all 20 resolve correctly. The report was corrected in place and the claim removed from the message.
+- The Slack connector cannot read a `.docx`; Patricia's status document was never read. Lido's Part 2A brochure could not be fetched from lidoadvisors.com (404 on five dated links) or from the SEC's brochure endpoints (403 and a JavaScript-only viewer), so the fee page cites Item 5 by reference rather than quoting a schedule that was not seen.
+- Peace asked twice whether the OKF skill had actually been used. It had been read, not invoked. Running it properly surfaced the six stale cross-references the patch had missed.
+- The message to Patricia was rewritten three times at Peace's request until it read as one person explaining to another: "use day to day conversational text, so she clearly gets what i mean."
+- Three verify runs to reach zero: a loose table at the bundle root failed the frontmatter gate, and a reverse-link fix targeted the wrong page twice before the bundle was grepped for where the story was actually told.
+
+### Why this matters for the portfolio
+
+- **A wrong call was reversed in public within two days, with the evidence that reversed it.** The client's own team was told the earlier reasoning was mistaken and why, before the corrected work was handed over.
+- **Regulated wording was sourced from the regulator's record.** When advisors disagree about fees and conflicts, the answer that can be published is the one the firm has already filed, and the bundle now says exactly that and no more.
+- **The deliverable was the thing itself, verified by the tool the recipient uses, with nothing left for her to run.** A patch with instructions is a task handed back; a passing bundle is a solution.
+
+---
