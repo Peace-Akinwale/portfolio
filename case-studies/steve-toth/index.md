@@ -3504,3 +3504,35 @@ Two arcs in one session, both on 2026-09-17. At 15:15 Radar answered 402 on ever
 - **Every builder's report was verified by a second command before it was believed**, and one builder's proof that the plan was wrong was accepted and recorded instead of worked around.
 
 ---
+## 2026-09-18, an audit that was right about the site and wrong about Google, a bug hunt in place of a review, and one PR the CTO can read in a sitting
+
+The CTO had delegated three things the night before: counters that indexed as zeros, a 15,000-word study Google had not picked up, and a pre-launch technical audit. Peace had no time to review the result herself, so the day's rule was "check everything as if I will not look." Everything landed as six commits on the same branch and one PR, with a tracking issue assigned to the CTO.
+
+### What shipped
+
+- The audit: 441 URLs on the branch, 24 Lighthouse runs, 27 production paths probed. 37 findings. Two Critical, both verified against production by hand before anyone acted: three internal design PDFs (the brand guidelines among them) public at 200 under `/assets/`, and `Strict-Transport-Security: max-age=0`, which switches HSTS off.
+- The counters on `/` and `/twin` print their real values in the HTML; the animation is untouched. The study got one title, Article JSON-LD on the homepage's own entity ids, and 42 inbound links.
+- Twenty small fixes across the static pages and the generator, each verified: computed style compared on 546 heading properties before and after a tag swap, layout geometry compared on 28 page/width pairs before and after a `<main>` wrapper. Zero differences.
+- PR #75: 40 visible lines (what, the three asks, the two secrets and why they exist, the CTO's three decisions), ten folded sections underneath, GitHub-rendered preview approved before opening.
+
+### Decisions worth recording
+
+- **A bug hunt replaced the owner's review.** An Opus agent read the bug-hunt method and hunted the five fresh commits read-only. It found that the counter fix had landed on one of the two pages that needed it, that the sitemap's dates had moved backward on three hubs, and the one below.
+- **An audit finding was turned into code before the vendor rule behind it was checked.** The audit said Google caps `NewsArticle.headline` at 110 characters. Google removed that limit in January 2023. The fix agent implemented the cap faithfully and cut 35 of 37 headlines mid-sentence, with trailing commas and unbalanced quotes. Reverted the same day; the audit row corrected in place with a dated note rather than rewritten. The lesson went into the bug-hunt skill.
+- **Move, don't delete, the owner's files.** The PDFs went to a folder the deploy already excludes and nginx already 404s. The CTO can delete.
+- **Fix what is ours; list what reshapes the owner's design.** A missing `<main>` landmark on 14 pages was fixed once measured layout-identical. Three heading skips inside the owner's promo cards were listed, not touched.
+
+### Frictions and course corrections
+
+- Two agents stalled on a twelve-minute generator run: one waited silently until nudged, one armed a monitor and then reported "no change" every minute until stopped. The last commit was finished by hand.
+- Two commits were authored under the wrong git identity because the clone had none set; re-stamped before push, identity set for good.
+- The PR body went short, then long at Peace's preference, then folded: "how do we still give him details without overwhelming info?"
+- A layout-capture script never closed its browser; Peace noticed the process count before I did.
+
+### Why this matters for the portfolio
+
+- **Verification scaled with stakes, not with time.** The owner could not review, so the review became measurement: computed styles, geometry, rendered DOM, production headers.
+- **A finding that came from a tool was still checked against the source before it became code**, and when it was not, the miss was named, reverted and written into the method the same day.
+- **The CTO receives one issue, one PR, one screen of context, and every deep detail one click away.** Nothing was hidden and nothing was dumped on him.
+
+---
