@@ -3646,3 +3646,5 @@ The CTO asked on 2026-09-19 for a GitHub Organization so the agency's code stops
 - **Security posture was tightened before people were let in**, and credential handling stayed with the human at every step.
 
 ---
+
+**Addendum, same evening.** A scoped bug hunt re-probed every seam the move could have cut: code and remotes still naming the old owner (none), Railway sources and env (all on the org, none naming GitHub), the new OKF token for a real write (an orphan blob, `201`, no commit), a scheduled workflow dispatched by hand on a moved repo (green), org Actions policy, the reviewer and assignee on the open PR and issue. Two drifts came out of it: two of Peace's own automation scripts restored a hardcoded GitHub account after each run, undoing the new default, and one line of project documentation described a deploy path that had quietly become git-connected. Both fixed and recorded. Vercel's retiring project still pointed at the old repo through an app installed on the old owner; the link was removed with the project left intact. The one thing left to time is the first production write on Wednesday's ingest.
