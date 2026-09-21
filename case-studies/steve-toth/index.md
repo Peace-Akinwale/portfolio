@@ -3611,3 +3611,38 @@ The third arc of 2026-09-18. Patricia had built a 24-page OKF for Lido Advisors 
 - **The deliverable was the thing itself, verified by the tool the recipient uses, with nothing left for her to run.** A patch with instructions is a task handed back; a passing bundle is a solution.
 
 ---
+
+## 2026-09-21, five repos moved off one person's login into a team GitHub org, and the two things that did not follow them
+
+The CTO asked on 2026-09-19 for a GitHub Organization so the agency's code stops depending on Steve's personal account, with Karla on billing and stevetoth.ai moved first because it is not yet in full production. Peace's questions were whether the features he wanted need a paid plan, and then how to do it without breaking anything that deploys. Written the same day from the session, `decisions.md` 2026-09-21 in content-ops, and the handoff `HANDOFF_github-org-move_2026-09-21.md`.
+
+### What shipped
+
+- The org `github.com/notebookagency` on GitHub Free, owned by Steve's account, contact steve@seonotebook.com. Five repos transferred by API one at a time (stevetoth.ai, fanout-notebook, coaching-portal, notebook-okf, content-ops); every old URL answers `301` to the same repo id; collaborators, repo-level secrets, open PRs (#75, #63, seven dependabot PRs) and 32 issues carried. Twelve of Steve's personal repos were left where they were on purpose.
+- Deploys re-pointed without a manual repoint: once the Railway GitHub App was installed on the org, its three git-connected services (`radar-web`, `note-video-worker`, `notebookokf`) resolved to `notebookagency/...` by repo id. Proof: a docs commit pushed to the org repo appeared in Railway's history within a minute as "SKIPPED, no changes to watched files, via GitHub".
+- OKF's ingest committer repaired: its token answered `404` on the org repo from inside the running service; a new fine-grained token scoped to that one repo, Contents read and write, no expiry, answers `200` from inside the service after a redeploy.
+- The team invited (seven accounts, two accepted within minutes), the CTO and Karla set as Owners, the CTO Maintain on stevetoth.ai, the Claude GitHub App installed so the cloud routines can read the org, and issue notebookagency/stevetoth.ai#86 assigned to the CTO with the one step only he can do.
+
+### Decisions worth recording
+
+- **Free plan, not Team.** Verified against GitHub's docs, not memory: Free gives the roles, teams, 180-day audit log and repo-level secrets the CTO asked for; Team ($4 a seat, and bot accounts are seats) adds only org-level secrets on private repos, branch protection and environments. Upgrade later is one click with nothing to re-migrate. Rejected: paying $32 to $40 a month before any paid feature is in use.
+- **Move the repo dark rather than pay for one secret.** stevetoth.ai's four deploy secrets sit in a GitHub Actions environment, a Team-only feature on private repos. The SSH key is the CTO's (created 2026-07-08, before Peace touched the repo; the server refuses connections from her machine), so the repo moved with the deploy knowingly off and an issue naming the fix. Rejected: a Team upgrade to keep one workflow green, and guessing at a key we do not hold.
+- **Membership grants nothing by default.** GitHub's default gives every org member Read on every repo. With three unknown collaborators on stevetoth.ai, the base permission was set to `none` before anyone was invited; the per-repo grants that carried over are the access.
+- **Owners are the people who may delete a repo or change billing.** Steve, the CTO and Karla. Peace keeps her own account as a member and adds her work email to it rather than creating a second identity (one seat later, one history).
+- **Repo first, people after.** The org's own invite step was skipped at creation so transfers landed onto a base permission already tightened.
+
+### Frictions and course corrections
+
+- The transfer itself is not what breaks; three things that do not travel with a repo are. A fine-grained personal access token is bound to its resource owner, so the token that had committed nightly for months could not see the moved repo at all. Environment secrets stop being readable across a plan boundary. GitHub App installations are per owner. Each was found by probing the live system (curl from inside the Railway service, the Railway source field, the app-installations page), not by reading docs first.
+- Two CLI polls after the API accepted a transfer read the wrong signal: the endpoint echoes the old owner and the move lands 8 to 30 seconds later. The first poll loop treated an error body as success; the second compared HTTP status codes.
+- The assistant's guardrails refused every CI-workflow edit, every org permission grant and the org's token-policy page, so those became one-line commands Peace ran herself while the assistant handled reads, transfers, verification and the browser form-filling. Credential values were never handled by the assistant: Peace generated the token, pasted it into a local env file, and set it on Railway from her own shell.
+- The coaching portal's CI turned red after its move. Reading the previous runs showed it had been failing at `npm audit` since 2026-09-17, before the move; the deploy job has been skipping since then. Logged as a separate fix, not as a regression.
+- Peace's ask to move OKF ingest from daily to weekly was checked against the scheduler source: it was already weekly (Wednesday 23:00 New York). Reported as "already weekly" instead of changing anything.
+
+### Why this matters for the portfolio
+
+- **Infrastructure changes are judged by what depends on them, not by whether the command succeeded.** Five clean transfers would have been reported as done by most; the deliverable here was the list of what broke, each with a live probe as evidence and a named owner.
+- **A plan decision was made from the vendor's own documentation, with the rejected option priced.** The CTO got a table of free versus paid features and a seat count, not an opinion.
+- **Security posture was tightened before people were let in**, and credential handling stayed with the human at every step.
+
+---
