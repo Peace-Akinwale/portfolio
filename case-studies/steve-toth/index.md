@@ -3716,3 +3716,35 @@ The new coaching course starts 2026-10-05. Rather than click through the admin a
 - **Automation was used to find, and humans to decide.** The agent walked; every finding was verified; the owner made the product calls; the fixes were reviewed twice and proven on the real system.
 
 ---
+
+## 2026-09-22, the re-run of the coaching walk proved the fixes live, then took the site down under its own load, and the cause was a plan limit, not the code
+
+Same evening as the entry above. Peace asked for the whole agent walk to be run again against the fixed code. It confirmed the fixes in the browser, and 18 minutes in, the portal began returning Cloudflare's Error 1102, "Worker exceeded resource limits", first on one page and then on every page including sign-in.
+
+### What shipped
+
+- The fixes verified on the live site in the real browser: student counts on the cohort list, the confirm dialog before a video is removed, and the lifecycle route (a throwaway cohort now reads Archived).
+- A diagnosis from Cloudflare's own data, read-only, with the stored account token: invocation analytics by 5-minute and 1-minute bucket, Workers Logs, and the account's subscription list.
+- The finding: the account has no Workers Paid plan, so each request gets 10 ms of CPU. Killed requests sat at a CPU median of exactly 10.0 ms. Successful pages ran 17.0 to 25.2 ms at the median and 279 to 493 ms at p99. Traffic during the walk was 129 to 174 requests per 5 minutes against a baseline of 1 or 2.
+- The live deploy ruled out as the cause: no Worker version after 19:42 UTC, and that version had served cleanly for 45 minutes.
+- A written recommendation (Workers Paid, 5 dollars a month) left with the owner, since spend is Steve's call; a handoff, a run report, and a pre-launch check added to the ship-readiness skill: compare the host's per-request ceilings with the app's measured cost.
+
+### Decisions worth recording
+
+- **Stop the walk when the walk is the load.** The runbook says continue past failures, but that rule is for product defects. Here the test traffic was what pushed the site over, and a live cohort's students share it, so the walk stopped mid-section, restored the one lasting change (test links on the new cohort) and closed its tab.
+- **Name the plan limit instead of blaming the code.** The same build had worked for 45 minutes. The metric that settled it was the killed requests' CPU sitting at exactly the cap.
+- **Keep the second symptom separate.** Sign-in also threw HTTP 500 from the page renderer, and the logs held the stack but not the message. It was recorded as unproven rather than folded into the CPU story.
+- **Do not buy the fix.** The upgrade is five dollars and one click, and it is still a purchase on the owner's account.
+
+### Frictions and course corrections
+
+- Across both runs, several apparent failures were the browser harness, not the product: a checkbox and a date set without the framework noticing, and clicks landing on a button that had moved. Each was ruled out with a real click and a stored-value read before anything was reported.
+- The first walk's test emails, plus-addressed into the owner's work inbox so the agent could read them, annoyed her. The re-run sent none, and the next run will state the email count before it starts.
+- A claim that a log-streaming command "works" was written into the notes before it was run, and corrected to "untested" before commit.
+
+### Why this matters for the portfolio
+
+- **A free-tier limit was found under test load, before launch day found it under student load.** The evidence is Cloudflare's own numbers, not an inference from symptoms.
+- **Testing stopped when testing became the harm.** Knowing when to stop a test is part of running one.
+
+---
