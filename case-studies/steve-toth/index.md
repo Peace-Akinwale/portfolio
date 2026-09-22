@@ -3684,3 +3684,35 @@ Steve's Docs Watch (a feed of what OpenAI, Google, Anthropic, Bing and Perplexit
 - **Review is a separate seat from build, and it earned its cost in one evening.** The list of what the reviewers caught is the evidence.
 
 ---
+
+## 2026-09-22, an agent walked the whole coaching admin surface; the launch blocker it found, the dead crons it could not explain, and seventeen findings fixed the same day
+
+The new coaching course starts 2026-10-05. Rather than click through the admin area herself, Peace asked for a prompt that would make a computer-use agent do "every damn thing", including the destructive actions and their reversals. The agent ran 69 minutes and reported 17 findings, one of them a launch blocker. Every finding was re-checked against the source, the database and the platform logs before anything was changed, then fixed in two reviewed batches and proven on the live site.
+
+### What shipped
+
+- A ten-section acceptance prompt (`coaching-portal/docs/runbooks/cohort-six-launch-walk-agent-prompt.md`): every write with its reverse, the archive round trip tested on a copy because archive is terminal, the live cohort touched only reversibly, three kinds of test account, a password reset.
+- Batch 1 (`bac4117`): every cohort lifecycle change and the schedule pause had returned 500 since a migration made admin URLs slugs; the two write routes handed the slug to uuid-typed database functions. Both now resolve first, 404 an unknown ref, and log unmapped errors. Every background job had been failing since July on a build-time variable that never reaches the cron handler at runtime; one config line fixed the trash purge, the Docs Watch sync and the Zoom job. Five auth email templates repointed off a retired host.
+- Batch 2 (`f8af57f`, `59d9895`, migration 037): a force-opened week now opens before the cohort starts; revoked allow-list rows can be deleted (audited, refused while a student is still enrolled); every destructive admin control confirms first; the cohort list shows student counts; duplication carries the source cohort's Slack, Calendly and Zoom; a form's email error clears on edit; the Google button holds its space. Suite 1,823 to 1,846 tests.
+- Proven live afterwards: pause and un-pause a schedule, archive a cohort, a 404 on an unknown slug, the 18:30 UTC cron writing its first successful sync, a pre-start week reading open while force-opened and closed again, four revoked rows deleted with audit rows, the confirm dialog on video removal.
+
+### Decisions worth recording
+
+- **Verify an agent's report against primary sources before acting.** The agent's root-cause reading of the 500 was correct and its three-line fix was the right one; its "trash never purges" had no cause because it could not read logs or code. The cause (every cron dying at the database client) was in the Worker logs, filtered by trigger.
+- **"By design" is not a defense when the owner wants different behavior.** Two behaviors the walk called intended (locked weeks before a cohort starts, revoked rows kept forever) were changed at Peace's word, with the audit trail preserved.
+- **A cleared field is a deliberate clear once a form prefills.** The first version of "duplication carries the links" would have silently re-inherited a value the admin had deleted; the review caught it and the request now distinguishes absent from empty.
+- **Archive is tested on a copy, never on the live cohort.** Peace asked for the live cohort to be archived; she was told it cannot be undone and accepted the copy-based round trip.
+
+### Frictions and course corrections
+
+- The implementer's dash gate reported 0 with 15 dashes present: it ran before the new files were staged, and `git diff` ignores untracked files. The gate now runs on the committed tree.
+- A missing comma in a JSONC config broke the OpenNext build after the vars edit; caught by the build gate, not by tests.
+- Peace pushed back on compressed explanations ("I don't yet understand what you're saying are the problems"); one plain sentence per item was what worked.
+- The session's own write guard refused a manual database update for the push baseline the night before; the floor lives in code instead, which is the better shape.
+
+### Why this matters for the portfolio
+
+- **A launch blocker and a two-month silent failure were found and fixed in one day**, with the evidence for each: the code path, the log line, the database row before and after.
+- **Automation was used to find, and humans to decide.** The agent walked; every finding was verified; the owner made the product calls; the fixes were reviewed twice and proven on the real system.
+
+---
