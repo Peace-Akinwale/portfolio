@@ -3748,3 +3748,37 @@ Same evening as the entry above. Peace asked for the whole agent walk to be run 
 - **Testing stopped when testing became the harm.** Knowing when to stop a test is part of running one.
 
 ---
+
+## 2026-09-23, a first day of HAR express parsers for Steve's SEO IRL talk: three parsers, 31 cleaned sessions, and a recorder bug that looked like data
+
+Steve assigned this at 02:01 CET: as many "HAR express parsers" as possible by Friday for his SEO IRL talk. Each parser is one standalone HTML file per AI-search platform. It reads a recording of a three-turn session and shows what the platform retrieved, cited and dropped, then writes an "exploit prompt" for Claude. His pipeline: record the session as a HAR, clean it in Lens, have his Claude project write the build prompt, build the parser on Opus 5.5. Written the same night from the session, its handoffs and decisions.md.
+
+### What shipped
+
+- Three parsers delivered in one zip: Brave Search and Google Search, built from prompts his own project wrote, plus his Google AI Mode parser rebranded to stevetoth.ai. The rebrand was a skin-only pass: the same 176 functions in the same order, the same tabs, buttons and exports, and identical numbers on the same capture.
+- 31 cleaned sessions, all on a US VPN on the Spellbook topic: AI Mode 12, Brave 11, Google Search 6, one Google PPC session clicking competitor ads, and the first logged-in session (Perplexity, on the team analytics account).
+- A recorder built on Chrome's debugging protocol, proven against a manual DevTools export of the same session: the answer payloads were byte-identical, and it captured more requests.
+- A session runner that plays three turns, clicks a varied number of sources, scrolls them and comes back.
+- A stevetoth.ai brand skill, so every parser matches the site (Steve asked for it in Slack).
+- For Steve's question about the Opus 5.5 safety flag, a small package: the cleaned HAR, and the exact prompt that was paused with "Details: [cyber]". The same prompt ran on Opus 4.8.
+
+### Decisions worth recording
+
+- **A session is complete only when the file contains all three of its questions.** Neither the runner's log nor its click record counts. This check, run on the finished set, found three partial sessions that an earlier sweep had passed.
+- **Regular Google Search gets standalone follow-ups.** Chat-style follow-ups like "Which one would you recommend for a small law firm?" reached a search engine with no memory, and no subject. Five affected sessions were set aside, not deleted, and their re-recording waits on Peace's call.
+- **Deliver a zip, not loose files.** Google Drive can convert uploaded HTML into a Google Doc, which breaks a parser. A zip is never converted.
+- **Logged-in means the team account, never a personal one**, and one or two light source clicks per turn.
+
+### Frictions and course corrections
+
+- Sixteen sessions came back missing turns two and three, while every clicked page was present. The cause was Node's built-in WebSocket, which closes on any single message over 4 MB. One 4.2 MB script on a clicked page killed the recorder's connection, and the recorder kept writing a normal-looking file. It now uses its own client and fails loudly on a lost connection. All sixteen were re-recorded.
+- Two parser builders run in parallel each invented their own tab layout, and Peace caught it. They were unified on Steve's exact tab strip. The lesson went into memory: pin the reference's structure as exact strings before any skin work.
+- A Lens sign-in quietly signed a whole browser profile into Google, so one "logged-out" run went out signed in. Logged-out recording moved to a profile that has never seen Google, and the runner now refuses a signed-in one.
+- The manual Perplexity recording lost about 1,700 early response bodies to the browser's own buffer, including turn one's live answer stream. The answer survived in the thread data Perplexity re-sent on every return, so the session was usable. The next logged-in runs move to the recorder, which writes every body to disk.
+
+### Why this matters for the portfolio
+
+- **A tool that reports success is not evidence.** The recorder, the runner and the click log all said "done" on sessions that were incomplete. Checking the artifact itself is what caught them, twice.
+- **The same questions do not mean the same input on every platform.** Adapting a follow-up to a search box that has no memory kept the comparison honest without changing what was asked.
+
+---
