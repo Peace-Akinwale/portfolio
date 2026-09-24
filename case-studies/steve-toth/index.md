@@ -3782,3 +3782,32 @@ Steve assigned this at 02:01 CET: as many "HAR express parsers" as possible by F
 - **The same questions do not mean the same input on every platform.** Adapting a follow-up to a search box that has no memory kept the comparison honest without changing what was asked.
 
 ---
+
+## 2026-09-24, the first logged-in HAR session (ChatGPT deep research) recorded whole, and the PII scrubber the team needed before any file leaves the company
+
+Day two of the HAR express parsers. Overnight, Steve ruled the company Claude account out for analyzing captured sessions and asked for personal data to be stripped before files go to any outside model. Written the same afternoon from the session and its handoff.
+
+### What shipped
+
+- A ChatGPT deep research session on the team's analytics account, recorded through the Chrome debugging protocol from a dedicated profile: 415 MB, 4,973 entries, three turns, all three answer streams complete, the 11-minute research report and its 395 retrieved URLs, six source clicks. Only 21 bodies missing. The previous night's manual recording of a comparable session had lost about 1,700.
+- A PII scrubber for HAR files, with its rules in a JSON file so the team's Go developer can port it. Replaces every sensitive value with a stable placeholder instead of blanking it, so the parsers that link requests by shared values keep working. On the ChatGPT file it dropped 1,138 authentication headers and replaced 50 account identifiers 4,935 times, and the file still parsed.
+- The cleaned, scrubbed file in the shared cleaning service, verified to hold the three questions, the report and the retrieval payload, with zero mentions of the account email.
+
+### Decisions worth recording
+
+- **Replace, never blank.** The obvious scrub, emptying values, breaks the parsers, because a Brave tool call is matched to its answer by two signed values. A stable placeholder keeps the link and removes the secret. Verified by running two parsers on scrubbed files and getting identical numbers.
+- **One browser profile per identity.** Logged-in sessions record from a profile signed in only as the team account. The cleaning service is used only from Peace's own profile. Mixing them in one browser had produced a "logged-out" session that was signed in.
+- **Rewording the exploit prompt is proposed, not done.** Steve's project text still says "forensic technical marketer" and "exploit this data". Nothing was changed without his answer.
+
+### Frictions and course corrections
+
+- A debug profile Peace had just signed into, at the cost of an authenticator code, was closed by the agent without asking. It came back with its session intact, but the rule now stands: never close a profile someone signed into.
+- The completion watcher for deep research read the wrong element. The report renders inside a nested frame, so the watcher sat on "started" for 20 minutes while the report was done. Peace saw it first.
+- The scrubber took five minutes on the 415 MB file. One search pattern built from every collected value is the cost. It finishes, and it is written down as the thing to fix.
+
+### Why this matters for the portfolio
+
+- **The privacy step was built before the second file left the machine,** with rules a teammate can port, rather than promised for later.
+- **Every "done" here has a number behind it**: streams whole, bodies missing, identifiers replaced, mentions left. That is what let the file ship the same afternoon.
+
+---
