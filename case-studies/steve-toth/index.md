@@ -3811,3 +3811,38 @@ Day two of the HAR express parsers. Overnight, Steve ruled the company Claude ac
 - **Every "done" here has a number behind it**: streams whole, bodies missing, identifiers replaced, mentions left. That is what let the file ship the same afternoon.
 
 ---
+
+## 2026-09-24, seven parsers and 82 cleaned sessions on the client's Drive, a privacy leak found inside compressed telemetry after upload, and a delivery gate so it cannot happen twice
+
+Day two of the HAR express parsers, afternoon to night, across three parallel agent sessions. Written the same night from the session, its handoff (`HANDOFF_har-express-parsers_2026-09-24_2.md`) and `decisions.md`. **Correction to the morning entry:** its "zero mentions of the account email" was true for plain text only; see Frictions.
+
+### What shipped
+
+- Four new parsers (ChatGPT deep research, Perplexity, ChatGPT, Gemini) joining the three from 09-23, all on the client's site wordmark. Each was built on Opus 5.5 from the prompt Steve's own Claude project wrote, and gated on at least three captures plus a browser load.
+- 52 new logged-in sessions (Perplexity 15, ChatGPT 14, Gemini 14, ChatGPT deep research 9), on top of 30 logged-out ones from 09-23: 82 cleaned sessions in all.
+- Verified delivery: 89 files on Drive, every byte count equal to the local copy (exact 89, missing 0, stale 0, duplicated 0, extra 0), checked by a script against a full listing of both Drive folders.
+- Steve's own analysis prompt ("You are an AI visibility analyst...") baked into all seven parsers the night he asked, replacing the "exploit" wording. It was one constant and one button label edited in the finished files, browser-checked on all seven, with no rebuild.
+- `gate-folder.py`, one gate over a whole delivery folder: every privacy check on every session and the prompt check on every parser, and a size manifest written only on a pass. `drive-compare.py` proves the destination against that manifest. `CHECKLIST.md` lists 28 rules, one per incident of the two days.
+
+### Decisions worth recording
+
+- **Drop telemetry bodies, do not re-encode them.** They carry nothing the parsers read, so emptying them is the safe fix.
+- **The folder is frozen once the gate passes.** A fix found after that point means a new gate run and an exact replace list, never a quiet edit during an upload.
+- **"Delivered" means the destination listing matches the manifest,** not that an upload bar finished. One browser batch stalled with no visible error and was found only by that comparison.
+- **Keep the cleaning service's selection, but use our own bodies.** The service began redacting links and ids in its downloads mid-afternoon, which blinded every parser.
+
+### Frictions and course corrections
+
+- **The worst one: account data reached the client's Drive.** The scrubber and its verifier read bodies as plain text. ChatGPT and Perplexity telemetry is base64 of gzip or zlib, and it carried the analytics account's email 1,600 to 4,400 times per file in 37 of 38 logged-in files. The fix empties those bodies and adds a scanner that decodes every body before it counts. Everything was re-uploaded the same evening.
+- A second leak the same night: the account's display name sat under the generic key `name` in 23 files. The key list had `first_name` and `full_name`, but not `name`. The fix landed after Peace's second upload had started, so she had to upload those files a third time. That cost is why the freeze rule exists.
+- A live ChatGPT sign-in token (a 5-part JWE the 3-part JWT rule missed) went into the client's Claude project chat before the rule was added. Logging the account out of all devices is owed.
+- The first deep research parser showed session A's report on session B, because ChatGPT preloads the previous conversation into every new capture. It was caught by testing on a second capture, and led to the three-capture rule.
+- The first decoding scanner went quadratic on base64 and ran 32 minutes on one file. The rewrite finds the "@" first, then tests a window, and takes under a second.
+- About 20 idle finished tabs polling the server triggered ChatGPT's rate limit. ChatGPT now runs one session at a time, and each tab is closed when its session ends.
+
+### Why this matters for the portfolio
+
+- **A "0 found" is only as good as what the checker can read.** The leak passed a verifier that could not see compressed data. The remedy was a checker that decodes everything the data can carry, plus a single gate that runs it on the whole folder before anything leaves.
+- **Incidents turned into mechanisms the same night.** Each of the day's problems maps to a script or a written rule, so the next day's delivery runs through checks rather than memory.
+
+---
