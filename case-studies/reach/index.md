@@ -52,3 +52,42 @@ Written the same day, from the repo's decisions log, the four ledgers, and the s
 - Saying "the VPN was not the cause" after having suggested it was costs nothing and keeps the log honest. A confidently wrong specific is the one failure mode a client remembers.
 
 ---
+
+## 2026-09-25, Reach resumed: on demand, on two Macs, and a first task done end to end
+
+Written the same day, from the repo's git log, `decisions.md`, and the test and live checks run in the session. Reach had been paused since 2026-09-03. A morning diagnosis found the host half-restarting itself and stuck on a startup prompt; the owner said to fix it if possible, then said Reach should only run when needed, then that it had to run on her MacBook Air as well as the Pro.
+
+### What shipped
+
+- **On-demand host.** The Mac's launcher checks Supabase every 30 s. It starts the host session only for a queued task, answers Claude Code's development-channels warning itself, and stops the host after 15 idle minutes. It never stops a session someone is attached to, and it never starts or stops anything while Supabase cannot be read.
+- **Multi-host.** Every task names its Mac. The database allows one active task per Mac instead of one overall, and the claim function takes the Mac. Each Mac gets its own id and label from setup. The website has a Mac picker and a status pill per Mac. The CLI defaults to the Mac it runs on and takes `--host`.
+- **Migration 0006** applied to the live shared database after a read-only review of the live catalog. Its verification queries confirmed the rename, the backfill, the per-Mac index and the function's grants. A rollback script was written and reviewed; it has not been needed.
+- **Reach Chrome follows the host.** It opens when the host wakes and closes on the idle stop, but only if the launcher opened it, so a copy another session is borrowing is left alone. The login-time agent that kept it open is gone.
+- **Unpacked extensions without the folder picker.** Reach loads an extension into Reach Chrome over Chrome's DevTools protocol and reloads a per-Mac list on every launch.
+- **A channel fix:** the host's instructions were 2,510 characters against Claude Code's 2,048 limit. The cut had been dropping the stop rule and the never-type-passwords rule. They are now 1,787, with a test that fails past the limit.
+- **Live, on the MacBook Air:** the first end-to-end task (it reported "macOS 27.0 (build 26A428)"). Then Reach loaded the owner's own Fanout Notebook 0.1.0 into Reach Chrome and confirmed it on `chrome://extensions` with no errors.
+- **Tests at the end of the day:** channel 114, web 247 (plus `tsc` and a production build), skill 16, launcher 66 checks, setup identity 14, extension loader 5 against a real headless Chrome. The launcher and setup suites are the repo's first shell tests.
+
+### Decisions worth recording
+
+- **Pressing a warning on the owner's behalf became a standing yes, but a narrow one.** The docs confirmed there is no setting to pre-accept the warning for a home-built channel on a personal plan. So the choice was a host that parks unseen (it had sat for 34 hours) or one that answers for her. She chose to have it answered. It fires only when the bottom of the screen is exactly that dialog, naming only Reach's channel. It fires once per session, and every other startup question (folder trust, a new MCP server, a login) is named in the log and left for her.
+- **Picking the Mac per task beat "whichever is free".** Waking both Macs for every task and letting one claim it was rejected, because it spends a start-up for nothing. The Mac picker, plus a default of the Mac the CLI runs on, keeps each Mac's queue its own.
+- **Cost was checked before building, because she asked.** She worried a 30-second check would add to her Railway bill. It runs on the Mac, not Railway. It reads Supabase, whose free plan has unlimited API requests, and the reads come to under 90 MB of the 5 GB monthly egress.
+- **A measurement overruled the write-ups.** Two sources said Chrome's `Extensions.loadUnpacked` needs a pipe connection and an extra flag. On throwaway profiles it worked over the plain debugging port with neither. The same test showed the extension is not saved in the profile, which is why the per-Mac reload list exists.
+- **The build session did not handle credentials.** The host's login code, the security prompt for a new MCP server, and the Accessibility grant were all left to the owner, even when she was tired of being asked.
+
+### Frictions and course corrections
+
+- **The first fix was the wrong shape.** The morning's fix made the launcher report "waiting at the warning" honestly. An hour later the owner ruled that Reach must not run by default at all, which replaced that fix with the on-demand launcher.
+- **Three independent reviews raised 18 findings on code that passed every test.** Sixteen were fixed and two were written down as accepted limits. The launcher's Enter-press matched text anywhere on screen, so a printed copy of the warning above a live permission dialog would have approved the permission. It would also have pressed again every 30 s. A copied settings file would have made both Macs claim the same identity. A leftover marker could have closed someone else's browser. Each fix got a test, and eight deliberate breakages of the launcher were each caught by one.
+- **A tool refused, and the refusal stood.** The session's safety classifier blocked a probe that launched Claude Code with the "dangerous" channel flag. The test fixture came from a real capture instead, and the first live launch was left to the owner's own background job.
+- **The live run found what tests could not.** The Air's host login had expired, and it was on the API account, not the Max plan. After re-login, the session sat on a "press Enter to continue" screen, so two tasks timed out behind it. The site also served a cached landing page to a browser that had visited signed out. All three are recorded as follow-ups.
+- **A Mac folder picker is out of reach for every driver.** Reach got as far as Chrome's Load unpacked button and stopped. Playwright sees only page content, and computer use treats browser-owned windows as look-only. That limit is what led to the DevTools route.
+
+### Why this matters for the portfolio
+
+- Asking the owner the right question beat guessing her intent. "Should it press Enter?" turned into "should it be on at all?", which was the real requirement and changed the design.
+- A capability claim from the web is a hypothesis until it is measured. The one experiment that contradicted two write-ups also uncovered the persistence gap the design then had to handle.
+- Tests that pass are a floor, not a verdict. The independent reviews and the first live run each found defects that 462 passing tests and checks did not.
+
+---
