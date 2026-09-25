@@ -3846,3 +3846,41 @@ Day two of the HAR express parsers, afternoon to night, across three parallel ag
 - **Incidents turned into mechanisms the same night.** Each of the day's problems maps to a script or a written rule, so the next day's delivery runs through checks rather than memory.
 
 ---
+
+## 2026-09-25, a client's shared-account cookies found inside "clean" files with no way to revoke them, three more parsers, 284 sessions re-cleaned and delivered, Markdown packed for the model the client actually uses, and a pull request on a teammate's tool
+
+Day three of the HAR express parsers, 07:49 to 23:10, one session with a mid-day context compaction. Written the same night from the session, its handoff (`HANDOFF_har-express-parsers_2026-09-25.md`, 502 lines) and `decisions.md`. **Correction to the 09-24 entry:** its "89 files on Drive, every byte count equal" was true of the bytes and false of the contents; see Frictions.
+
+### What shipped
+
+- Steve's morning list, in one day: a second research niche (global payroll, 15 questions of 3 turns each, Rippling and Deel named) on every medium he asked for: ChatGPT logged in, Temporary Chat with memory off, logged out and deep research (10 of 15), Claude normal and incognito, Perplexity normal and incognito, Gemini logged in and out, Google AI Mode, Google search, Brave regular search, and 5 Google Ads sets from Rippling's paid keywords. Plus a Canada set (Ownr, 19 sessions from a Toronto exit on google.ca).
+- Three new parsers (Brave web results, Claude, ChatGPT logged out), built on Opus 5.5 from the prompts Steve's own Claude project wrote, on the shared shell, each verified by loading it in a headless browser with a real capture and running it on three more. 10 parsers on Drive, sizes equal to local, 10 of 10.
+- 284 cleaned sessions (Spellbook 82, Global payroll 183, Ownr 19), every one passed a new leak check twice (421 of 421 files, and an independent scan: 0 files with a login cookie).
+- 88 Markdown files: the "Copy analysis prompt" text of every session, whole, grouped by topic and platform-mode, packed under Kimi's window (200k estimated tokens a file) with an index. Names like `Global payroll, Perplexity (logged in), part 1.md`, oldest session first, so adding sessions later never changes an existing file.
+- A delivery in three gated folders, one per Drive folder, so the client's upload is one drag each; a script that prints exactly which files are new or changed against the last manifest.
+- A pull request on the team's Lens tool (`notebookagency/Lens#1`, 5 commits): the Library remembers the selected client, refreshes itself while uploads run, marks an upload stuck after 10 minutes with a count per client, a banner and a browser notification, and an opt-in dev proxy so the frontend runs alone against the live API. Nothing reaches production until the tool's owner merges.
+
+### Decisions worth recording
+
+- **When a leaked credential cannot be revoked, the files are the only fix, and the fix must be provable.** The shared agency accounts could not be signed out (the whole team uses them), so every file was re-masked in place and re-checked by two independent scanners before anything went back to Drive.
+- **A verifier must read the whole tree, not the fields the cleaner touched.** The cleaner had removed cookies from `headers`; the recorder also stored a second copy in `_rawHeaders`, and the verifier looked where the cleaner looked. The new check walks every object for any cookie or authorization pair at any depth, by name, regardless of where it sits.
+- **Fix the capture, not just the file: the recorder now sets the browser timezone to the VPN's zone.** A VPN moves the IP, not the clock, so 170 of 218 files carried the operator's real timezone. Masking hides it in old files; the override keeps it out of new ones and keeps every session's real time in a consistent zone.
+- **Ship what the client's tool can read, not what looks tidy.** "One Markdown file per search type" produced files of 325k to 1.2M tokens that no model could open. The copy text itself was kept whole at the client's insistence; the packaging changed to a per-file cap sized for the model he uses (Kimi), with names that never shift.
+- **Google Ads sessions are Google searches:** same parser, same file, a label. Rejected: a separate PPC parser.
+- **Contribute to a teammate's tool through pull requests only,** even with admin rights on the repo, and run a bug hunt before asking for review.
+
+### Frictions and course corrections
+
+- **The worst one: 51 of the 89 files delivered on 09-24 carried live login cookies** (the client's shared ChatGPT, Google and Perplexity accounts) in a header copy the cleaner never read. Found only because a parser prompt listed anti-bot tokens the cleaner had also missed. Reported to Peace by push notification within minutes; the accounts could not be signed out; every file was re-masked in four passes (the second pass matched nothing because a name was truncated to 70 characters in a log) and all 89 are being replaced.
+- A Google session's copy text was 1.6 MB because the Google parser printed four 341 KB `data:` URLs into a table; one shared helper fix across all 11 parsers brought it to 272 KB.
+- The cleaning workers, restarted after the leak fix, sat idle for 15 minutes on two lock folders left by the workers that had been killed; 14 sessions were never on the cleaning list at all; one file was claimed by a worker while it was still being recorded. Each became a rule or a script check.
+- The Lens work started as one account editor and had to be rebuilt the same evening as a list with a per-invoice choice when it turned out the client keeps several accounts; a two-reviewer bug hunt then found seven timing races in the new polling code, all fixed before review.
+- Two of my Lens suggestions were withdrawn on the client's correction: a progress bar already existed, and a filter she did not need.
+
+### Why this matters for the portfolio
+
+- **A clean bill from yesterday is not a clean bill today.** The 09-24 entry recorded a verified delivery; the verification was of sizes, and the contents carried credentials. The mechanism that closes that gap is a checker that looks for the shape of a secret anywhere in the data, run on the delivered folder every time a new rule is learned.
+- **Delivery shaped to the reader's tool.** Files were sized to the model the client said he would use, with an index, rather than to what was convenient to generate.
+- **Working inside someone else's product:** pull requests, a bug hunt before review, and a note to the owner that says what changed without lecturing.
+
+---
