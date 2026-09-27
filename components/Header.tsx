@@ -79,7 +79,7 @@ export function Header() {
   return (
     <header className="fixed top-0 left-0 right-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-3 sm:pt-3.5">
-        <div className="rounded-[1.6rem] border border-border/75 bg-background/88 backdrop-blur-md shadow-[0_10px_28px_rgba(58,35,22,0.05)]">
+        <div className="rounded-[1.6rem] border border-border/75 bg-background/88 backdrop-blur-md shadow-[0_10px_28px_rgba(21,24,58,0.05)]">
           <div className="flex items-center justify-between gap-6 px-4 sm:px-6 py-3 sm:py-3.5">
           <Link
             href="/"
@@ -90,7 +90,7 @@ export function Header() {
             Peace Akinwale
           </Link>
 
-          <nav className="hidden lg:flex items-center gap-7">
+          <nav className="hidden md:flex items-center gap-5 lg:gap-7">
             {PRIMARY_LINKS.map((item) => (
               item.children ? (
                 <div
@@ -107,7 +107,7 @@ export function Header() {
                 >
                   <Link
                     href={item.href}
-                    className="inline-flex min-h-10 items-center gap-1 rounded-full px-3 text-[11px] font-semibold uppercase tracking-[0.16em] transition-all text-muted-foreground hover:bg-muted/70 hover:text-accent group-focus-within:bg-muted/70 group-focus-within:text-accent"
+                    className="inline-flex min-h-10 items-center gap-1 rounded-full px-3 text-sm font-medium transition-all text-muted-foreground hover:bg-muted/70 hover:text-accent group-focus-within:bg-muted/70 group-focus-within:text-accent"
                     ref={workTriggerRef}
                     aria-haspopup="true"
                     aria-expanded={isDesktopPortfolioOpen}
@@ -132,7 +132,7 @@ export function Header() {
                       isDesktopPortfolioOpen ? 'pointer-events-auto translate-y-0 opacity-100' : 'pointer-events-none -translate-y-1 opacity-0'
                     }`}
                   >
-                    <div className="rounded-[1.1rem] border border-border/80 bg-background/96 p-2 shadow-[0_22px_48px_rgba(20,16,11,0.1)] backdrop-blur-md">
+                    <div className="rounded-[1.1rem] border border-border/80 bg-background/96 p-2 shadow-[0_22px_48px_rgba(21,24,58,0.1)] backdrop-blur-md">
                       {item.children.map((child) => (
                         <Link
                           key={child.href}
@@ -140,7 +140,7 @@ export function Header() {
                           className="block rounded-[0.95rem] px-4 py-3 transition-colors hover:bg-muted/80"
                           onClick={() => setIsDesktopPortfolioOpen(false)}
                         >
-                          <span className="block text-[11px] font-semibold uppercase tracking-[0.14em] text-foreground">
+                          <span className="block text-sm font-semibold text-foreground">
                             {child.label}
                           </span>
                           <span className="mt-1 block max-w-[28ch] text-[12px] leading-relaxed text-muted-foreground">
@@ -155,7 +155,7 @@ export function Header() {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className="text-[11px] font-semibold uppercase tracking-[0.16em] transition-colors text-muted-foreground hover:text-accent"
+                  className="text-sm font-medium transition-colors text-muted-foreground hover:text-accent"
                 >
                   {item.label}
                 </Link>
@@ -166,7 +166,7 @@ export function Header() {
           <div className="hidden md:flex items-center gap-5">
             <Link
               href="/contact"
-              className="text-[11px] font-bold uppercase tracking-[0.12em] px-4 py-2.5 rounded-full transition-all hover:opacity-90 text-white"
+              className="text-sm font-semibold px-4 py-2 rounded-full transition-all hover:opacity-90 text-accent-foreground"
               style={{ background: 'var(--accent)' }}
             >
               Book a call
@@ -175,7 +175,7 @@ export function Header() {
 
           <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="lg:hidden p-2 hover:bg-muted rounded-full transition-colors"
+            className="md:hidden p-2 hover:bg-muted rounded-full transition-colors"
             aria-label="Toggle menu"
             aria-expanded={isMenuOpen}
             aria-controls="mobile-menu"
@@ -193,7 +193,7 @@ export function Header() {
           </div>
 
           {isMenuOpen && (
-            <nav id="mobile-menu" className="lg:hidden border-t border-border/90 px-4 pb-4 pt-2">
+            <nav id="mobile-menu" className="md:hidden border-t border-border/90 px-4 pb-4 pt-2">
               <div className="flex flex-col gap-1 py-2">
                 {PRIMARY_LINKS.map((item) => (
                   item.children ? (
@@ -201,7 +201,7 @@ export function Header() {
                       <button
                         onClick={() => setIsPortfolioOpen((open) => !open)}
                         aria-expanded={isPortfolioOpen}
-                        className="flex items-center justify-between py-3 text-sm uppercase tracking-[0.12em] text-muted-foreground transition-colors hover:text-accent"
+                        className="flex items-center justify-between py-3 text-base text-muted-foreground transition-colors hover:text-accent"
                       >
                         <span>{item.label}</span>
                         <svg
@@ -236,7 +236,7 @@ export function Header() {
                     <Link
                       key={item.href}
                       href={item.href}
-                      className="text-sm uppercase tracking-[0.12em] py-3 text-muted-foreground hover:text-accent transition-colors"
+                      className="text-base py-3 text-muted-foreground hover:text-accent transition-colors"
                       onClick={() => setIsMenuOpen(false)}
                     >
                       {item.label}
@@ -247,7 +247,7 @@ export function Header() {
 
               <Link
                 href="/contact"
-                className="mt-2 inline-flex justify-center px-4 py-3 text-xs font-bold uppercase tracking-[0.12em] rounded-full transition-all hover:opacity-90 text-white"
+                className="mt-2 inline-flex justify-center px-4 py-3 text-sm font-semibold rounded-full transition-all hover:opacity-90 text-accent-foreground"
                 style={{ background: 'var(--accent)' }}
                 onClick={() => setIsMenuOpen(false)}
               >

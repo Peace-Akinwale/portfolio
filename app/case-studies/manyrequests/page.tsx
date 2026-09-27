@@ -436,7 +436,7 @@ export default function ManyRequestsCaseStudyPage() {
             <Link
               href="/services"
               className="inline-block px-7 py-3 text-xs font-bold uppercase tracking-[0.08em] rounded-md transition-all hover:opacity-90 text-center"
-              style={{ background: 'var(--accent)', color: '#fff' }}
+              style={{ background: 'var(--accent)', color: 'var(--accent-foreground)' }}
             >
               See services &rarr;
             </Link>

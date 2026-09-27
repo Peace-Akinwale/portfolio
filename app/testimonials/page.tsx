@@ -255,7 +255,7 @@ export default function TestimonialsPage() {
               {linkedInTestimonials.map((testimonial) => (
                 <article
                   key={testimonial.name}
-                  className="rounded-[1.5rem] border border-border bg-background px-6 py-6 shadow-[0_12px_30px_rgba(35,26,20,0.04)] sm:px-8 sm:py-8"
+                  className="rounded-[1.5rem] border border-border bg-background px-6 py-6 shadow-[0_12px_30px_rgba(21,24,58,0.05)] sm:px-8 sm:py-8"
                 >
                   <div className="flex flex-col gap-8">
                     <blockquote className="space-y-5">
@@ -292,8 +292,8 @@ export default function TestimonialsPage() {
                           href={LINKEDIN_URL}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.12em] text-white transition-opacity hover:opacity-90"
-                          style={{ background: '#0A66C2' }}
+                          className="inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.12em] text-accent-foreground transition-opacity hover:opacity-90"
+                          style={{ background: 'var(--accent)' }}
                         >
                           <LinkedInIcon />
                           View on LinkedIn
@@ -314,7 +314,7 @@ export default function TestimonialsPage() {
               {screenshotTestimonials.map((testimonial) => (
                 <article
                   key={testimonial.name}
-                  className="rounded-[1.5rem] border border-border bg-background p-5 shadow-[0_12px_30px_rgba(35,26,20,0.04)] sm:p-6"
+                  className="rounded-[1.5rem] border border-border bg-background p-5 shadow-[0_12px_30px_rgba(21,24,58,0.05)] sm:p-6"
                 >
                   <div className="rounded-[1rem] border border-border bg-muted/70 p-3">
                     <Image
@@ -347,7 +347,7 @@ export default function TestimonialsPage() {
         <div className="mx-auto max-w-7xl px-6 py-20 sm:py-24">
           <div className="max-w-3xl">
             <span className="mb-8 inline-flex items-center gap-2 rounded-full border border-border px-3 py-1.5 text-xs font-semibold text-muted-foreground">
-              <span className="inline-block h-1.5 w-1.5 rounded-full bg-green-500" />
+              <span className="inline-block h-1.5 w-1.5 rounded-full bg-accent" />
               {AVAILABILITY}
             </span>
             <h2
@@ -365,7 +365,7 @@ export default function TestimonialsPage() {
                 href="https://calendly.com/akindayopeaceakinwale/30min"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-block rounded-md px-7 py-3 text-center text-xs font-bold uppercase tracking-[0.08em] text-white transition-all hover:opacity-90"
+                className="inline-block rounded-md px-7 py-3 text-center text-xs font-bold uppercase tracking-[0.08em] text-accent-foreground transition-all hover:opacity-90"
                 style={{ background: 'var(--accent)' }}
               >
                 Book a free discovery call -&gt;

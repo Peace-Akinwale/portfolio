@@ -1,19 +1,19 @@
 @import "tailwindcss";
 
-/* Editorial Portfolio Design System - Monochrome */
+/* Editorial portfolio design system */
 
 :root {
-  /* Light mode — Electric Teal + Rose: fresh, modern, energetic */
-  --background: #f8f0e3;
-  --foreground: #130f0d;
-  --muted: #efe2cd;
-  --muted-foreground: #5f5449;
-  --border: #d2bea0;
-  --accent: #64734f;
+  /* Light mode — "adire": undyed cotton, indigo ink, one indigo accent. See docs/design-reference.md */
+  --background: #F7F7F3;
+  --foreground: #15183A;
+  --muted: #E8EAF3;
+  --muted-foreground: #4B5070;
+  --border: #CED2E2;
+  --accent: #2E3A87;
   --accent-foreground: #ffffff;
-  --accent2: #b55e3d;
-  --navy: #130f0d;
-  --orange: #b55e3d;
+  --accent2: #2E3A87;
+  --navy: #15183A;
+  --orange: #2E3A87;
 
   /* Typography */
   --font-serif: Georgia, Cambria, "Times New Roman", Times, serif;
@@ -41,31 +41,31 @@
 
 /* Dark mode */
 [data-theme="dark"] {
-  --background: #1d1814;
-  --foreground: #f5ecdf;
-  --muted: #29211b;
-  --muted-foreground: #c7b29c;
-  --border: #49382d;
-  --accent: #97a57d;
-  --accent-foreground: #171411;
-  --accent2: #d38561;
-  --navy: #f5ecdf;
-  --orange: #d38561;
+  --background: #11142B;
+  --foreground: #ECEDF6;
+  --muted: #1A1E3C;
+  --muted-foreground: #A8ADCB;
+  --border: #2D3259;
+  --accent: #9FB0FF;
+  --accent-foreground: #11142B;
+  --accent2: #9FB0FF;
+  --navy: #ECEDF6;
+  --orange: #9FB0FF;
 }
 
 /* Auto dark mode (system preference) */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --background: #1d1814;
-    --foreground: #f5ecdf;
-    --muted: #29211b;
-    --muted-foreground: #c7b29c;
-    --border: #49382d;
-    --accent: #97a57d;
-    --accent-foreground: #171411;
-    --accent2: #d38561;
-    --navy: #f5ecdf;
-    --orange: #d38561;
+    --background: #11142B;
+    --foreground: #ECEDF6;
+    --muted: #1A1E3C;
+    --muted-foreground: #A8ADCB;
+    --border: #2D3259;
+    --accent: #9FB0FF;
+    --accent-foreground: #11142B;
+    --accent2: #9FB0FF;
+    --navy: #ECEDF6;
+    --orange: #9FB0FF;
   }
 }
 
@@ -73,15 +73,15 @@
    BlogPageBackground paints the page white; these tokens keep the text dark on it. */
 .reading-light {
   --background: #ffffff;
-  --foreground: #130f0d;
-  --muted: #efe2cd;
-  --muted-foreground: #5f5449;
-  --border: #d2bea0;
-  --accent: #64734f;
+  --foreground: #15183A;
+  --muted: #E8EAF3;
+  --muted-foreground: #4B5070;
+  --border: #CED2E2;
+  --accent: #2E3A87;
   --accent-foreground: #ffffff;
-  --accent2: #b55e3d;
-  --navy: #130f0d;
-  --orange: #b55e3d;
+  --accent2: #2E3A87;
+  --navy: #15183A;
+  --orange: #2E3A87;
   color: var(--foreground);
 }
 
@@ -95,9 +95,7 @@ html {
 }
 
 body {
-  background:
-    radial-gradient(circle at top, rgba(181, 94, 61, 0.09), transparent 22%),
-    linear-gradient(180deg, color-mix(in srgb, var(--background) 96%, #fffaf3 4%) 0%, var(--background) 58%, color-mix(in srgb, var(--background) 90%, #f0e1ca 10%) 100%);
+  background: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans);
   font-size: 16px;
@@ -266,15 +264,15 @@ h3 {
 }
 
 .prose pre {
-  background: #f0e1cf;
-  color: #1e1814;
+  background: #E8EAF3;
+  color: #15183A;
   padding: 1.25rem 1.5rem;
   border-radius: 8px;
   overflow-x: auto;
   margin: 1.5rem 0;
   font-size: 0.875rem;
   line-height: 1.7;
-  border: 1px solid #d2bea6;
+  border: 1px solid #CED2E2;
 }
 
 .prose pre code {
@@ -306,9 +304,9 @@ h3 {
   width: 2rem;
   height: 2rem;
   padding: 0;
-  color: #7d6a57;
+  color: #4B5070;
   background: transparent;
-  border: 1px solid #c8b293;
+  border: 1px solid #CED2E2;
   border-radius: 6px;
   cursor: pointer;
   opacity: 0;
@@ -321,8 +319,8 @@ h3 {
 }
 
 .copy-btn:hover {
-  background: #e9d7c3;
-  color: #4d4138;
+  background: #DDE0EE;
+  color: #15183A;
 }
 
 .copy-btn.copied {
@@ -333,20 +331,20 @@ h3 {
 /* Dark mode code blocks */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) .prose pre {
-    background: #29211b;
-    color: #f5ecdf;
-    border-color: #49382d;
+    background: #1A1E3C;
+    color: #ECEDF6;
+    border-color: #2D3259;
   }
 
   :root:not([data-theme="light"]) .copy-btn {
-    color: #cfb8a0;
-    border-color: #695244;
+    color: #A8ADCB;
+    border-color: #2D3259;
     background: transparent;
   }
 
   :root:not([data-theme="light"]) .copy-btn:hover {
-    background: #3c3027;
-    color: #f5ecdf;
+    background: #1A1E3C;
+    color: #ECEDF6;
   }
 
   :root:not([data-theme="light"]) .copy-btn.copied {
@@ -356,9 +354,9 @@ h3 {
 
   /* Keep code blocks light on the white blog page */
   :root:not([data-theme="light"]) .reading-light .prose pre {
-    background: #f0e1cf;
-    color: #1e1814;
-    border-color: #d2bea6;
+    background: #E8EAF3;
+    color: #15183A;
+    border-color: #CED2E2;
   }
 }
 
@@ -444,4 +442,14 @@ a {
 /* Lightbox image transition */
 #lightbox-image {
   transition: opacity 0.15s ease;
+}
+
+/* Respect people who ask their system for less motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

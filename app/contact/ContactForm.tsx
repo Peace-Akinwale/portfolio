@@ -77,7 +77,7 @@ export default function ContactForm() {
             Let&rsquo;s work together.
           </h1>
           <span className="inline-flex items-center gap-2 text-xs font-semibold px-3 py-1.5 rounded-full border border-border text-muted-foreground whitespace-nowrap self-start sm:self-auto">
-            <span className="w-1.5 h-1.5 rounded-full bg-green-500 inline-block" />
+            <span className="w-1.5 h-1.5 rounded-full bg-accent inline-block" />
             {AVAILABILITY}
           </span>
         </div>
@@ -199,7 +199,7 @@ export default function ContactForm() {
             type="submit"
             disabled={status === 'sending'}
             className="w-full py-3 text-xs font-bold uppercase tracking-[0.08em] rounded-md transition-all hover:opacity-90 disabled:opacity-60"
-            style={{ background: 'var(--accent)', color: '#fff' }}
+            style={{ background: 'var(--accent)', color: 'var(--accent-foreground)' }}
           >
             {status === 'sending' ? 'Sending...' : 'Send message'}
           </button>

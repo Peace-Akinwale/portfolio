@@ -9,10 +9,10 @@ export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
 
 const COLORS = {
-  background: '#1d1814',
-  foreground: '#f5ecdf',
-  muted: '#c7b29c',
-  accent: '#97a57d',
+  background: '#11142B',
+  foreground: '#ECEDF6',
+  muted: '#A8ADCB',
+  accent: '#9FB0FF',
 };
 
 export default async function Image() {

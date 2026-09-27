@@ -317,7 +317,7 @@ export function Comments({ postSlug, postTitle }: CommentsProps) {
               <button
                 type="submit"
                 disabled={submitting}
-                className="inline-flex items-center justify-center rounded-full px-5 py-3 text-xs font-bold uppercase tracking-[0.12em] text-white transition-opacity hover:opacity-90 disabled:opacity-60"
+                className="inline-flex items-center justify-center rounded-full px-5 py-3 text-xs font-bold uppercase tracking-[0.12em] text-accent-foreground transition-opacity hover:opacity-90 disabled:opacity-60"
                 style={{ background: 'var(--accent)' }}
               >
                 {submitting ? 'Submitting...' : replyParent ? 'Post Reply' : 'Post Comment'}

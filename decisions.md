@@ -46,3 +46,14 @@ Results (verified locally on 2026-09-27: `npm run build` passes, 56/56 tests, ch
 - On phones the contact page links to Calendly instead of embedding it; tablets and desktops keep the embed.
 - Pre-existing lint errors left as they were: `prefer-const` ×2 in `app/[slug]/page.tsx`, `set-state-in-effect` in `components/Header.tsx`.
 - `.vercel-env-audit` (untracked, contains env var names/values) is not committed; consider deleting it or adding it to `.gitignore`.
+
+### 2026-09-27 — Palette and homepage (same branch)
+Peace asked for new colours ("something that is not AI slop", no preference) and a shorter homepage ("I don't know what to cut"), and delegated both decisions, to review afterwards. This overrides the design rule "no new colours" for this project; the new reference is `docs/design-reference.md`.
+
+- Palette "adire" (Yoruba indigo cloth): cotton #F7F7F3, indigo ink #15183A, accent #2E3A87; dark mode night indigo #11142B with #9FB0FF accent. Replaces cream + terracotta + sage, a look common on AI-generated sites. All text pairs checked at 6.5:1 contrast or better.
+- Buttons on the accent now use `--accent-foreground` everywhere (the old dark-mode sage accent carried white text at poor contrast).
+- Homepage cut from 8 sections to 4: intro, recent work (six real article titles; the one bold element), an editor's unedited Docs comment, prices + next step. Removed: logo strip, stats row (including the unproven "cited in LLM search" claim), three offer cards, three testimonial cards, about snippet, blog cards, duplicated Regine quote. Each still lives on its own page.
+- Result: 3,083px at 1440 wide (was 4,405), 6.0 phone screens (was 9.5), 287 words (was 663). The homepage no longer fetches blog posts.
+- Header and footer labels are sentence case; full menu shows from 768px (was 1024px); footer is two columns on phones; reduced-motion respected globally.
+
+Not changed yet (next pass): services, testimonials, case study and portfolio layouts still use the old template structure (eyebrow labels, three-card rows, persona emoji cards, repeated testimonials). Fonts unchanged (Syne, DM Sans, Georgia).

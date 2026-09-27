@@ -23,7 +23,7 @@ export function ArticleEndCta({
         <div className="flex flex-col sm:flex-row gap-3">
           <Link
             href="/services"
-            className="inline-flex items-center justify-center rounded-full px-5 py-3 text-xs font-bold uppercase tracking-[0.12em] text-white transition-opacity hover:opacity-90"
+            className="inline-flex items-center justify-center rounded-full px-5 py-3 text-xs font-bold uppercase tracking-[0.12em] text-accent-foreground transition-opacity hover:opacity-90"
             style={{ background: 'var(--accent)' }}
           >
             See Services

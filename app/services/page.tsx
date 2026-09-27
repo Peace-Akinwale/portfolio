@@ -214,14 +214,14 @@ export default function ServicesPage() {
             </div>
 
             <span className="inline-flex items-center gap-2 text-xs font-bold px-3 py-1.5 rounded-full mb-6 border border-border text-muted-foreground">
-              <span className="w-1.5 h-1.5 rounded-full bg-green-500 inline-block" />
+              <span className="w-1.5 h-1.5 rounded-full bg-accent inline-block" />
               {AVAILABILITY}
             </span>
             <div className="flex flex-col sm:flex-row gap-3">
               <a
                 href="#pricing"
                 className="inline-block px-7 py-3 text-xs font-bold uppercase tracking-[0.08em] rounded-md transition-all hover:opacity-90 text-center"
-                style={{ background: 'var(--accent)', color: '#fff' }}
+                style={{ background: 'var(--accent)', color: 'var(--accent-foreground)' }}
               >
                 See full pricing &rarr;
               </a>
@@ -626,7 +626,7 @@ export default function ServicesPage() {
         <div className="max-w-7xl mx-auto px-6 py-20 sm:py-24">
           <div className="max-w-3xl">
             <span className="inline-flex items-center gap-2 text-xs font-semibold px-3 py-1.5 rounded-full border border-border text-muted-foreground mb-8">
-              <span className="w-1.5 h-1.5 rounded-full bg-green-500 inline-block" />
+              <span className="w-1.5 h-1.5 rounded-full bg-accent inline-block" />
               {AVAILABILITY}
             </span>
             <h2 className="text-2xl sm:text-3xl font-extrabold mb-4 text-foreground" style={{ letterSpacing: '-0.02em' }}>
@@ -641,7 +641,7 @@ export default function ServicesPage() {
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-block px-7 py-3 text-xs font-bold uppercase tracking-[0.08em] rounded-md transition-all hover:opacity-90 text-center"
-                style={{ background: 'var(--accent)', color: '#fff' }}
+                style={{ background: 'var(--accent)', color: 'var(--accent-foreground)' }}
               >
                 Book a free discovery call &rarr;
               </a>

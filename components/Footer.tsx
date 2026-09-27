@@ -6,9 +6,9 @@ export function Footer() {
   return (
     <footer className="border-t border-border mt-0">
       <div className="max-w-7xl mx-auto px-6 py-12">
-        <div className="grid grid-cols-1 gap-8 md:grid-cols-5">
+        <div className="grid grid-cols-2 gap-8 md:grid-cols-5">
           {/* About */}
-          <div className="md:col-span-1">
+          <div className="col-span-2 md:col-span-1">
             <h3 className="font-bold text-lg mb-3">Peace Akinwale</h3>
             <p className="text-sm text-muted-foreground leading-relaxed">
               Product-led B2B SaaS content writer for software and enterprise companies.
@@ -17,7 +17,7 @@ export function Footer() {
 
           {/* Work */}
           <div>
-            <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-muted-foreground mb-3">Work</p>
+            <p className="text-sm font-semibold text-foreground mb-3">Work</p>
             <nav className="flex flex-col gap-2">
               <Link href="/services" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Services</Link>
               <Link href="/case-studies" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Case Studies</Link>
@@ -28,7 +28,7 @@ export function Footer() {
 
           {/* Projects */}
           <div>
-            <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-muted-foreground mb-3">Projects</p>
+            <p className="text-sm font-semibold text-foreground mb-3">Projects</p>
             <nav className="flex flex-col gap-2">
               <Link href="/projects" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Projects</Link>
               <Link href="/projects/contentdb" className="text-sm text-muted-foreground hover:text-foreground transition-colors">contentDB</Link>
@@ -38,7 +38,7 @@ export function Footer() {
 
           {/* Writing */}
           <div>
-            <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-muted-foreground mb-3">Writing</p>
+            <p className="text-sm font-semibold text-foreground mb-3">Writing</p>
             <nav className="flex flex-col gap-2">
               <Link href="/blog" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Blog</Link>
               <Link href="/about" className="text-sm text-muted-foreground hover:text-foreground transition-colors">About</Link>
@@ -48,7 +48,7 @@ export function Footer() {
 
           {/* Connect */}
           <div>
-            <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-muted-foreground mb-3">Connect</p>
+            <p className="text-sm font-semibold text-foreground mb-3">Connect</p>
             <div className="flex flex-col gap-2">
               <a href="https://x.com/PeaceAkinwaleA" target="_blank" rel="noopener noreferrer" className="text-sm text-muted-foreground hover:text-foreground transition-colors">X (Twitter)</a>
               <a href="https://linkedin.com/in/peaceakinwale" target="_blank" rel="noopener noreferrer" className="text-sm text-muted-foreground hover:text-foreground transition-colors">LinkedIn</a>
