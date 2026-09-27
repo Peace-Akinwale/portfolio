@@ -25,12 +25,27 @@ export function Header() {
   const [isPortfolioOpen, setIsPortfolioOpen] = useState(false);
   const [isDesktopPortfolioOpen, setIsDesktopPortfolioOpen] = useState(false);
   const desktopPortfolioRef = useRef<HTMLDivElement | null>(null);
+  const workTriggerRef = useRef<HTMLAnchorElement | null>(null);
+  const skipFocusOpenRef = useRef(false);
 
   useEffect(() => {
     setIsMenuOpen(false);
     setIsPortfolioOpen(false);
     setIsDesktopPortfolioOpen(false);
   }, [pathname]);
+
+  useEffect(() => {
+    if (!isMenuOpen) return;
+
+    function handleEscape(event: KeyboardEvent) {
+      if (event.key === 'Escape') {
+        setIsMenuOpen(false);
+      }
+    }
+
+    document.addEventListener('keydown', handleEscape);
+    return () => document.removeEventListener('keydown', handleEscape);
+  }, [isMenuOpen]);
 
   useEffect(() => {
     if (!isDesktopPortfolioOpen) return;
@@ -43,6 +58,11 @@ export function Header() {
 
     function handleEscape(event: KeyboardEvent) {
       if (event.key === 'Escape') {
+        // Return focus to the trigger so keyboard users keep their place once the menu hides.
+        if (desktopPortfolioRef.current?.contains(document.activeElement)) {
+          skipFocusOpenRef.current = true;
+          workTriggerRef.current?.focus();
+        }
         setIsDesktopPortfolioOpen(false);
       }
     }
@@ -79,11 +99,25 @@ export function Header() {
                   className="relative"
                   onMouseEnter={() => setIsDesktopPortfolioOpen(true)}
                   onMouseLeave={() => setIsDesktopPortfolioOpen(false)}
+                  onBlur={(event) => {
+                    if (!event.currentTarget.contains(event.relatedTarget as Node | null)) {
+                      setIsDesktopPortfolioOpen(false);
+                    }
+                  }}
                 >
                   <Link
                     href={item.href}
                     className="inline-flex min-h-10 items-center gap-1 rounded-full px-3 text-[11px] font-semibold uppercase tracking-[0.16em] transition-all text-muted-foreground hover:bg-muted/70 hover:text-accent group-focus-within:bg-muted/70 group-focus-within:text-accent"
-                    onFocus={() => setIsDesktopPortfolioOpen(true)}
+                    ref={workTriggerRef}
+                    aria-haspopup="true"
+                    aria-expanded={isDesktopPortfolioOpen}
+                    onFocus={() => {
+                      if (skipFocusOpenRef.current) {
+                        skipFocusOpenRef.current = false;
+                        return;
+                      }
+                      setIsDesktopPortfolioOpen(true);
+                    }}
                     onClick={() => setIsDesktopPortfolioOpen(false)}
                   >
                     {item.label}
@@ -93,6 +127,7 @@ export function Header() {
                   </Link>
 
                   <div
+                    inert={!isDesktopPortfolioOpen}
                     className={`absolute left-1/2 top-full z-20 w-80 -translate-x-1/2 px-2 pt-2 transition-all duration-200 ${
                       isDesktopPortfolioOpen ? 'pointer-events-auto translate-y-0 opacity-100' : 'pointer-events-none -translate-y-1 opacity-0'
                     }`}
@@ -142,6 +177,8 @@ export function Header() {
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             className="lg:hidden p-2 hover:bg-muted rounded-full transition-colors"
             aria-label="Toggle menu"
+            aria-expanded={isMenuOpen}
+            aria-controls="mobile-menu"
           >
             {isMenuOpen ? (
               <svg className="w-6 h-6 text-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -156,13 +193,14 @@ export function Header() {
           </div>
 
           {isMenuOpen && (
-            <nav className="lg:hidden border-t border-border/90 px-4 pb-4 pt-2">
+            <nav id="mobile-menu" className="lg:hidden border-t border-border/90 px-4 pb-4 pt-2">
               <div className="flex flex-col gap-1 py-2">
                 {PRIMARY_LINKS.map((item) => (
                   item.children ? (
                     <div key={item.href} className="flex flex-col">
                       <button
                         onClick={() => setIsPortfolioOpen((open) => !open)}
+                        aria-expanded={isPortfolioOpen}
                         className="flex items-center justify-between py-3 text-sm uppercase tracking-[0.12em] text-muted-foreground transition-colors hover:text-accent"
                       >
                         <span>{item.label}</span>

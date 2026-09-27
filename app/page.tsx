@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { AVAILABILITY } from '@/lib/site';
 import Link from 'next/link';
 import Image from 'next/image';
 import { getPosts } from '@/lib/hashnode/client';
@@ -96,7 +97,7 @@ export default async function HomePage() {
             <div className="order-last max-w-3xl lg:order-first">
               <span className="inline-flex items-center gap-2 text-xs font-semibold px-3 py-1.5 rounded-full border border-border text-muted-foreground mb-6">
                 <span className="w-1.5 h-1.5 rounded-full bg-green-500 inline-block" />
-                Currently accepting 2 new clients
+                {AVAILABILITY}
               </span>
               <p
                 className="text-xs font-bold uppercase tracking-[0.15em] mb-4"
@@ -328,6 +329,7 @@ export default async function HomePage() {
                 src="/images/peace-akinwale-about-wedding.jpg"
                 alt="Peace Akinwale"
                 fill
+                sizes="280px"
                 className="object-cover object-top"
               />
             </div>
@@ -378,6 +380,7 @@ export default async function HomePage() {
                         src={post.coverImage.url}
                         alt={post.title}
                         fill
+                        sizes="(max-width: 768px) 100vw, 400px"
                         className="object-cover transition-transform duration-500 group-hover:scale-105"
                       />
                     </div>
@@ -415,7 +418,7 @@ export default async function HomePage() {
           <div className="max-w-3xl">
             <span className="inline-flex items-center gap-2 text-xs font-semibold px-3 py-1.5 rounded-full border border-border text-muted-foreground mb-8">
               <span className="w-1.5 h-1.5 rounded-full bg-green-500 inline-block" />
-              Currently accepting 2 new clients
+              {AVAILABILITY}
             </span>
             <h2
               className="text-2xl sm:text-3xl font-extrabold mb-4 text-foreground"

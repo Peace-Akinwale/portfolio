@@ -16,25 +16,13 @@ import { CodeBlockEnhancer } from '@/components/CodeBlockEnhancer';
 import { ArticleEndCta } from '@/components/ArticleEndCta';
 import { Comments } from '@/components/Comments';
 import { BlogPageBackground } from '@/components/BlogPageBackground';
+import { NEW_MANYREQUESTS_ARTICLES, withCurrentManyRequestsSamples } from '@/lib/portfolio/manyrequests';
 
 interface ArticlePageProps {
   params: Promise<{ slug: string }>;
 }
 
-const NEW_MANYREQUESTS_ARTICLES = [
-  {
-    title: 'Wrike vs ClickUp: Which Tool Is Better for Agencies?',
-    link: 'https://www.manyrequests.com/blog/wrike-vs-clickup',
-  },
-  {
-    title: 'Agency Retainer Model: How to Price, Package, and Scale',
-    link: 'https://www.manyrequests.com/blog/agency-retainer-model',
-  },
-  {
-    title: '6 Best Project Management Software for Designers in 2026',
-    link: 'https://www.manyrequests.com/blog/project-management-software-for-designers',
-  },
-];
+const HIDDEN_FROM_RELATED = new Set(['content-manager-roles']);
 
 function getAssetName(url: string): string {
   try {
@@ -148,7 +136,7 @@ export async function generateMetadata({ params }: ArticlePageProps): Promise<Me
   }
 
   return {
-    title: 'Page Not Found',
+    title: 'Page not found | Peace Akinwale',
   };
 }
 
@@ -259,13 +247,13 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
     }
 
     // Try parsing as portfolio-style content (lists of links)
-    const parsed = parsePortfolioHtml(staticPage.content.html, staticPage.title);
+    const parsed = withCurrentManyRequestsSamples(
+      parsePortfolioHtml(staticPage.content.html, staticPage.title),
+      slug === 'b2b-content-for-manyrequests' ? NEW_MANYREQUESTS_ARTICLES : [],
+    );
     const hasPortfolioContent = parsed.sections.some(s => s.projects.length > 0);
 
     if (hasPortfolioContent) {
-      if (slug === 'b2b-content-for-manyrequests' && parsed.sections.length > 0) {
-        parsed.sections[0].projects.unshift(...NEW_MANYREQUESTS_ARTICLES);
-      }
       const ogImages = await fetchOgImagesForPortfolio(parsed);
       return (
         <>
@@ -322,11 +310,12 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
   }
 
   // Get related posts, preferring tag overlap and falling back to the latest posts.
+  // The 2025 job-hunting post stays readable at its URL but is not promoted next to client-facing articles.
   const { posts: allPosts } = await getPosts(20);
   const postTagSlugs = new Set(post.tags?.map((tag) => tag.slug.toLowerCase()) ?? []);
   const renderedPostHtml = stripLeadingDuplicateCoverImage(post.content.html, post.coverImage?.url);
   const relatedPosts = allPosts
-    .filter((candidate) => candidate.id !== post.id)
+    .filter((candidate) => candidate.id !== post.id && !HIDDEN_FROM_RELATED.has(candidate.slug))
     .map((candidate) => {
       const overlap =
         candidate.tags?.filter((tag) => postTagSlugs.has(tag.slug.toLowerCase())).length ?? 0;
@@ -348,7 +337,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
     .map((entry) => entry.candidate);
 
   return (
-    <>
+    <div className="reading-light">
       <BlogPageBackground />
       <ReadingProgress />
       <TableOfContents />
@@ -397,6 +386,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
               src={post.coverImage.url}
               alt={post.title}
               fill
+              sizes="(max-width: 960px) 100vw, 896px"
               className="object-cover"
               priority
             />
@@ -465,6 +455,6 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
       </div>
       <Comments postSlug={post.slug} postTitle={post.title} />
       </article>
-    </>
+    </div>
   );
 }

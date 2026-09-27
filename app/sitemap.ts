@@ -68,5 +68,26 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
   ];
 
-  return [...staticPages, ...articleUrls];
+  // Pages that change rarely; listed so search engines find them without relying on internal links.
+  const secondaryPaths = [
+    '/case-studies',
+    '/case-studies/manyrequests',
+    '/testimonials',
+    '/projects',
+    '/projects/contentdb',
+    '/projects/mylinks',
+    '/projects/linkedin-router',
+    '/projects/mystyleguide',
+    '/projects/portfolio-project',
+    '/projects/editorial-style-guide',
+    '/career-pathway',
+  ];
+  const secondaryPages = secondaryPaths.map((path) => ({
+    url: `${baseUrl}${path}`,
+    lastModified: new Date(),
+    changeFrequency: 'monthly' as const,
+    priority: 0.6,
+  }));
+
+  return [...staticPages, ...secondaryPages, ...articleUrls];
 }

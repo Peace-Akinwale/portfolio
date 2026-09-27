@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import type { Metadata } from 'next';
+import { MANYREQUESTS_ARTICLE_COUNT, MANYREQUESTS_SINCE } from '@/lib/portfolio/manyrequests';
 import { getFaviconUrl } from '@/lib/ogImage';
 
 export const metadata: Metadata = {
@@ -16,13 +17,13 @@ const CASE_STUDIES = [
     client: 'ManyRequests',
     domain: 'manyrequests.com',
     category: 'B2B SaaS · Client portal software',
-    headline: '43 product-led articles, including page-1 rankings against Workfront and the design crowd',
+    headline: `${MANYREQUESTS_ARTICLE_COUNT} product-led articles, including page-1 rankings against Workfront and the design crowd`,
     summary:
-      'ManyRequests hired me to write articles where the product shows up inside the piece — in the comparisons, in the how-to steps, in the screenshots, in real customer stories. Over 20 months I wrote 43 of them.',
+      `ManyRequests hired me to write articles where the product shows up inside the piece — in the comparisons, in the how-to steps, in the screenshots, in real customer stories. Since ${MANYREQUESTS_SINCE} I have written ${MANYREQUESTS_ARTICLE_COUNT} of them.`,
     stats: [
-      { value: '43', label: 'Articles published · 88% BOFU' },
+      { value: String(MANYREQUESTS_ARTICLE_COUNT), label: 'Articles credited on manyrequests.com' },
       { value: '#6', label: 'Google for "Workfront alternatives"' },
-      { value: '20mo', label: 'Active retainer' },
+      { value: MANYREQUESTS_SINCE, label: 'Retainer running since' },
     ],
     href: '/case-studies/manyrequests',
   },

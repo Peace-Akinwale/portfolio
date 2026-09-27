@@ -1,18 +1,19 @@
 import Link from 'next/link';
 import type { Metadata } from 'next';
+import { MANYREQUESTS_ARTICLE_COUNT, MANYREQUESTS_SINCE } from '@/lib/portfolio/manyrequests';
 import { getFaviconUrl } from '@/lib/ogImage';
 
 export const metadata: Metadata = {
   title: 'Case Study: ManyRequests | Peace Akinwale',
   description:
-    'How I wrote 44 product-led articles for ManyRequests and made the product useful inside the piece.',
+    `How I wrote ${MANYREQUESTS_ARTICLE_COUNT} product-led articles for ManyRequests and made the product useful inside the piece.`,
   alternates: {
     canonical: 'https://peaceakinwale.com/case-studies/manyrequests',
   },
   openGraph: {
-    title: 'Case Study: ManyRequests — 44 product-led articles, page-1 rankings',
+    title: `Case Study: ManyRequests — ${MANYREQUESTS_ARTICLE_COUNT} product-led articles, page-1 rankings`,
     description:
-      'How I wrote 44 product-led articles for ManyRequests and made the product useful inside the piece.',
+      `How I wrote ${MANYREQUESTS_ARTICLE_COUNT} product-led articles for ManyRequests and made the product useful inside the piece.`,
     url: 'https://peaceakinwale.com/case-studies/manyrequests',
     siteName: 'Peace Akinwale',
     type: 'article',
@@ -27,9 +28,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Case Study: ManyRequests — 44 product-led articles, page-1 rankings',
+    title: `Case Study: ManyRequests — ${MANYREQUESTS_ARTICLE_COUNT} product-led articles, page-1 rankings`,
     description:
-      'How I wrote 44 product-led articles for ManyRequests and made the product useful inside the piece.',
+      `How I wrote ${MANYREQUESTS_ARTICLE_COUNT} product-led articles for ManyRequests and made the product useful inside the piece.`,
     images: ['https://peaceakinwale.com/images/case-studies/manyrequests/manyrequests-homepage.png'],
   },
 };
@@ -68,7 +69,7 @@ export default function ManyRequestsCaseStudyPage() {
             className="text-3xl sm:text-4xl md:text-5xl font-extrabold leading-[1.1] mb-6 text-foreground"
             style={{ letterSpacing: '-0.03em' }}
           >
-            How I wrote 44 product-led articles for ManyRequests and made the product useful inside the piece
+            How I wrote {MANYREQUESTS_ARTICLE_COUNT} product-led articles for ManyRequests and made the product useful inside the piece
           </h1>
           <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-xs text-muted-foreground">
             <span>By Peace Akinwale</span>
@@ -85,7 +86,7 @@ export default function ManyRequestsCaseStudyPage() {
         <div className="max-w-4xl mx-auto px-6 py-10">
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-5">
             <div className="rounded-xl border border-border p-5" style={{ background: 'var(--muted)' }}>
-              <p className="text-3xl font-extrabold mb-1" style={{ letterSpacing: '-0.03em', color: 'var(--accent)' }}>44</p>
+              <p className="text-3xl font-extrabold mb-1" style={{ letterSpacing: '-0.03em', color: 'var(--accent)' }}>{MANYREQUESTS_ARTICLE_COUNT}</p>
               <p className="text-[12px] leading-relaxed text-muted-foreground">Articles published</p>
             </div>
             <div className="rounded-xl border border-border p-5" style={{ background: 'var(--muted)' }}>
@@ -127,7 +128,7 @@ export default function ManyRequestsCaseStudyPage() {
             <a href="https://www.manyrequests.com/" target="_blank" rel="noopener noreferrer" className="underline underline-offset-[3px] hover:opacity-80 transition-all" style={{ color: 'var(--accent)', textDecorationColor: 'var(--accent)' }}>ManyRequests</a> did not need more blog posts that mentioned the product once near the end and called that product-led content. They needed articles that could rank for the right searches, answer the reader properly, and show where the product fit while the reader was still making up their mind.
           </p>
           <p className="text-base leading-[1.85] text-muted-foreground mb-5">
-            I&rsquo;ve written 44 articles for ManyRequests over roughly 20 months. Most of them sit close to the bottom of the funnel. Comparison pages, alternatives pages, workflow guides, and operational topics where agency owners are already trying to decide what tool to use or how to run a cleaner system.
+            I&rsquo;ve written {MANYREQUESTS_ARTICLE_COUNT} articles for ManyRequests since {MANYREQUESTS_SINCE}. Most of them sit close to the bottom of the funnel. Comparison pages, alternatives pages, workflow guides, and operational topics where agency owners are already trying to decide what tool to use or how to run a cleaner system.
           </p>
           <p className="text-base leading-[1.85] text-muted-foreground mb-5">
             The goal was simple. Make the article useful enough to earn trust, then make the product feel like a logical next step inside the article itself.
@@ -139,9 +140,9 @@ export default function ManyRequestsCaseStudyPage() {
           <p className="text-xs font-bold uppercase tracking-[0.12em] mb-4 text-muted-foreground">Results at a glance</p>
           <ul className="flex flex-col gap-3 mb-10">
             {[
-              '44 published articles across BOFU and product-adjacent agency operations topics',
+              `${MANYREQUESTS_ARTICLE_COUNT} published articles across BOFU and product-adjacent agency operations topics`,
               '22 high-fit topics where the product could be explained and shown directly in the body',
-              'Page one rankings for searches like "Workfront alternatives," "ClickUp vs Notion," and "design annotation tools" at the time of review',
+              'Page one rankings for searches like "Workfront alternatives" and "design annotation tools" at the time of review',
               'Retainer still active',
             ].map((r, i) => (
               <li key={i} className="flex items-start gap-3 text-[15px] leading-[1.7] text-muted-foreground">
@@ -194,7 +195,7 @@ export default function ManyRequestsCaseStudyPage() {
             How I approached the work
           </p>
           <h2 className="text-2xl sm:text-3xl font-extrabold mb-10 text-foreground" style={{ letterSpacing: '-0.02em' }}>
-            Three things I did consistently across 44 articles
+            Three things I did consistently across {MANYREQUESTS_ARTICLE_COUNT} articles
           </h2>
 
           {/* Step 1 */}
@@ -372,7 +373,7 @@ export default function ManyRequestsCaseStudyPage() {
 
           <ul className="flex flex-col gap-3 mb-10">
             {[
-              '44 published articles across comparisons, alternatives, workflow guides, and agency operations topics',
+              `${MANYREQUESTS_ARTICLE_COUNT} published articles across comparisons, alternatives, workflow guides, and agency operations topics`,
               'Strong concentration around high-intent searches where ManyRequests had real product fit',
               'Page one visibility for "Workfront alternatives" and "design annotation tools" during review',
               'Ongoing retainer — which usually tells you as much as any vanity metric',
@@ -407,11 +408,6 @@ export default function ManyRequestsCaseStudyPage() {
             </figcaption>
           </figure>
 
-          {/* Figure 6 */}
-          <div className="rounded-xl border border-dashed border-border p-6 text-center" style={{ background: 'var(--muted)' }}>
-            <p className="text-xs font-bold text-muted-foreground mb-1">Figure 6 — SERP or Search Console proof</p>
-            <p className="text-[11px] text-muted-foreground/60">Add later if available — Search Console or SERP screenshot for rankings</p>
-          </div>
         </div>
       </section>
 

@@ -69,6 +69,22 @@
   }
 }
 
+/* Blog posts are a light reading surface in both themes.
+   BlogPageBackground paints the page white; these tokens keep the text dark on it. */
+.reading-light {
+  --background: #ffffff;
+  --foreground: #130f0d;
+  --muted: #efe2cd;
+  --muted-foreground: #5f5449;
+  --border: #d2bea0;
+  --accent: #64734f;
+  --accent-foreground: #ffffff;
+  --accent2: #b55e3d;
+  --navy: #130f0d;
+  --orange: #b55e3d;
+  color: var(--foreground);
+}
+
 /* Base styles */
 * {
   border-color: var(--border);
@@ -138,6 +154,8 @@ h3 {
   font-family: var(--font-serif);
   font-weight: 700;
   color: var(--foreground);
+  /* Leave room for the fixed header when a table-of-contents link jumps here */
+  scroll-margin-top: 6.5rem;
   margin-top: 2.5rem;
   margin-bottom: 1rem;
 }
@@ -334,6 +352,13 @@ h3 {
   :root:not([data-theme="light"]) .copy-btn.copied {
     color: #68d391;
     border-color: #68d391;
+  }
+
+  /* Keep code blocks light on the white blog page */
+  :root:not([data-theme="light"]) .reading-light .prose pre {
+    background: #f0e1cf;
+    color: #1e1814;
+    border-color: #d2bea6;
   }
 }
 

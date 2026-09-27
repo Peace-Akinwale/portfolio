@@ -2,7 +2,7 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: "Things I've Built",
+  title: "Things I've Built | Peace Akinwale",
   description:
     'I use AI tools to automate content marketing processes where it makes sense. A collection of projects built for real problems.',
   alternates: {

@@ -23,6 +23,7 @@ export default async function AboutPage() {
             src="/images/peace-akinwale-about-wedding.jpg"
             alt="Peace Akinwale"
             fill
+            sizes="(max-width: 480px) 100vw, 448px"
             className="object-cover object-top"
             priority
           />

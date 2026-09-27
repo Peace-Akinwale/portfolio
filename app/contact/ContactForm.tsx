@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { AVAILABILITY } from '@/lib/site';
 
 const PROJECT_TYPES = [
   'Select a type',
@@ -77,21 +78,37 @@ export default function ContactForm() {
           </h1>
           <span className="inline-flex items-center gap-2 text-xs font-semibold px-3 py-1.5 rounded-full border border-border text-muted-foreground whitespace-nowrap self-start sm:self-auto">
             <span className="w-1.5 h-1.5 rounded-full bg-green-500 inline-block" />
-            Currently accepting 2 new clients
+            {AVAILABILITY}
           </span>
         </div>
         <p className="text-sm leading-relaxed text-muted-foreground mt-4 max-w-lg">
           Book a free 30-minute discovery call below. No commitment, no pressure. Or scroll down to send a message instead.
         </p>
+        <p className="text-sm leading-relaxed text-muted-foreground mt-2 max-w-lg">
+          Rather email? <a href="mailto:akindayopeaceakinwale@gmail.com" className="underline underline-offset-2 text-foreground">akindayopeaceakinwale@gmail.com</a>
+        </p>
       </div>
 
       {/* ── Calendly embed ─────────────────────────── */}
-      <div className="rounded-xl border border-border overflow-hidden mb-16" style={{ background: 'var(--muted)' }}>
+      {/* On phones the inline embed is cramped (cookie banner on top, scrolling inside a scroll),
+          so small screens get a direct link to the same Calendly page instead. */}
+      <a
+        href="https://calendly.com/akindayopeaceakinwale/30min"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="sm:hidden flex w-full items-center justify-center py-4 mb-16 text-xs font-bold uppercase tracking-[0.08em] rounded-md transition-all hover:opacity-90"
+        style={{ background: 'var(--accent)', color: 'var(--accent-foreground)' }}
+      >
+        Pick a time on Calendly &rarr;
+      </a>
+      <div className="hidden sm:block rounded-xl border border-border overflow-hidden mb-16" style={{ background: 'var(--muted)' }}>
         <iframe
+          loading="lazy"
           src="https://calendly.com/akindayopeaceakinwale/30min?embed_domain=peaceakinwale.com&embed_type=Inline"
           width="100%"
           height="680"
           frameBorder="0"
+          title="Book a 30-minute call with Peace on Calendly"
           className="w-full"
         />
       </div>
@@ -122,32 +139,32 @@ export default function ContactForm() {
         <form onSubmit={handleSubmit} className="flex flex-col gap-5">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
             <div>
-              <label className={labelClass}>Full Name <span style={{ color: 'var(--accent)' }}>*</span></label>
-              <input name="name" required value={form.name} onChange={handleChange} placeholder="Your name" className={inputClass} />
+              <label htmlFor="contact-name" className={labelClass}>Full Name <span style={{ color: 'var(--accent)' }}>*</span></label>
+              <input id="contact-name" name="name" autoComplete="name" required value={form.name} onChange={handleChange} placeholder="Your name" className={inputClass} />
             </div>
             <div>
-              <label className={labelClass}>Work Email <span style={{ color: 'var(--accent)' }}>*</span></label>
-              <input name="email" type="email" required value={form.email} onChange={handleChange} placeholder="you@company.com" className={inputClass} />
+              <label htmlFor="contact-email" className={labelClass}>Work Email <span style={{ color: 'var(--accent)' }}>*</span></label>
+              <input id="contact-email" name="email" type="email" autoComplete="email" required value={form.email} onChange={handleChange} placeholder="you@company.com" className={inputClass} />
             </div>
           </div>
 
           <div>
-            <label className={labelClass}>Company</label>
-            <input name="company" value={form.company} onChange={handleChange} placeholder="Your company name" className={inputClass} />
+            <label htmlFor="contact-company" className={labelClass}>Company</label>
+            <input id="contact-company" name="company" autoComplete="organization" value={form.company} onChange={handleChange} placeholder="Your company name" className={inputClass} />
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
             <div>
-              <label className={labelClass}>Type of project <span style={{ color: 'var(--accent)' }}>*</span></label>
-              <select name="projectType" required value={form.projectType} onChange={handleChange} className={inputClass}>
+              <label htmlFor="contact-project-type" className={labelClass}>Type of project <span style={{ color: 'var(--accent)' }}>*</span></label>
+              <select id="contact-project-type" name="projectType" required value={form.projectType} onChange={handleChange} className={inputClass}>
                 {PROJECT_TYPES.map((t) => (
                   <option key={t} value={t === 'Select a type' ? '' : t}>{t}</option>
                 ))}
               </select>
             </div>
             <div>
-              <label className={labelClass}>Budget per project</label>
-              <select name="budget" value={form.budget} onChange={handleChange} className={inputClass}>
+              <label htmlFor="contact-budget" className={labelClass}>Budget per project</label>
+              <select id="contact-budget" name="budget" value={form.budget} onChange={handleChange} className={inputClass}>
                 {BUDGETS.map((b) => (
                   <option key={b} value={b === 'Select a range' ? '' : b}>{b}</option>
                 ))}
@@ -156,8 +173,8 @@ export default function ContactForm() {
           </div>
 
           <div>
-            <label className={labelClass}>Where are you in the process? <span style={{ color: 'var(--accent)' }}>*</span></label>
-            <select name="stage" required value={form.stage} onChange={handleChange} className={inputClass}>
+            <label htmlFor="contact-stage" className={labelClass}>Where are you in the process? <span style={{ color: 'var(--accent)' }}>*</span></label>
+            <select id="contact-stage" name="stage" required value={form.stage} onChange={handleChange} className={inputClass}>
               {STAGES.map((s) => (
                 <option key={s} value={s === 'Where are you in the process?' ? '' : s}>{s}</option>
               ))}
@@ -165,13 +182,13 @@ export default function ContactForm() {
           </div>
 
           <div>
-            <label className={labelClass}>Tell me about your company <span style={{ color: 'var(--accent)' }}>*</span></label>
-            <textarea name="about" required value={form.about} onChange={handleChange} rows={3} placeholder="What you do, who you serve, links to helpful resources..." className={inputClass + ' resize-none'} />
+            <label htmlFor="contact-about" className={labelClass}>Tell me about your company <span style={{ color: 'var(--accent)' }}>*</span></label>
+            <textarea id="contact-about" name="about" required value={form.about} onChange={handleChange} rows={3} placeholder="What you do, who you serve, links to helpful resources..." className={inputClass + ' resize-none'} />
           </div>
 
           <div>
-            <label className={labelClass}>Anything else</label>
-            <textarea name="message" value={form.message} onChange={handleChange} rows={3} placeholder="Anything else you'd like me to know..." className={inputClass + ' resize-none'} />
+            <label htmlFor="contact-message" className={labelClass}>Anything else</label>
+            <textarea id="contact-message" name="message" value={form.message} onChange={handleChange} rows={3} placeholder="Anything else you'd like me to know..." className={inputClass + ' resize-none'} />
           </div>
 
           {status === 'error' && (

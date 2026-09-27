@@ -1,5 +1,7 @@
 import Link from 'next/link';
+import { AVAILABILITY } from '@/lib/site';
 import type { Metadata } from 'next';
+import { MANYREQUESTS_ARTICLE_COUNT, MANYREQUESTS_SINCE } from '@/lib/portfolio/manyrequests';
 import { getFaviconUrl } from '@/lib/ogImage';
 
 export const metadata: Metadata = {
@@ -213,7 +215,7 @@ export default function ServicesPage() {
 
             <span className="inline-flex items-center gap-2 text-xs font-bold px-3 py-1.5 rounded-full mb-6 border border-border text-muted-foreground">
               <span className="w-1.5 h-1.5 rounded-full bg-green-500 inline-block" />
-              Currently accepting 2 new clients
+              {AVAILABILITY}
             </span>
             <div className="flex flex-col sm:flex-row gap-3">
               <a
@@ -479,10 +481,10 @@ export default function ServicesPage() {
               className="text-2xl sm:text-3xl font-extrabold mb-6 text-foreground leading-[1.2]"
               style={{ letterSpacing: '-0.02em' }}
             >
-              ManyRequests: 43 product-led articles, including page-1 rankings against Workfront and the design crowd
+              ManyRequests: {MANYREQUESTS_ARTICLE_COUNT} product-led articles, including page-1 rankings against Workfront and the design crowd
             </h2>
             <p className="text-base leading-relaxed text-muted-foreground mb-6 max-w-3xl">
-              ManyRequests is a B2B SaaS client portal for productized agencies. I&rsquo;ve written 43 articles for them over the past 20 months &mdash; 88% BOFU, each one threading the product through the piece so it&rsquo;s more helpful to the readers.
+              ManyRequests is a B2B SaaS client portal for productized agencies. I&rsquo;ve written {MANYREQUESTS_ARTICLE_COUNT} articles for them since {MANYREQUESTS_SINCE}, each one threading the product through the piece so it&rsquo;s more helpful to the readers.
             </p>
 
             <figure className="mb-8 rounded-xl border border-border p-7" style={{ background: 'var(--muted)' }}>
@@ -508,8 +510,8 @@ export default function ServicesPage() {
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 mb-8">
               <div className="rounded-xl border border-border p-6" style={{ background: 'var(--muted)' }}>
-                <p className="text-3xl font-extrabold mb-1" style={{ letterSpacing: '-0.03em', color: 'var(--accent)' }}>43</p>
-                <p className="text-[12px] leading-relaxed text-muted-foreground">Articles published for ManyRequests over 20 months · 88% BOFU</p>
+                <p className="text-3xl font-extrabold mb-1" style={{ letterSpacing: '-0.03em', color: 'var(--accent)' }}>{MANYREQUESTS_ARTICLE_COUNT}</p>
+                <p className="text-[12px] leading-relaxed text-muted-foreground">Articles credited to me on manyrequests.com since {MANYREQUESTS_SINCE}</p>
               </div>
               <div className="rounded-xl border border-border p-6" style={{ background: 'var(--muted)' }}>
                 <p className="text-3xl font-extrabold mb-1" style={{ letterSpacing: '-0.03em', color: 'var(--accent)' }}>#6</p>
@@ -625,7 +627,7 @@ export default function ServicesPage() {
           <div className="max-w-3xl">
             <span className="inline-flex items-center gap-2 text-xs font-semibold px-3 py-1.5 rounded-full border border-border text-muted-foreground mb-8">
               <span className="w-1.5 h-1.5 rounded-full bg-green-500 inline-block" />
-              Currently accepting 2 new clients
+              {AVAILABILITY}
             </span>
             <h2 className="text-2xl sm:text-3xl font-extrabold mb-4 text-foreground" style={{ letterSpacing: '-0.02em' }}>
               Ready to hire a B2B SaaS content writer?

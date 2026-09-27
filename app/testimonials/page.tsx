@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { AVAILABILITY } from '@/lib/site';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Fragment } from 'react';
@@ -131,7 +132,7 @@ const linkedInTestimonials: LinkedInTestimonial[] = [
           text: 'Peace does great work from the beginning of every assignment. He follows guidelines, is available and receptive to feedback, and implements edits swiftly and efficiently. He consistently works in this manner. ',
         },
         {
-          text: 'Every article of his that I have been assigned to edit of his has been well-written and well-researched.',
+          text: 'Every article of his that I have been assigned to edit has been well-written and well-researched.',
           strong: true,
         },
       ],
@@ -347,7 +348,7 @@ export default function TestimonialsPage() {
           <div className="max-w-3xl">
             <span className="mb-8 inline-flex items-center gap-2 rounded-full border border-border px-3 py-1.5 text-xs font-semibold text-muted-foreground">
               <span className="inline-block h-1.5 w-1.5 rounded-full bg-green-500" />
-              Currently accepting 2 new clients
+              {AVAILABILITY}
             </span>
             <h2
               className="mb-4 text-2xl font-extrabold text-foreground sm:text-3xl"
