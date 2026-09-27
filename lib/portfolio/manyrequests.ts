@@ -5,7 +5,7 @@ import type { ParsedPortfolio, PortfolioProject } from '@/lib/hashnode/parsePort
 export const MANYREQUESTS_ARTICLE_COUNT = 51;
 export const MANYREQUESTS_SINCE = '2024';
 
-// Credited to Peace on manyrequests.com but missing from the Hashnode portfolio copy. Newest first.
+// Credited to Peace on manyrequests.com but missing from the WordPress portfolio page. Newest first.
 export const NEW_MANYREQUESTS_ARTICLES: PortfolioProject[] = [
   { title: 'The Productized Marketing Agency Business Plan Template [2026]', link: 'https://www.manyrequests.com/blog/marketing-agency-business-plan-template' },
   { title: 'Client Request Management Software With Built-In Billing', link: 'https://www.manyrequests.com/blog/client-request-management-software' },
@@ -57,7 +57,7 @@ export function isRetiredSample(link?: string): boolean {
 
 /**
  * Drop retired samples from every section and prepend extra articles to the first section,
- * skipping any the Hashnode copy already lists.
+ * skipping any the WordPress page already lists.
  */
 export function withCurrentManyRequestsSamples(parsed: ParsedPortfolio, extra: PortfolioProject[] = []): ParsedPortfolio {
   const sections = parsed.sections.map((section) => ({

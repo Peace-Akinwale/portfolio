@@ -4,7 +4,7 @@
 A portfolio site that lets a B2B SaaS head of content or founder decide, in a few minutes, to book a call with Peace, and that does not read as AI-generated.
 
 ## Constraints
-- Stack: Next.js 16 App Router, Tailwind 4, Vercel. Blog posts, About and Portfolio body copy come from Hashnode (`getStaticPage` / `getPosts`); editing that copy happens in Hashnode, not here.
+- Stack: Next.js 16 App Router, Tailwind 4, hosted on Vercel. Blog posts, About and Portfolio body copy come from WordPress.com (`peaceakinwale.wordpress.com`, public REST API, env `WORDPRESS_SITE`) since commit `22ad8a8`. The folder `lib/hashnode/` and the `Hashnode*` type names are leftovers from before that switch; Hashnode is not used. Editing that copy happens in WordPress, not here.
 - Contact email goes through Resend (`app/api/contact/route.ts`). Booking goes through Calendly.
 - Work stays local on a branch until Peace reviews it. No push, no deploy without her say-so.
 - Facts (client numbers, article counts, job titles, prices) come from Peace or a live source, never invented.
@@ -37,7 +37,7 @@ Dependency sweep before editing (blast-radius rule):
 
 Deferred to the redesign (not bugs, they are layout/copy decisions): repeated testimonials, template section order, the unproven "cited in LLM search" stat, mobile hero order, tap-target sizes, nav breakpoint, contact-route consistency, and look-and-feel items A–H.
 
-Needs a Hashnode edit (content lives there): About "email" link (`http://akindayopeaceakinwale@gmail.com/`), two different Google Form links on About and Portfolio, note-like portfolio titles.
+Needs a WordPress edit (the About and Portfolio pages are WordPress pages): About "email" link (`http://akindayopeaceakinwale@gmail.com/`), two different Google Form links on About and Portfolio, note-like portfolio titles.
 
 Results (verified locally on 2026-09-27: `npm run build` passes, 56/56 tests, checked in the side browser at 375px and 1440px, dark and light):
 - ManyRequests: 51 articles credited to Peace on manyrequests.com (all 236 posts in their sitemap checked by byline). 11 were missing from the portfolio and are now added via `lib/portfolio/manyrequests.ts`. 5 linked pieces were removed everywhere: `finance-tools` (404), `10-tools-you-need-…` and `productized-service-software` (now William Nzewi), `copilot-alternatives` (redirects to Assembly alternatives by Adetola Rachael Iyanuoluwa), `clickup-vs-notion` (now William Nzewi). The case study no longer cites the ClickUp vs Notion ranking. `harvest-alternatives` has no byline; not counted until Peace confirms.
