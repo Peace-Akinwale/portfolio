@@ -3884,3 +3884,38 @@ Day three of the HAR express parsers, 07:49 to 23:10, one session with a mid-day
 - **Working inside someone else's product:** pull requests, a bug hunt before review, and a note to the owner that says what changed without lecturing.
 
 ---
+
+## 2026-09-28, the coaching portal redesign shipped live, and the testing that followed it found two database functions that had never once worked
+
+Peace asked for the coaching portal to go from "vibe-coded" to "an Apple-level SaaS portal", one approved design reference per page, under one rule of hers: the look changes, the function never does. After the build she asked for a bug hunt, then told us to deploy to production before the QA run, then to fix whatever the QA found. All of it shipped the same day.
+
+### What shipped
+
+- The whole redesign on `main` (`notebookagency/coaching-portal`, final `98ef8e0`), deployed by CI with the test and deploy jobs both green: calmer sidebars, filled form fields everywhere, a new student dashboard and week page, a tree-and-pane week editor, tables for the admin lists. The new design tokens were confirmed by fetching the live stylesheet.
+- Cohort settings split into three screens (Settings, Schedule, a side-by-side "Copy content from…"), because Peace found the one long page "not even clear what it is from a UI standpoint".
+- Four migrations applied to the live database: 039 and 042 fixed functions that had failed on every call, 040 made copying carry four fields it had been dropping, 041 rebuilt how the copy screen decides that an item was "edited here".
+- Ten bug-hunt findings fixed, two of them serious: a schedule shift that Save quietly undid, and the four dropped fields.
+- From the QA walk: a signed-in student opening an admin link now lands on their cohort instead of the sign-in form (one helper, 14 entry points); staff no longer see a meaningless "0% progress" ring; "View as Student" can now open any live cohort (Peace chose this over re-adding herself to one).
+- Tests: 1,802 unit tests passing; the browser suite went from 6 failures to 0 (30 passing), every failure traced to a test that expected behaviour changed on purpose.
+
+### Decisions worth recording
+
+- **Deploy first, then test the live code.** Peace's call. The QA ran on localhost against the same code and the same database, because signing in to the live site needs her password and the agent does not type it.
+- **Decide "edited" from the copy's own history, and err toward saying edited.** The old check compared against the source's history, whose rows store the state before each change, so 10 of 15 untouched items read "edited". The new rule reports exactly the one item that really was. The error it now leans toward (a false "edited") costs a confirm click; the opposite would have let a copy overwrite a real edit.
+- **Widening the preview meant closing its writes in the same change.** Giving "View as Student" access to every cohort exposed a progress endpoint that had never checked for preview and was safe only by accident. It now refuses, and so does the name prompt, so a preview cannot leave records on the staff account.
+- **The template cohort is a source, never a target.** Its copy and settings buttons were removed rather than explained, after Peace said she did not understand what copying into it meant.
+
+### Frictions and course corrections
+
+- **The copy screen had never worked.** Its database function threw an ambiguity error on every call since July; the redesign exposed it only because the new screen called it on load.
+- **The nightly trash cleanup had never worked either.** It failed at 03:00 UTC every night with the same class of error, and the Worker's log said only "failed". The real message was found in the database's own log. The fix went live tonight; its first real run is 03:00 UTC on 2026-09-29, so that result is not yet verified.
+- **A local test looked like a data bug.** Copying a file on localhost reported "file did not transfer" because the local file store is an empty simulation. The one row it touched was restored and the real file confirmed in live storage; the live file-copy path is still unproven.
+- **The automated security test writes to production.** One run lost its cleanup to a network blip and left a test link visible on a real week; it was found by checking the database after the run and removed.
+- **Four agent actions were refused by the safety layer** (a migration apply, a push, two probes) and went through only after Peace authorized them in chat.
+
+### Why this matters for the portfolio
+
+- **A redesign under a no-function-change rule, audited like a release.** The bug hunt and the walk after it found defects that predated the redesign by months, including two that had silently never run.
+- **Each lesson became a reusable check.** The bug-hunt skill gained four detectors from this day (function-output names that shadow table columns, divergence read against pre-change snapshots, refusals sent to sign-in, previews widened without auditing writes), so the next project gets them for free.
+
+---
