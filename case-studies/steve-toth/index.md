@@ -3986,3 +3986,28 @@ The afternoon after the free-plan fixes. The one thing the launch checklist stil
 - **Findings are written where the next person works**: in the product repo, with the measurement that found each one, not in a chat.
 
 ---
+## 2026-09-29 (evening), two of the walk's three bugs fixed with guard tests, and a notification layer proposed and declined for launch
+
+Same day, after the student walk above. Peace asked for the fixes ("fix"), then asked whether students would be notified when weeks open, and answered her own question once the facts were on the table.
+
+### What shipped
+
+- **Two fixes in one commit** (`9e649b7`, on the release branch pending Peace's push to production): the Docs Watch change page no longer widens a 390 px phone to 413 px (the off-screen copy helper now lives inside a screen-reader-only wrapper instead of carrying the class itself), and a student whose access was revoked now reads "Your access to this cohort was removed" with a sign-out pointer instead of "Your cohort hasn't started yet".
+- **Seven new tests**, including a source-scan guard that fails the build if the hidden textarea ever carries the class directly again. Suite at 1,812 passing, type-check and production build clean.
+
+### Decisions worth recording
+
+- **No notification layer before the 2026-10-05 start.** A repo-wide search established that the portal sends only sign-in and reset emails plus an opt-in Docs Watch push; nothing announces a week opening. Peace weighed a two to three day build (invite email, week-open email and push, a daily content batch) against the launch date and declined: "no need actually." Steve had also ruled out per-completion emails as "quite overwhelming". The proposed shape is recorded in the decisions log for when it is revisited.
+- **The third bug stays logged, not fixed**, at Peace's call: a new email-link account never sees the set-a-password step because the auth provider stores a hash at sign-up.
+
+### Frictions and course corrections
+
+- **A house-rule slip caught by the check, not the eye.** The new test's "no em dash" assertion contained a literal em dash; the added-lines scan printed 1, the character became an escape, and the commit was amended before anyone else saw it.
+- **The fix could not be verified live in the session.** The automation is not allowed to push to production, so the two fixes wait on Peace's push, with the exact 390 px measurement and the revoked-window reload written down as the acceptance check.
+
+### Why this matters for the portfolio
+
+- **Facts before features.** The notification question was answered by searching the code for every outbound sender, not from memory, and the answer changed the plan.
+- **A fix ships with the test that would have caught it**, and with the measurement that will prove it in production.
+
+---
