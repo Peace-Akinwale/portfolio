@@ -4035,3 +4035,32 @@ Closing the day. Peace asked for all test setups gone, not only the day's: "even
 - **Cleanup is scoped like a change**: inventory, cascade rules, keep-list, then the smallest script that does only that.
 
 ---
+## 2026-09-29, a 19,000-word course draft that was never sent became a 3,800-word beginner playbook, and a richer second version was built, compared and set aside
+
+Steve said on the 09-29 core team call that AEO "doesn't have a playbook." The 09-22 beginner course draft existed but had never reached him. Peace diagnosed why and asked for the book he could actually put his name on.
+
+### What shipped
+
+- **"The Beginner's AEO Playbook"** as a Google Doc for Steve's review: 7 plays, first person as Steve, 3,786 words, free tools only, 7 images from his own public notes embedded in the Doc, 8 links to his YouTube interviews, coaching named as the advanced version with no price.
+- **A second version in Tab 2**, kept as reference: 5,246 words, a worked example on a real public brand (Elderella, from Steve's own notes), run live in ChatGPT, Perplexity, Google and his Dealbreaker Detector GPT, plus "you're done when" lines, a scorecard and a glossary.
+- **Granola connected live** to the working sessions, so Steve's calls are read from the source rather than a frozen export.
+
+### Decisions worth recording
+
+- **Playbook, not course.** The old draft measured 19,004 words with 469 inline citation tags and 3,015 words of bibliographies, written in the third person: a reviewer's audit, not something a beginner reads. The rebuild keeps the sourcing discipline (every play from Steve's published notes) and drops the apparatus.
+- **One tactic deliberately left out.** Steve's Search Console pronoun-query method is his strongest move, but it takes too much time for a beginner and it belongs to his conference talk. Peace cut it.
+- **v1 over v2.** The second version added real work and real screenshots, and Peace still chose the shorter first version for its directness. v2 stays in the Doc as reference rather than being deleted, so Steve can take pieces of it.
+- **Fewer links, more explanation.** The first draft carried 24 YouTube anchors; Peace called them overwhelming, and anything simple enough to explain in a sentence is now explained on the page. 8 remain, each as a "Watch" line.
+
+### Frictions and course corrections
+
+- **Google's HTML import renumbers lists.** Numbered steps restarted at 1 after every nested bullet, so the first Doc was rebuilt with text-numbered steps and the broken one trashed.
+- **The Docs API cannot create tabs.** The second version went in through the browser (served locally, copied, pasted into a new tab), and a keyboard shortcut sent to the wrong browser tab once replaced Tab 1 with a single line of clipboard text. It was undone at once and verified by reading the Doc back.
+- **Two dead ends found while fact-checking links:** DealbreakerDetector.com does not resolve (the GPT URL is linked instead), and ChatGPT retires custom GPTs on 2026-12-11 unless they are migrated, which puts six of Steve's linked GPTs at risk. Both are flagged to him instead of being papered over.
+
+### Why this matters for the portfolio
+
+- **Diagnosis before rewriting.** The fix came from measuring why the old draft failed (length, citation density, voice), not from polishing it.
+- **Building the alternative and letting the client choose** is cheaper than arguing about it; the unchosen version is kept, not thrown away.
+
+---
