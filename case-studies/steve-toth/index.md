@@ -3955,3 +3955,34 @@ The day after the redesign launch. The first night's trash cleanup was the check
 - **The lessons became reusable checks.** The bug-hunt skill gained a detector for jobs that call request-only helpers, and an amplifier for "an empty result on error drives a write".
 
 ---
+## 2026-09-29, a real student account walked the coaching portal end to end on the live site, driven through a debug port on Peace's own Chrome, and everything worked; three bugs and a UX list were logged for the next session
+
+The afternoon after the free-plan fixes. The one thing the launch checklist still had not proven was a real student, not an admin previewing as one. Peace wanted "the whole flow of the students, including the onboarding process", and widened it mid-walk: "issues to improve can also include upgrading any part of the UI and UX... from both the student and admin pov."
+
+### What shipped
+
+- **Runbook step 04 passed on production** with Peace's own Gmail allow-listed as a student in the upcoming cohort: sign-up email (sent 1 second after the click), confirmation, name capture, locked weeks with their dates, an admin "Open now" reaching the student on the next load, the session page (HTTP 200, 181,765 bytes), a download served as an attachment (1,539 bytes), the recording playing from Cloudflare Stream and auto-completing the week at 90 percent, marking and un-marking a week with the admin progress table matching (13 percent, then 25 percent), Docs Watch pages, sign out, sign back in by email link, a password set through Forgot password, sign in with that password, revoke, and both opened weeks put back on schedule. Every write is in the audit log.
+- **A phone-width check (390 px)** of five student pages with a held emulation session: four clean, one overflowing.
+- **A written record**: `docs/qa/2026-09-29-student-and-admin-walk.md` in the coaching repo (evidence table, bugs, UX lists, what is still unwalked), a decisions entry, and a handoff. No code changed.
+
+### Decisions worth recording
+
+- **Log, do not fix.** Peace's call ("keep testing the flow, then keep logging the problems"). A walk that stops to fix the first thing it finds never finishes the walk.
+- **Drive the browser Peace was already signed into, over its debugging port, instead of the hosted browser tool.** The hosted tool turned out to be connected to her other laptop. The debug port on this Mac gave a real pointer, a private window for the student and the admin window side by side, and Google sign-in without a password.
+- **Peace pressed every gate the automation is not allowed to**: the allow-list add, both password entries, the permanent delete. The student's password is hers; nobody typed it for her.
+- **Leave the test account revoked, not deleted.** The revoke dialog promises Restore brings everything back; the next session needs a revoked account to verify one of the bugs.
+
+### Frictions and course corrections
+
+- **Three bugs, each traced to a mechanism.** The Docs Watch change page is 413 px wide on a 390 px phone because an off-screen helper textarea keeps the input primitive's full-width class over the screen-reader-only width. A revoked student is not signed out and reads "Your cohort hasn't started yet", the wrong story. A brand-new email-link account never sees the set-a-password step because the auth provider stores a password hash at sign-up, so the "has a password" check is always true; Peace judged that one "not a problem" for now, and it is logged anyway.
+- **Two collisions from sharing one browser.** Peace clicked the confirmation email and typed her name before the automation reached the link, so the automation's later submit failed on a spent token; and her "Open now" turned the button under the automation's next click into "Revert to schedule", closing the week for three seconds. Both were caught in the database and the audit log within minutes.
+- **A false alarm answered from the data.** Peace reported the admin page not showing week 1 as done; the database showed it had been un-marked ten minutes earlier as part of the undo test. Re-marking it moved the admin table to 25 percent.
+- **Fourteen UX notes**, led by two of Peace's own: the reset-password form has no "Show" toggle ("users should be able to see what they are typing"), and the syllabus still says "Unlocks 5 Oct" on a week that is open and done.
+
+### Why this matters for the portfolio
+
+- **Proof means the real path.** "View as student" had passed the day before; the real account found three defects it could not.
+- **Automation with a human on the gates.** The walk ran hands-off for reads and reversible clicks, and handed every credential, permanent delete and refused action to Peace, on the record.
+- **Findings are written where the next person works**: in the product repo, with the measurement that found each one, not in a chat.
+
+---
