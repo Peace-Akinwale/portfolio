@@ -3919,3 +3919,39 @@ Peace asked for the coaching portal to go from "vibe-coded" to "an Apple-level S
 - **Each lesson became a reusable check.** The bug-hunt skill gained four detectors from this day (function-output names that shadow table columns, divergence read against pre-change snapshots, refusals sent to sign-in, previews widened without auditing writes), so the next project gets them for free.
 
 ---
+
+## 2026-09-29, the coaching portal's scheduled jobs found broken in a way no test could see, the site fitted to a free hosting plan by cutting requests, and the live walk passed
+
+The day after the redesign launch. The first night's trash cleanup was the check that entry left open; it half worked. Peace then asked for the QA to be redone slowly on the live site ("I wanted the best in prod too"), and when that tripped the hosting plan's CPU limit she ruled out paying before January: "Do what we can do."
+
+### What shipped
+
+- **The scheduled jobs fixed** (`b9ef222`). The cleanup had deleted its database rows and then crashed before deleting any file, and the Docs Watch job had copied zero page archives on every run for a week. Both now get the file store handed to them directly. The next Docs Watch run copied 10; 0 of 60 changes now lack their before and after pages.
+- **Requests per page view cut** (`1235deb`): link preloading turned off app-wide through one shared link component, with a test that fails the build if any file bypasses it; the copy screen now loads in one request instead of eight. Measured on the live site: about 70 preload requests over six page views before, 0 after; 9 requests killed by the CPU limit before, 0 errors in 25 requests after.
+- **Leftover storage cleared**: a full comparison of the file store against the database found 5 files and one 31.6 MB video that nothing referenced, all left behind by the half-run cleanup. Peace ran a script that deleted exactly those six; the store re-listed at 115 files, none orphaned.
+- **The live QA walk passed**, including the first real file copy on production (the copied file matched the source's size and checksum). This closes the "live file-copy path is still unproven" note in the 2026-09-28 entry.
+- **Steve's photo on the sign-in page** (`2f56c45`), chosen by Peace from his 2022 photo shoot on Drive, with her line under his quote: "I'll teach you how to make your clients more competitive." It is a static file, so it costs the hosting plan nothing; it serves live (HTTP 200).
+- Unit tests: 1,805 passing (re-run after the last change). All four deploys green.
+
+### Decisions worth recording
+
+- **Fit the free plan by making fewer requests, not by paying or by shaving CPU.** Successful pages already use 25 to 70 ms of CPU against a 10 ms per-request cap, and pass only in short bursts, so the one lever that works is how many requests a page view triggers. Paying ($5 a month) was Peace's to decline, and she did, until January.
+- **Preloading off everywhere, enforced by a test, not page by page.** A per-page fix from August had not held, because new pages linked the default way. One component plus a build-failing test means the next page cannot regress.
+- **Hand the jobs their dependencies instead of faking a web request around them.** The framework's request-context wrapper is an internal API that can change on any upgrade; passing the file store in is plain and testable.
+- **Permanent deletions stay Peace's hand.** The orphan cleanup was written as a script that names exactly what it deletes, and she ran it.
+
+### Frictions and course corrections
+
+- **Why no test caught the job failure.** The framework only sets up its context for web requests; scheduled jobs never get it. The unit tests faked that context as always available, so they certified the broken path. The new test makes the fake fail the way production does.
+- **A bug found while fixing the performance issue.** When the copy screen's "what has already been copied" check failed, it returned an empty list, and the bulk copy read empty as "nothing copied yet" and would have duplicated every item. It now refuses.
+- **The first careful walk still broke the site.** Even at 10 to 15 seconds between pages, the copy screen's parallel requests plus background preloading exceeded the CPU cap. The fix came from reading the browser's network log, not from guessing at CPU.
+- **Finding the photo took two routes.** The browser pane was not signed in to Drive, and Peace was frustrated at the stall ("you found some images yesterday"). The Drive connector worked once its oversized downloads were decoded from disk into contact sheets for her to choose from.
+- **Still not proven**: a real student account signing in end to end (the walk used View as Student), and the new sign-in page looked at by eye on the live site.
+
+### Why this matters for the portfolio
+
+- **Constraint-driven engineering.** A hard budget rule ("no spend until January") became a measurable design target (requests per page view) with a guard that keeps it true.
+- **Closing the loop on yesterday's open items.** Both unverified claims in the 2026-09-28 entry were checked on production today; one failed and was root-caused, the other passed with a checksum.
+- **The lessons became reusable checks.** The bug-hunt skill gained a detector for jobs that call request-only helpers, and an amplifier for "an empty result on error drives a write".
+
+---
