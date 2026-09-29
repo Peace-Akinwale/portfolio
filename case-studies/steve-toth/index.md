@@ -4064,3 +4064,27 @@ Steve said on the 09-29 core team call that AEO "doesn't have a playbook." The 0
 - **Building the alternative and letting the client choose** is cheaper than arguing about it; the unchosen version is kept, not thrown away.
 
 ---
+## 2026-09-29 (late), the fourteen UX notes from the walk fixed in one pass and verified live
+
+Peace: "start UX now, fix them." Same evening, after the cleanup.
+
+### What shipped
+
+- **Twelve fixes in one commit** (`028dcbe`, live on production): a Show toggle on the password form; "Opened early" on a week opened ahead of its date (the label logic moved into a pure module with 8 tests); an "up to date" home card instead of "your cohort has not started"; phone syllabus rows that no longer break words; a tab strip that wraps instead of scrolling off-screen; a completed-week button that still looks pressable; 44 px tap targets on the Docs Watch page; a Password entry in the student menu; the install banner hidden on desktop; two admin tables that fit a laptop; the link catalog opening the newest cohort.
+- **Verified on production after deploy**, not assumed: 44 px links and a two-row tab strip measured at 390 px; the banner absent at 956 px; the toggle present on the live form. Suite 1,820 passing, type-check and build clean.
+
+### Decisions worth recording
+
+- **"Opened early" keys on the real force-unlock flag, not on the lock state.** Staff see every week open by role, so a lock-state rule would have lied on their rows. The fix carried the flag through the view model instead.
+- **Hide the row-level "Mark done" control on phones rather than shrink the title.** The week page keeps the full control one tap away; the title stops breaking mid-word.
+
+### Frictions and course corrections
+
+- **Two of the fourteen were left alone on purpose**: the notify switch label (the switch itself is the target) and the Final 1:1 copy (waits for a real booking link).
+- **One residual**: the admin cohort table still scrolls 46 px at laptop width; the actions are now visible, so it was recorded rather than chased.
+
+### Why this matters for the portfolio
+
+- **A QA list is only worth its closure rate.** Fourteen notes in the afternoon, twelve closed and measured live by night, two consciously deferred with the reason written down.
+
+---
