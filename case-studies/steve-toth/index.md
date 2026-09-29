@@ -4011,3 +4011,27 @@ Same day, after the student walk above. Peace asked for the fixes ("fix"), then 
 - **A fix ships with the test that would have caught it**, and with the measurement that will prove it in production.
 
 ---
+## 2026-09-29 (night), every test setup removed from the live coaching portal, including the cohort the launch plan had meant to keep
+
+Closing the day. Peace asked for all test setups gone, not only the day's: "even the clone for the working portal ... cohort 6 ... remove everything."
+
+### What shipped
+
+- **A full inventory before any delete**: every cohort, account, allow-list row, Power 25 page, file key and Stream video in the production database, with the cascade rules read from the schema so the delete list named exactly what would go and what would stay (the shared week 2 recording that Cohort five uses was kept).
+- **Deleted by Peace's hand**: two test cohorts, six test accounts, one Power 25 test page, two revoked allow-list rows, 21 files. Left: the template, the live cohort, four staff accounts. Four storage leftovers are named for her next session.
+
+### Decisions worth recording
+
+- **Delete the launch-walk clone too.** The 09-21 runbook had meant to rename that clone into the real October cohort; Peace chose a clean slate, so the October cohort will be a fresh duplicate of the live one. Recorded so nobody hunts for a cohort that no longer exists.
+- **Permanent deletes stay a human act.** The tooling refused to run or even write the bulk delete; the commands went to the clipboard and Peace ran them, which is the standing rule anyway.
+
+### Frictions and course corrections
+
+- **A shell reserved word ate the last step.** `UID` is a read-only variable in zsh, so a loop over Stream ids failed with "bad math expression" after all 21 file deletes had succeeded; the retry then hit a transient fork error in the session runner. Both are written down with the leftover ids.
+- **A mislabelled expectation.** The verification query promised 5 remaining accounts; the true count after removing six of ten was 4. Caught by listing the emails, not by trusting the label.
+
+### Why this matters for the portfolio
+
+- **Cleanup is scoped like a change**: inventory, cascade rules, keep-list, then the smallest script that does only that.
+
+---
