@@ -4088,3 +4088,34 @@ Peace: "start UX now, fix them." Same evening, after the cleanup.
 - **A QA list is only worth its closure rate.** Fourteen notes in the afternoon, twelve closed and measured live by night, two consciously deferred with the reason written down.
 
 ---
+
+## 2026-09-30, Lens taught to run AI-search sessions by itself for strategists, after the first build was thrown out for being unclear
+
+Written the same evening from the day's handoffs (`HANDOFF_lens-runs-in-lens_2026-09-30.md`, `HANDOFF_lens-runs-ready-popup-parser-depth_2026-09-30.md`), `decisions.md` and the local branch's git log. On the 09-29 core team call Steve said running the team's questions on the AI platforms would "probably be a manual task". Peace's answer is that Lens, Gregory's network-capture tool, runs those chats itself from each strategist's own Chrome and hands back one file.
+
+### What shipped (locally, by design)
+
+- **20 commits on a local branch of Gregory's repo** (`spike/run-journey`, 30 ahead of his `main` counting the 09-29 spike), nothing pushed: Peace's rule is to build, watch it work, demo it to Gregory, and merge only after his yes.
+- **A runs system inside Lens:** a runs API with a claim/heartbeat/finish queue and self-pause after 2 blocked or 3 failed sessions in a row; the extension's worker mode, which opens each platform, types every turn, records, strips logins and uploads; a Runs page in Lens's own web app; new analyzers for Perplexity, Gemini and Claude next to Gregory's ChatGPT one.
+- **First real unattended run:** 4 of 4 sessions on ChatGPT and Gemini (logged out), recorded, uploaded and analyzed from the page in 3 min 8 s.
+- **One downloadable file per run, at the depth of the HAR parsers Steve used for his SEO IRL talk:** the answer, every source marked primary or supporting with its publish date, pages read but not cited, the platform's search queries, and every sponsored unit. It even caught an ad slot rotating: on one real session an Asana ad was replaced mid-answer ("Manage tasks across projects", then "Organize your to-do list"), both kept with the platform's own result codes. Go test suite: 8 packages passing.
+- **A strategist's view that explains itself:** the extension popup opens on one line ("Ready." / "Running: ..." / what is missing), and Start on the Runs page is greyed out behind a checklist whose unticked lines each name their fix.
+
+### Decisions worth recording
+
+- **It lives in Gregory's tool, in his languages, not in a new app.** Rejected: routing it through Fanout Notebook or a separate server. One product, one owner.
+- **Logged-out sessions run in an incognito window on the strategist's own Chrome.** Their logins stay out of the picture, and no cookie of theirs reaches Lens: the extension strips them before upload (proven at 0 on a real session).
+- **Peace pushed back on her own request when it carried real risk.** She asked to test on her normal Chrome profile; the test ran first on a fresh profile built to behave the same, because a wrong fix would have signed her out of every site she uses. Her real profile is the next step, not the first.
+
+### Frictions and course corrections
+
+- **The 09-29 build was stopped by Peace: "even the UI itself isn't clear."** The day started with a rethink, a feasibility study and a seven-reviewer audit that corrected the study in 8 verified places (among them: Lens kept every raw upload, logins included, for 90 days; it analyzed ChatGPT only).
+- **Four holes in Gregory's redactor**, each one a regex cutting through an escape (`\"`, `&`, `%22`, `&quot;`), had been stripping citation hosts on every platform and breaking every Gemini frame on the copy Lens analyzes. Fixed as their own commit for Gregory to review first.
+- **The first run file was "what Fanout can already do"**, in Peace's words. Rebuilt twice the same afternoon until it carried the network detail only Lens has.
+- **A live step-by-step demo logged the Runs page out mid-run.** Root cause: the test browser's "clean slate" step wiped every cookie in the profile, Lens's own sign-in included. Reading the fix turned up a worse gap: the flag that sends logged-out runs to incognito was never passed down, so a strategist's everyday Chrome would have been wiped too. Both fixed, then proven on a normal profile: 4 of 4 cookies kept.
+
+### Why this matters for the portfolio
+
+- **The safety claims are tested with canaries, not asserted.** "Your logins are never touched" was proven by planting cookies and reading them back after a real run, and that is how the second, silent bug was found.
+
+---
