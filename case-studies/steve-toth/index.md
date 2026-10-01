@@ -4119,3 +4119,36 @@ Written the same evening from the day's handoffs (`HANDOFF_lens-runs-in-lens_202
 - **The safety claims are tested with canaries, not asserted.** "Your logins are never touched" was proven by planting cookies and reading them back after a real run, and that is how the second, silent bug was found.
 
 ---
+
+## 2026-10-01, an AI telemetry reference for stevetoth.ai built in a day, then rewritten until a cold reader could follow it, and fact checked until its "nothing to see here" claims fell apart
+
+Written the same night from the session handoff (`HANDOFF_ai-telemetry-reference_2026-10-01.md`), root `decisions.md` and the branch's git log. Steve asked overnight for a public reference at `stevetoth.ai/ai-telemetry/`: every internal name the AI search engines' apps use in the background while they answer, read from the 284 sessions Peace's team recorded, one folder per platform, plus a page on how the names work together and one prompt readers can take to any AI.
+
+### What shipped (on a branch, not yet merged)
+
+- **16 commits on `feat/ai-telemetry` in the site repo**: a Python pipeline that extracts every label from the recordings, searches the leaked system prompts collection for each one, and generates 21 pages in the site's own shell. One folder per platform for ChatGPT, deep research, Gemini, Google AI Mode, Google Search, Claude, Perplexity and Brave. The build gate passes on all 21 pages.
+- **A self contained prompt of 20,999 words** that opens by crediting Steve Toth and Notebook Agency, carries every label with what it does, and tells the AI to separate what was observed from what is inferred.
+- **Every label name in a sentence links to its own entry.** A cross-page jump lands on the entry and highlights it; the highlight holds about 2 seconds and is gone by 3.5 s. That timing comes from the classic "yellow fade" references (1 to 3 s), with reduced motion respected. Both were measured in a headless browser.
+- **Nine draft narration tracks, about 2 h 36 min,** rendered locally with an open-source voice model so Peace could judge the content by ear before any paid narration.
+
+### Decisions worth recording
+
+- **Model work moved off the company API key mid-day.** The first detector and curation runs cost about $37 to $40. Peace stopped it ("stop spending money right now and use sub agents"). Every later pass ran as subagents on the plan, and the pipeline gained merge-only modes so nothing already paid for was thrown away.
+- **Leaked-prompt material was removed, questioned, then restored with context.** I removed it on my reading of Peace's review. She asked the real question: can readers follow it, and is there a case to keep it? As built, readers could not: it was a bare filename with no link. But Steve had asked for it twice, and a vendor's own leaked instructions are the only outside confirmation of an inference. It came back with an explanation of what a system prompt is, a link to every file, and the vendor's words marked as the vendor's. A strict matching rule was added after the first rebuild attached an iCal field to the wrong label.
+- **No advice on the page.** A "What you can do with it" box was built and then removed at Peace's call: "we can be wrong about what you can do with it." Each platform ends on what the labels mean, nothing more.
+- **No session counts, no "our data", no recording-account details anywhere.** Readers have none of our tools, so every line says what is true about the platform.
+
+### Frictions and course corrections
+
+- **The site said "not visible" in places where the recordings showed plenty.** A dedicated fact-check pass, re-verified by hand in the raw recordings before anything was published, overturned five claims. Google AI Mode places Sponsored ads inside 20 of 30 answers. AI Mode marks which sentence each source supports and quietly rewrites follow-up questions. Gemini lists the pages its search returned, ties each passage to its page with links tagged `utm_source=gemini`, and on reload shows the searches it ran. The cause: Google sends this data as unnamed lists, which a name-based extractor cannot see.
+- **The numbers moved too.** Claude searched in every conversation, but on only 57 of 90 answers. Perplexity leaves about 7 in 10 pages it reads uncited, not 3 in 4. Deep research briefs are about 10 times the question, not 7.
+- **Of 65 lines that said a label's purpose could not be seen,** 59 turned out to have answers in the recordings, including a Google page script that decodes to a browser check. Six were genuinely unanswerable and say so.
+- **A numbered-list redesign was built without asking and rejected.** It set a standing rule: after a review, send the fix plan per point and wait for a yes.
+- **Two silent pipeline bugs.** A correction layer ignored corrections whose key did not match, and deep research lines borrowing ChatGPT's text kept the version from before every fix. Both now fail or inherit correctly.
+- **The first draft voice was "super terrible"** (the Mac's built-in one). ElevenLabs was checked read-only and ruled out because the account is pay as you go. A free local model replaced it.
+
+### Why this matters for the portfolio
+
+- **"We could not see it" is a claim that needs the same proof as "we saw it."** Five absence claims would have shipped to a public reference under Steve's name. They were caught because the review treated every "no" as something to search for exhaustively, not something to assume.
+
+---
