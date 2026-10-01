@@ -56,3 +56,35 @@ One session; the fourteen commits span 16:05 to 18:44 WAT by their timestamps, w
 - **Corrections taken at face value.** Three course corrections from the owner (headers versus headings, no Edit mode, fix the cap) were acted on the same hour without defending the first cut.
 
 ---
+
+## 2026-10-01, "it stops every freaking time": two player bugs root-caused from the data, reproduced, fixed and live within the session
+
+Written the same evening from the session, `decisions.md` (entry "2026-10-01, Bugfix: audio stopped mid-paragraph") and the handoff (`HANDOFF_player-stops-midparagraph_2026-10-01.md`). One code commit, `cf31ece`, live; the service worker reports that build.
+
+### What shipped
+
+- **Re-opening what is already playing no longer cuts it off.** Tapping the library's Continue card for the item being heard re-fetched its track. Every fetch re-signs every audio link (two signings of one file 1.1 seconds apart came back different), and the player reloaded any element whose link had changed, which pauses it and rewinds it to the start of the paragraph. The load entry point is now a no-op for the loaded item, and a playing paragraph is reloaded only for a different paragraph or a broken element.
+- **A dropped connection no longer kills playback for good.** The error handler fetched fresh links once; during the same outage that fetch failed too, the link was unchanged, so nothing was reloaded and the play button did nothing until the item was reopened. Errored elements now always reload, retries back off over five attempts (2, 4, 8, 15, 15 seconds), the play and lock-screen buttons recover a dead element, and a final failure says so instead of going silent.
+- **Two new mechanisms in the bug-hunt library:** identity compared by a rotating signed URL reloads a live resource; a recovery that only retries on changed input cannot survive a transient failure.
+
+### Decisions worth recording
+
+- **Read the data before touching the code.** The live progress record put the last stop at 50:00 of a 77-minute article, 21.3 seconds into a 40.1-second paragraph. All 104 paragraphs had audio, and the five around the stop matched their durations to the byte at 128 kbps. That ruled out bad audio and paragraph-boundary handoffs, and pointed at something interrupting a paragraph mid-play.
+- **Fix at the choke point, and harden the mechanism behind it.** The guard went into the player's load function rather than the one library button that triggered it, and the reload rule itself changed so no future caller can cut playing audio by fetching fresh links.
+- **No testing against production.** The local app shares the live database and would have overwritten the owner's listening position, and logging in needed her real password. Both bugs were reproduced in a browser fixture with the exact old and new logic on a generated tone.
+- **Fix locally, deploy on her word.** The diagnosis and fix were reported first; it shipped when she said "ship it".
+
+### Frictions and course corrections
+
+- **The obvious suspects were wrong.** An offline-download feature (none exists), the self-updating service worker (no deploy since 28 September) and expiring links (already recovered) were each checked and ruled out before the real causes surfaced.
+- **The first fixture lied.** Muted audio in a hidden browser pane was paused by the browser "to save power", which looked like the bug. Switched to near-zero volume and a real click before trusting any result.
+- **Server logs stayed out of reach.** The Railway command-line tool on the laptop is broken, so the request pattern around the other two stops is unknown. This is written down as unverified, along with the fact that the fix has not yet been heard on her phone.
+- **The owner's own question exposed a fear worth answering plainly:** "is the audio regenerated when I pause and play?" No. Re-opening fetched new links to the same stored files, at no cost.
+
+### Why this matters for the portfolio
+
+- **Evidence over intuition under pressure.** An angry "ASAP" report was answered with database records, byte counts and two reproductions, not a guessed patch.
+- **Fixtures that show before and after.** Old logic: paused and rewound, never recovered. New logic: kept playing, recovered. Each claim has a run behind it.
+- **Honest about what is not yet proven.** The deploy is verified; the phone experience is not, and the log says so.
+
+---
