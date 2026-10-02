@@ -4152,3 +4152,35 @@ Written the same night from the session handoff (`HANDOFF_ai-telemetry-reference
 - **"We could not see it" is a claim that needs the same proof as "we saw it."** Five absence claims would have shipped to a public reference under Steve's name. They were caught because the review treated every "no" as something to search for exhaustively, not something to assume.
 
 ---
+
+## 2026-10-02, Steve reviewed the AI telemetry reference on a private preview, all fifteen of his notes were built, and it shipped to engineering as one five-commit PR with Docs Watch
+
+Written the same night from the session handoff (`HANDOFF_ai-telemetry-steve-review-pr75_2026-10-02.md`), root `decisions.md`, the PR's git log and its CI run. Steve asked that morning whether he had been asked to review what would go live. He had not, so a private, noindexed preview of the site went up, and over two hours he sent fifteen notes, several in threads and screenshots.
+
+### What shipped
+
+- **The second page became the main article,** at `/research/how-ai-telemetry-labels-work-together`, under Steve's own title. It opens by explaining what telemetry labels are, walks each platform's labels in the order they arrive, links all eight platform folders, compares the engines, and ends with the copyable prompt. Article and breadcrumb structured data and share tags were added in the same pass.
+- **"Jump to the first mention" links into the leaked system prompts on GitHub, 3,708 of 3,708 verified.** The first build matched GitHub's text for only 3,029 of 3,930, because it read the Markdown source while browsers match the rendered page. Rebuilt from GitHub's rendered HTML, one block at a time, whole words only.
+- **Labels styled like Steve's slide deck,** the leaked-instruction notes open and highlighted, a disclaimer in Peace's words on every platform page, a collapsed "how these labels work together" box at the top of each, and a "Back to top" button on every width.
+- **Narration updated in Steve's cloned voice for 26,162 characters:** 11,637 to splice the walkthroughs into six platform tracks while reusing every chunk already paid for (placing them exactly would have cost 21,733), and 14,525 to re-record the article in full.
+- **Docs Watch got the same review:** orange buttons, Steve's platform order, no "pages watched" count, and a feature card on `/research` as large as the AI telemetry one.
+- **PR #75 rebuilt on the current main as 5 commits** from 26, the tree proven identical before a force-push with lease. All five CI checks pass. A new issue assigned to the reviewing engineer replaces the old one.
+
+### Decisions worth recording
+
+- **One PR for both sections.** One review and one deploy for an engineer who already had the first PR waiting, at the cost of the newer section waiting on the older one's review.
+- **The old second page stays alive on the preview only,** because Steve is using it for slides. Production redirects it to the article, so nothing public depends on a throwaway host.
+- **No indexing tooling.** Google's "Request indexing" is a dashboard button with no API for articles, and Peace's call was to let the sitemap do it.
+
+### Frictions and course corrections
+
+- **"The labels look like they're floating."** Peace's eye caught it. The new label class shared a name with the homepage's animated hero badges, which the generated page inherits, and that rule won. It was renamed, and every other generated class was checked against the site's stylesheet.
+- **The audio estimate was wrong by half.** I said about 11,000 characters for the exact placement. The dry run showed 21,733. I said so before spending anything and offered a placement that cost what was first quoted.
+- **Automated browsers could not prove the GitHub links.** GitHub served a rate-limit page to the headless browser, and a scripted real Chrome failed Steve's own known-good link the same way, because browsers only scroll to text after a real click. Peace clicked two, and both landed.
+- **A phone overflow survived the first fix.** No element was wider than the screen. Two long unbroken addresses in a paragraph were, found only by measuring text, not boxes.
+
+### Why this matters for the portfolio
+
+- **A reviewer's note is fixed everywhere the same problem lives, not just where they saw it.** One flagged example of the wrong client became four corrected samples and a rewritten example on another platform, and one "remove this stat" became three removals. Each fix was checked live on a phone and a desktop before the work went to engineering.
+
+---
