@@ -4184,3 +4184,32 @@ Written the same night from the session handoff (`HANDOFF_ai-telemetry-steve-rev
 - **A reviewer's note is fixed everywhere the same problem lives, not just where they saw it.** One flagged example of the wrong client became four corrected samples and a rewritten example on another platform, and one "remove this stat" became three removals. Each fix was checked live on a phone and a desktop before the work went to engineering.
 
 ---
+
+## 2026-10-02 to 2026-10-04, the AI telemetry pages shipped on hold, the client took over the writing, and the build tooling was retired in favour of his edits
+
+Written on 2026-10-04 from the session handoff (`HANDOFF_ai-telemetry-steve-hand-edits-audio_2026-10-04.md`), root `decisions.md`, the site's git log and live checks. The engineering lead merged the AI telemetry and Docs Watch work on the evening of Oct 2. Steve then wanted the pages live at final URLs for his talk deck but invisible until launch. Over the next two days he rewrote all 19 pages himself.
+
+### What shipped
+
+- **A held launch:** every new page is live and serves `X-Robots-Tag: noindex`, nothing on `/research` links to it, and the sitemap generator now drops noindexed and held routes on its own. That took three small commits straight to main, each verified on the live site after deploy.
+- **Narration re-recorded from his pages, not from our data:** a new script reads the committed HTML in page order, so all 9 tracks say what the pages now say. Cost was dry-run first: 190,128 characters, of which 158,027 were billed and the rest reused from the cache.
+- **Cache-safe publishing:** Cloudflare kept MP3s for 4 hours, so a plain file swap would have played the old audio. Each player got a version tag, and every page was checked against the bytes actually served.
+- **The generator was retired:** it now stops with an error. Its data lacked his edits, and a rebuild would have deleted his work.
+
+### Decisions worth recording
+
+- **His HTML became the single source.** Folding his changes back into the generator was the alternative. It was rejected because one source edited in place, guarded by his own check script, beats two that drift.
+- **His edits were studied, not copied.** He replaced our one-line "these meanings are inferred" disclaimer with an explanation of how the inference was made, plus a methodology table per page with conversations, topics and the model the traffic reported. Titles became search questions, and every label got a count. Peace's rule: learn the principles and judge each project on its own.
+
+### Frictions and course corrections
+
+- **Two wrong claims in one evening, both caught by Peace.** I called Claude's single page fetch an "opened page" without reading its result, which was a refusal. I also leaned on another product's data for a page that says it is based on 277 recordings. Both answers were redone from the recordings alone.
+- **I checked Steve's own published numbers against the parser reports.** Most matched exactly. Two did not: the ChatGPT cited count, and an AI Mode figure that turned out to count domains rather than pages. He chose to drop that section.
+- **A "clean" merge broke the preview's config.** Both sides had added the same nginx blocks in different places, and git kept both copies. The preview now takes production's file verbatim.
+- **The live check had been fooling itself.** It added a random query to every URL, which skips the cache visitors actually hit.
+
+### Why this matters for the portfolio
+
+- **When a client starts editing the product himself, the job changes from building it to protecting what he built.** That meant retiring my own tooling, making the audio read his words, and checking his numbers before they went on a slide.
+
+---
