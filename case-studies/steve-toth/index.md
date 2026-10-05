@@ -4243,3 +4243,44 @@ Written the same day from the session handoff (`HANDOFF_docswatch-subdomain-tele
 - **A performance fix is only as good as the check that proves it and the number behind the advice.** Both of my mistakes that day were caught by measuring instead of trusting a green signal.
 
 ---
+
+## 2026-10-05, moving Docs Watch to its own subdomain: mapping who owns the hosting before asking anyone, and declining a shortcut around the site's engineer
+
+Written the same day from the session handoff (`HANDOFF_docswatch-subdomain-branch-built_2026-10-05.md`), root `decisions.md` 2026-10-05, the site repo's branch and a local nginx run. Steve asked for Docs Watch to leave `stevetoth.ai/research/docs-watch/` for `docswatch.stevetoth.ai` so it can grow without crowding the main site, and for the platform filters to change the URL. Before building, Peace asked whether the hosting was anywhere she controls, and how to avoid bothering Gregory, the engineer who runs the server, with anything she could do herself.
+
+### What shipped
+
+- **Nothing to production, deliberately.** One commit (`42e7a8f`) on a local branch of the site repo, not pushed, because merging before the subdomain is routed would turn every old Docs Watch link into a redirect to a "Not Found" page.
+- **On that branch:**
+  - The generator now addresses every page on the subdomain root, and nav and footer links point back to stevetoth.ai.
+  - A second nginx server block on its own port carries the archive rules, its own robots.txt and sitemap, and the client's existing indexing hold.
+  - Every old `/research/docs-watch/` address 301s to the same page on the subdomain.
+  - The filters write `?platform=openai` into the address bar, so a filtered view can be shared.
+- **Checked:**
+  - 27 tests pass, 16 of them new.
+  - Every route was exercised on a local copy of the real nginx config: subdomain pages, archived captures, assets, robots in both modes, and all five kinds of old address.
+  - The filters were tested in a browser at desktop and phone width.
+
+### Decisions worth recording
+
+- **One ask, and only the one nobody else can do.** The site sits behind Cloudflare in the client's account and a reverse proxy on Gregory's server that is not in the repo. Our API token could read the zone list but not its DNS or rules. The nginx config, redirects, sitemap and robots all ship through the normal deploy, so they stayed ours. What went to Gregory was a single routing request, written plainly at Peace's direction: purpose, the ask, one reason, what we handle.
+- **The subdomain gets its own port, not a second host name.** The config itself recorded, from a robots.txt incident the client fixed the day before, that requests reach nginx under a Host other than the visitor's. Name-based routing on the shared port would have quietly served the main site on the subdomain.
+- **A workable shortcut was declined.** The same token had attached a Worker custom domain for another product in August, so a Cloudflare Worker could probably have served the subdomain without Gregory. Peace refused: "it must not be done by a back channel of sort." It was never attempted.
+- **Filters keep the page, change the address.** Linking the chips to the existing per-platform pages would have changed what a click shows. A query parameter keeps the filter behaving exactly as before. Whether the client meant real paths is still an open question to him.
+
+### Frictions and course corrections
+
+- **The first draft of the ask was wrong.** It named the shared port, until the config header and the client's own commit showed nginx cannot tell the two names apart there. The draft was rewritten before it was sent.
+- **Peace rewrote the tone.** My version explained too much to a very technical engineer. Hers is shorter and leads with what she wants.
+- **Four defects were caught before anything left the laptop, each by a check:**
+  - The first page rebuild used a Python without the imaging library, so it would have replaced all 37 share images with SVGs. Git showed 37 deletions.
+  - A scripted edit flipped every line ending in a Windows-format compose file. A dash check lit up on lines nobody had touched.
+  - The branch had been cut from a stale local main and needed a rebase.
+  - After the rebase, the newer nav loaded an image from a folder my new server block blocked. A request for every asset on the page showed the 404, and a test now covers it.
+- **Peace asked why a rebuild was needed at all.** The files do not move. What changes is the address written inside every page (canonical, breadcrumbs, feed, share tags), and the daily deploy regenerates the pages anyway.
+
+### Why this matters for the portfolio
+
+- **Before asking a teammate for anything, prove which parts are yours.** Then ask for exactly the rest, plainly, and do not route around them even when a tool would let you. The build waited on one message instead of on a side door into the client's account.
+
+---
