@@ -4213,3 +4213,33 @@ Written on 2026-10-04 from the session handoff (`HANDOFF_ai-telemetry-steve-hand
 - **When a client starts editing the product himself, the job changes from building it to protecting what he built.** That meant retiring my own tooling, making the audio read his words, and checking his numbers before they went on a slide.
 
 ---
+
+## 2026-10-05, a Core Web Vitals pass on 20 pages the client was indexing that night, and a performance claim I had to take back
+
+Written the same day from the session handoff (`HANDOFF_docswatch-subdomain-telemetry-cwv_2026-10-05.md`), the site's git log and Lighthouse runs. Steve asked the engineering channel for "CWV/Lighthouse improvements keeping everything else intact" on the AI telemetry cluster before Google indexed it. Nobody had started, so I took it. Earlier the same night, the narration for all nine pages was re-recorded to follow his latest layout, including the methodology sections he asked for.
+
+### What shipped
+
+- **Two invisible fixes across 19 pages,** commit `f6f40e6`.
+  - The Google Fonts stylesheet had been pulled in by an `@import` inside the first style block, which blocks rendering and is found late. It now loads from `<head>` with preconnect, a non-blocking preload, and a fallback for no-JavaScript visitors.
+  - The script that moves the reference sidebar under "Before you read" on phones sat at the end of pages up to 1 MB long. Phones painted the sidebar above the headline, then jumped it down (layout shift 0.66). The same script now runs before the first paint.
+- **Measured:**
+  - The worst page went from 63 to 90 on mobile in local Lighthouse against the live site.
+  - In PageSpeed Insights, first paint dropped from 3.2 s to 2.1 s.
+  - Page height is identical to the pixel before and after, and the client's own guard script passes.
+
+### Decisions worth recording
+
+- **Only invisible changes.** Deferring the analytics scripts and hiding off-screen sections from rendering would score higher. Both change behavior, analytics timing and deep-link jumps, so they went back to the client as options, not edits.
+
+### Frictions and course corrections
+
+- **The first font fix did nothing, and a weak check said it worked.** The links were inserted before the first `<style>` text, which turned out to be inside an HTML comment. The browser's font check answered "true" for fonts it never needed to load. A before/after page-height diff exposed it: 4,867 px taller, because the text was in a fallback font. That was before anything went live.
+- **I recommended edge caching with a number I hadn't measured.** I said it would save 0.8 to 1.3 s. When Peace asked how I knew, I split connection time from server time: caching would save 0.05 to 0.1 s, so I withdrew the recommendation.
+- **The work ran headless after Peace asked to watch it in her own browser.** She said so bluntly. The rest ran in her Chrome, so she had before-and-after screenshots for the client.
+
+### Why this matters for the portfolio
+
+- **A performance fix is only as good as the check that proves it and the number behind the advice.** Both of my mistakes that day were caught by measuring instead of trusting a green signal.
+
+---
