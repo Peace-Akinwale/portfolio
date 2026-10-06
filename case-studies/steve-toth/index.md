@@ -4284,3 +4284,33 @@ Written the same day from the session handoff (`HANDOFF_docswatch-subdomain-bran
 - **Before asking a teammate for anything, prove which parts are yours.** Then ask for exactly the rest, plainly, and do not route around them even when a tool would let you. The build waited on one message instead of on a side door into the client's account.
 
 ---
+
+## 2026-10-05 (evening), removing a Docs Watch screen instead of polishing it, and fixing summaries that were stored cut off
+
+Written the next day from the session handoff (`HANDOFF_docswatch-table-dek-fix-subdomain-wait_2026-10-06.md`), root `decisions.md`, both repos' git logs and live checks. Steve asked on Slack whether Docs Watch had caught Google's new rule on fact-checking AI content. It had, on Friday Oct 2, before the LinkedIn posts about it. Showing him the page exposed two problems a reader sees at once.
+
+### What shipped
+
+- **The "wording, side by side" table is gone from every change page** (stevetoth.ai `fb8082d`). The button that opens the archived page, highlighted at the change, moved up to sit under the headline.
+- **Summaries are no longer cut off mid-word.** Radar's article writer now keeps the whole summary and only ever shortens text at a whole word (`53451215`). The 8 summaries already stored cut off were trimmed by hand to their last complete phrase, with no AI rewrite and no words added.
+- **Checked:**
+  - All 63 live change pages: 0 cut-off summaries and no table.
+  - Radar's full suite: 1,596 tests pass.
+  - The feed and the database: 0 truncated fields.
+
+### Decisions worth recording
+
+- **Remove, don't redesign.** My first proposal rebuilt the table as readable prose. Peace's call was that it repeats what the before and after views already show, so it went. The page's "What changed" section already quotes the new wording in full sentences.
+- **Fix the truncation at the source.** The summary had been cut to 160 characters because it doubled as the search snippet. Both sites that display it already shorten their own snippet at a word, so the cut was removed rather than softened.
+- **Ship one change without the other.** A larger change was waiting on an engineer's review on its own branch. The table removal was rebuilt on the live code and shipped alone, so his review stayed exactly what he was sent.
+
+### Frictions and course corrections
+
+- **Peace saw the UI problem before I did.** She also asked for a screenshot of the truncation bug before approving the fix.
+- **A GitHub outage cancelled three runs.** The jobs never got a machine. A teammate's push got one, and its deploy carried the fix. A background retry watcher I'd set up was then stopped.
+
+### Why this matters for the portfolio
+
+- **The cheapest screen is the one you delete.** Judging a page as its reader would, rather than as a builder, got the change shipped the same evening, and the truncation was fixed where it started instead of where it showed.
+
+---
