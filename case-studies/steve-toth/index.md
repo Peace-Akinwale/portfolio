@@ -4314,3 +4314,50 @@ Written the next day from the session handoff (`HANDOFF_docswatch-table-dek-fix-
 - **The cheapest screen is the one you delete.** Judging a page as its reader would, rather than as a builder, got the change shipped the same evening, and the truncation was fixed where it started instead of where it showed.
 
 ---
+
+## 2026-10-05 to 2026-10-06, the Notebook Quality Rater: from a working build to one guided experience, after the client side threw out the first design
+
+Written at the end of 2026-10-06 from the session handoffs (`HANDOFF_quality-rater-build-paused_2026-10-06.md`, `HANDOFF_quality-rater-experience_2026-10-06.md`), the app repo's git log and `decisions.md`, and checks run that night. The Quality Rater is an internal Notebook app modeled on Dan Hinckley's Quality Rater Jev. It rates every page of a client site against Google's search quality rater guidelines, using TypeSafe's Jev decision model, and has a Grammarly-style draft checker. Peace acted as product owner and reviewed. The app is local only by her rule: never pushed, never deployed.
+
+### What shipped
+
+- **Seven local commits on 2026-10-06** (`8af7b53` to `f709825`) on top of four from the day before:
+  - polish;
+  - a bug hunt and security review: 21 confirmed bugs, each fixed with a regression test;
+  - a final paid test;
+  - a redesign;
+  - a "guided experience" pass;
+  - a noise pass on the checker.
+- **Jev now points, it does not just judge.** For each problem on a page, Jev picks the exact paragraphs, sentences and table rows from the page's own numbered text. The report quotes them in a "Show where" dropdown with "Open on the page" (a text-fragment link that scrolls the live page to the sentence) and "Copy". On a Botpress article about GPT-5 it pointed at the price table's gpt-5-mini and gpt-5-nano rows. Checked against OpenAI's model docs, those two prices really are swapped.
+- **A Grammarly-style checker.** It has underlines on the exact words, every suggestion in document order in a side panel, and a card that shows the rewritten sentence with removals struck through. "Fix this page" opens it already checked, with the report's places marked.
+- **Google Docs in and out.** Paste keeps formatting and images. "Send to Google Docs" and import-by-link run through Google's Picker with the non-sensitive `drive.file` scope, so the app needed no new Google verification.
+- **Measured:**
+  - A full re-run of a client site went from 224 s to 2 min 3 s for $0.199.
+  - The final paid test (one site, one draft check, one rewrite) cost $0.24.
+  - All app model spend on 2026-10-06 came to $0.82.
+  - Checker rows on one long article went from 356 to 187.
+  - The test suite: 1,838 tests pass, and the type check and production build are clean, run after the last change.
+
+### Decisions worth recording
+
+- **The topic map was thrown out.** The first build copied the reference tool's bubble map. Peace: "the bubbles ... don't make a damn sense to me". A search of Dribbble for references turned up only generic SaaS dashboards. Every screen was then redesigned from first principles instead (Krug's Don't Make Me Think: one question per screen, the next click obvious) on the agency's six-color brand. The redesign also exposed that the app had been using green, teal and blue the brand guidelines forbid.
+- **Jev both judges and points; Claude only writes.** Peace: "i don't want to have to use claude model for this if we can use Jev". Locating problems costs a fraction of a cent per page. A rewrite is written only when someone opens its card, about 2 cents, instead of about 90 cents per check to write them all up front.
+- **Doubtful claims are quoted, never asserted.** Jev cannot check the web, so its accuracy doubts read "Claims to check" with the sentence quoted. My first instinct was to switch the accuracy check off for recent topics. Peace overruled it: "we won't ignore. we will make it point."
+- **Spend discipline was a product constraint:** no paid page fetching, one paid test site at a time ("choose one, not the two"), and work paused at the AI session limit rather than spending overage credits.
+
+### Frictions and course corrections
+
+- **I misdescribed Grammarly twice:** that it shows only a few flags, and that its card opens over the sentence. Peace's screenshots showed it underlines everything thinly and keeps cards in the side panel. The checker was rebuilt to match.
+- **I blamed the wrong thing on the GPT-5 article.** I guessed Jev was misled because its knowledge predates GPT-5. Checking OpenAI's docs showed the article really was wrong. I said so and withdrew the guess. Peace's question "which training?" also exposed that I had no source for Jev's training data at all.
+- **"Fix this page" looked broken to Peace.** The check had failed silently: an 87-paragraph article hit an 80-paragraph cap, reported as a small grey line. The cap went to 300 and failures now show as a banner.
+- **Problems caught before Peace saw them:**
+  - **Comparison pages flagged as near copies.** "Botpress vs Ada" and "Botpress vs Intercom" were wrongly called near copies; Jev now asks whether two pages target the same search first.
+  - **A seed-dependent flaky test.**
+  - **A link that looked broken.** It only looked broken because my own hand-built test link left the dashes unencoded.
+- **One client site could not be tested from this machine.** Puffco (Shopify behind Cloudflare) rate-limits the Mac's IP address, so the final test ran on Botpress instead, at Peace's call.
+
+### Why this matters for the portfolio
+
+- **A tool is only useful if it says where.** "Factual errors" on a page is noise until the sentence is quoted and one click away. The pass that made the model point, rather than just score, is what turned a report into something an editor can act on.
+
+---
