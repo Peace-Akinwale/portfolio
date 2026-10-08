@@ -4398,3 +4398,33 @@ Written on 2026-10-08 from the session handoff (`HANDOFF_quality-rater-d-run-scr
 - **Verification belongs to the person who ships.** Green reports from delegated builds were a starting point; running the checks myself found what they missed.
 
 ---
+
+## 2026-10-08, a one-hour request from a teammate that turned up a privacy gap and a broken recorder
+
+Written on 2026-10-08, the same day, from the session's own run logs, the HAR tools' checklist and the root `decisions.md` entry for that date. Simon, a strategist on the team, asked for a few example HAR files to check against Steve's published telemetry pages: ChatGPT signed in, one question per chat, no follow-ups. Before starting, Peace asked me to explain how she had done the original HAR work so she could check that I understood it.
+
+### What shipped
+
+- **Three signed-in ChatGPT sessions**, one question each, each with one source click, all passing the recording checks (every question sent and answered, one chat each). About 104 MB per file after cleaning.
+- **Delivered as full cleaned files plus the ChatGPT parser**, through the same delivery gate as Steve's 284 sessions in September (gate pass, manifest written, folder frozen).
+- **Tool changes**, each recorded as a numbered rule in the project checklist (rules 42 to 46): one-question sessions allowed end to end, a scrub-only mode for when Lens is down, and a new masking step with a matching gate check.
+
+### Decisions worth recording
+
+- **Full files, not only the Lens selection.** Simon was checking the files against pages that describe the app's own logging, feature switches and account labels. The Lens selection drops most requests and our cleaning empties the logging bodies, so a Lens file alone would have made correct parts of Steve's pages look wrong. Peace chose to send both; the note to Simon says exactly what was emptied.
+- **Mask other chats' titles in ChatGPT files.** The shared agency ChatGPT account's sidebar and pages carry the titles of every other chat, and those titles name client work (payroll, incorporation, a practice-software comparison). The masking step had only ever covered Claude and Gemini. I applied Peace's September rule for Claude to ChatGPT: in the first file, 125 occurrences masked, the session's own titles kept, and the gate now fails any ChatGPT file with one left.
+- **One question was a duplicate.** Two of Simon's three questions were identical word for word. I flagged it instead of recording it twice; he sent a new third question.
+
+### Frictions and course corrections
+
+- **ChatGPT changed its page layout, and the recorder stopped a good session.** The first question was sent and answered, but the script reported "not in thread", because the page now has two `main` regions and no longer carries the markers it looked for. I stopped the batch before it sent the other two, moved the failed file to the Trash, rewrote both page checks against the live page, and re-recorded.
+- **My own masking step caused a false failure.** Shortening a body without updating its recorded size made the checker read four bodies as cut off. I fixed the size field and re-cleaned.
+- **The gate flagged "redaction marks" in files that never went near Lens.** They were inside ChatGPT's and Intercom's public JavaScript, which only full files keep. I traced every hit before adding those script paths to the reviewed allow-list.
+- **Still open:** Lens was offline all afternoon (`503 agent is offline`), so the Lens files are owed; Peace told its owner. And the ChatGPT parser now reads 0 cited sources on the October answer format, against 11 on a September file. The files are complete; the parser needs an update, and the note to Simon says so.
+
+### Why this matters for the portfolio
+
+- **Small requests get the full process.** A one-hour favor ran through the same leak checks and delivery gate as the main study, and that is how a client-naming gap that had never been covered got found.
+- **Bad news goes out with the files.** Simon learns from the delivery note that the parser undercounts citations, rather than finding out from a wrong conclusion.
+
+---
