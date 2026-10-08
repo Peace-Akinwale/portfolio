@@ -57,3 +57,6 @@ Peace asked for new colours ("something that is not AI slop", no preference) and
 - Header and footer labels are sentence case; full menu shows from 768px (was 1024px); footer is two columns on phones; reduced-motion respected globally.
 
 Not changed yet (next pass): services, testimonials, case study and portfolio layouts still use the old template structure (eyebrow labels, three-card rows, persona emoji cards, repeated testimonials). Fonts unchanged (Syne, DM Sans, Georgia).
+
+### 2026-10-07 — Positioning widens to two offers (pending redesign)
+Peace wants the site to show both sides of her work: content writing/editing and AI content operations (building and running AI products with Claude Code). This supersedes the Goal line's single buyer ("B2B SaaS head of content or founder") once the redesign starts; the Goal will be rewritten in that pass. Case studies and posts never name clients or products. Plan and evidence: the private repo `Peace-Akinwale/thought-leadership`. Design approach (including whether scroll-craft is used, and where) not yet decided.
