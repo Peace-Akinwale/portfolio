@@ -4428,3 +4428,12 @@ Written on 2026-10-08, the same day, from the session's own run logs, the HAR to
 - **Bad news goes out with the files.** Simon learns from the delivery note that the parser undercounts citations, rather than finding out from a wrong conclusion.
 
 ---
+
+## 2026-10-08 (correction), the Simon HAR entry above
+
+Added the same day. Two lines in the entry above stopped being true after it was written:
+
+- **"Still open: the Lens files are owed."** Peace closed the work without Lens versions: "No need to add the Lens version ... Everything is done." The full cleaned files and the parser were the whole delivery.
+- **"The note to Simon says so"** (about the parser reading 0 cited sources on the October format). Peace sent the files with her own note, and it did not mention the parser caveat. The finding stands; it is recorded in the project's `decisions.md`, and whether to tell Simon is her call.
+
+---
