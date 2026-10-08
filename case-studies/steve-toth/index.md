@@ -4467,3 +4467,38 @@ Written the same evening from the Fanout repo's git log and `decisions.md`, the 
 - **Holding a tested fix is a decision too.** The code was proven and the client side still said wait. The log records why, so the release later is a choice with a reason, not a forgotten branch.
 
 ---
+
+## 2026-10-08, the Quality Rater: a first-day audit, a bug hunt on the fixes, and a bar built from the apps people actually use
+
+Written the same night from the session handoff (`HANDOFF_quality-rater-publishable-bar_2026-10-08.md`), the app repo's git log and `decisions.md` (five entries dated 2026-10-08), the local usage table, and checks re-run at 22:04. Same internal app as the entries above: local only, never pushed or deployed. Peace started the session reviewing screens herself, then said she was tired of finding problems by hand and wanted the app judged against the bar her past apps had reached.
+
+### What shipped
+
+- **Six local commits** (`86a9d22`, `a5986a7`, `2210a04`, `5253099`, `618ce98`, `57f2dfe`). The suite went from 1,921 to 2,221 tests; type check, lint and production build clean after the last change; a new browser test of the whole loop passes on desktop and phone with every paid route blocked.
+- **A first-day audit:** every screen and free action at three widths in light and dark, 68 findings with a concrete fix each (2 blockers, 27 major, 39 minor). The blockers: the same page read "Low" on its report and "Lowest+" in the checker, and the site's first page to fix was rated Lowest on a model answer nobody could see. All 68 were built.
+- **A bug hunt on those fixes:** four finders, every candidate verified before a fix, about 40 real bugs fixed with tests that failed on the old code. The worst: a filter that treated any line under five words as a button, which hid 5,025 of 31,038 lines on the test site from the sentence pointer, including "Plus - $150/month", so a wrong price could never be pointed at.
+- **A publishable bar from her own history:** a research pass over Fanout Notebook, Radar, the Coaching Portal, OKF and the AEO Site Auditor (decisions logs, handoffs, saved feedback and 3,389 of her chat messages) produced 18 checkable rules. The app scored 5 pass, 12 partial, 1 fail; after the build, 16 pass and 2 partial, both of which need a person.
+- **What that build added:** one draft per page (Fix this page reopens it), Mark as fixed with Undo across every surface, delete with Undo for drafts and checks, a stated price before any paid click, error pages with a way back, an in-app notice when a check finishes, a "How it works" page built from the same word sources as the screens, and "Fix later" that only holds pages with something to fix (136 pages became 100 on the test site; no rating moved).
+- **Spend:** $0.13 all day on the local usage table, $0.02 of it from an automatic check that a page action started on its own and that is now gone.
+
+### Decisions worth recording
+
+- **One word for one thing.** The same group of pages had four names across the bar, the list, the report and onboarding. Now Fix first, Fix next, Fix later, Fine and Not rated, from one source file. Rejected: renaming screen by screen.
+- **The worst rating needs a stated error.** A page is rated Lowest on accuracy only when a located sentence says what is wrong; otherwise it caps at Low and says "Some claims may be out of date or wrong." Rejected: re-locating every stored page (a paid call per page); stored pages settle free the next time they are opened.
+- **Peace's open calls were settled by evidence, then her word.** The phone report got a pinned button; suggestions became a tint so they never read as links; the checker opens on the report's own places; she then dropped Steve's 75-word paragraph rule from the checker, which removed 87 underlines from one draft.
+- **A measured price, not a guess.** The plan said a rewrite costs about 1 cent; 31 usage rows said 2 to 5 cents depending on length, so the screen states the measured cost.
+
+### Frictions and course corrections
+
+- **I put a human gate inside an automated goal.** The audit prompt ended "then wait for my yes, then build", and the goal checker re-asked about 12 times until Peace stopped it: "Why do I have to type goal clear for you to stop when the goal is already achieved?" The prompt skill now refuses that shape.
+- **She wanted to see the walk, not read about it.** "I thought you will use computer use/browser use so you can see screenshots. real life stuff." I moved to the browser she could watch, and used a scripted browser only for exact widths.
+- **Two fix agents stashed the shared working tree** while others were mid-run. Nothing was lost because the others had not edited yet; the rule is now that agents in one tree never stash.
+- **I told her nothing was running when three of my wait loops had been stuck for hours.** Each looked for a script by name and kept finding its own command line. She noticed; I stopped them and changed how I wait.
+- **The final double-check found what the gates had passed.** Three lint errors came from a fix of my own, and about 10 cents of rewrites at 21:58 that no script of mine made. The lint is fixed; the spend went to Peace to confirm.
+
+### Why this matters for the portfolio
+
+- **Make the bar out of what already worked.** Instead of another opinion pass, the app was scored against rules drawn from the apps her team actually uses, and every rule names the incident it came from.
+- **Verify the verification.** A green suite, a clean build and agents' reports were each wrong somewhere today; reproducing in a real browser and reading the usage table caught each one.
+
+---
