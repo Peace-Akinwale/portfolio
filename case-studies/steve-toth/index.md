@@ -4437,3 +4437,33 @@ Added the same day. Two lines in the entry above stopped being true after it was
 - **"The note to Simon says so"** (about the parser reading 0 cited sources on the October format). Peace sent the files with her own note, and it did not mention the parser caveat. The finding stands; it is recorded in the project's `decisions.md`, and whether to tell Simon is her call.
 
 ---
+
+## 2026-10-08 (evening), ChatGPT changed under us: every reader we own was checked the same day, two were wrong, one fix was held back on purpose
+
+Written the same evening from the Fanout repo's git log and `decisions.md`, the main repo's `decisions.md`, and runs made that day. Follows the Simon HAR entry above. Simon noticed the model bump first ("ChatGPT has updated to 6.0") and sent his own improved parser with a changelog; Peace then asked that every tool we built be checked, not just the one a teammate had flagged.
+
+### What shipped
+
+- **A verdict on Simon's parser.** His V2 reads 6, 7 and 6 cited pages on the three new captures (mine read 6, 6, 6: I missed the single-page citation form), renders the answer without leaked code, and fixes three bugs in the September original, one of which left 514 of 758 September citation rows (68%) without the sentence they support. Checked here for safety (no network calls), on all 38 captures (opens every one; September key numbers unchanged on 35 of 35), and through the delivery gate.
+- **Fanout Notebook parser 1.7.0**, commit `b6aa90c` on `feat/machine-runs`, local only. Frames are routed to the message their index names; the merged answer is the answer; citation tags become the marker form every downstream reader already understands; brand and link tags become prose; an answer with pages but no readable citation is marked as an unrecognised shape instead of 0. The extension's ChatGPT page watcher follows the new page markup.
+- **Proof:** the 7 committed ChatGPT fixtures parse byte-for-byte as before; the two new GPT-6 fixtures read 6 and 7 cited pages with 3 cited sentences each; the suite went from 2,517 to 2,524 tests, typecheck clean in every workspace.
+
+### Decisions worth recording
+
+- **Hold the release.** Peace: "we need more research first." Three one-question chats on one topic are not enough to call a parser accurate on a new model. The runner, dashboard and download zip stay on 1.6.0; only her own extension runs the new build, for the research itself. The order when it comes is runner first, because the runner re-derives rows with whatever parser it has.
+- **Adopt the teammate's parser over my own.** Measured, not assumed: his was better on the file where they differed.
+- **Tell Steve first.** His published telemetry page describes a citation format ChatGPT no longer sends, and his Drive parsers are the September build. Peace texts him rather than waiting to be asked.
+
+### Frictions and course corrections
+
+- **I saw the zero and left it "open".** The afternoon's parser showed 0 citations on every new file; I labelled it as needing an update instead of fixing it, and Simon reported it with a table two hours later. Peace's rule, now a standing one: when a platform we read changes, sweep every reader we own in the same session, and a count that drops to 0 on a fresh capture is a bug until proven otherwise.
+- **The Fanout bug was not where I expected.** Its citation counting survived the new format by luck; the real fault was a stream replay that ignored which message each frame belonged to. Old captures never interleaved frames, so it had never mattered.
+- **My first guard did nothing.** The classifier marked any parse with pages as clean before it looked at the warning I added. It took a second pass, and a test that renames the citation refs, to prove the guard fires.
+- **Nothing live was wrong, by timing.** The pool's last ChatGPT capture was 2026-09-28; the first capture on the new model would have been the first wrong number.
+
+### Why this matters for the portfolio
+
+- **A platform change is a team-wide event, not a ticket on one tool.** The same change broke two parsers, one page and one safety net; checking them together is the only way to know the blast radius.
+- **Holding a tested fix is a decision too.** The code was proven and the client side still said wait. The log records why, so the release later is a choice with a reason, not a forgotten branch.
+
+---
