@@ -4361,3 +4361,40 @@ Written at the end of 2026-10-06 from the session handoffs (`HANDOFF_quality-rat
 - **A tool is only useful if it says where.** "Factual errors" on a page is noise until the sentence is quoted and one click away. The pass that made the model point, rather than just score, is what turned a report into something an editor can act on.
 
 ---
+
+## 2026-10-07 to 2026-10-08, the Quality Rater: removing a screen in whole, a clickable prototype instead of static mockups, and the run screen the client side picked
+
+Written on 2026-10-08 from the session handoff (`HANDOFF_quality-rater-d-run-screen_2026-10-08.md`), the app repo's git log and `decisions.md` (nine entries dated 2026-10-07), and checks run that day. Same internal app as the entry above: local only, never pushed or deployed. Peace reviewed every screen herself; I planned each fix and waited for her yes.
+
+### What shipped
+
+- **Four local commits** (`556fab3`, `a2b6869`, `887d319`, `6c100e1`); the suite went from 1,838 to 1,921 tests, with the type check, lint and production build clean after the last change.
+- **The Calibration screen was removed in whole**: the screen, its nav item, routes, code, tests and the summary fields that fed it. A one-click "This rating is wrong" on the page report took over its job, with a list of reports in Settings.
+- **A clarity pass from Peace's own review**:
+  - "Check a site" everywhere instead of "Rate a site";
+  - a five-stage progress stepper with counts and time left;
+  - a short page report: the top three fixes with the quoted sentence, everything else under one "More detail". All four test pages now fit one laptop screen; the longest had been 2,483 px tall.
+  - draft checker fixes: no scroll jump after accepting a rewrite (root cause: the caret stayed at the top of the draft, and focus returned there); links that read as links, with an Open/Edit/Remove chip and keyboard keys; the suggestions panel beside the article instead of over it.
+- **A clickable prototype** of the whole journey (sites, progress, four run-screen directions, page report, checker) on a Design canvas, so Peace could compare directions by using them.
+- **Run screen direction D**, her pick: the verdict sentence, one bar across all 400 pages whose legend filters the page list, a "By topic" list with a need-work bar per topic, then the full page list. Clicking "136 can wait" lands on exactly those 136 pages.
+
+### Decisions worth recording
+
+- **Remove in whole, build in whole.** I removed an "Uncalibrated" tag at Peace's request and left the Calibration screen it pointed to. She asked what that screen was for, then set the rule: "when you remove stuff, you should remove in whole, not in part ... when you build stuff, you should build in whole not in part." It is now a standing rule in every project.
+- **Calibration went because it cost people time.** Peace: "every app we build should help people do their job more easily, not take more time away from their hands." A one-click report replaced a whole labeling screen.
+- **The full page list stayed under D.** The chosen sketch had no place for 400 pages. I asked rather than drop it; the bar and topics became ways into the list, not a second report.
+- **I would not build D while a background build was still editing the same file.** It waited until the build finished and was verified.
+
+### Frictions and course corrections
+
+- **The first mockups were too thin.** Four static sketches drew "i can't understand your ideas from it ... i need to click around". The prototype replaced them.
+- **"I can't see anything" was a layout bug, not a broken file.** I rendered the prototype with the canvas's own runtime and found the checker's suggestions 2,400 px down a phone screen, under a toolbar that covered the text. A bottom sheet fixed it.
+- **Delegated work left gaps that the builders' own reports disclosed.** The background build reported its tests green, but one error it called intermittent reproduced on my first full run, and three design-doc sentences plus two focus fixes sat only in a builder's "requests to other owners" until the handoff audit. All were fixed and committed before the session closed.
+- **A test caught a screen-reader bug in my own code**: the new legend read "136can wait". One space fixed it.
+
+### Why this matters for the portfolio
+
+- **Let the reviewer use the options, not read them.** One clickable prototype settled a run-screen choice that four static mockups could not, and the choice went into the real app the same day.
+- **Verification belongs to the person who ships.** Green reports from delegated builds were a starting point; running the checks myself found what they missed.
+
+---
