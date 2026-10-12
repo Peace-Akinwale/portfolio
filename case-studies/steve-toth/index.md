@@ -4502,3 +4502,40 @@ Written the same night from the session handoff (`HANDOFF_quality-rater-publisha
 - **Verify the verification.** A green suite, a clean build and agents' reports were each wrong somewhere today; reproducing in a real browser and reading the usage table caught each one.
 
 ---
+
+## 2026-10-09 to 2026-10-12, SEO IRL 2026 VIP recordings: a gated page live on stevetoth.ai in four days, no new monthly cost
+
+Written on 2026-10-12 from the session handoff (`HANDOFF_seoirl2026-recordings-live_2026-10-12.md`), the site branch `feat/seoirl2026` git log, root `decisions.md` (2026-10-09, 2026-10-10, 2026-10-12) and checks re-run before writing. Steve had promised VIP pass holders the talk recordings; Karla raised it after the event, when an event app Peace had offered earlier was no longer an option.
+
+### What shipped
+
+- **`stevetoth.ai/seoirl2026`, live:** all 14 talks (about 9 hours) on Cloudflare Stream with speed, captions, full screen and MP4 download, behind a sign-in. Signed out, the page and every file return 401 (re-checked before writing).
+- **The gate is a small Cloudflare Worker:** an email on the buyer list plus one shared password, a signed 30-day cookie, and the page and slide files served from the Worker itself so nothing private sits on the site's server. 27 gate tests and 13 tooling tests pass.
+- **53 people on the list** from Karla's sheet plus three team test accounts; adding someone takes effect at once with no redeploy.
+- **A sign-in rate limit:** 5 tries per 10 seconds per connection. Live test: five wrong passwords refused, the next four blocked, a correct sign-in 25 seconds later worked.
+- **Slides for 13 of 14 talks**, beside the Download button. Google converted most decks to PDF; one deck that was a web page was printed to PDF; Lily Ray's 343 MB PowerPoint was too big for Google, so it was converted locally with LibreOffice and her own fonts, then cut to 23.3 MB to fit the hosting limit.
+- **Corrected captions:** speaker names fixed through a glossary (the captions had "Lely Rae" for Lily Ray) and re-uploaded to Stream for all 14 talks.
+- **Monitoring:** the three-day usage report that posts to Peace's Slack now covers Cloudflare (daily Worker requests against the free plan's 100,000, which the coaching portal shares) and Stream storage (541 of 1,000 minutes used).
+
+### Decisions worth recording
+
+- **A Worker, not Cloudflare Access.** Access was planned and approved on 2026-10-09, then reversed a day later: its free plan stops at 50 people. Rejected along the way: an event app, Pixieset, Vimeo.
+- **The page lives on the Worker, not the site's server,** so no other address can reach the files around the sign-in, and a failure shows nothing private.
+- **Remove what duplicates the platform.** A transcript panel was built from the captions, then removed in whole when Peace pointed out the player already shows them.
+- **Order by evidence.** The talks were first ordered by when the videographer saved them, at Peace's call; the captions showed that was not the speaking order, and the numbered slides folder later gave the real one. One talk's slot was inferred from what the speaker wore each day and is flagged as unconfirmed.
+- **Deploy without the site owner's sign-off** was Peace's decision, with her telling him; the change touches one path only, and the rest of the site was checked after each deploy.
+
+### Frictions and course corrections
+
+- **My first comparison of a hosting vendor was wrong** on pricing; Peace caught it and I re-checked the live pricing page.
+- **Uploading 18 GB from the laptop would have taken hours,** so the videos were pulled straight from the videographer's share into Stream instead (about 6 minutes for the largest).
+- **I offered two watch layouts without explaining them clearly** ("I don't understand the thing with A or B"); a plain description fixed it and the unused layout was removed in whole.
+- **A sign-in failure on Peace's own Mac** came from her password manager filling the wrong password; the page now has a Show password button.
+- **Adding Cloudflare to the report exposed an older gap:** the Railway cost line added in September had never reached Slack, because the posted line was rebuilt from part of the stored data. It now stores the whole line.
+
+### Why this matters for the portfolio
+
+- **A promise to paying customers, delivered on existing paid tools** with no new monthly cost, and gated without per-seat pricing.
+- **Every claim was checked on the live site**, including the security limit, rather than trusted from a deploy log.
+
+---
