@@ -4573,3 +4573,39 @@ Written on 2026-10-13 from the session handoff (`HANDOFF_seoirl2026-email-signin
 - **Limits were proven on the live system, not assumed from tests**, and the one that failed under parallel load was measured before and after the fix.
 
 ---
+
+## 2026-10-13, the Quality Rater goes live: a judgment model told who the publisher is, severity in place of traffic, and a link finder that gave nothing on the night of a demo
+
+Written on 2026-10-13 from the session handoff (`HANDOFF_quality-rater-live-links-hosting_2026-10-13.md`), the `quality-rater` repo commits `df42417` to `d88b8e5`, its `decisions.md` entries for 2026-10-13, Peace's live-walk log (`docs/qa/2026-10-13-peace-live-walk.md`), and checks run while writing (2,548 tests pass; `qr.notebookers.com/api/health` answers 200). Follows the 2026-10-08 Quality Rater entry above.
+
+### What shipped
+
+- **Live at qr.notebookers.com** for the team: one Railway service runs the web app and the background worker together; the data lives in its own locked-down schema inside a database the agency already pays for. 12 site checks, 2,136 pages, 4 clients and 9 drafts were copied across, with counts checked on both sides.
+- **The model is told who publishes the page.** A company recommending its own product on its own site is no longer flagged as hiding a commercial interest. On the test page the "hidden stake" reading fell from 0.87 to 0.08 and the page moved from Lowest to Medium+.
+- **Verdicts are read against the whole page.** A "show first-hand proof here" card is no longer put on a sentence whose reasoning the page gives elsewhere; the model scored those three sentences 0.86 to 0.94 on "the basis is given elsewhere" and 0.05 on "the writer tested it".
+- **Pages grouped by severity:** High, Medium and Low priority follow the rating alone. Search Console and everything that existed only for it (a pipeline stage, a removal review, a settings section, every "traffic" sentence, five database columns) were removed in one pass. The whole Spellbook site was re-rated under the new rules for $0.31: 18 high, 41 possible overlaps, 201 medium, 288 low.
+- **Internal links got their own section:** pick the client, paste the draft (its links stay links), press Find; the draft opens with the suggestions already found.
+- **A sign-in screen that says what the app does,** drawn as three steps from the product itself.
+
+### Decisions worth recording
+
+- **Tell the model the publisher; do not veto the finding in code.** A code rule ("skip the stake when the site's brand is the product") was rejected because an affiliate site that names itself would lose a real finding. A $0.001 probe showed the publisher's domain alone changed nothing; the domain plus a reworded question did.
+- **Severity, not traffic, decides what to open first.** The old groups mixed the rating with search traffic, which produced lines like "its traffic is unknown without Search Console". Peace asked for Search Console to be removed entirely; the groups now mean only how serious the problems are, and their names always say "priority" so they are never read as Google's rating.
+- **Cheapest paid hosting that fits the team's existing setup.** Peace believed Railway was free; it is not ($5 a month with $5 of usage, then about $10 per GB of memory). A free tunnel from her laptop and a free cloud server were offered and declined; the app copied the shape of an existing product (one service, data in a shared database) rather than adding a second database.
+- **A busy database is protected on purpose.** The background worker checks for work every 10 seconds, not 2, because empty polling caused an organisation-wide database outage on 2026-09-04.
+
+### Frictions and course corrections
+
+- **The link finder returned "0 suggestions" on the live site, the night of the demo.** It had been tuned on one long article. A stage-by-stage diagnosis on the real draft showed three rules each cut everything on a clause library: a similarity floor just above every candidate (0.49 to 0.54 against 0.55), an anchor rule needing two specific title words when clause pages have one, and source-citation lines counted as prose. After the fix the clause draft got 2 suggestions and the original article kept its 6. A looser first attempt produced anchors like "otherwise in compliance" and was tightened before shipping.
+- **A rewrite read well and changed the meaning.** On a page of quoted SEC clauses, a cut-off sentence was rewritten with an invented cause ("these provisions"); the filing says the cause is concentrated share ownership. Checked against the live page and the filing itself. Nothing in the app checks meaning today, so this is the top item for the next session, logged rather than patched in a hurry.
+- **"Fix highest first" was first answered by reordering the old groups,** which Peace rightly said was not what she asked; the real problem was that the groups did not mean severity.
+- **Hosting hit three platform gotchas in order:** a production-only build setting that would have skipped the build tools, a schema that could not be created under the database's newer permission rules, and a queue library that needs a database-level right even when its schema exists. Each was fixed and verified before moving on.
+- **Peace's live walk produced eleven items,** from unclear finding wording to links shown as raw text. Ten are logged with the checked cause and the fix shape; one (the empty link finder) was fixed the same evening.
+
+### Why this matters for the portfolio
+
+- **AI judgment was steered with measured probes, not guesses:** every change to what the model is asked was tried on the real page first, with the before and after numbers kept.
+- **Removal done whole:** a data source the owner rejected was taken out with everything that existed only for it, rather than hidden.
+- **A live failure was diagnosed to its mechanism in one sitting** and fixed for the whole class of content, with the original case re-checked so the fix did not trade one failure for another.
+
+---
