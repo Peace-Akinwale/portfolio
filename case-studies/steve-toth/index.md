@@ -4644,3 +4644,7 @@ Written on 2026-10-13 from the session's own records: the client's Slack thread 
 - **A self-caused outage was handled in the open:** rolled back, reproduced, explained, prevented in the pipeline, and written down, with the estimate labelled as an estimate.
 
 ---
+
+**Correction, same evening (2026-10-13):** the entry above says one platform's acceptable-use page could not be read and that the watchlist grew by 18 pages. A re-check of every vendor's own legal hub, prompted by Peace asking whether everything Steve asked for was covered, found 15 more terms and usage-policy pages missing and added them (32 terms pages in all, 64 pages in the code list, 40 of them legal). The acceptable-use page that failed in the morning read fine on a second try and is watched. Source: Radar commit `6ba266fd`.
+
+---
