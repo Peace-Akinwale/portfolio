@@ -4561,7 +4561,7 @@ Written on 2026-10-13 from the session handoff (`HANDOFF_seoirl2026-email-signin
 
 ### Frictions and course corrections
 
-- **The first limit was not a limit under load.** "Five tries per code" passed every sequential test and every one of 31 unit tests, but five guesses sent at once on the live site got eight checked. The count was read and then written in a cache that lets parallel requests read the same value. It moved to a store that handles one request at a time; the same live test then checked exactly five.
+- **The first limit was not a limit under load.** "Five tries per code" passed every sequential test and every one of 32 unit tests, but five guesses sent at once on the live site got eight checked. The count was read and then written in a cache that lets parallel requests read the same value. It moved to a store that handles one request at a time; the same live test then checked exactly five.
 - **The email plan was found by a real send, not by reading docs.** A failed request returned no quota information; one real email to Peace's inbox returned the free-plan header, which changed the launch-day risk.
 - **A test scare that was not a bug:** editing the last character of a sign-in link still worked. The last character carries two padding bits, so both versions decode to the same signature; editing a middle character was rejected.
 - **Local testing pointed links at production,** because the local server reports the real host over plain http. The link is now always https on a real host.
