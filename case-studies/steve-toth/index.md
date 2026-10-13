@@ -4539,3 +4539,37 @@ Written on 2026-10-12 from the session handoff (`HANDOFF_seoirl2026-recordings-l
 - **Every claim was checked on the live site**, including the security limit, rather than trusted from a deploy log.
 
 ---
+
+## 2026-10-13, SEO IRL recordings: slides inside the talk, the shared password replaced by emailed sign-in, and a bug hunt that measured the live limits
+
+Written on 2026-10-13 from the session handoff (`HANDOFF_seoirl2026-email-signin-live_2026-10-13.md`), the site branch `feat/seoirl2026` (`20db007`, `f5f894d`, `d47722e`), root `decisions.md` 2026-10-13, and live probes run during the session. Follows the 2026-10-09 to 2026-10-12 entry above.
+
+### What shipped
+
+- **Slides inside the talk view:** every page of the 12 PDF decks rendered as images (695 files, 51 MB) and shown under the video, behind the sign-in. On a laptop the video floats in the corner once the viewer scrolls past it; on a phone it sticks under the header. Playback never restarts, because the player is restyled, never moved.
+- **Emailed sign-in replaced the shared password:** a listed buyer types their email and gets a 6-digit code plus a one-click link from `SEO IRL <hello@seoirl.com>`; either works for 15 minutes and signs them in for 30 days. The password was deleted from Cloudflare and from the env file.
+- **A new sending domain:** seoirl.com verified in the company's existing email account with four DNS records, leaving the domain's own mail settings untouched.
+- **Four bug-hunt fixes, live:** an honest message and a Slack ping when the free email allowance runs out; an attempt limit that holds under parallel requests; the emailed link returns a viewer to the talk they had open; one misleading line of copy corrected. 37 gate tests pass.
+
+### Decisions worth recording
+
+- **Sign-in by email, not two-factor and not a second password.** Karla asked about 2FA; for about 50 conference buyers, a code sent to the ticket email gives per-person access with nothing to install.
+- **The sender is the event's own domain** (`hello@seoirl.com`), at Karla's request, because buyers know SEO IRL and not the agency's domain. A `recordings@notebookers.com` sender was proposed and declined.
+- **No database for codes.** The code is never stored; the browser holds a signed fingerprint of it, so there is nothing to leak and nothing to brute-force offline.
+- **Slides belong inside the talk, not beside it.** An interactive mockup of a call-to-action on the slides went through four options before Peace reframed the goal: viewers should see the slides while the video plays.
+- **The upgrade stays a decision, not a default.** The email account turned out to be on the free plan (100 a day). Instead of paying $20 a month on assumption, the page now tells viewers when sending resumes and pings Peace at 80 sent, so the spend can be decided with real numbers.
+
+### Frictions and course corrections
+
+- **The first limit was not a limit under load.** "Five tries per code" passed every sequential test and every one of 31 unit tests, but five guesses sent at once on the live site got eight checked. The count was read and then written in a cache that lets parallel requests read the same value. It moved to a store that handles one request at a time; the same live test then checked exactly five.
+- **The email plan was found by a real send, not by reading docs.** A failed request returned no quota information; one real email to Peace's inbox returned the free-plan header, which changed the launch-day risk.
+- **A test scare that was not a bug:** editing the last character of a sign-in link still worked. The last character carries two padding bits, so both versions decode to the same signature; editing a middle character was rejected.
+- **Local testing pointed links at production,** because the local server reports the real host over plain http. The link is now always https on a real host.
+- **The slide column first used half the screen,** and Peace rejected it; it now uses the full width.
+
+### Why this matters for the portfolio
+
+- **Access control was upgraded on a live product in one day without locking out anyone** already signed in, and the old password was removed everywhere it lived.
+- **Limits were proven on the live system, not assumed from tests**, and the one that failed under parallel load was measured before and after the fix.
+
+---
