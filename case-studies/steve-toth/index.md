@@ -4648,3 +4648,40 @@ Written on 2026-10-13 from the session's own records: the client's Slack thread 
 **Correction, same evening (2026-10-13):** the entry above says one platform's acceptable-use page could not be read and that the watchlist grew by 18 pages. A re-check of every vendor's own legal hub, prompted by Peace asking whether everything Steve asked for was covered, found 15 more terms and usage-policy pages missing and added them (32 terms pages in all, 64 pages in the code list, 40 of them legal). The acceptable-use page that failed in the morning read fine on a second try and is watched. Source: Radar commit `6ba266fd`.
 
 ---
+
+## 2026-10-13 to 2026-10-14, Quality Rater: a site audit that says where to start, a rewrite guard that refuses to change a quote's meaning, and the code opened to the team
+
+Written on 2026-10-14 from the session handoff (`HANDOFF_quality-rater-site-audit-github_2026-10-14.md`), the `quality-rater` commits `b47903f` to `cb6199b` (68 commits), its `decisions.md` entries from the night of 2026-10-13 to midday 2026-10-14, and checks run while writing: 2,683 tests pass across 216 files, type check and lint clean, `qr.notebookers.com/api/health` answers 200, and the two production audits read `complete` in the database with their costs. Follows the 2026-10-13 Quality Rater entry above.
+
+### What shipped
+
+- **Site audit, a second feature beside the rating:** a strategist enters a domain and gets a work list, not a score: where to start (quick wins ranking 4 to 20 with few links first), links to add (the sentence and anchor quoted word for word from the source page, nothing invented), pages that overlap (the judgment model decides keep, merge or differentiate and picks the survivor; a landing copy is pointed at its main page rather than merged), each page's Search Console rankings, and the basics. Two new migrations, five new tables, its own queue in the same worker, 16 commits from design to first run in 25 minutes, then 20 more from reading the output. No writing model is used anywhere in it.
+- **Run on the real sites, judged as a strategist, run again on production:** Spellbook (640 pages, $0.058) and Botpress (2,000 pages, $0.160). Of the first fifteen fixes on each site every one was a page worth acting on; of ten sampled links per site, nine read well. Every required check held: no translation pair offered as overlap, no link across languages, no merge between two partners' pages, a site's eight ad landing copies as one fix rather than eight rows, no menu-linked page called an orphan.
+- **The rewrite that changed a quote's meaning (last entry's open item) is closed.** A passage under a Source line, inside a quotation, or cut off mid-sentence is never rewritten; the card says what to do instead and the server refuses before any spend. Every other rewrite option now passes a meaning check by the judgment model: 15 of 15 measured judgments right, the bad SEC rewrite scored 0.68 and dropped, faithful rewrites 0.09 to 0.25, at $0.00007 a card.
+- **A company's own landing page is no longer told it lacks a byline.** Peace found the flag on a Spellbook landing page; the trigger now stands down on home, landing, product and similar pages when the site shows its owner. Re-rated from stored answers for $0: five of 548 Spellbook pages moved from Low to Medium.
+- **The three jobs rebuilt from a study of the best products** (eight changes, all live): the run screen opens on the problems its pages share, each a filter; each problem's instruction and evidence in one place; a breadcrumb back; editable link text; the page dims around the open card; insert every strong link at once with one undo.
+- **The code is on GitHub for the team:** a private repo under the agency's organisation, two colleagues with write access, a README that says what the tool is, the five rules it keeps, how to run it in three commands, how to contribute and who deploys. A full-history scan for nine secret patterns found code references only.
+
+### Decisions worth recording
+
+- **The audit is a new feature; the rating does not change.** The rating raised 384 issues on Spellbook and 73% were three rules on pages they do not fit. Rather than soften the rating, Peace asked for a work list beside it and kept the rating as it is so the team can see the difference. Any behaviour the audit needed from a shared module was copied into the audit's own folder.
+- **Only the judgment model decides; text-only overlap groups are pairs.** Groups of four on text similarity alone mixed subjects (healthcare with retail: templated pages read 98% alike), so text groups are pairs, exact copies group to four, and a shared search query may make four. Measured on stored embeddings for $0 before any paid run.
+- **A redirect is not a page.** The rating had counted two redirecting addresses as a duplicate pair at 100%; the audit follows redirects and never lists one as an orphan or an overlap partner.
+- **Search Console through a separate desktop OAuth client,** so the shared sign-in client keeps its empty redirect list; rankings are optional and the screen says so until the credential works.
+- **Deploys stay manual after the move to GitHub.** Railway is deliberately not connected to the repo: a merge changes nothing live until Peace runs the deploy. One person decides what goes live while the team learns the code.
+
+### Frictions and course corrections
+
+- **The first screen was wrong on both sites even though the machinery held** (15 of 16 link sentences found word for word on the live pages). Translations were offered as merges, ad landing copies as merges, generic anchors ("legal professionals") as links, menu-only pages as orphans, and Cloudflare's email-protection links as broken. Five fixes, each with a test that failed first; then six more found while judging the re-runs, including a partner pair that still merged because its text wrote the name in lowercase, and the one pair that had to survive crowded out by looser neighbours until the evidence was tiered.
+- **A Google Cloud secret was printed once.** While reading the console's button labels to find a new client secret, a second secret appeared in the session output. It was deleted on Google's side the same morning with each confirmation dialog checked by name, and a clean secret was read from one known control and never printed. The rule is now written down: read one control, never list.
+- **The cut-off-sentence rule flagged 384 real lines on its first version** (captions, "Recommended reading" lines) across about 31,500 local paragraphs; it was tuned on that data before it shipped.
+- **Peace could not find the sidebar's expand button and thought her audits had vanished.** The button was at the very bottom under Sign out; it moved to the top with a test on the order. The audits had only ever existed in the local sandbox, which was said plainly rather than patched.
+- **A code-quality self-check before handing the repo over:** no `any`, 4 TODOs, the two largest editor files at 809 and 633 lines, no CI yet. Told to Peace as is, with what a reviewer would ask for first.
+
+### Why this matters for the portfolio
+
+- **Output was judged on real sites, not on tests passing:** the first screen of each audit was read as the person who would act on it, and every fix came from a specific wrong row.
+- **A model's judgment was bounded in code where code is certain** (a quote is a quote) **and measured where it is not** (meaning), with the numbers kept.
+- **Handing code to colleagues was treated as a deliverable:** a README written for a first-time reader, secrets scanned out of history, access granted, and the deploy path kept under one person's hand on purpose.
+
+---
