@@ -4685,3 +4685,32 @@ Written on 2026-10-14 from the session handoff (`HANDOFF_quality-rater-site-audi
 - **Handing code to colleagues was treated as a deliverable:** a README written for a first-time reader, secrets scanned out of history, access granted, and the deploy path kept under one person's hand on purpose.
 
 ---
+
+## 2026-10-14, SEO IRL recordings: Steve's two asks shipped by morning, every talk with its slides and a transcript to copy
+
+Written on 2026-10-14 from the session handoff (`HANDOFF_seoirl2026-slides-transcripts-title_2026-10-14.md`), the site branch `feat/seoirl2026` (`849f1236`, `1a214805`, `bbddfca7`) and live checks run during the session. Follows the 2026-10-13 recordings entry above. The Quality Rater work of the same day is in the entry before this one.
+
+### What shipped
+
+- **Steve's two requests from a 2am Slack message, live the same morning:** a "View slides" button beside Download on every talk, and a "Copy transcript" button that puts the whole talk on the clipboard as plain text (all 14 transcripts built from the name-corrected captions).
+- **Speaker names corrected before anything went live:** reading the new transcripts surfaced four caption errors (two company names, a speaker's employer, a musician), fixed in the captions on the video platform and in every transcript, each spelling checked against the person's own site.
+- **Steve's own deck, matched to everyone else's:** his talk was the only one without slides on the page. His deck is a live web presentation, so it was captured slide by slide in a headless browser at presentation size (61 slides, the presenter's on-screen controls hidden, each slide checked by eye), then shown under his video with a PDF like the other twelve.
+- **The page renamed "SEO IRL 2026 Slides and Recordings"** at a teammate's request, and four more attendees added to the list.
+
+### Decisions worth recording
+
+- **A copy button, not a transcript panel.** A panel had been removed two days earlier because the player already shows captions; the request was to copy, so that is all that was added.
+- **The transcript is fetched when a talk opens, not when the button is pressed,** so the copy happens inside the click; browsers can refuse a clipboard write that comes after a network wait.
+- **"Match the others" beat "good enough":** the first version linked out to Steve's deck; Peace asked for it to look like every other speaker's, and the capture made it so.
+- **No test email to new attendees:** the only live test of a new address sends that person a sign-in email before the official announcement, so the evidence was the list count instead.
+
+### Frictions and course corrections
+
+- **A live check signed in as Peace sent her a sign-in email she had not expected;** after that, live checks ran in her already signed-in browser.
+- **Two "bugs" in testing were the harness:** a click measured while the page was still scrolling, and a background browser tab that never scrolls. Both were proven before being dismissed.
+
+### Why this matters for the portfolio
+
+- **A client's request was turned around within hours, verified on the live site,** and the work surfaced and fixed errors nobody had asked about (the misspelled names) before they became copyable.
+
+---
