@@ -4714,3 +4714,35 @@ Written on 2026-10-14 from the session handoff (`HANDOFF_seoirl2026-slides-trans
 - **A client's request was turned around within hours, verified on the live site,** and the work surfaced and fixed errors nobody had asked about (the misspelled names) before they became copyable.
 
 ---
+
+## 2026-10-14 to 2026-10-15, SEO IRL recordings go on sale: a paid page on seoirl.com that lets buyers in automatically, after the first build landed in the wrong repo
+
+Written on 2026-10-15 from the session handoff (`HANDOFF_seoirl2026-recordings-sales-stripe_2026-10-15.md`), the commit history of `stevetoth/site-seoirl-com` (`26a26d0`, `80dca69`, `93c29aa`) and the portal branch `feat/seoirl2026` (`f38a0732` to `8ffb2392`), and live checks re-run while writing (both pages 200, the Stripe link 200, a forged webhook call refused with 400, 59 portal tests passing). Follows the 2026-10-14 recordings entry above.
+
+### What shipped
+
+- **A sales page and terms page on seoirl.com** (`/recordings/`, `/recordings/terms/`), a "Get the Recordings" button on every page and a call-out at the top of the homepage, built in the live site's own styles. Price 177 USD with tax added for Canadian buyers, as Steve asked.
+- **The Stripe side, set up by Peace herself** with a Developer login: product, payment link with automatic tax and a required terms-of-service checkbox, a thank-you screen with the next steps, and a webhook into the recordings portal.
+- **No human step between paying and watching:** the portal checks Stripe's signature (HMAC over the raw body, five-minute window, constant-time compare), admits only a paid checkout from that one payment link, stores the buyer's email in one atomic write with the event id, emails them the sign-in steps once, and pings Peace. 21 new tests; 59 in the suite.
+- **Three people Steve named are refused everywhere,** even if they pay. Stripe could not block them without a paid add-on, so a blocked payer is let in by nobody and refunded by hand.
+- **Steve's ask that every video still show its speaker:** four of 14 stills fixed (a wide room shot, the person introducing the speaker, a speaker at the frame edge, a head in front), chosen from eight frames per talk.
+
+### Decisions worth recording
+
+- **Ask for the narrowest Stripe role that does the job.** The developer on the account offered admin access; the platform's roles page showed the Developer role can build links and webhooks but cannot touch bank details, payouts or members. That is what was requested.
+- **An empty "which payment link" setting was made a hard stop, not a convenience.** Left blank, the webhook would have admitted the buyer of any product on Steve's Stripe account. Found in a pre-ship bug hunt along with a lost-buyer race and bank-debit payments that complete as unpaid.
+- **The portal address came off the public page** at Peace's call, so buyers learn it from the thank-you screen and the welcome email instead.
+- **A test purchase was skipped deliberately:** the signature path is proven by tests in the real runtime and by a live refusal, and Stripe retries a failed delivery for three days, so the first real sale is the check, with the place to look written down.
+
+### Frictions and course corrections
+
+- **The whole first build went to the wrong repo.** The brief named a Next.js rebuild; it was built, tested, merged in two pull requests, and changed nothing on seoirl.com, which is served by a scraped static site on Cloudflare Pages. Peace caught it on her phone. The page was rebuilt in the serving repo the same night, and "fingerprint the live domain before building" is now a rule in the bug-hunt library.
+- **Peace saw the new page unstyled on her phone and doubted it was a cache issue; it was.** The stylesheet was cached for four hours under one name while pages were never cached, and her phone had loaded the site 26 minutes before the deploy. Proven with a cache-free browser before fixing; every page now asks for a versioned stylesheet.
+- **The nav button was placed three times:** it overflowed at 1100 and 1240 pixels, and a text link for mid widths overflowed at 768 to 900, so it shows from 1280 up and the homepage call-out covers narrower screens. The phone menu also cut off its new last link until its height cap was raised.
+
+### Why this matters for the portfolio
+
+- **A payments flow was built with the platform owner's money in mind:** least-privilege access, signature checks, one-product scoping and no silent failure, each verified against the provider's own documentation.
+- **The mistakes are in the record with their fixes:** a build in the wrong place and a cache diagnosis the client doubted were both proven, corrected and turned into rules that stop them recurring.
+
+---
