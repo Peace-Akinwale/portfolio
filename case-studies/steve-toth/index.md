@@ -4746,3 +4746,34 @@ Written on 2026-10-15 from the session handoff (`HANDOFF_seoirl2026-recordings-s
 - **The mistakes are in the record with their fixes:** a build in the wrong place and a cache diagnosis the client doubted were both proven, corrected and turned into rules that stop them recurring.
 
 ---
+
+## 2026-10-15 to 2026-10-16, Fanout Notebook reads seven AI engines, then loses every ChatGPT run to its own guard on the afternoon of a recording
+
+Written on 2026-10-16 from the session handoff (`HANDOFF_capture-routes-live-reentrancy-outage_2026-10-16.md` in the `fanout-notebook` repo), that repo's git log (`fd0d8ec` to `5fee2a3` on `feat/machine-runs`), its `decisions.md`, and live checks re-run while writing (suite, dashboard and download answers). The product is the team's own extension and dashboard for seeing how AI platforms search for and cite a client.
+
+### What shipped
+
+- **From one engine to seven.** Signed-out ChatGPT, Google AI Mode, Gemini, Brave Search and Google Search became readable, each parser ported from a hand-built HAR analyzer and pinned by fixtures (17 capture envelopes, five parser releases 1.8.0 to 1.9.2 in two days). The full suite now holds 2,711 passing tests.
+- **A capture route for sites with no single stream to read.** A page-side recorder and a relay assemble one envelope per question; the readers then work offline from it, so a parser fix can re-read saved runs without asking the AI again.
+- **Real results for a client.** For C.A. Short, ChatGPT and Claude shortlisted competitors and never the client on any category question in 14 real browser runs, while the dashboard's blended figure (about 30 percent cited) came from September's 98 API runs. The 50-question visibility set, a memory-free run prompt and a team SOP were written the same day.
+- **A "Download extension" button on every dashboard page** and a "Reload tab" badge that now reloads the tab, both live (`e2642dd`, `cd2d345`).
+
+### Decisions worth recording
+
+- **Brave was set aside and a Perplexity fix was handed to its own session** when the client priority list (ChatGPT, Claude, AI Mode, Perplexity) was stated, instead of finishing every engine.
+- **The release waited for the recording.** An extension update orphans every open tab, so the fix was built into a local folder first and released to the team only after the owner confirmed it worked.
+- **A proposed change was withdrawn when the owner asked why.** I suggested splitting real and simulated runs on a dashboard page; the existing time filter already gave that view, so it was dropped.
+- **A usage cap was treated as a stop condition.** The bug hunt ran inline with no sub-agents and a hard stop at 95 percent of the plan window.
+
+### Frictions and course corrections
+
+- **Every ChatGPT run stopped saving at 16:13 UTC, an hour before a video for the client.** A second extension hooking the same request was found first and removed; nothing changed. The real cause was in our own code: the fetch wrapper's re-entrancy guard was one boolean held for the whole downstream call, so any request sent while another was pending bypassed the wrapper. ChatGPT had begun sending its `prepare` request and the answer request in the same instant. Proven by reading the live page's `fetch` source against the build, then by a test that fails on the old guard; verified live with five runs in a row.
+- **The first live runs found five more faults** the unit suite could not: ChatGPT cancels its own stream after the end marker and the hook read it as a broken stream, a human-check page was filed as a question, Google's error page read as an unrecognised shape, a slow answer saved twice, and a signed-out Perplexity thread cannot be read back at all. Two were repaired from raw by a re-parse, with identical pages.
+- **I wrote the build's per-engine tests against synthetic input** and called the readers proven only on that; the first real page showed the gap, and the release notes say so.
+
+### Why this matters for the portfolio
+
+- **The cause was found by eliminating the plausible outsider first, then reading our own guard.** The lesson is a pattern now in the bug-hunt library: a shared "I am inside my own call" flag that spans an await turns every concurrent caller into the recursion.
+- **An outage under a deadline was fixed without breaking the thing that worked:** a local build, a live check on the owner's own browser, then a release in the documented order.
+
+---
