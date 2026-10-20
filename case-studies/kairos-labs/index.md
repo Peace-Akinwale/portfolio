@@ -45,3 +45,33 @@ The editor assigned two October topics. This entry covers the first, a "best con
 - **Proof for a marketing claim was produced cleanly:** a clean profile, non-branded questions, a date, and an honest list of what could not be tested.
 
 ---
+
+## 2026-10-20, an enterprise SEO comparison sharpened around the work a buyer still has to manage
+
+Editorial review of an enterprise SEO agency comparison moved beyond service lists to the consequences of each agency's scope. This entry draws on the October 20 handoff, the editing conversation, and a live read of the selected Google Docs revision.
+
+### What shipped
+
+- A separate review tab retains the revised comparison while preserving the original article. The live revision includes distinct implementation responsibilities and a shorter selection section. Publication approval remains unverified.
+- A scoped AI OS calibration records rejected examples and the reasons behind the corrections, rather than preserving only polished final copy.
+- A handoff and dated article snapshot retain the remaining editorial questions without treating a successful save as final approval.
+
+### Decisions worth recording
+
+- **Compare consequences, not just capabilities.** The article explains when an agency can implement changes and when the client's engineers still need to do the work. A list of technical services alone doesn't establish that distinction.
+- **Don't manufacture cons for symmetry.** A discrepancy between deliverable counts on a website belongs in verification notes. It isn't automatically a meaningful limitation of the agency's service.
+- **Diagnose the unfinished work before prescribing another audit.** Unclear implementation instructions and engineers with no time require different forms of agency support. That distinction gives the selection section something useful beyond repeating the profiles.
+- **Separate standard packages from enterprise agreements.** Published entry-tier terms don't establish the scope or pricing of a custom enterprise engagement.
+
+### Frictions and course corrections
+
+- Repeated feedback exposed vague phrases such as “development capacity” and “on-page work.” Rewrites named the actual responsibility instead of replacing one abstract label with another.
+- Routine expectations, including having writers or a main contact, took space without always helping the comparison. The editing standard became whether the detail changes the reader's decision.
+- Some rewrites offered in chat were already present when the live document was read again. The handoff records the current artifact without guessing who pasted them or declaring unverified approval.
+
+### Why this matters for the portfolio
+
+- Useful comparison writing requires editorial judgment about evidence and buyer consequences, not just collecting accurate feature descriptions.
+- Saving the rejected approaches and their reasons makes the next review more consistent without turning a successful article into a rigid template.
+
+---
