@@ -4838,3 +4838,33 @@ Written on 2026-10-21 from the session handoff (`HANDOFF_quality-rater-pushkar-r
 - **A cost question got a business answer,** what it buys and what it multiplies by, rather than a yes to a clever idea.
 
 ---
+
+## 2026-10-21, AI Docs Watch: six notes from Steve built in a day, and a confident answer of mine corrected before he acted on it
+
+Written on 2026-10-21 from the session: Steve's Slack DM of 2026-10-20, the analysis folder `docs/plans/2026-10-21-001-docswatch-steve-oct20-asks-analysis/`, the handoff `HANDOFF_docswatch-steve-oct20-asks-built_2026-10-21.md`, the stevetoth.ai commit `1625f773` on `main`, and live checks run that day (every page named below returned 200; the site suite ran 102 tests OK). Follows the 2026-10-13 Docs Watch QA entry. Steve sent six notes on the public Docs Watch site: page titles, whether a competitor-covered Anthropic policy change was tracked, that policy's tabs, light mode on the side by side page, a way back to the site and a share control there, and a calmer top of the change page with a tighter headline, drawn in his own mock.
+
+### What shipped
+
+- **The site, live on `main`:** the change page top follows his mock (the short article title as the headline, one meta row, the main button above the fold on a phone, where it had sat at the bottom edge), title tags in his "official docs and policy changelog" shape and never cut, a side by side page with the logo, a back link, Share, a fold-away bar, its own share card, and light and dark on both panes.
+- **The Anthropic change, rewritten in production.** It was tracked on Oct 14, but the write-up covered a different part of the rewrite. Regenerated with two model calls, it now reports the "Deceptive Campaigns or Artificial Activity" section and the Nov 12 effective date.
+- **The Radar half built and tested, not yet deployed:** the writers see whole rewrites, a list of new sections and the effective date; archived pages open every tab and accordion with a label; one database migration applied. Railway paused builds in every region that day, so the deploy waits.
+
+### Decisions worth recording
+
+- **Use what the data already holds before changing a prompt.** Every one of the 52 published changes already carried a short title (about 49 characters) while the page headline averaged 167. Making the title the headline needed no model calls and no regeneration.
+- **Push back on one element of Steve's mock.** His before/now card could not be fed from the existing quotes: on the showcase page the "before" text is still on the page (the change was an insertion), so striking it through would have been false. It became an optional new field the writer fills, with the card hidden when it is absent.
+- **Ship the way the owner ships.** Peace merges this site himself; a pull request I opened was closed at his word, and the work went straight to `main`.
+
+### Frictions and course corrections
+
+- **My own answer to Steve was wrong.** I had told him the "after" side of a compare page could not be switched to light. Tested instead of assumed, both panes are our own copies and can be switched; pages with no dark design of their own now get an inverted view. The correction went into the reply before he acted on it.
+- **The missed policy section had a mechanical cause:** the writers were shown the first 12 and 24 of 152 changed passages, and the section that mattered started at passage 51. Raising the cap was not enough on its own; the prompt now lists every new heading first.
+- **Two pre-ship bug hunts found ten real bugs** in work that had already passed review, among them a failed build that shipped its own broken pages, cut titles on 21 of 27 low impact cards, and the new dark view inverting Google's logos three times.
+- **Peace asked mid-way whether the time was well spent.** I answered with what had committed and what was still running, and started nothing new until the hunt reported.
+
+### Why this matters for the portfolio
+
+- **Steve's notes were answered with evidence,** including the uncomfortable one: "did we track this?" got "yes, and here is exactly why the write-up missed what you cared about".
+- **A wrong claim was caught by testing it, not by being challenged.** That is the habit a client should expect: the specific, checkable answer over the confident one.
+
+---
