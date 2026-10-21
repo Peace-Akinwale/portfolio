@@ -4809,3 +4809,32 @@ Written on 2026-10-21 from the session handoff (`HANDOFF_lens-pr3-review-real-re
 - **Security found by probing, not by reading:** one request through the filter showed the password, which no amount of reviewing the diff for the feature it was meant to deliver would have surfaced. Both lessons are now patterns in the bug-hunt library.
 
 ---
+
+## 2026-10-21, Quality Rater: a teammate's review answered with evidence, and five days of local fixes put where he can build on them
+
+Written on 2026-10-21 from the session handoff (`HANDOFF_quality-rater-pushkar-review-branch-on-main_2026-10-21.md`), the `quality-rater` commits `e9c0c15` to `9a87a63` now on `main`, read-only production queries and checks run during the session (3,007 tests pass across 253 files, build clean). Follows the 2026-10-13 to 2026-10-14 Quality Rater entry above. Pushkar reviewed the app end to end and asked four questions before taking work; his review was of `main`, while the fixes for most of what he found sat uncommitted in a separate local copy.
+
+### What shipped
+
+- **Answers to all four questions, each tied to a record.** Which of his 22 named files the local work touched (12). Whether the Oct 14 owner-page fix was live: deployed three seconds after its commit, but production was never re-rated, so the five pages he saw as High still carried Oct 13 ratings. That paid evidence fetching is barred by the repo's own rule 3. And which of his offers could start now (accuracy measurement) and which had to wait (making Reject re-grade a page, which shares code with the local work).
+- **A finding-by-finding map** of his twelve findings against the local work: six fixed or mostly fixed, one partly, five not done.
+- **The local work on GitHub `main`:** 207 files in five commits by area (rating rules, reports, drafts and links, site audit, navigation), copied byte for byte from the working copy, scanned for keys first, with the private data in that copy (a 72 MB database dump, captures, screenshots) left behind. Pull request #1 carries the findings table for review.
+
+### Decisions worth recording
+
+- **Measure accuracy before buying evidence.** Paid fetching would cost about $1 to $6 per 548-page run at the vendors' published prices, two to nine times the run's model cost, multiplied across clients. Production held only 2 Reject decisions, so the "labels already exist" premise of the accuracy plan was checked and found thin. The recommendation became "not yet, measure first", replacing my own first draft's "yes, capped".
+- **Evidence and judgment are different jobs.** DataForSEO's site audit checks status codes, links, speed and duplicates on the site itself; it does not judge authorship, experience or originality against other sites. The tool's value is the judgment, so where it duplicates a vendor check (broken links, internal duplicates) that part could be bought instead of built.
+- **"Deployed" was answered from the deploy log and the stored rows,** not inferred from what the live page showed.
+
+### Frictions and course corrections
+
+- **The first answer was rushed.** It missed that his questions lived in the attached document, never explained "paid fetching" in plain words, and leaned yes on cost. Peace said so directly, and the second pass answered every question with its evidence.
+- **I opened a pull request she had not asked for.** She had proposed pushing to main; I recommended a pull request, and took her "continue with it" as a yes. A reviewer request notifies a teammate, so it needed a clear yes. She kept the pull request and had the work pushed to main; the rule "an ambiguous go-ahead is not a yes to an outward action" is now a standing note.
+- **The first test run reported 54 failures,** all one cause: the local test database was not running. With it up, all 3,007 passed.
+
+### Why this matters for the portfolio
+
+- **A reviewer's findings were treated as hypotheses and checked against production,** which turned "was it deployed?" into a precise answer: the code was, the data was not.
+- **A cost question got a business answer,** what it buys and what it multiplies by, rather than a yes to a clever idea.
+
+---
