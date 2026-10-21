@@ -4777,3 +4777,35 @@ Written on 2026-10-16 from the session handoff (`HANDOFF_capture-routes-live-ree
 - **An outage under a deadline was fixed without breaking the thing that worked:** a local build, a live check on the owner's own browser, then a release in the documented order.
 
 ---
+
+## 2026-10-21, Lens review: a teammate's capture fix tested on a real ChatGPT session, and four bugs closed before it merged
+
+Written on 2026-10-21 from the session handoff (`HANDOFF_lens-pr3-review-real-recording_2026-10-21.md`), the commits on `review/pr3-redaction-fixes` in `notebookagency/Lens` (`23b5fd8`, `b546b15`, `6283e66`), and checks re-run while writing (Go suite 0 failures, PR #4 open). Lens is Gregory's platform for recording how AI search answers and cites; Pushkar's PR #3 made it save the ChatGPT answers it had been losing, and Gregory asked for a second pair of eyes before merging.
+
+### What shipped
+
+- **A review of a 32-file, 3,807-line change**, with eight findings ranked by severity and the three serious ones fixed with tests written to fail first.
+- **Pull request #4 against the author's branch**, three commits, 6 files, +242 / -25: credential fields redacted by name, every line of a streamed response redacted, a stream path kept that the answer rebuild needs, the extension's browser test made to start on a Mac, and every logged-in answer stored once instead of twice.
+- **A real signed-in recording, not a fixture.** The extension was installed into a signed-in Chrome, Simon's clinic question asked in a temporary chat, the checklist ChatGPT offered filled in (psychology, 1 to 5 practitioners, United States) and submitted. Lens captured both turns in full, recovered all three choices, and showed the client brand dropping out of the shortlist after the picks.
+- **A local Lens stack stood up for the test** with no Docker: Homebrew Postgres, all 15 migrations, the API and worker built from the branch.
+
+### Decisions worth recording
+
+- **Redact credentials by field name, and keep the change that exposed the gap.** The PR stopped blanking request bodies so prompts could be read; that also kept sign-in bodies, and the redactor only recognised secrets by shape, so a probe showed a password stored verbatim. Re-blanking the bodies would have undone the fix the team needed, so the redactor learned names instead.
+- **The answer is the message ChatGPT stores, the link is the message the next request names.** Three independent checks agreed (the stored conversation, the rendered page, the next request's parent id). Two simpler rules were tried and rejected because each broke a different real case.
+- **The fixes went up as a separate pull request against the author's branch,** so he decides what lands in his work, rather than pushing onto it.
+- **The outgoing message to the team was cut to observations and checked line by line.** Three claims were corrected before sending: a garbled character, "exactly what Simon saw" (the numbers differed, the shape matched), and "on his branch" (they were in a separate PR).
+
+### Frictions and course corrections
+
+- **The fourth bug was invisible until the real recording.** Every logged-in answer rendered twice: ChatGPT streams the full answer into one message and the visible pieces into others, and the parser joined both (12,755 characters where ChatGPT stores 6,715). The committed test expected the doubled length, because its number had come from the code it was testing; it was corrected against ChatGPT's own stored copy.
+- **The first fix to the redactor broke an unrelated report test** by overwriting a more specific placeholder; a bug hunt on my own commit caught it and also trimmed the matcher and four names outside its scope.
+- **Reaching the result took several harness detours,** each now written down: the repo ships the Firefox manifest, the extension's worker sleeps between steps, ChatGPT keeps a hidden second editor, the submit button ignores scripted clicks, and the web app is hard-wired to production.
+- **My first Slack draft was too technical;** Peace asked what three sentences meant, and the version sent says what was observed in plain words.
+
+### Why this matters for the portfolio
+
+- **A review that tests the change the way users will meet it,** on a real signed-in session, found the bug a fixture had locked in, and named the mechanism instead of the symptom.
+- **Security found by probing, not by reading:** one request through the filter showed the password, which no amount of reviewing the diff for the feature it was meant to deliver would have surfaced. Both lessons are now patterns in the bug-hunt library.
+
+---
