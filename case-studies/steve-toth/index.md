@@ -4868,3 +4868,37 @@ Written on 2026-10-21 from the session: Steve's Slack DM of 2026-10-20, the anal
 - **A wrong claim was caught by testing it, not by being challenged.** That is the habit a client should expect: the specific, checkable answer over the confident one.
 
 ---
+
+## 2026-10-21, Lens: Fanout's seven engines ported into the team's recorder in Go, then a bug hunt and a walk that found what every green test missed
+
+Written on 2026-10-21 night from the session, the two handoffs (`HANDOFF_lens-fanout-engines-port_2026-10-21.md`, `HANDOFF_lens-fanout-engines-fix-pass-walk_2026-10-21.md`), the bug-hunt report and `git log` of `feat/fanout-engines`. Steve prefers Lens, Gregory's Go recorder, over Fanout Notebook, the Chrome extension Peace built; the Oct 16 engineering call asked for Fanout's logic inside Lens. Peace's framing: one new branch off Pushkar's open PR so nothing of the team's is touched, Fanout's parser numbers as the floor, platforms and modes told apart on screen.
+
+### What shipped
+
+- **Seven engines in Go, each proven on a real recording made through the real add-on:** ChatGPT signed in, signed out and Deep Research; Google AI Mode; Gemini; Claude; Perplexity (fixtures only, Cloudflare blocks automated browsers); Brave Search including its October page shape that Fanout reports as unrecognised. Migrations 016 to 019.
+- **The add-on scrubs before upload, unconditionally.** Measured before: 43 Cookie and 34 Authorization headers of the signed-in account inside the raw blob of a hand recording. After: 0 and 0 on a live signed-in recording, and asset bodies dropped, 99 MB to 6.5 MB across three recordings.
+- **A stored capture per session and a client export by date range** (JSON or CSV, a Library control): the five-chat session that took 57 s to read now answers in 0.015 s. Backfill job for sessions captured before the change.
+- **84 commits, nothing pushed:** 27 of port, then 53 from a deep bug hunt of those commits fixed in the report's order, one commit each, tests first, then 4 from a strategist walk of the merged app. Gates at the close: Go suite 11 packages, vet, six strict redaction seam tests, extension 34 of 34 on Chrome and Firefox 158, web 11 probe files.
+
+### Decisions worth recording
+
+- **One branch off the teammate's open PR, not a rewrite of their work.** Pushkar's PR #3 and the review fixes in PR #4 stay as they are; the port merges after them. Rejected: building on `main` and asking them to rebase.
+- **The transport's end is not the answer's end.** ChatGPT holds its stream open with keepalive pings after the answer; a recording stopped seconds after the answer appears carried a whole answer, the platform's own end markers, no close event, and the recorder's "failed" flag, and read as truncated. Completion now comes from the content's own markers or the close; the recorder flag stays on the record and in the reason. A flag before the content's end still reads truncated.
+- **"Pending" means ready without a stored capture, and nothing else.** A session stuck mid-upload was counted as pending and offered a backfill the job could never take, so "Backfill 1 pending" would have sat in the Library forever. Not-ready sessions are now named with their status so the totals still add up. Rejected: hiding them from the count.
+- **No push, no PR, no message to the repo owner, no extra session credits without Peace's word.** When his session limit hit mid-step, work paused and resumed on his word; each finished piece was committed so a cut mid-turn loses nothing.
+
+### Frictions and course corrections
+
+- **Green suites, blank pages.** Four engines' Turns pages threw `Failed to construct 'URL'` because those dissectors fill the request endpoint with a path template while ChatGPT fills it with a URL, and the page built a URL from it. 219 probe checks passed; the walk found it in a minute. One helper, one probe that renders every engine.
+- **A commit nearly shipped the local login shim.** The dev-login hunks had sat staged all evening and `git commit` of three named web files took them along. Caught on `git show --stat HEAD`, undone, recommitted with the three files. New rule in Peace's memory: local-only hunks stay unstaged, and the stat is read after every commit, not only the staged set before it.
+- **The add-on reinstalled twice as "installed but dead."** The repo's committed `manifest.json` is the Firefox variant (the owner's state since 0.1.2), so an unpacked Chrome load has no service worker. The README's prepare step is the answer; recorded, not patched over.
+- **Stale 0.1.2 zips kept coming back** to the Install page because the pack step copied every versioned zip left in `dist/`. Fixed at the script, and the HAR now names the add-on build from the manifest instead of a literal 0.1.0.
+- **A suspicion was tested before it was fixed.** The first guess for the truncated turn was the new per-navigation gate; a 25 s stop on the same flow read clean, which cleared the gate and pointed at the raw stream, where the pings were.
+
+### Why this matters for the portfolio
+
+- **The port was judged on live recordings, not on fixtures.** Every engine was proven through the real add-on against the real worker, and the scrub was measured on the account's own cookies before it was called done.
+- **A pre-ship hunt and a first-time-user walk each found what the other could not:** the hunt found six ship blockers in code that tests passed, and the walk found four more in an app the hunt had passed. Both are now part of how work reaches a PR.
+- **Three of tonight's mechanisms became reusable detectors** in the bug-hunt library (content end versus transport end, a remedy offered for a count it cannot act on, a URL constructor on a field only some producers fill with a URL), so the next project pays for them once.
+
+---
