@@ -4989,3 +4989,37 @@ Steve forwarded Supabase's warning that Radar's database was "running out of Dis
 - **Monitoring that hides its own blind spots gets fixed in the same pass.** Both the misleading usage reading and the dead Railway token were found while answering a different question.
 
 ---
+
+## 2026-10-22, Lens: the Fanout engines PR opened for review after live recordings in two browsers and a fresh-eyes reverification that found what every green gate had missed
+
+Same-day follow-up to the morning's polish entry. The evening finished the bug hunt, built the export Peace asked for, recorded every engine Lens can reach in Chrome and Firefox, re-checked the whole branch as a reviewer would, and opened the pull request for Gregory, the repo's owner. Written the same night from the session, the gate logs, the recordings and the PR.
+
+### What shipped
+
+- **PR #7 on `notebookagency/Lens`**, 155 commits, opened from Steve's GitHub account with Gregory requested. Five AI search engines (Google AI Mode, Gemini, Claude, Perplexity, Brave Search) now parse in Lens the way ChatGPT does.
+- **The export Peace specified.** One filter bar on the Library (a date range that starts on "All time", plus a platform) that narrows both the session list and the download, and a second download, "Full turns", with every answer, citation, page and query for analysis in Claude. One server-side builder makes both the per-session file and the bulk one, so they cannot drift.
+- **Live proof.** Ten two-turn recordings, five in Chrome and five in Firefox, parsed and walked page by page. Perplexity was skipped (its sign-in rejects an automated browser) and Gemini failed on Google's side in Firefox; both are named as not covered.
+- **Final gates on a clean copy of the branch:** 305 Go tests pass in parallel and in serial against a real database, every one of the 155 commits builds on its own, 45 of 45 add-on tests on Chrome and Firefox, 15 of 15 web checks.
+
+### Decisions worth recording
+
+- **Fixing the race instead of retrying it.** A database test failed intermittently in parallel runs and was twice put down to the upstream code. Reproducing it (6 of 6 parallel rounds failed; a loop of one migration statement alone printed the same error 34 times) showed it was ours: one test helper ran migrations outside the lock every other helper held. With the lock, 0 of 6 failed. A retry would have hidden it.
+- **Repairing history rather than adding a follow-up commit.** One earlier commit had saved a file that did not compile; since nothing was public yet, the commit itself was corrected and every commit rebuilt alone, so a reviewer bisecting the PR never lands on a broken step.
+- **A recording with no evidence has no platform.** An empty recording would otherwise have listed under ChatGPT (the parser's old fallback) once the platform filter existed. Rejected for now: rewriting stored rows, which the PR names as a follow-up.
+- **The PR comes from Steve's account.** It was first opened from Peace's; he asked for Steve's, and it was closed and reopened so Gregory sees one PR.
+
+### Frictions and course corrections
+
+- **Live recordings found three bugs no test had.** Claude's second message is gzip-compressed and large; the add-on kept the data and dropped the flag saying it was base64, so the prompt was stored as "[redacted]" (and Firefox corrupted such bodies outright). Brave's follow-up question now travels in the request body, not the address, so it was lost. Both fixed in the add-on and the server, then proven on fresh recordings.
+- **"Every gate green" had been measured in the wrong place.** The working copy carried local-only test code that made a broken committed file compile. Only a gate run on a clean copy caught it.
+- **The reverification found 15 more defects**, including one regression from earlier the same day (ChatGPT answers rendering as code blocks in 13 of 14 sample answers) and a privacy gap my own fix had opened (an encoded form body could pass the redactor whole). All fixed before the PR.
+- **My own verification damaged its data once.** A check that replayed old commits ran old tests that deleted rows from the shared local database (24 stored results down to 4), which read like a product bug for a round. Restored with a backfill; the rule went into the bug-hunt skill and the standing memory.
+- **A suspected UI regression was not one.** Peace could not scroll the turns sideways; the 14 turns were stacked as six chat rows, and the one wide row scrolled the same on yesterday's build as today's.
+
+### Why this matters for the portfolio
+
+- **Real recordings are the test suite that matters for a parser.** Each engine's live traffic contradicted an assumption every fixture shared.
+- **A second review with fresh eyes pays for itself.** Fifteen findings, including a regression and a privacy gap, came from re-checking a branch that already read green.
+- **Rules learned the hard way are written into the tools.** The working-tree trap, the unlocked migration and the dropped encoding flag are now detectors in the bug-hunt skill, not just notes.
+
+---
