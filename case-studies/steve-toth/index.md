@@ -4928,3 +4928,31 @@ Follow-up to the 2026-10-21 entry. The eight polish items from the bug hunt land
 - **A silent skip is the most expensive kind of green.** The habit now is to treat a skipped test as a missing test and to say so when a prior claim was wrong.
 
 ---
+
+## 2026-10-22, Lido OKF: a teammate caught what my own checks passed for a month, and the fix was checked against the source word by word
+
+Follow-up to the 2026-09-18 Lido entry. Patricia had sent v0.3 of the Lido Advisors knowledge bundle, and on 2026-10-21 I told Peace it was good to go after checking every filing quote and the verifier. The next day her own pre-send check found 15 page titles reading as the literal characters `\>-`. The cause was my 09-18 rebuild of her pages from a readable Markdown export, not her work. Written the same day from the session, the bundle and the fix log.
+
+### What shipped
+
+- **Every piece of conversion damage found and fixed** in one corrected zip: 15 titles that were a stray YAML symbol, 6 titles with a stray backslash, the next page's heading glued to the end of 21 pages, one of our cross-link sentences sitting inside a quoted source (Lido's head of content), and double spaces in 22 descriptions.
+- **Proof the fix touched nothing else.** Every page body was word-diffed against the v0.1 export; the only differences left are the cross-reference edits logged on 09-18. The bundle verifier passes on the unzipped copy of the file being sent, and a separate reviewer read all 34 files cold.
+- **The lesson put where the next run will meet it:** a "conversion damage" section and a new gate in the okf-skill lint guide, a standing memory rule, and the three checking scripts kept with the project.
+
+### Decisions worth recording
+
+- **A sign-off covers the whole artifact, not the diff.** The 10-21 "yes" checked what had changed and the verifier, never the titles or the index a reader opens first. The decision log marks that approval superseded rather than quietly replacing it.
+- **Fix our damage, list hers.** Everything the rebuild caused was fixed; a factual slip ("a third of the pairs" for 16 of 77), a typo and a few internal-sounding lines in Patricia's own text went back to her as a list for v0.4. Rejected: rewriting her pages to look thorough.
+
+### Frictions and course corrections
+
+- **The validator was blind to the whole class.** It accepts any non-empty title and never reads a page's last line, so every PASS since 09-18 meant nothing for this damage. The cause was mechanical: the export put each page's title as a heading just above the next page's marker, and the rebuild split on the marker.
+- **The first fix was not the last.** Fixing the titles was asked for; a wider sweep then found the stray headings, and a cold reviewer found the quote and the double spaces. The zip was rebuilt and re-verified each time instead of shipped after the first green run.
+- Peace's reaction ("we introduced a bug again?") was earned. The record names the cause as my rebuild, not the teammate's work.
+
+### Why this matters for the portfolio
+
+- **A conversion is a migration and needs a source diff.** Rebuilding content from an export is checked by diffing every body against the source and reading what the reader sees, not by a schema check.
+- **Owning a wrong sign-off quickly is part of the work.** The correction is in the decisions log, the handoff and the skill, so the next bundle is checked the way this one should have been.
+
+---
