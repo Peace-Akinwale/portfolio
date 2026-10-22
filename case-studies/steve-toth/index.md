@@ -4956,3 +4956,36 @@ Follow-up to the 2026-09-18 Lido entry. Patricia had sent v0.3 of the Lido Advis
 - **Owning a wrong sign-off quickly is part of the work.** The correction is in the decisions log, the handoff and the skill, so the next bundle is checked the way this one should have been.
 
 ---
+
+## 2026-10-22, Radar's database outage traced to a mis-sized server, fixed at no extra cost, and the watch that missed it repaired
+
+Steve forwarded Supabase's warning that Radar's database was "running out of Disk IO Budget" and asked whether to worry. It had already taken the database down for about an hour overnight. Written the same day from the session, the database logs, the host metrics and the billing page.
+
+### What shipped
+
+- **The cause, measured rather than guessed.** The database's host metrics showed 426 MB of memory, about 860 MB of its 1 GB swap in use, 3.5 million major page faults and 99 GB read from the system disk against 7 GB from the data disk. Query load was light (10 connections, about 99.7% of reads served from memory), so the disk allowance was spent on swapping, not on queries. Postgres logged "database system was interrupted" and every request timed out from about 03:00 to 04:00 UTC, taking down Radar, Fanout, OKF and Quality Rater, which share the database.
+- **The fix, at $0.00.** The project ran on Supabase's free-tier size (Nano) inside a paid organization that was already billed for the next size up (Micro). Moved to Micro (1 GB) from the dashboard; the confirm screen showed $9.68 to $9.68 a month, the restart took about 30 seconds, and the host then read 904 MB of memory with no pages swapped out. All four apps answered 200 afterwards.
+- **The bill read, not estimated.** October's invoice was $38.36 and the cycle projects to $39.48, which corrected my first figure of about $35.
+- **The scheduled usage watch updated** so it reports a database restart as a restart instead of as a drop in traffic, names any data source it could not read, links the Disk IO page for a hand check, and no longer talks about a downgrade that was shelved.
+- **A second silent failure fixed.** Railway invalidated every API token made before its 2026-10-21 security incident, so the usage report's Railway costs had stopped. A new token was created, verified on the report's own query and set in the three places that hold it; the env registry was updated (`b2468546`).
+
+### Decisions worth recording
+
+- **Stay on Supabase rather than move to Cloudflare.** Cloudflare's database (D1) is SQLite and it has no Postgres of its own; moving would save about $20 to $30 a month and mean rebuilding sign-in, 61 row-level security rules, vector search and a job queue across five apps. Rejected as a response to an outage that a settings change fixed.
+- **Fix memory, not queries.** The evidence pointed at swap; tuning queries would have spent days on a load that was not the problem.
+- **Trimming the largest column was dropped.** The 74 MB of raw scraped data on feed posts looked like dead weight; eight code paths still read it (comment summaries, YouTube transcripts, article text), so it stays.
+
+### Frictions and course corrections
+
+- **The watch had reported good news during the outage.** The restart wiped the database's query counters, so the next usage report counted only the coaching portal and the watch posted "first reading under the limit". A counter reset is now treated as a restart signal.
+- **I recommended waiting out Supabase's own incident before resizing; Peace chose to go ahead.** It went through in 30 seconds.
+- **A status-code filter I wrote counted every log row as an error.** Reading the raw rows showed all 200s; the false alarm was caught before it reached anyone.
+- **The dashboard's 7-day "lowest" Disk IO figure read 99% across a night that exhausted the budget.** That widget is too coarse to prove recovery, so the remaining check is the warning banner clearing.
+
+### Why this matters for the portfolio
+
+- **A platform warning is a symptom; the host's own numbers name the cause.** Memory and swap on the database server explained in minutes what query statistics could not.
+- **Cheapest fix first, checked against the real bill.** The answer to "should we move platforms" was a free setting the account was already paying for.
+- **Monitoring that hides its own blind spots gets fixed in the same pass.** Both the misleading usage reading and the dead Railway token were found while answering a different question.
+
+---
