@@ -4902,3 +4902,29 @@ Written on 2026-10-21 night from the session, the two handoffs (`HANDOFF_lens-fa
 - **Three of tonight's mechanisms became reusable detectors** in the bug-hunt library (content end versus transport end, a remedy offered for a count it cannot act on, a URL constructor on a field only some producers fill with a URL), so the next project pays for them once.
 
 ---
+
+## 2026-10-22, Lens port: the polish pass, a gate that had never run, and a production regression traced to the right commit
+
+Follow-up to the 2026-10-21 entry. The eight polish items from the bug hunt landed one commit each (92 commits on the branch), and the day ended with a read-only triage of a regression the repo owner reported on production.
+
+### What shipped
+
+- **Eight polish commits** (`34aad25` to `157c0f3`): big integers survive the report walk, the Claude dissector reads the filter's gzip markers, the add-on's drop-whole logic moved into its own 102-line module, a CI check that the committed Install-page zips match the tree byte for byte, ClickHouse rows deleted with the session, filter profiles read per org.
+- **A regression triage written for the thread, not acted on:** the owner's "uploading JavaScript, CSS and images again, tokens in the clear" traced to his own earlier commit that hardcoded the add-on to the `full` capture profile, plus a web fallback to the raw blob on a freshly provisioned box. The teammate's merged PR he suspected had touched only the Library page.
+
+### Decisions worth recording
+
+- **A test that skips on a missing environment variable was not run.** The Go suite's Postgres-gated tests had skipped silently through every "all green" report the night before; run with the database URL, two failed and exposed that a captured session at a status other than ready vanished from the export. Fixed, and the Quick Start now carries the URL. Rejected: leaving the skip in place and trusting the fixtures.
+- **A teammate's regression stays his.** When the owner handed the production regression to the original author, the findings were written down for the thread and no fix went on our branch. Rejected: patching it in our PR to look helpful, which would have put two people on one bug.
+
+### Frictions and course corrections
+
+- The previous evening's "every gate green" was wrong by two tests. The correction is recorded in the handoff, the decisions log and memory rather than quietly folded into the next run.
+- The repo's `main` moved under the branch during the day (three merges and a production deploy), so the PR now needs a rebase first; the expected conflict is named in the handoff before anyone hits it.
+
+### Why this matters for the portfolio
+
+- **Reading the git graph answers "who broke it" faster than opinions.** Branch points, per-merge file lists and the history of one file settled a three-person question in twenty minutes and cleared a colleague's PR.
+- **A silent skip is the most expensive kind of green.** The habit now is to treat a skipped test as a missing test and to say so when a prior claim was wrong.
+
+---
