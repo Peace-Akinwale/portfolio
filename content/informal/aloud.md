@@ -1,0 +1,53 @@
+## Portfolio summary
+
+I built Aloud with AI coding assistance because I had articles I wanted to read and kept leaving unread. It pulls links, documents and pasted text into a personal audio library, with a reading view, saved passages and a recap you can read or listen to. Later, I changed narration so it keeps the author's wording, and so it finishes preparing a whole item after I've left the player.
+
+## Case study
+
+I wanted to listen to the articles I kept leaving unread, plus the documents I'd saved. Aloud gave me a way to get through all of it without sitting down and reading every page.
+
+I started Aloud in June 2026 as a personal app for me, my wife and the people I invite. Working with AI coding assistance, I built an import-to-audio workflow with a reading view for saving the useful bits. Everyone gets their own library, listening progress and recap. In September, I changed how Aloud prepares long items and how it handles an author's text.
+
+### Turn articles and documents into audio, with a reading view
+
+I started with articles and pasted text, then added PDF, EPUB and Word extraction. The narration pipeline splits imported text into playable segments, and the player strings them together into one listening session with speed controls, a sleep timer and saved progress.
+
+Playback keeps going while you move between screens, so browsing the library doesn't interrupt an article. Read mode lets you check the wording alongside the narration, and Listen mode keeps the audio controls in view.
+
+[[img]]
+
+The first approach got audio started quickly, but it relied on the player to ask for the remaining chapters. If you left the player, the rest might never get prepared.
+
+### Keep the author's wording, and drop repeated PDF headers
+
+At first, I let an AI cleanup step adapt imported text for speech. Later, I stopped doing that for other people's writing. If I'm listening to an article or a book, it should keep the author's words.
+
+So I changed the rule. Links and uploaded documents skip rewriting. My own pasted text and the generated recap can still get speech preparation, because a recap is new writing, while an imported article is something I chose to hear as written.
+
+PDFs needed one more distinction. A heading belongs in the reading, but the same running header on every page usually doesn't. The later extraction work uses page positions and text size to remove repeated headers while keeping real headings and rebuilding paragraphs. For articles and EPUBs, the reading view also keeps structure like lists, quotations and images with captions.
+
+### Finish preparing a long item after I leave the player
+
+The original approach could stop before the end of a long piece. So I moved narration of the whole item to the server, and leaving the player no longer stops the rest from being prepared.
+
+That meant accepting the cost of generating a complete item as soon as you add it. Aloud gives each person a monthly allowance, and the later version checks what's left before each paragraph. Preparing the audio and listening to it are separate steps, so pausing and playing a stored segment doesn't generate it again.
+
+### Follow the spoken words in the reading view
+
+The reader highlights roughly the word being spoken, so you can find your place when you switch from listening to reading. I estimated the timing from each paragraph's audio length, which meant I didn't have to pay for a separate alignment service.
+
+### Save passages and replay their audio
+
+I added highlights so you can keep a passage while you're listening, or select text while you're reading. A highlight can carry a note and a way back to its source.
+
+“The keepers” replays the audio around your saved highlights, so you can go back to useful passages without hunting for them in the full article. Daily Recall brings back highlights you haven't seen in a while. Because it reuses stored audio, listening again doesn't trigger another generation request.
+
+### A recap you can read or hear, from recent items and highlights
+
+The weekly recap was part of my original idea. I built it from the titles of recently played items and your saved passages, then made the written recap playable through the same audio system. It gives you another way back to the things you marked during the week.
+
+### Give each invited person a private library and an audio allowance
+
+Everyone I invite needs their own queue and progress.
+
+The app checks access against the invited-user list and applies each person's audio allowance. That lets me share the tool without mixing up our listening histories, or leaving narration spending open-ended.

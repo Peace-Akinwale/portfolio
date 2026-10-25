@@ -1,11 +1,12 @@
 ---
 title: "ContentDB: collect research and question your sources"
 name: "ContentDB"
-blurb: "One library for articles, transcripts and documents, searchable from a chat or from a connected AI assistant."
+blurb: "One library for your articles, transcripts and docs, and you can search it from a chat or from your AI assistant."
 kind: built
 status: "my own app, private beta"
 date: 2026-04-15
-summary: "I built ContentDB with AI coding assistance to collect articles, video transcripts, documents and pasted text in one library. The build connected importing, client-based organization and search with a chat where you could bring a particular source into a question. It also gave a connected AI assistant tools to search the library and open a complete source."
+summary: "I built ContentDB with AI coding assistance to keep articles, video transcripts, documents and pasted text in one library. It ties importing, organising by client and search together with a chat where you can bring a particular source into your question. It also gives a connected AI assistant tools to search the library and open a complete source."
+voice: informal
 notion_url: https://app.notion.com/p/403992da7a5781cfaff1de30c9c49f2f
 notion_last_edited: 2026-10-24T17:27:15.832Z
 links:
@@ -18,42 +19,42 @@ related:
   - "okf"
 ---
 
-Saving research is only the first part of using it. Later, you need to retrieve the passage with enough source context to judge whether it answers your question.
+Saving research is only half the job. Later on, you need to find the passage again, with enough of the source around it to tell whether it actually answers your question.
 
-ContentDB is my personal software project for that workflow. In the March–April 2026 build, I connected several ways to add material with a web library, search and chat. AI coding assistance helped me build across the interface and server. Each saved item kept its text alongside details such as its title, source URL, tags and client association.
+ContentDB is my own software project for exactly that. In the March to April 2026 build, I connected a few ways of adding material with a web library, search and chat. AI coding assistance helped me build across the interface and the server. Each saved item keeps its text along with details like its title, source URL, tags and which client it belongs to.
 
-### Import articles, documents and batches into one library
+### Bring articles, documents and whole batches into one library
 
-I added separate entry points for links, pasted text and uploaded files, along with batch imports for YouTube videos and sitemap pages. Those sources fed the same library, so you didn't need a different place to search each format.
+I added separate ways in for links, pasted text and uploaded files, plus batch imports for YouTube videos and sitemap pages. They all feed the same library, so you don't need a different place to search each format.
 
 ![contentdb add content demo](images/contentdb/contentdb-add-content-demo.png)
 
 *Existing portfolio capture of the import screen with demonstration data; capture date unverified.*
 
-Adding a group of sources needed more feedback than adding one article. Each item could take time or fail on its own. Batch imports ran as jobs with progress and completion or failure information, while the server limited how many sources it processed at once. That gave you a way to follow a larger import and see which items needed attention.
+Adding a group of sources needs more feedback than adding one article, because each item can take a while or fail on its own. So batch imports run as jobs that show their progress and tell you what finished or failed, and the server limits how many sources it works on at once. You can follow a bigger import and see which items need a second look.
 
-For document uploads, plain text could go straight into the library; other supported formats went through extraction. I also added search by meaning, so finding an item didn't depend on remembering its exact title or wording. You could then open the stored text to examine it.
+For document uploads, plain text goes straight into the library, and other supported formats go through extraction first. I also added search by meaning, so you don't have to remember an item's exact title or wording to find it. Then you can open the stored text and read it properly.
 
-### Group sources by client and restore a conversation's scope
+### Group sources by client, and bring back a conversation's scope
 
-During the April redesign, I organized sources by client rather than keeping a separate collections system. A writer could select the client they were working on and search that client's material. That made it easier to return to the right research without sorting through sources saved for unrelated assignments.
+In the April redesign, I organised sources by client instead of keeping a separate collections system. A writer can pick the client they're working on and search just that client's material. That makes it easier to get back to the right research without wading through sources saved for other assignments.
 
-An earlier change also saved the selected client with each conversation. When you reopened a thread, the interface restored that selection. You could return to the research you were doing without setting up its scope again.
+An earlier change also saves the selected client with each conversation. When you reopen a thread, the interface brings that selection back, so you can pick up where you left off without setting the scope up again.
 
-### Show the text around a retrieved quotation
+### Show the text around a quote
 
-A short matching passage can leave out the sentence that explains it. I added quotation context from the stored source. For transcripts, the implementation selected a relevant segment and included neighboring segments; for other text, it included nearby sentences.
+A short matching passage can leave out the very sentence that explains it. So I added the surrounding context from the stored source. For transcripts, it picks the relevant segment and includes the segments on either side. For other text, it includes the nearby sentences.
 
-The assistant tools returned that context with the source title and URL where available. Chat also received source titles and instructions to acknowledge missing information. That gave you material to inspect before using an answer or quotation. A generated answer still needed checking, and an inferred speaker label wasn't verified attribution.
+The assistant tools return that context with the source title and URL, where there is one. Chat also gets the source titles, plus instructions to say so when information is missing. That gives you something to check before you use an answer or a quote. A generated answer still needs checking, though, and a guessed speaker label isn't a confirmed attribution.
 
-### Bring a chosen source into chat
+### Bring a chosen source into the chat
 
-Search is useful when you're exploring a library. Sometimes you already know which article you want to discuss.
+Search helps when you're exploring a library. But sometimes you already know which article you want to talk about.
 
-I added a “Cite in chat” action so a writer could choose a source and ask a question about it. The server included an excerpt from that source even if the search results would otherwise have missed it. For example, a writer could bring in a saved customer interview and ask which passages support a point in their draft. Long documents still needed checking because the excerpt had a length limit.
+So I added a “Cite in chat” action. A writer picks a source and asks a question about it, and the server includes an excerpt from that source even if search would have missed it. For example, a writer could bring in a saved customer interview and ask which passages back up a point in their draft. Long documents still need checking, because the excerpt has a length limit.
 
 ### Search and open the library from an AI assistant
 
-I added an MCP connection, which lets a compatible AI assistant call tools in another application. ContentDB's tools covered searching saved content, opening a complete item, adding material and finding customer-transcript insights. You could work from an assistant without copying each document into the conversation yourself.
+I added an MCP connection, which lets a compatible AI assistant use tools inside another app. ContentDB's tools cover searching saved content, opening a full item, adding material and finding insights in customer transcripts. You can work from your assistant without copying each document into the conversation yourself.
 
-I also changed the connection so a server restart would not invalidate an assistant's session. That reduced the need to reconnect before continuing the research. The older connection remained available for assistants already using it.
+I also changed the connection so a server restart doesn't break an assistant's session. You don't have to reconnect before carrying on with your research, and the older connection still works for assistants already using it.

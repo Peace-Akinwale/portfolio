@@ -17,15 +17,15 @@ const EXPORT = path.join(ROOT, 'content', 'notion-export');
 // dates (see decisions.md 2026-10-25): the day the piece went live or the
 // change it describes landed. Articles get the date they first appear on the site.
 const PAGES = {
-  'ai-docs-watch': { slug: 'ai-docs-watch', name: 'AI Docs Watch', blurb: 'Publishes official platform documentation as it stood before and after each change, with the changed words marked.', type: 'case-study', kind: 'built', date: '2026-10-14', status: 'live, public', links: ['Open AI Docs Watch | https://docswatch.stevetoth.ai'], tags: ['monitoring', 'documentation'], related: ['what-ai-search-apps-do-before-they-answer', 'fanout-query-analysis-tool'] },
-  'contentdb-collect-research-and-question-your-sources': { slug: 'contentdb', name: 'ContentDB', blurb: 'One library for articles, transcripts and documents, searchable from a chat or from a connected AI assistant.', type: 'case-study', kind: 'built', date: '2026-04-15', status: 'my own app, private beta', links: ['The ContentDB project page | /projects/contentdb'], tags: ['research', 'MCP'], related: ['aloud', 'okf'] },
-  'aloud-listen-to-saved-articles-and-return-to-useful-passages': { slug: 'aloud', name: 'Aloud', blurb: 'A personal audio library for saved articles and documents, with a reading view and saved passages.', type: 'case-study', kind: 'built', date: '2026-09-28', status: 'my own app, invite-only', links: ['The public Aloud log on GitHub | https://github.com/Peace-Akinwale/portfolio/blob/master/case-studies/aloud/index.md'], tags: ['audio', 'reading'], related: ['contentdb', 'reading-app'] },
-  'quality-rater-reviewing-pages-using-googles-quality-guidelines': { slug: 'quality-rater', name: 'Quality Rater', blurb: 'Flags pages for human review against Google’s quality guidelines and links each finding to its passage.', type: 'case-study', kind: 'built', date: '2026-10-13', status: 'in team use, accuracy not yet measured', links: [], tags: ['content audit'], related: ['ai-docs-watch', 'okf'] },
-  'fanout-query-analysis-tool': { slug: 'fanout-query-analysis-tool', name: 'Fanout query analysis tool', blurb: 'Records the searches behind AI answers and separates the pages returned from the pages cited.', type: 'case-study', kind: 'built', date: '2026-10-01', status: 'in team use, private', links: [], tags: ['AI search', 'Chrome extension'], related: ['what-ai-search-apps-do-before-they-answer', 'ai-docs-watch'] },
-  'what-ai-search-apps-do-before-they-answer-a-public-reference': { slug: 'what-ai-search-apps-do-before-they-answer', name: 'A public reference to AI search traffic', blurb: 'Explains the fields AI search apps send and receive, built from recorded conversations, with the evidence for each.', type: 'case-study', kind: 'built', date: '2026-10-02', status: 'published, public', links: [], tags: ['AI search', 'research'], related: ['fanout-query-analysis-tool', 'ai-docs-watch'] },
-  'building-an-okf-that-a-team-can-ask-for-guidance': { slug: 'okf', video: { after: '### What an OKF is', id: 'esYAIA6lU-s', title: 'Build an OKF brain like mine! (Marie Haynes, YouTube)', caption: 'Marie Haynes walks through the OKF brain she built for her own SEO work: how a note is structured, how it differs from retrieval over whole documents, and approving an update plan before anything is added. 23 minutes, June 2026. The format itself is Google’s, and its <a href="https://github.com/GoogleCloudPlatform/knowledge-catalog/blob/main/okf/SPEC.md">specification is on GitHub</a>.' }, name: 'An OKF a team can ask', blurb: 'A founder’s notes turned into linked notes a team can question, with answers that cite the notes they came from.', type: 'case-study', kind: 'built', date: '2026-10-20', status: 'in team use, private', links: ['Google’s OKF specification on GitHub | https://github.com/GoogleCloudPlatform/knowledge-catalog/blob/main/okf/SPEC.md', 'Marie Haynes on building an OKF brain | https://www.youtube.com/watch?v=esYAIA6lU-s'], tags: ['knowledge', 'OKF'], related: ['contentdb', 'quality-rater'] },
-  'a-reading-app-for-reviewing-posts-and-preparing-newsletter-notes': { slug: 'reading-app', name: 'A reading app for a content team', blurb: 'Gathers public posts into one review feed with audio digests; starred posts become newsletter notes.', type: 'case-study', kind: 'built', date: '2026-06-10', status: 'private to the client’s team', links: ['Five lessons from building it, an article | /the-success-message-was-the-bug'], tags: ['reading', 'newsletter'], related: ['aloud', 'ai-docs-watch'] },
-  'reach-hands-on-my-mac-for-ai-agents-that-cant-reach-it': { slug: 'reach', name: 'Reach', blurb: 'Hands a task that needs my Mac’s screen from an AI coding session to a local one, and returns the result.', type: 'case-study', kind: 'built', date: '2026-09-27', status: 'personal tool, two Macs', links: [], tags: ['agents', 'automation'], related: ['aloud', 'contentdb'] },
+  'ai-docs-watch': { slug: 'ai-docs-watch', name: 'AI Docs Watch', blurb: 'Shows you an AI platform’s docs as they were before and after each change, with the changed words marked.', type: 'case-study', kind: 'built', date: '2026-10-14', status: 'live, public', links: ['Open AI Docs Watch | https://docswatch.stevetoth.ai'], tags: ['monitoring', 'documentation'], related: ['what-ai-search-apps-do-before-they-answer', 'fanout-query-analysis-tool'] },
+  'contentdb-collect-research-and-question-your-sources': { slug: 'contentdb', name: 'ContentDB', blurb: 'One library for your articles, transcripts and docs, and you can search it from a chat or from your AI assistant.', type: 'case-study', kind: 'built', date: '2026-04-15', status: 'my own app, private beta', links: ['The ContentDB project page | /projects/contentdb'], tags: ['research', 'MCP'], related: ['aloud', 'okf'] },
+  'aloud-listen-to-saved-articles-and-return-to-useful-passages': { slug: 'aloud', name: 'Aloud', blurb: 'My audio library for the articles I keep meaning to read, with a reading view and saved passages.', type: 'case-study', kind: 'built', date: '2026-09-28', status: 'my own app, invite-only', links: ['The public Aloud log on GitHub | https://github.com/Peace-Akinwale/portfolio/blob/master/case-studies/aloud/index.md'], tags: ['audio', 'reading'], related: ['contentdb', 'reading-app'] },
+  'quality-rater-reviewing-pages-using-googles-quality-guidelines': { slug: 'quality-rater', name: 'Quality Rater', blurb: 'Checks every page against Google’s quality guidelines and points at the exact passage behind each flag.', type: 'case-study', kind: 'built', date: '2026-10-13', status: 'in team use, accuracy not yet measured', links: [], tags: ['content audit'], related: ['ai-docs-watch', 'okf'] },
+  'fanout-query-analysis-tool': { slug: 'fanout-query-analysis-tool', name: 'Fanout query analysis tool', blurb: 'Records the searches behind AI answers, and tells the pages that came back apart from the ones that got cited.', type: 'case-study', kind: 'built', date: '2026-10-01', status: 'in team use, private', links: [], tags: ['AI search', 'Chrome extension'], related: ['what-ai-search-apps-do-before-they-answer', 'ai-docs-watch'] },
+  'what-ai-search-apps-do-before-they-answer-a-public-reference': { slug: 'what-ai-search-apps-do-before-they-answer', name: 'A public reference to AI search traffic', blurb: 'What AI search apps send and receive while they answer you, explained field by field, with the recording behind each one.', type: 'case-study', kind: 'built', date: '2026-10-02', status: 'published, public', links: [], tags: ['AI search', 'research'], related: ['fanout-query-analysis-tool', 'ai-docs-watch'] },
+  'building-an-okf-that-a-team-can-ask-for-guidance': { slug: 'okf', video: { after: '### What an OKF is', id: 'esYAIA6lU-s', title: 'Build an OKF brain like mine! (Marie Haynes, YouTube)', caption: 'Marie Haynes walks through the OKF brain she built for her own SEO work: how a note is structured, how it differs from retrieval over whole documents, and approving an update plan before anything is added. 23 minutes, June 2026. The format itself is Google’s, and its <a href="https://github.com/GoogleCloudPlatform/knowledge-catalog/blob/main/okf/SPEC.md">specification is on GitHub</a>.' }, name: 'An OKF a team can ask', blurb: 'A founder’s notes turned into linked notes the team can ask, and every answer cites where it came from.', type: 'case-study', kind: 'built', date: '2026-10-20', status: 'in team use, private', links: ['Google’s OKF specification on GitHub | https://github.com/GoogleCloudPlatform/knowledge-catalog/blob/main/okf/SPEC.md', 'Marie Haynes on building an OKF brain | https://www.youtube.com/watch?v=esYAIA6lU-s'], tags: ['knowledge', 'OKF'], related: ['contentdb', 'quality-rater'] },
+  'a-reading-app-for-reviewing-posts-and-preparing-newsletter-notes': { slug: 'reading-app', name: 'A reading app for a content team', blurb: 'Pulls the posts worth reading into one feed you can listen to, and starred posts turn into newsletter notes.', type: 'case-study', kind: 'built', date: '2026-06-10', status: 'private to the client’s team', links: ['Five lessons from building it, an article | /the-success-message-was-the-bug'], tags: ['reading', 'newsletter'], related: ['aloud', 'ai-docs-watch'] },
+  'reach-hands-on-my-mac-for-ai-agents-that-cant-reach-it': { slug: 'reach', name: 'Reach', blurb: 'When an AI coding session needs my Mac’s screen, it hands the job to Reach and gets the result back.', type: 'case-study', kind: 'built', date: '2026-09-27', status: 'personal tool, two Macs', links: [], tags: ['agents', 'automation'], related: ['aloud', 'contentdb'] },
   'build-a-course-portal-around-the-instructors-workflow': { slug: 'build-a-course-portal-around-the-instructors-workflow', type: 'article', date: '2026-10-25', standfirst: 'What I learned building a members’ portal for an eight-week course: which parts of the instructor’s process the software should leave alone.', tags: ['Building', 'Tools'] },
   'the-success-message-was-the-bug-five-lessons-from-building-an-ai-assisted-reading-tool': { slug: 'the-success-message-was-the-bug', type: 'article', date: '2026-10-25', standfirst: 'A notification said the post was in the feed and the roundup. It wasn’t. Five lessons from building an AI-assisted reading tool with coding agents, starting with that message.', tags: ['Building', 'AI'], review: 'Review before launch: “for about two weeks” in lesson 4 conflicts with the checked commit interval of roughly 8½ hours. Peace to confirm the wording.' },
 };
@@ -39,6 +39,35 @@ const STAND_INS = {
 
 const missing = [];
 const written = [];
+
+// Informal drafts (content/informal/<slug>.md, Peace's request of 26 Oct 2026)
+// replace a case study's text on the site. They mark each screenshot with
+// [[img]]; the k-th marker gets the k-th image (and its caption) from the
+// original export, so images and captions stay exactly where Peace put them.
+// The original export is never changed.
+const INFORMAL = path.join(ROOT, 'content', 'informal');
+function imageBlocks(body) {
+  const lines = body.split('\n');
+  const blocks = [];
+  for (let i = 0; i < lines.length; i++) {
+    if (!/^!\[[^\]]*\]\(images\//.test(lines[i])) continue;
+    let j = i + 1;
+    while (j < lines.length && lines[j].trim() === '') j++;
+    const hasCaption = j < lines.length && /^\*[^*].*\*$/.test(lines[j].trim());
+    blocks.push(hasCaption ? `${lines[i]}\n\n${lines[j]}` : lines[i]);
+  }
+  return blocks;
+}
+function withInformal(slug, originalBody) {
+  const file = path.join(INFORMAL, `${slug}.md`);
+  if (!fs.existsSync(file)) return { body: originalBody, informal: false };
+  const draft = fs.readFileSync(file, 'utf8');
+  const blocks = imageBlocks(originalBody);
+  const markers = (draft.match(/\[\[img\]\]/g) || []).length;
+  if (markers !== blocks.length) throw new Error(`${slug}: informal draft has ${markers} image markers, original has ${blocks.length} images`);
+  let k = 0;
+  return { body: draft.replace(/\[\[img\]\]/g, () => blocks[k++]), informal: true };
+}
 
 function readExport(name) {
   const src = fs.readFileSync(path.join(EXPORT, `${name}.md`), 'utf8');
@@ -104,10 +133,11 @@ for (const [name, meta] of Object.entries(PAGES)) {
   const { head, body } = readExport(name);
   if (meta.type === 'case-study') {
     const publicDir = path.join(ROOT, 'public', 'case-studies', meta.slug);
-    const placed = placeImages(body, name, meta.slug, publicDir);
+    const chosen = withInformal(meta.slug, body);
+    const placed = placeImages(chosen.body, name, meta.slug, publicDir);
     const { summary, rest: body0 } = splitSummary(placed);
     const rest = meta.video ? insertVideo(body0, meta.video) : body0;
-    const fm = `---\ntitle: ${q(head.title)}\nname: ${q(meta.name)}\nblurb: ${q(meta.blurb)}\nkind: ${meta.kind}\nstatus: ${q(meta.status)}\ndate: ${meta.date}\n${meta.for ? `for: ${q(meta.for)}\n` : ''}summary: ${q(summary)}\nnotion_url: ${head.notion_url}\nnotion_last_edited: ${head.notion_last_edited}\n${yamlList('links', meta.links)}${yamlList('tags', meta.tags)}${yamlList('related', meta.related)}---\n`;
+    const fm = `---\ntitle: ${q(head.title)}\nname: ${q(meta.name)}\nblurb: ${q(meta.blurb)}\nkind: ${meta.kind}\nstatus: ${q(meta.status)}\ndate: ${meta.date}\n${meta.for ? `for: ${q(meta.for)}\n` : ''}summary: ${q(summary)}\nvoice: ${chosen.informal ? 'informal' : 'original'}\nnotion_url: ${head.notion_url}\nnotion_last_edited: ${head.notion_last_edited}\n${yamlList('links', meta.links)}${yamlList('tags', meta.tags)}${yamlList('related', meta.related)}---\n`;
     const file = path.join(ROOT, 'content', 'case-studies', `${meta.slug}.md`);
     fs.mkdirSync(path.dirname(file), { recursive: true });
     fs.writeFileSync(file, fm + '\n' + rest.trimEnd() + '\n');
