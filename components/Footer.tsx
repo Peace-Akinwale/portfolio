@@ -1,68 +1,60 @@
 import Link from 'next/link';
+import { NAV_LINKS, EMAIL, LINKEDIN_URL, GITHUB_URL, X_URL } from '@/lib/site';
+
+const WORK_LINKS = [
+  { href: '/portfolio#writing', label: 'Writing samples' },
+  { href: '/projects', label: 'Tools I built' },
+  { href: '/testimonials', label: 'What clients say' },
+  { href: '/rss.xml', label: 'RSS' },
+];
 
 export function Footer() {
-  const currentYear = new Date().getFullYear();
+  const year = new Date().getFullYear();
 
   return (
-    <footer className="border-t border-border mt-0">
-      <div className="max-w-7xl mx-auto px-6 py-12">
-        <div className="grid grid-cols-2 gap-8 md:grid-cols-5">
-          {/* About */}
-          <div className="col-span-2 md:col-span-1">
-            <h3 className="font-bold text-lg mb-3">Peace Akinwale</h3>
-            <p className="text-sm text-muted-foreground leading-relaxed">
-              Product-led B2B SaaS content writer for software and enterprise companies.
-            </p>
-          </div>
-
-          {/* Work */}
-          <div>
-            <p className="text-sm font-semibold text-foreground mb-3">Work</p>
-            <nav className="flex flex-col gap-2">
-              <Link href="/services" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Services</Link>
-              <Link href="/case-studies" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Case Studies</Link>
-              <Link href="/portfolio" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Portfolio</Link>
-              <Link href="/testimonials" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Testimonials</Link>
-            </nav>
-          </div>
-
-          {/* Projects */}
-          <div>
-            <p className="text-sm font-semibold text-foreground mb-3">Projects</p>
-            <nav className="flex flex-col gap-2">
-              <Link href="/projects" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Projects</Link>
-              <Link href="/projects/contentdb" className="text-sm text-muted-foreground hover:text-foreground transition-colors">contentDB</Link>
-              <Link href="/projects/career-pathway" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Career Pathway</Link>
-            </nav>
-          </div>
-
-          {/* Writing */}
-          <div>
-            <p className="text-sm font-semibold text-foreground mb-3">Writing</p>
-            <nav className="flex flex-col gap-2">
-              <Link href="/blog" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Blog</Link>
-              <Link href="/about" className="text-sm text-muted-foreground hover:text-foreground transition-colors">About</Link>
-              <Link href="/contact" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Contact</Link>
-            </nav>
-          </div>
-
-          {/* Connect */}
-          <div>
-            <p className="text-sm font-semibold text-foreground mb-3">Connect</p>
-            <div className="flex flex-col gap-2">
-              <a href="https://x.com/PeaceAkinwaleA" target="_blank" rel="noopener noreferrer" className="text-sm text-muted-foreground hover:text-foreground transition-colors">X (Twitter)</a>
-              <a href="https://linkedin.com/in/peaceakinwale" target="_blank" rel="noopener noreferrer" className="text-sm text-muted-foreground hover:text-foreground transition-colors">LinkedIn</a>
-              <a href="https://github.com/Peace-Akinwale" target="_blank" rel="noopener noreferrer" className="text-sm text-muted-foreground hover:text-foreground transition-colors">GitHub</a>
-            </div>
-          </div>
-        </div>
-
-        {/* Copyright */}
-        <div className="mt-12 pt-8 border-t border-border">
-          <p className="text-sm text-muted-foreground text-center">
-            © {currentYear} Peace Akinwale. All rights reserved.
+    <footer className="ground-night mt-auto border-t border-border">
+      <div className="gutter grid gap-10 py-12 md:grid-cols-[1.4fr_1fr_1fr_1fr]">
+        <div>
+          <p className="display text-[26px] font-[560] leading-none">Peace Akinwale</p>
+          <p className="mt-3 max-w-[34ch] text-[15px] leading-relaxed text-muted-foreground">
+            I write bottom-of-funnel content for B2B SaaS companies and agencies, and I build AI-assisted tools for content teams. Lagos.
           </p>
         </div>
+
+        <nav aria-label="Pages">
+          <p className="footer-label">Pages</p>
+          <ul className="mt-3 flex flex-col gap-2">
+            {NAV_LINKS.map((l) => (
+              <li key={l.href}>
+                <Link href={l.href} className="footer-link">{l.label}</Link>
+              </li>
+            ))}
+          </ul>
+        </nav>
+
+        <nav aria-label="More of the work">
+          <p className="footer-label">More of the work</p>
+          <ul className="mt-3 flex flex-col gap-2">
+            {WORK_LINKS.map((l) => (
+              <li key={l.href}>
+                <Link href={l.href} className="footer-link">{l.label}</Link>
+              </li>
+            ))}
+          </ul>
+        </nav>
+
+        <nav aria-label="Elsewhere">
+          <p className="footer-label">Elsewhere</p>
+          <ul className="mt-3 flex flex-col gap-2">
+            <li><a href={`mailto:${EMAIL}`} className="footer-link">Email</a></li>
+            <li><a href={LINKEDIN_URL} target="_blank" rel="noopener noreferrer" className="footer-link">LinkedIn</a></li>
+            <li><a href={GITHUB_URL} target="_blank" rel="noopener noreferrer" className="footer-link">GitHub</a></li>
+            <li><a href={X_URL} target="_blank" rel="noopener noreferrer" className="footer-link">X</a></li>
+          </ul>
+        </nav>
+      </div>
+      <div className="gutter border-t border-border py-5 text-[13.5px] text-muted-foreground">
+        &copy; {year} Peace Akinwale. Set in Sprat, Newsreader and DM Sans.
       </div>
     </footer>
   );

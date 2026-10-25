@@ -18,9 +18,8 @@ export function AppChrome({ children }: { children: React.ReactNode }) {
   return (
     <>
       <Header />
-      <main className="flex-1 pt-[88px] sm:pt-[96px]">{children}</main>
+      <main id="main" className="flex-1">{children}</main>
       <Footer />
     </>
   );
 }
-

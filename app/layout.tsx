@@ -1,109 +1,99 @@
 import type { Metadata, Viewport } from "next";
-import { Syne, DM_Sans } from "next/font/google";
+import localFont from "next/font/local";
+import { DM_Sans } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "./providers";
 import { AppChrome } from "@/components/AppChrome";
+import { GoogleAnalytics } from "@/components/GoogleAnalytics";
+import { SITE_URL, LINKEDIN_URL, X_URL, GITHUB_URL } from "@/lib/site";
 
-const syne = Syne({
-  subsets: ["latin"],
-  variable: "--font-heading",
+// Display: Sprat (Ethan Nakache, OFL 1.1; licence beside the file). Weight axis
+// relabelled to 100–900, width axis 100–200 (see app/fonts/sprat/NOTE.md).
+const sprat = localFont({
+  src: "./fonts/sprat/Sprat-Variable.woff2",
+  variable: "--font-display",
   display: "swap",
-  weight: ["400", "600", "700", "800"],
+  weight: "100 900",
+  style: "normal",
+  fallback: ["Georgia", "Times New Roman", "serif"],
+  adjustFontFallback: false,
 });
 
+// Long-form body: Newsreader (Production Type, OFL 1.1; licence beside the files).
+const newsreader = localFont({
+  src: [
+    { path: "./fonts/newsreader/Newsreader-Variable.woff2", style: "normal" },
+    { path: "./fonts/newsreader/Newsreader-Variable-Italic.woff2", style: "italic" },
+  ],
+  variable: "--font-serif",
+  display: "swap",
+  weight: "200 800",
+  fallback: ["Georgia", "Times New Roman", "serif"],
+});
+
+// Interface: DM Sans, self-hosted at build time by next/font.
 const dmSans = DM_Sans({
   subsets: ["latin"],
-  variable: "--font-body",
+  variable: "--font-sans",
   display: "swap",
   weight: ["400", "500", "600", "700"],
 });
-import { GoogleAnalytics } from "@/components/GoogleAnalytics";
 
 const structuredData = {
   "@context": "https://schema.org",
   "@graph": [
     {
       "@type": "Person",
-      "@id": "https://peaceakinwale.com/#person",
+      "@id": `${SITE_URL}/#person`,
       name: "Peace Akinwale",
-      url: "https://peaceakinwale.com",
-      jobTitle: "B2B SaaS content writer",
+      url: SITE_URL,
+      jobTitle: "B2B SaaS writer and AI tool builder",
       description:
-        "B2B SaaS content writer specializing in product-led articles, content refreshes, and AI-search-friendly content for software companies.",
+        "Peace Akinwale writes bottom-of-funnel content for B2B SaaS companies and agencies, and builds AI-assisted tools for content teams.",
       knowsAbout: [
         "B2B SaaS content writing",
-        "Product-led content",
-        "Content refresh strategy",
-        "SEO content",
-        "AI search optimization",
+        "Bottom-of-funnel content",
+        "AI search",
+        "AI-assisted tool building",
       ],
-      sameAs: [
-        "https://www.linkedin.com/in/peaceakinwale/",
-        "https://x.com/PeaceAkinwaleA",
-        "https://github.com/Peace-Akinwale",
-      ],
-    },
-    {
-      "@type": "ProfessionalService",
-      "@id": "https://peaceakinwale.com/#service",
-      name: "Peace Akinwale",
-      url: "https://peaceakinwale.com/services",
-      description:
-        "B2B SaaS content writer services including product-led blog posts, content refreshes, BOFU articles, and AI-supported editorial systems.",
-      areaServed: "Worldwide",
-      provider: {
-        "@id": "https://peaceakinwale.com/#person",
-      },
-      serviceType: [
-        "B2B SaaS content writing",
-        "Product-led content writing",
-        "Content refresh services",
-        "SEO content writing",
-      ],
+      sameAs: [LINKEDIN_URL, X_URL, GITHUB_URL],
     },
     {
       "@type": "WebSite",
-      "@id": "https://peaceakinwale.com/#website",
-      url: "https://peaceakinwale.com",
+      "@id": `${SITE_URL}/#website`,
+      url: SITE_URL,
       name: "Peace Akinwale",
-      description: "Portfolio and services for a B2B SaaS content writer.",
-      publisher: {
-        "@id": "https://peaceakinwale.com/#person",
-      },
+      description: "The work of Peace Akinwale: articles for B2B SaaS companies and agencies, and AI tools for content teams.",
+      publisher: { "@id": `${SITE_URL}/#person` },
     },
   ],
 };
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://peaceakinwale.com"),
-  title: "Peace Akinwale | B2B SaaS Content Writer",
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: "Peace Akinwale",
+    template: "%s | Peace Akinwale",
+  },
   description:
-    "B2B SaaS content writer for product-led software companies. I write articles, refresh existing content, and build AI-supported systems that improve search visibility and conversions.",
-  keywords: [
-    "B2B SaaS content writer",
-    "product-led content writer",
-    "B2B SaaS writer",
-    "SaaS content writer",
-    "content refresh services",
-    "AI search optimization",
-  ],
+    "I write bottom-of-funnel content for B2B SaaS companies and agencies, and I build AI-assisted tools for content teams. Most of the work is deciding what's worth making and checking that it's true.",
   verification: {
     google: "JAyf5aaXTbM7ev_a1fFUGsiZ6yYgoAa5QNEFngUjllQ",
   },
   openGraph: {
-    title: "Peace Akinwale | B2B SaaS Content Writer",
+    title: "Peace Akinwale",
     description:
-      "B2B SaaS content writer for product-led software companies. Articles, content refreshes, and AI-search-friendly content systems.",
-    url: "https://peaceakinwale.com",
+      "Articles for B2B SaaS companies and agencies, and AI tools for content teams.",
+    url: SITE_URL,
     siteName: "Peace Akinwale",
     locale: "en_US",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Peace Akinwale | B2B SaaS Content Writer",
+    title: "Peace Akinwale",
     description:
-      "B2B SaaS content writer for product-led software companies. Articles, content refreshes, and AI-search-friendly content systems.",
+      "Articles for B2B SaaS companies and agencies, and AI tools for content teams.",
   },
 };
 
@@ -119,7 +109,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${syne.variable} ${dmSans.variable}`} suppressHydrationWarning>
+    <html lang="en" className={`${sprat.variable} ${newsreader.variable} ${dmSans.variable}`} suppressHydrationWarning>
       <body className="antialiased">
         <GoogleAnalytics />
         <script

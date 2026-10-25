@@ -1,27 +1,34 @@
 @import "tailwindcss";
 
-/* Editorial portfolio design system */
+/* peaceakinwale.com, October 2026 rebuild. Tokens: docs/design-reference-2026-10.md.
+   Two grounds: paper (writing) and night (building). The page-level tokens below
+   keep their old names so every existing page and the MyLinks workspace pick up
+   the new palette unchanged. */
 
 :root {
-  /* Light mode — "adire": undyed cotton, indigo ink, one indigo accent. See docs/design-reference.md */
-  --background: #F7F7F3;
-  --foreground: #15183A;
-  --muted: #E8EAF3;
-  --muted-foreground: #4B5070;
-  --border: #CED2E2;
-  --accent: #2E3A87;
-  --accent-foreground: #ffffff;
-  --accent2: #2E3A87;
-  --navy: #15183A;
-  --orange: #2E3A87;
+  --paper: #EFEAE0; --paper-2: #E6E0D3; --paper-ink: #17150F; --paper-soft: #5E584B; --paper-rule: #CFC7B6; --paper-accent: #B5411D;
+  --night: #151A3A; --night-2: #1C2248; --night-ink: #ECEBF4; --night-soft: #AEB0C8; --night-rule: #2E355E; --night-accent: #F0683A;
 
-  /* Typography */
-  --font-serif: Georgia, Cambria, "Times New Roman", Times, serif;
-  --font-sans: var(--font-body, var(--font-heading, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif));
+  --background: var(--paper);
+  --foreground: var(--paper-ink);
+  --muted: var(--paper-2);
+  --muted-foreground: var(--paper-soft);
+  --border: var(--paper-rule);
+  --accent: var(--paper-accent);
+  --accent-foreground: #ffffff;
+  --accent2: var(--paper-accent);
+  --navy: var(--paper-ink);
+  --orange: var(--paper-accent);
+
+  --gutter: clamp(18px, 4vw, 56px);
+  --measure: 62ch;
+
+  --font-serif-stack: var(--font-serif, Georgia, "Times New Roman", serif);
+  --font-sans-stack: var(--font-sans, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif);
+  --font-display-stack: var(--font-display, Georgia, "Times New Roman", serif);
 }
 
 @theme inline {
-  /* Colors */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-muted: var(--muted);
@@ -29,61 +36,73 @@
   --color-border: var(--border);
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
+  --color-paper: var(--paper);
+  --color-paper-2: var(--paper-2);
+  --color-paper-ink: var(--paper-ink);
+  --color-paper-soft: var(--paper-soft);
+  --color-paper-rule: var(--paper-rule);
+  --color-paper-accent: var(--paper-accent);
+  --color-night: var(--night);
+  --color-night-2: var(--night-2);
+  --color-night-ink: var(--night-ink);
+  --color-night-soft: var(--night-soft);
+  --color-night-rule: var(--night-rule);
+  --color-night-accent: var(--night-accent);
 
-  /* Typography */
-  --font-serif: var(--font-serif);
-  --font-sans: var(--font-sans);
+  --font-serif: var(--font-serif-stack);
+  --font-sans: var(--font-sans-stack);
+  --font-display: var(--font-display-stack);
 
-  /* Spacing for editorial layouts */
   --spacing-section: 6rem;
   --spacing-content: 2rem;
 }
 
-/* Dark mode */
-[data-theme="dark"] {
-  --background: #11142B;
-  --foreground: #ECEDF6;
-  --muted: #1A1E3C;
-  --muted-foreground: #A8ADCB;
-  --border: #2D3259;
-  --accent: #9FB0FF;
-  --accent-foreground: #11142B;
-  --accent2: #9FB0FF;
-  --navy: #ECEDF6;
-  --orange: #9FB0FF;
+/* The night ground, for a whole page in dark mode or for one half of a split. */
+.ground-night, [data-theme="dark"] {
+  --background: var(--night);
+  --foreground: var(--night-ink);
+  --muted: var(--night-2);
+  --muted-foreground: var(--night-soft);
+  --border: var(--night-rule);
+  --accent: var(--night-accent);
+  --accent-foreground: var(--night);
+  --accent2: var(--night-accent);
+  --navy: var(--night-ink);
+  --orange: var(--night-accent);
+  background: var(--background);
+  color: var(--foreground);
 }
-
-/* Auto dark mode (system preference) */
+.ground-paper {
+  --background: var(--paper);
+  --foreground: var(--paper-ink);
+  --muted: var(--paper-2);
+  --muted-foreground: var(--paper-soft);
+  --border: var(--paper-rule);
+  --accent: var(--paper-accent);
+  --accent-foreground: #ffffff;
+  --accent2: var(--paper-accent);
+  --navy: var(--paper-ink);
+  --orange: var(--paper-accent);
+  background: var(--background);
+  color: var(--foreground);
+}
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --background: #11142B;
-    --foreground: #ECEDF6;
-    --muted: #1A1E3C;
-    --muted-foreground: #A8ADCB;
-    --border: #2D3259;
-    --accent: #9FB0FF;
-    --accent-foreground: #11142B;
-    --accent2: #9FB0FF;
-    --navy: #ECEDF6;
-    --orange: #9FB0FF;
+    --background: var(--night);
+    --foreground: var(--night-ink);
+    --muted: var(--night-2);
+    --muted-foreground: var(--night-soft);
+    --border: var(--night-rule);
+    --accent: var(--night-accent);
+    --accent-foreground: var(--night);
+    --accent2: var(--night-accent);
+    --navy: var(--night-ink);
+    --orange: var(--night-accent);
   }
 }
 
-/* Blog posts are a light reading surface in both themes.
-   BlogPageBackground paints the page white; these tokens keep the text dark on it. */
-.reading-light {
-  --background: #ffffff;
-  --foreground: #15183A;
-  --muted: #E8EAF3;
-  --muted-foreground: #4B5070;
-  --border: #CED2E2;
-  --accent: #2E3A87;
-  --accent-foreground: #ffffff;
-  --accent2: #2E3A87;
-  --navy: #15183A;
-  --orange: #2E3A87;
-  color: var(--foreground);
-}
+/* Blog posts once forced a white reading surface; they now read on the page ground. */
+.reading-light { color: var(--foreground); }
 
 /* Base styles */
 * {
@@ -98,8 +117,9 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans);
-  font-size: 16px;
-  line-height: 1.7;
+  font-size: 17px;
+  line-height: 1.55;
+  text-wrap: pretty;
   transition: background-color 0.3s ease, color 0.3s ease;
   overflow-x: hidden;
   width: 100%;
@@ -108,49 +128,81 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Typography — Syne for headings, DM Sans for body */
+/* Typography. Sprat for display headings, Newsreader for long-form, DM Sans for the interface. */
 h1, h2, h3, h4, h5, h6 {
-  font-family: var(--font-heading, var(--font-sans));
-  font-weight: 700;
-  line-height: 1.2;
+  font-family: var(--font-display);
+  font-weight: 560;
+  font-stretch: 122%;
+  line-height: 1.04;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
   color: var(--foreground);
 }
+h1 { font-size: clamp(2.25rem, 4.6vw, 3.75rem); margin-bottom: 1.25rem; }
+h2 { font-size: clamp(1.75rem, 3.4vw, 2.75rem); margin-bottom: 1rem; }
+h3 { font-size: clamp(1.35rem, 2vw, 1.75rem); margin-bottom: .75rem; }
+h4, h5, h6 { font-family: var(--font-sans); font-weight: 600; line-height: 1.3; letter-spacing: 0; }
 
-h1 {
-  font-size: clamp(2rem, 5vw, 3rem);
-  margin-bottom: 1.5rem;
-  letter-spacing: -0.02em;
-}
+.display { font-family: var(--font-display); font-stretch: 122%; line-height: 1.02; letter-spacing: -0.01em; text-wrap: balance; }
+.display-wide { font-stretch: 150%; }
+.serif { font-family: var(--font-serif); font-optical-sizing: auto; }
+.sans { font-family: var(--font-sans); }
+.gutter { padding-left: var(--gutter); padding-right: var(--gutter); }
+.measure { max-width: var(--measure); }
+.tnum { font-variant-numeric: tabular-nums; }
 
-h2 {
-  font-size: clamp(1.75rem, 4vw, 2.25rem);
-  margin-bottom: 1.25rem;
-  letter-spacing: -0.01em;
-}
+.skip-link { position: absolute; left: -999px; top: 8px; z-index: 60; background: var(--foreground); color: var(--background); padding: 8px 12px; }
+.skip-link:focus { left: 8px; }
 
-h3 {
-  font-size: clamp(1.5rem, 3vw, 1.75rem);
-  margin-bottom: 1rem;
-  letter-spacing: -0.01em;
-}
+.button { display: inline-flex; align-items: center; justify-content: center; gap: .5rem; min-height: 44px; padding: 10px 18px; border: 1px solid currentColor; font-family: var(--font-sans); font-weight: 600; font-size: 15px; line-height: 1.2; text-decoration: none; }
+.button-ink { background: var(--foreground); color: var(--background); border-color: var(--foreground); }
+.button-ink:hover { background: var(--accent); border-color: var(--accent); color: var(--accent-foreground); }
+.button-accent { background: var(--accent); color: var(--accent-foreground); border-color: var(--accent); }
+.button-accent:hover { background: var(--foreground); border-color: var(--foreground); color: var(--background); }
+.button-line { background: transparent; color: var(--foreground); border-color: var(--border); }
+.button-line:hover { border-color: var(--foreground); }
+
+.nav-link { text-decoration: none; }
+.nav-link[aria-current="page"] { color: var(--foreground); text-decoration: underline; text-decoration-color: var(--accent); text-decoration-thickness: 2px; text-underline-offset: 6px; }
+.footer-label { font-size: 12.5px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; color: var(--muted-foreground); }
+.footer-link { font-size: 15px; color: var(--foreground); text-decoration: none; }
+.footer-link:hover { text-decoration: underline; color: var(--accent); }
+
+.eyebrow { font-family: var(--font-sans); font-size: 13.5px; color: var(--muted-foreground); }
+.eyebrow b { font-weight: 600; color: var(--accent); }
+.go { font-family: var(--font-sans); font-size: 15px; font-weight: 500; }
+.go a { margin-right: 20px; text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; }
+.go a:hover { color: var(--accent); }
+figure.shot { margin: 20px 0 10px; }
+figure.shot img { border: 1px solid var(--border); background: #fff; border-radius: 2px; }
+figure.shot figcaption { font-family: var(--font-sans); font-size: 14px; color: var(--muted-foreground); margin-top: 10px; max-width: var(--measure); }
+.pull { font-family: var(--font-serif); font-optical-sizing: auto; font-size: clamp(1.25rem, 1.7vw, 1.5rem); line-height: 1.35; margin: 14px 0 6px; padding-left: 16px; border-left: 3px solid var(--accent); max-width: 32ch; }
+.pull-by { font-family: var(--font-sans); font-size: 14px; color: var(--muted-foreground); margin: 0 0 16px; }
+.kv { display: grid; grid-template-columns: auto 1fr; gap: 6px 18px; max-width: var(--measure); margin: 14px 0 18px; font-size: 16px; }
+.kv dt { font-family: var(--font-display); font-stretch: 122%; font-size: 1.5rem; line-height: 1.1; font-weight: 560; color: var(--accent); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.kv dd { margin: 0; align-self: center; }
+@media (max-width: 640px) { .kv { grid-template-columns: 1fr; gap: 2px 0; } .kv dd { margin-bottom: 10px; } }
 
 /* Article content styling */
 .prose {
   font-family: var(--font-serif);
+  font-optical-sizing: auto;
   font-size: 1.125rem;
-  line-height: 1.8;
-  max-width: 65ch;
+  line-height: 1.6;
+  max-width: 66ch;
   color: var(--foreground);
 }
 
 .prose p {
-  margin-bottom: 1.5rem;
-  color: var(--muted-foreground);
+  margin-bottom: 1.35rem;
+  color: var(--foreground);
 }
 
 .prose h1, .prose h2, .prose h3, .prose h4, .prose h5, .prose h6 {
-  font-family: var(--font-serif);
-  font-weight: 700;
+  font-family: var(--font-display);
+  font-stretch: 122%;
+  font-weight: 560;
+  line-height: 1.08;
   color: var(--foreground);
   /* Leave room for the fixed header when a table-of-contents link jumps here */
   scroll-margin-top: 6.5rem;
@@ -159,12 +211,12 @@ h3 {
 }
 
 .prose h2 {
-  font-size: 2rem;
+  font-size: 1.9rem;
   color: var(--foreground);
 }
 
 .prose h3 {
-  font-size: 1.5rem;
+  font-size: 1.45rem;
   color: var(--foreground);
 }
 
@@ -209,9 +261,9 @@ h3 {
 }
 
 .prose ul, .prose ol {
-  margin-bottom: 1.5rem;
-  padding-left: 2rem;
-  color: var(--muted-foreground);
+  margin-bottom: 1.35rem;
+  padding-left: 1.5rem;
+  color: var(--foreground);
 }
 
 .prose ul {
@@ -223,9 +275,9 @@ h3 {
 }
 
 .prose li {
-  margin-bottom: 0.5rem;
-  color: var(--muted-foreground);
-  padding-left: 0.5rem;
+  margin-bottom: 0.4rem;
+  color: var(--foreground);
+  padding-left: 0.25rem;
 }
 
 .prose li::marker {
@@ -238,15 +290,12 @@ h3 {
 }
 
 .prose blockquote {
-  border-left: 4px solid var(--accent);
-  padding: 1.5rem 2rem;
-  margin: 2.5rem 0;
-  font-style: italic;
+  border-left: 3px solid var(--accent);
+  padding: 0 0 0 1.25rem;
+  margin: 2rem 0;
   color: var(--foreground);
-  background: var(--muted);
-  font-size: 1.25rem;
-  line-height: 1.6;
-  border-radius: 4px;
+  font-size: 1.2rem;
+  line-height: 1.45;
 }
 
 .prose blockquote p {
@@ -264,15 +313,15 @@ h3 {
 }
 
 .prose pre {
-  background: #E8EAF3;
-  color: #15183A;
+  background: var(--muted);
+  color: var(--foreground);
   padding: 1.25rem 1.5rem;
   border-radius: 8px;
   overflow-x: auto;
   margin: 1.5rem 0;
   font-size: 0.875rem;
   line-height: 1.7;
-  border: 1px solid #CED2E2;
+  border: 1px solid var(--border);
 }
 
 .prose pre code {
@@ -285,95 +334,40 @@ h3 {
 }
 
 /* Code block wrapper with copy button */
-.code-block-wrapper {
-  position: relative;
-  margin: 1.5rem 0;
-}
-
-.code-block-wrapper pre {
-  margin: 0;
-}
-
+.code-block-wrapper { position: relative; margin: 1.5rem 0; }
+.code-block-wrapper pre { margin: 0; }
 .copy-btn {
-  position: absolute;
-  top: 0.5rem;
-  right: 0.5rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 2rem;
-  height: 2rem;
-  padding: 0;
-  color: #4B5070;
-  background: transparent;
-  border: 1px solid #CED2E2;
-  border-radius: 6px;
-  cursor: pointer;
-  opacity: 0;
-  transition: opacity 0.2s ease, background 0.2s ease, color 0.2s ease;
-  z-index: 1;
+  position: absolute; top: 0.5rem; right: 0.5rem;
+  display: flex; align-items: center; justify-content: center;
+  width: 2rem; height: 2rem; padding: 0;
+  color: var(--muted-foreground); background: var(--background);
+  border: 1px solid var(--border); border-radius: 6px; cursor: pointer;
+  opacity: 0; transition: opacity 0.2s ease, background 0.2s ease, color 0.2s ease; z-index: 1;
 }
-
-.code-block-wrapper:hover .copy-btn {
-  opacity: 1;
-}
-
-.copy-btn:hover {
-  background: #DDE0EE;
-  color: #15183A;
-}
-
-.copy-btn.copied {
-  color: #16a34a;
-  border-color: #16a34a;
-}
-
-/* Dark mode code blocks */
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) .prose pre {
-    background: #1A1E3C;
-    color: #ECEDF6;
-    border-color: #2D3259;
-  }
-
-  :root:not([data-theme="light"]) .copy-btn {
-    color: #A8ADCB;
-    border-color: #2D3259;
-    background: transparent;
-  }
-
-  :root:not([data-theme="light"]) .copy-btn:hover {
-    background: #1A1E3C;
-    color: #ECEDF6;
-  }
-
-  :root:not([data-theme="light"]) .copy-btn.copied {
-    color: #68d391;
-    border-color: #68d391;
-  }
-
-  /* Keep code blocks light on the white blog page */
-  :root:not([data-theme="light"]) .reading-light .prose pre {
-    background: #E8EAF3;
-    color: #15183A;
-    border-color: #CED2E2;
-  }
-}
+.code-block-wrapper:hover .copy-btn, .copy-btn:focus-visible { opacity: 1; }
+.copy-btn:hover { color: var(--foreground); border-color: var(--foreground); }
+.copy-btn.copied { color: var(--accent); border-color: var(--accent); }
 
 .prose img {
   max-width: 100%;
   height: auto;
-  margin: 2rem 0;
-  border-radius: 4px;
+  margin: 1.5rem 0 .5rem;
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  background: #fff;
 }
+.prose figure { margin: 2rem 0; }
+.prose figcaption, .prose img + em { display: block; font-family: var(--font-sans); font-size: 14px; color: var(--muted-foreground); margin-top: .5rem; }
 
 
 /* Dark mode prose - now handled by CSS variables */
 
-/* Smooth transitions */
-a, button {
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+a, button { transition: color .15s ease, background-color .15s ease, border-color .15s ease, opacity .15s ease; }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { transition: none !important; animation: none !important; }
 }
+html { scroll-behavior: smooth; scroll-padding-top: 72px; }
 
 /* Link styling */
 a {
