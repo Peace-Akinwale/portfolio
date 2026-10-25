@@ -1,281 +1,207 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import Image from 'next/image';
-import { AVAILABILITY } from '@/lib/site';
-import { MANYREQUESTS_ARTICLE_COUNT } from '@/lib/portfolio/manyrequests';
+import '@/components/home/home.css';
+import { QuestionNav } from '@/components/home/QuestionNav';
+import { CALENDLY_URL, EMAIL, SITE_URL } from '@/lib/site';
+import {
+  HERO, QUESTIONS, DOCS_WATCH, CONTENTDB, MANYREQUESTS, AEO, FANOUT, GARDE, EDITOR, ALOUD, READING_APP, HOW_I_WORK, OFFER,
+} from '@/lib/content/home-copy';
 
 export const metadata: Metadata = {
-  title: 'B2B SaaS Content Writer | Peace Akinwale',
+  title: 'Peace Akinwale. Articles for B2B SaaS companies and agencies, and AI tools for content teams',
   description:
-    'B2B SaaS content writer for product-led software companies. I write articles that rank, refresh content with business potential, and help brands show up in AI search.',
-  keywords: [
-    'B2B SaaS content writer',
-    'product-led content writer',
-    'B2B content writer',
-    'SaaS content writer',
-  ],
-  alternates: {
-    canonical: 'https://peaceakinwale.com',
-  },
+    'I build AI products and I write. Most of the work is deciding what’s worth making and checking that it’s true. Three questions, answered with the writing and the tools.',
+  alternates: { canonical: SITE_URL },
 };
 
-const homeStructuredData = {
-  '@context': 'https://schema.org',
-  '@type': 'WebPage',
-  '@id': 'https://peaceakinwale.com/#home',
-  url: 'https://peaceakinwale.com',
-  name: 'Peace Akinwale | B2B SaaS Content Writer',
-  description:
-    'Homepage for Peace Akinwale, a B2B SaaS content writer who specializes in product-led content, content refreshes, and AI-search-friendly articles.',
-  about: {
-    '@type': 'Person',
-    name: 'Peace Akinwale',
-    jobTitle: 'B2B SaaS content writer',
-  },
-  mainEntity: {
-    '@type': 'Service',
-    name: 'B2B SaaS content writing',
-    provider: {
-      '@type': 'Person',
-      name: 'Peace Akinwale',
-    },
-    serviceType: 'B2B SaaS content writer',
-  },
-};
-
-// Published pieces, linked to where they live. Rankings come from the ManyRequests case study (April 2026).
-const RECENT_WORK = [
-  {
-    title: 'We Evaluated 6 Best Workfront Alternatives for Creative Agencies in 2026',
-    client: 'ManyRequests',
-    link: 'https://www.manyrequests.com/blog/workfront-alternatives',
-    note: 'Ranked #6 on Google for “Workfront alternatives”',
-  },
-  {
-    title: 'Agency Retainer Model: How to Price, Package, and Scale',
-    client: 'ManyRequests',
-    link: 'https://www.manyrequests.com/blog/agency-retainer-model',
-  },
-  {
-    title: 'What is Regression Testing? A Practical Guide',
-    client: 'Marker.io, ghostwritten',
-    link: 'https://marker.io/blog/regression-testing',
-  },
-  {
-    title: '7 Modern Meeting Room Designs & What You Need to Nail Them',
-    client: 'Jabra, ghostwritten',
-    link: 'https://www.jabra.com/discover/modern-meeting-room',
-  },
-  {
-    title: 'Why Being Invisible in Answer Engines Is a Real Business Problem',
-    client: 'HigherVisibility',
-    link: 'https://www.highervisibility.com/why-being-invisible-in-answer-engines-is-a-real-business-problem/',
-  },
-  {
-    title: '10 Best Design Annotation Tools for Agencies in 2026 + Best Use Cases',
-    client: 'ManyRequests',
-    link: 'https://www.manyrequests.com/blog/design-annotation-software',
-    note: 'Ranked #6 on Google for “design annotation tools”',
-  },
-];
-
-const PRICES = [
-  { offer: 'Refresh an existing article', price: '$400', detail: '2,000–2,500 words' },
-  { offer: 'Write a new article', price: '$600', detail: '2,000–3,000 words' },
-  { offer: 'Five articles a month', price: '$2,700', detail: 'the monthly retainer, 10% off the single-article price' },
-];
-
-const primaryButton =
-  'inline-flex items-center justify-center rounded-md px-6 py-3 text-sm font-semibold transition-opacity hover:opacity-90';
+function Ext({ href, children }: { href: string; children: React.ReactNode }) {
+  return (
+    <a href={href} rel="noopener" target="_blank">
+      {children}
+    </a>
+  );
+}
 
 export default function HomePage() {
   return (
-    <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(homeStructuredData) }}
-      />
-
-      {/* Intro */}
-      <section className="max-w-6xl mx-auto px-6 pt-16 sm:pt-24 pb-16 sm:pb-20">
-        <div className="grid gap-12 lg:grid-cols-[minmax(0,1fr)_300px] lg:items-end">
-          <div className="max-w-2xl">
-            <h1
-              className="text-4xl sm:text-5xl md:text-6xl font-extrabold leading-[1.05] mb-8 text-foreground"
-              style={{ letterSpacing: '-0.035em', textWrap: 'balance' }}
-            >
-              <span className="whitespace-nowrap">Product-led</span> content for B2B&nbsp;SaaS
-            </h1>
-            <p className="text-lg sm:text-xl leading-relaxed text-muted-foreground mb-10 max-w-xl">
-              I&rsquo;m Peace Akinwale, a content writer in Lagos. I write articles where your product shows up because it
-              solves the reader&rsquo;s problem, not because a brief said &ldquo;mention it somewhere.&rdquo;
-            </p>
-            <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-              <Link
-                href="/contact"
-                className={primaryButton}
-                style={{ background: 'var(--accent)', color: 'var(--accent-foreground)' }}
-              >
-                Book a call
-              </Link>
-              <a
-                href="#work"
-                className="text-sm font-semibold text-foreground underline underline-offset-4 decoration-accent/40 hover:decoration-accent py-2"
-              >
-                Read recent work
-              </a>
-            </div>
-            <p className="mt-8 flex items-center gap-2 text-sm text-muted-foreground">
-              <span className="inline-block h-2 w-2 rounded-full bg-accent" aria-hidden />
-              {AVAILABILITY}
-            </p>
+    <div className="home">
+      <section className="hero" aria-labelledby="hero-h">
+        <div className="hero-paper ground-paper">
+          <h1 id="hero-h">{HERO.heading}</h1>
+          <div>
+            <p className="hero-line">{HERO.line}</p>
+            <p className="hero-who">{HERO.who}</p>
           </div>
-
-          <div className="relative w-full max-w-[260px] sm:max-w-[300px] aspect-[4/5] overflow-hidden rounded-xl bg-muted">
+        </div>
+        <div className="hero-night ground-night">
+          <figure className="hero-portrait">
             <Image
-              src="/images/Peace Akinwale portrait.jpg"
-              alt="Peace Akinwale"
-              fill
+              src="/images/home/peace-portrait.jpg"
+              width={1400}
+              height={2097}
               priority
-              sizes="300px"
-              className="object-cover object-center"
+              sizes="(max-width: 760px) 100vw, 50vw"
+              alt="Peace Akinwale in a pinstriped suit, arms folded, smiling"
             />
-          </div>
+          </figure>
         </div>
       </section>
 
-      {/* Recent work: the page's one loud element */}
-      <section id="work" className="border-t border-border scroll-mt-24">
-        <div className="max-w-6xl mx-auto px-6 py-16 sm:py-20">
-          <h2 className="text-2xl sm:text-3xl font-extrabold text-foreground mb-3" style={{ letterSpacing: '-0.02em' }}>
-            Recent work
-          </h2>
-          <p className="text-base text-muted-foreground mb-10 max-w-xl">
-            A few published pieces. Each opens on the client&rsquo;s site.
+      <QuestionNav items={QUESTIONS} />
+
+      {/* Q1 */}
+      <section className="split" id="q1" aria-labelledby="q1h">
+        <div className="split-paper ground-paper">
+          <h2 id="q1h">Is this true?</h2>
+          <p className="eyebrow"><b>Writing</b> For ManyRequests, 5 Jan 2026</p>
+          <h3><Ext href={MANYREQUESTS.url}>{MANYREQUESTS.title}</Ext></h3>
+          <div className="body"><p>{MANYREQUESTS.body}</p></div>
+          <figure className="shot">
+            <Image src="/images/home/serp-design-annotation.png" width={1299} height={872} loading="lazy" sizes="(max-width: 760px) 100vw, 50vw" alt="Google results for 'design annotation tools' in April 2026, with the ManyRequests article in third place" />
+            <figcaption>{MANYREQUESTS.caption}</figcaption>
+          </figure>
+          <blockquote className="pull">“{MANYREQUESTS.quote}”</blockquote>
+          <p className="pull-by">{MANYREQUESTS.quoteBy}</p>
+          <p className="go">
+            <Ext href={MANYREQUESTS.url}>Read the article on ManyRequests</Ext>
+            <Link href={MANYREQUESTS.caseStudy}>How the ManyRequests work went</Link>
           </p>
+        </div>
+        <div className="split-night ground-night">
+          <p className="mobile-q">The building answer to the same question</p>
+          <p className="eyebrow"><b>Building</b> AI Docs Watch, for Notebook Agency, live</p>
+          <h3><Link href={DOCS_WATCH.caseStudy}>Show the page before and after. Then say what’s true now.</Link></h3>
+          <div className="body">
+            <p>{DOCS_WATCH.p1}</p>
+            <p>{DOCS_WATCH.p2}</p>
+          </div>
+          <figure className="shot">
+            <Image src="/images/home/docswatch-change.jpg" width={1400} height={758} loading="lazy" sizes="(max-width: 760px) 100vw, 50vw" alt="A Docs Watch change page: 'Low impact edit to Usage Policy', a one-sentence summary, a 'See the change side by side' button, and a dated list of every version of the page" />
+            <figcaption>{DOCS_WATCH.caption}</figcaption>
+          </figure>
+          <p className="go">
+            <Ext href={DOCS_WATCH.site}>Open AI Docs Watch</Ext>
+            <Link href={DOCS_WATCH.caseStudy}>How it was built</Link>
+          </p>
+          <div className="then">
+            <p className="eyebrow"><b>Building</b> ContentDB, my own app</p>
+            <h3><Link href={CONTENTDB.caseStudy}>Keep the surrounding conversation beside the quote.</Link></h3>
+            <div className="body"><p>{CONTENTDB.p1}</p></div>
+            <figure className="shot">
+              <Image src="/images/home/search-results.png" width={953} height={896} loading="lazy" sizes="(max-width: 760px) 100vw, 40vw" alt="ContentDB search for 'productize' showing a highlighted quote from a YouTube transcript with the sentences before and after it" />
+              <figcaption>{CONTENTDB.caption}</figcaption>
+            </figure>
+            <p className="go"><Link href={CONTENTDB.caseStudy}>The ContentDB case study</Link></p>
+          </div>
+        </div>
+      </section>
 
-          <ol className="border-b border-border">
-            {RECENT_WORK.map((piece) => (
-              <li key={piece.link} className="border-t border-border">
-                <a
-                  href={piece.link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="group grid gap-2 py-5 sm:py-6 md:grid-cols-[minmax(0,1fr)_14rem] md:gap-10"
-                >
-                  <span
-                    className="text-xl sm:text-2xl md:text-[1.7rem] font-bold leading-snug text-foreground group-hover:text-accent transition-colors"
-                    style={{ fontFamily: 'var(--font-heading)', letterSpacing: '-0.015em', textWrap: 'balance' }}
-                  >
-                    {piece.title}
-                    <span className="ml-2 text-base align-middle text-muted-foreground group-hover:text-accent" aria-hidden>
-                      ↗
-                    </span>
-                    <span className="sr-only"> (opens in a new tab)</span>
-                  </span>
-                  <span className="text-sm text-muted-foreground md:pt-2">
-                    {piece.client}
-                    {piece.note && <span className="block mt-1 text-foreground">{piece.note}</span>}
-                  </span>
-                </a>
-              </li>
+      {/* Q2 */}
+      <section className="split" id="q2" aria-labelledby="q2h">
+        <div className="split-paper ground-paper">
+          <h2 id="q2h">What’s worth making?</h2>
+          <p className="eyebrow"><b>Writing</b> On my blog, 14 Apr 2026</p>
+          <h3><Link href={AEO.href}>{AEO.heading}</Link></h3>
+          <div className="body">
+            <p>{AEO.p1}</p>
+            <p>{AEO.p2}</p>
+          </div>
+          <p className="go"><Link href={AEO.href}>Read the article</Link></p>
+        </div>
+        <div className="split-night ground-night">
+          <p className="mobile-q">The building answer to the same question</p>
+          <p className="eyebrow"><b>Building</b> Fanout query analysis tool, for Notebook Agency</p>
+          <h3><Link href={FANOUT.caseStudy}>Research before code, then analysis as the output.</Link></h3>
+          <div className="body">
+            <p>{FANOUT.p1}</p>
+            <p>{FANOUT.p2}</p>
+          </div>
+          <p className="go"><Link href={FANOUT.caseStudy}>How the fanout query analysis tool came about</Link></p>
+          <div className="then">
+            <p className="eyebrow"><b>Building</b> Garde, my first app, 30 Mar 2026</p>
+            <h3><Link href={GARDE.essay}>And sometimes the answer is to stop.</Link></h3>
+            <div className="body">
+              <p>{GARDE.lead}</p>
+              <p>{GARDE.p1}</p>
+            </div>
+            <p className="go"><Link href={GARDE.essay}>Read the essay</Link></p>
+          </div>
+        </div>
+      </section>
+
+      {/* Q3 */}
+      <section className="split" id="q3" aria-labelledby="q3h">
+        <div className="split-paper ground-paper">
+          <h2 id="q3h">What does done mean?</h2>
+          <p className="eyebrow"><b>Writing</b> Ghostwritten for Jabra, 29 May 2025</p>
+          <h3>What an editor wrote on the first draft.</h3>
+          <div className="body"><p>{EDITOR.intro}</p></div>
+          <figure className="shot narrow">
+            <Image src="/images/home/editor-comment-jabra.png" width={335} height={469} loading="lazy" sizes="330px" alt={EDITOR.alt} />
+            <figcaption>{EDITOR.caption}</figcaption>
+          </figure>
+          <blockquote className="pull">“{EDITOR.nathan}”</blockquote>
+          <p className="pull-by">{EDITOR.nathanBy}</p>
+          <div className="body"><p>{EDITOR.done}</p></div>
+          <p className="go"><Link href="/testimonials">What other clients said</Link></p>
+        </div>
+        <div className="split-night ground-night">
+          <p className="mobile-q">The building answer to the same question</p>
+          <p className="eyebrow"><b>Building</b> Aloud, my own app, 28 Sep 2026</p>
+          <h3><Link href={ALOUD.caseStudy}>Done is measured on the live app, not reported by a test.</Link></h3>
+          <div className="body"><p>{ALOUD.p1}</p></div>
+          <dl className="kv">
+            {ALOUD.kv.map((row) => (
+              <div key={row.k} className="contents">
+                <dt>{row.k}</dt>
+                <dd>{row.v}</dd>
+              </div>
             ))}
-          </ol>
-
-          <div className="mt-8 flex flex-col sm:flex-row gap-3 sm:gap-8 text-sm font-semibold">
-            <Link href="/portfolio" className="text-foreground underline underline-offset-4 decoration-accent/40 hover:decoration-accent">
-              All writing samples
-            </Link>
-            <Link
-              href="/case-studies/manyrequests"
-              className="text-foreground underline underline-offset-4 decoration-accent/40 hover:decoration-accent"
-            >
-              How I wrote {MANYREQUESTS_ARTICLE_COUNT} articles for ManyRequests
-            </Link>
+          </dl>
+          <div className="body"><p>{ALOUD.p2}</p></div>
+          <p className="go">
+            <Link href={ALOUD.caseStudy}>The Aloud case study</Link>
+            <Ext href={ALOUD.log}>Read the Aloud log</Ext>
+          </p>
+          <div className="then">
+            <p className="eyebrow"><b>Building</b> A reading app for a content team</p>
+            <h3><Link href={READING_APP.article}>The success message was the bug.</Link></h3>
+            <div className="body"><p>{READING_APP.p1}</p></div>
+            <p className="go"><Link href={READING_APP.article}>Five lessons from building it</Link></p>
           </div>
         </div>
       </section>
 
-      {/* Proof: an editor's own words, unedited */}
-      <section className="border-t border-border bg-muted">
-        <div className="max-w-6xl mx-auto px-6 py-16 sm:py-20 grid gap-10 md:grid-cols-[335px_minmax(0,1fr)] md:items-center">
-          <Image
-            src="/images/testimonials/melissa-malec-jabra.png"
-            alt="Google Docs comment from Melissa Malec: “you had me hooked from start to finish! It was a really well researched, well structured, helpful piece of content with appropriate product placements.”"
-            width={335}
-            height={469}
-            className="rounded-xl border border-border w-full max-w-[335px]"
-          />
-          <div className="max-w-xl">
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-foreground mb-6" style={{ letterSpacing: '-0.02em' }}>
-              What an editor wrote on my first draft
-            </h2>
-            <p className="text-base leading-relaxed text-muted-foreground mb-6">
-              Melissa Malec, content lead at Jabra (through Spicy Margarita), left this comment on a piece about hybrid work
-              schedules on 29 May 2025. It&rsquo;s a screenshot of the doc, not a quote I tidied up.
-            </p>
-            <Link
-              href="/testimonials"
-              className="text-sm font-semibold text-foreground underline underline-offset-4 decoration-accent/40 hover:decoration-accent"
-            >
-              More from clients and editors
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* Prices and the next step */}
-      <section className="border-t border-border">
-        <div className="max-w-6xl mx-auto px-6 py-16 sm:py-20 grid gap-14 md:grid-cols-2">
+      <section className="how ground-paper" id="how" aria-labelledby="how-h">
+        <div className="how-inner">
+          <h2 id="how-h">How I work</h2>
           <div>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-foreground mb-8" style={{ letterSpacing: '-0.02em' }}>
-              What it costs
-            </h2>
-            <ul className="space-y-4 mb-8">
-              {PRICES.map((item) => (
-                <li key={item.offer} className="text-base text-muted-foreground">
-                  <span className="font-semibold text-foreground">
-                    {item.offer}: {item.price}
-                  </span>{' '}
-                  ({item.detail})
-                </li>
-              ))}
-            </ul>
-            <Link
-              href="/services"
-              className="text-sm font-semibold text-foreground underline underline-offset-4 decoration-accent/40 hover:decoration-accent"
-            >
-              What each one includes
-            </Link>
-          </div>
-
-          <div>
-            <h2
-              className="text-2xl sm:text-3xl font-extrabold text-foreground mb-5"
-              style={{ letterSpacing: '-0.02em', textWrap: 'balance' }}
-            >
-              Tell me what you&rsquo;re publishing next
-            </h2>
-            <p className="text-base leading-relaxed text-muted-foreground mb-8">
-              Book a 30-minute call, or email{' '}
-              <a
-                href="mailto:akindayopeaceakinwale@gmail.com"
-                className="text-foreground underline underline-offset-4 decoration-accent/40 hover:decoration-accent break-all sm:break-normal"
-              >
-                akindayopeaceakinwale@gmail.com
-              </a>{' '}
-              if you&rsquo;d rather write first.
-            </p>
-            <Link
-              href="/contact"
-              className={primaryButton}
-              style={{ background: 'var(--accent)', color: 'var(--accent-foreground)' }}
-            >
-              Book a call
-            </Link>
+            <p>{HOW_I_WORK.p1}</p>
+            <p>{HOW_I_WORK.p2}</p>
+            <p className="go"><Ext href={HOW_I_WORK.log}>See the public work log on GitHub</Ext></p>
           </div>
         </div>
       </section>
-    </>
+
+      <section className="offer" id="work-with-me" aria-label="Working with me">
+        <div className="ground-paper">
+          <h2>Writing with me</h2>
+          <p>{OFFER.writing}</p>
+          <ul>
+            {OFFER.prices.map((p) => <li key={p}>{p}</li>)}
+          </ul>
+          <a className="button button-ink" href={`mailto:${EMAIL}?subject=An%20article`}>Email about an article</a>
+          <Link className="button button-line" href="/services">What’s included</Link>
+        </div>
+        <div className="ground-night">
+          <h2>Building with me</h2>
+          <p>{OFFER.building}</p>
+          <p className="note">Scoped per project, after we’ve talked about the task.</p>
+          <Ext href={CALENDLY_URL}><span className="button button-accent">Book a 30-minute call</span></Ext>
+          <Link className="button button-line" href="/contact">Write to me instead</Link>
+        </div>
+      </section>
+    </div>
   );
 }

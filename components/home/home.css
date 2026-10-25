@@ -1,0 +1,88 @@
+/* The Seam homepage: paper on the left for writing, night on the right for
+   building, one question per section answered on both sides. Tokens from
+   docs/design-reference-2026-10.md; the halves use .ground-paper/.ground-night. */
+
+.home { font-size: 17px; }
+
+/* hero */
+.hero { display: grid; grid-template-columns: 1fr 1fr; min-height: min(78vh, 760px); }
+.hero-paper { padding: clamp(40px, 7vh, 80px) var(--gutter) 40px; display: flex; flex-direction: column; justify-content: flex-start; gap: 36px; }
+.hero h1 { font-size: clamp(2.6rem, 5vw, 4.6rem); font-weight: 520; margin: 0; max-width: 11ch; }
+.hero-line { font-family: var(--font-serif); font-optical-sizing: auto; font-size: clamp(1.2rem, 1.7vw, 1.45rem); line-height: 1.35; max-width: 32ch; margin: 0; }
+.hero-who { font-size: 15.5px; color: var(--muted-foreground); max-width: var(--measure); margin: 14px 0 0; }
+.hero-night { position: relative; overflow: hidden; display: grid; align-items: end; padding: 0; }
+.hero-night::before { content: ""; position: absolute; inset: 0; opacity: .12; background-size: 120px 120px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120' fill='none' stroke='%238A93D8' stroke-width='1.2'%3E%3Ccircle cx='30' cy='30' r='14'/%3E%3Ccircle cx='30' cy='30' r='5'/%3E%3Cpath d='M70 10v40M90 10v40M110 10v40' stroke-dasharray='3 5'/%3E%3Crect x='66' y='66' width='44' height='44'/%3E%3Cpath d='M74 74h28M74 88h28M74 102h28'/%3E%3Cpath d='M10 70l40 40M10 110l40-40' /%3E%3C/svg%3E"); }
+.hero-portrait { position: relative; z-index: 1; width: min(100%, 560px); margin: 0; justify-self: center; align-self: end; }
+.hero-portrait img { width: 100%; height: auto; max-height: calc(100vh - 56px); object-fit: cover; object-position: 50% 20%; display: block; }
+
+/* question nav */
+.qnav { position: sticky; top: 56px; z-index: 25; background: var(--paper); border-top: 1px solid var(--paper-rule); border-bottom: 1px solid var(--paper-rule); }
+.qnav ol { list-style: none; margin: 0; padding: 0 var(--gutter); display: flex; gap: 4px 22px; flex-wrap: wrap; min-height: 46px; align-items: center; }
+.qnav a { text-decoration: none; font-size: 15px; font-weight: 500; color: var(--paper-soft); padding: 12px 0; display: inline-block; border-bottom: 2px solid transparent; }
+.qnav a[aria-current="true"] { color: var(--paper-ink); border-bottom-color: var(--paper-accent); }
+.qnav a:hover { color: var(--paper-ink); }
+
+/* the pairs */
+.split { display: grid; grid-template-columns: 1fr 1fr; transition: grid-template-columns .35s ease; }
+.split:has(.split-paper:hover), .split:has(.split-paper:focus-within) { grid-template-columns: 1.25fr 1fr; }
+.split:has(.split-night:hover), .split:has(.split-night:focus-within) { grid-template-columns: 1fr 1.25fr; }
+.split > div { padding: 52px var(--gutter) 56px; min-width: 0; border-bottom: 1px solid var(--border); }
+.split h2 { font-size: clamp(2rem, 3.6vw, 3.4rem); font-weight: 520; margin: 0 0 26px; max-width: 14ch; }
+.split h3 { font-size: clamp(1.3rem, 1.9vw, 1.7rem); font-weight: 560; margin: 0 0 12px; max-width: 26ch; }
+.split h3 a { text-decoration: none; }
+.split h3 a:hover { text-decoration: underline; text-decoration-thickness: 2px; }
+.split .body { max-width: var(--measure); font-family: var(--font-serif); font-optical-sizing: auto; font-size: 1.1rem; line-height: 1.55; }
+.split .body p { margin: 0 0 .8em; }
+.split figure.shot { max-width: 760px; }
+.split figure.shot.narrow { max-width: 330px; }
+.split .mobile-q { display: none; font-size: 14px; color: var(--muted-foreground); margin: 0 0 10px; }
+.split .then { margin-top: 32px; }
+
+/* how I work */
+.how { padding: 60px var(--gutter) 64px; border-bottom: 1px solid var(--border); }
+.how-inner { max-width: 1100px; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr); gap: 40px; }
+.how h2 { font-size: clamp(2rem, 3.6vw, 3rem); font-weight: 520; max-width: 12ch; margin: 0; }
+.how p { max-width: var(--measure); font-family: var(--font-serif); font-optical-sizing: auto; font-size: 1.15rem; line-height: 1.5; }
+
+/* working with me */
+.offer { display: grid; grid-template-columns: 1fr 1fr; }
+.offer > div { padding: 52px var(--gutter) 60px; min-width: 0; }
+.offer h2 { font-size: clamp(1.8rem, 3vw, 2.6rem); font-weight: 520; margin: 0 0 12px; }
+.offer p { max-width: var(--measure); font-family: var(--font-serif); font-optical-sizing: auto; font-size: 1.1rem; line-height: 1.5; }
+.offer ul { margin: 0 0 18px; padding-left: 18px; font-family: var(--font-sans); font-size: 16px; }
+.offer li { margin-bottom: 6px; }
+.offer .note { font-family: var(--font-sans); font-size: 14.5px; color: var(--muted-foreground); }
+.offer .button { margin: 8px 12px 8px 0; }
+
+@media (max-width: 900px) {
+  .hero h1 { font-size: clamp(2.3rem, 7vw, 3.5rem); }
+  .split > div { padding: 40px var(--gutter) 44px; }
+  .how-inner { grid-template-columns: 1fr; }
+}
+@media (max-width: 760px) {
+  .home { font-size: 16px; }
+  .hero { grid-template-columns: 1fr; min-height: 0; }
+  .hero-paper { padding: 36px var(--gutter) 30px; gap: 22px; }
+  .hero h1 { font-size: clamp(2.1rem, 10vw, 2.9rem); }
+  .hero-portrait { width: 100%; }
+  .hero-portrait img { max-height: 62vw; object-position: 50% 25%; }
+  .qnav { top: 0; position: relative; }
+  .qnav ol { min-height: 0; padding: 8px var(--gutter); gap: 0 16px; }
+  .qnav a { padding: 8px 0; font-size: 14px; }
+  .split { grid-template-columns: 1fr !important; }
+  .split > div { padding: 34px var(--gutter) 38px; }
+  .split h2 { font-size: clamp(1.8rem, 8.5vw, 2.3rem); }
+  .split .mobile-q { display: block; }
+  .split figure.shot.narrow { max-width: 100%; }
+  .go a { display: block; margin: 0 0 8px; }
+  .offer { grid-template-columns: 1fr; }
+  .offer > div { padding: 40px var(--gutter) 44px; }
+  .how { padding: 44px var(--gutter) 48px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .split, .split:has(.split-paper:hover), .split:has(.split-paper:focus-within), .split:has(.split-night:hover), .split:has(.split-night:focus-within) { grid-template-columns: 1fr 1fr; transition: none; }
+}
+@media (prefers-reduced-motion: reduce) and (max-width: 760px) {
+  .split { grid-template-columns: 1fr; }
+}
