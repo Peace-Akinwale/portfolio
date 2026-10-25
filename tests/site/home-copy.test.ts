@@ -7,10 +7,12 @@ describe('homepage copy', () => {
   it('keeps the approved opening and drops the sentence Peace removed', () => {
     expect(copy.HERO.heading).toBe('Good work starts with good questions.');
     expect(copy.HERO.line).toBe(
-      'I build AI products and I write. Most of the work is deciding what’s worth making and checking that it’s true.',
+      'I build AI products and I write. Most of what I do is deciding what’s worth making and checking that it’s true.',
     );
     expect(all).not.toContain('The same three questions run through both');
     expect(all).not.toContain('under my own byline and ghostwritten');
+    expect(copy.HERO.who).toBe('Peace Akinwale, Lagos. I write BOFU content for B2B SaaS companies and agencies, and I build AI-assisted tools for content teams.');
+    expect(all).not.toContain('most of them for an AI-search agency');
   });
 
   it('uses the approved passages verbatim', () => {

@@ -4,8 +4,8 @@
 
 export const HERO = {
   heading: 'Good work starts with good questions.',
-  line: 'I build AI products and I write. Most of the work is deciding what’s worth making and checking that it’s true.',
-  who: 'Peace Akinwale, Lagos. I write bottom-of-funnel content for B2B SaaS companies and agencies, and I build AI-assisted tools for content teams, most of them for an AI-search agency.',
+  line: 'I build AI products and I write. Most of what I do is deciding what’s worth making and checking that it’s true.',
+  who: 'Peace Akinwale, Lagos. I write BOFU content for B2B SaaS companies and agencies, and I build AI-assisted tools for content teams.',
 };
 
 export const QUESTIONS = [
