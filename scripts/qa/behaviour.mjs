@@ -101,7 +101,7 @@ for (const [route, hash, w] of [['/', '#q2', 1440], ['/', '#q3', 390], ['/portfo
 {
   const p = await page(1440, 900, { dark: true });
   await p.goto(base + '/case-studies/aloud', { waitUntil: 'networkidle0' });
-  const r = await p.evaluate(() => ({ bg: getComputedStyle(document.body).backgroundColor, fg: getComputedStyle(document.body).color, h1: getComputedStyle(document.querySelector('h1')).color }));
+  const r = await p.evaluate(() => ({ bg: getComputedStyle(document.body).backgroundColor, fg: getComputedStyle(document.body).color, h1: getComputedStyle(document.querySelector('.cs-short-text')).color }));
   const main = await p.evaluate(() => getComputedStyle(document.querySelector('.theme-dated')).backgroundColor);
   ok('dark mode (system): dark stone with light ink, not indigo', main === 'rgb(19, 20, 17)' && r.h1 === 'rgb(236, 236, 230)', JSON.stringify({ ...r, main }));
   await p.close();
