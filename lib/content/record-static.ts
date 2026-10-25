@@ -13,7 +13,6 @@ export const STATIC_ENTRIES: RecordEntry[] = [
     dateLabel: '26 Aug 2026',
     month: '2026-08',
     title: 'Research before code.',
-    context: 'for Notebook Agency',
     body: [
       'I was asked to lead a browser extension that records how AI assistants search the web and which pages they cite. I spent the first day not building. Both competing extensions were free, and one was written by the author of the research the whole method rests on. Building first would have reproduced an existing tool with fewer features. The one thing neither did was analysis as the output, so that became the brief.',
       'The same day, a capture reported six citations where ten existed, because a parser dropped a whole class of them. I checked it against the raw stream and corrected it before the client saw the number.',
@@ -27,7 +26,6 @@ export const STATIC_ENTRIES: RecordEntry[] = [
     dateLabel: '31 Jul 2026',
     month: '2026-07',
     title: 'Refuse the sign-up form.',
-    context: 'for Notebook Agency',
     body: [
       'The members’ site for an eight-week course lets people in from a list of email addresses. A form that accepts a password from whoever is at the keyboard proves nothing about who is typing. So there is no password sign-up. You get an emailed link, then you set a password.',
     ],

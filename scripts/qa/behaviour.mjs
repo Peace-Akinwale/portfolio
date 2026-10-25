@@ -28,9 +28,21 @@ for (const [route, hash, w] of [['/', '#q2', 1440], ['/', '#q3', 390], ['/portfo
     const el = document.querySelector(h); const hd = document.querySelector('header.site-header');
     if (!el) return { missing: true };
     const top = el.getBoundingClientRect().top; const hb = hd ? hd.getBoundingClientRect().bottom : 0;
-    return { top: Math.round(top), headerBottom: Math.round(hb) };
+    const bars = [...document.querySelectorAll('.record-bar, .qnav')].filter((b) => getComputedStyle(b).position === 'sticky').map((b) => b.getBoundingClientRect().bottom);
+    return { top: Math.round(top), headerTop: Math.round(hd.getBoundingClientRect().top), headerBottom: Math.round(hb), barsBottom: Math.round(Math.max(hb, ...bars)) };
   }, hash);
-  ok(`anchor ${route}${hash} @${w}`, !r.missing && r.top >= r.headerBottom - 1, JSON.stringify(r));
+  ok(`anchor ${route}${hash} @${w}: header stays stuck, target lands below every sticky bar`, !r.missing && r.headerTop === 0 && r.top >= r.barsBottom - 1, JSON.stringify(r));
+  await p.close();
+}
+
+// 1b. /portfolio: header, filter bar and month rail stay in view while scrolling, like dated.html
+{
+  const p = await page(1440, 900);
+  await p.goto(base + '/portfolio', { waitUntil: 'networkidle0' });
+  await p.evaluate(() => { document.documentElement.style.scrollBehavior = 'auto'; window.scrollTo(0, 3000); });
+  await new Promise((r) => setTimeout(r, 400));
+  const r = await p.evaluate(() => ({ bar: Math.round(document.querySelector('.record-bar').getBoundingClientRect().top), rail: Math.round(document.querySelector('.rail').getBoundingClientRect().top), header: Math.round(document.querySelector('header.site-header').getBoundingClientRect().top), now: document.querySelector('.record-now b').textContent, current: document.querySelector('.rail a[aria-current="true"]')?.textContent }));
+  ok('/portfolio: header, filter bar and rail stick; rail and "now" follow the scroll', r.header === 0 && r.bar === 56 && r.rail >= 100 && r.rail <= 160 && !!r.current, JSON.stringify(r));
   await p.close();
 }
 
@@ -90,7 +102,23 @@ for (const [route, hash, w] of [['/', '#q2', 1440], ['/', '#q3', 390], ['/portfo
   const p = await page(1440, 900, { dark: true });
   await p.goto(base + '/case-studies/aloud', { waitUntil: 'networkidle0' });
   const r = await p.evaluate(() => ({ bg: getComputedStyle(document.body).backgroundColor, fg: getComputedStyle(document.body).color, h1: getComputedStyle(document.querySelector('h1')).color }));
-  ok('dark mode: night ground with light ink', r.bg === 'rgb(21, 26, 58)' && r.fg === 'rgb(236, 235, 244)', JSON.stringify(r));
+  const main = await p.evaluate(() => getComputedStyle(document.querySelector('.theme-dated')).backgroundColor);
+  ok('dark mode (system): dark stone with light ink, not indigo', main === 'rgb(19, 20, 17)' && r.h1 === 'rgb(236, 236, 230)', JSON.stringify({ ...r, main }));
+  await p.close();
+}
+
+// 5b. the toggle switches a light page to dark, stores it, keeps it on reload
+{
+  const p = await page(1440, 900);
+  await p.goto(base + '/case-studies', { waitUntil: 'networkidle0' });
+  const before = await p.evaluate(() => getComputedStyle(document.querySelector('.theme-dated')).backgroundColor);
+  await p.click('header .theme-toggle');
+  await new Promise((r) => setTimeout(r, 300));
+  const after = await p.evaluate(() => ({ bg: getComputedStyle(document.querySelector('.theme-dated')).backgroundColor, theme: document.documentElement.dataset.theme, stored: localStorage.getItem('theme') }));
+  await p.reload({ waitUntil: 'networkidle0' });
+  const reloaded = await p.evaluate(() => document.documentElement.dataset.theme);
+  ok('toggle: light to dark, stored, kept on reload', before === 'rgb(241, 241, 236)' && after.bg === 'rgb(19, 20, 17)' && after.stored === 'dark' && reloaded === 'dark', JSON.stringify({ before, after, reloaded }));
+  await p.evaluate(() => localStorage.removeItem('theme'));
   await p.close();
 }
 

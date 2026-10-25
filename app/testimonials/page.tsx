@@ -1,3 +1,4 @@
+import { withOg } from '@/lib/og';
 import type { Metadata } from 'next';
 import { AVAILABILITY } from '@/lib/site';
 import Link from 'next/link';
@@ -195,14 +196,14 @@ const screenshotTestimonials: ScreenshotTestimonial[] = [
   },
 ].filter((t) => fs.existsSync(path.join(process.cwd(), 'public', t.image)));
 
-export const metadata: Metadata = {
+export const metadata: Metadata = withOg({
   title: 'What clients say',
   description:
     'What editors, heads of content and agency owners said about working with me, in their own words and screenshots.',
   alternates: {
     canonical: 'https://peaceakinwale.com/testimonials',
   },
-};
+}, { key: 'testimonials', path: '/testimonials', alt: 'What clients say about Peace Akinwale' });
 
 function renderParagraph(paragraph: TextSegment[], paragraphIndex: number) {
   return (

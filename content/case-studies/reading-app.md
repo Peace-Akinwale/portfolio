@@ -1,9 +1,10 @@
 ---
 title: "A reading app for reviewing posts and preparing newsletter notes"
+name: "A reading app for a content team"
+blurb: "Gathers public posts into one review feed with audio digests; starred posts become newsletter notes."
 kind: built
 status: "private to the client’s team"
 date: 2026-06-10
-for: "Notebook Agency"
 summary: "I built a private reading app for an agency founder who kept checking LinkedIn and saving posts across task lists. The app gathered public posts into one review feed, with audio digests to listen instead of reading. Starred posts fed newsletter notes that the founder could edit before sending them to the publishing system."
 notion_url: https://app.notion.com/p/403992da7a578154a913e2c0f47463f7
 notion_last_edited: 2026-10-25T14:24:03.685Z

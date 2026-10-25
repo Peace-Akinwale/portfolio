@@ -1,9 +1,10 @@
 ---
 title: "AI Docs Watch"
+name: "AI Docs Watch"
+blurb: "Publishes official platform documentation as it stood before and after each change, with the changed words marked."
 kind: built
 status: "live, public"
 date: 2026-10-14
-for: "Notebook Agency"
 summary: "AI Docs Watch checks the official help pages, policies, terms and API docs of Google, Gemini, OpenAI, Anthropic, Bing and Perplexity every day. When one of those pages changes, it publishes the page as it stood before and after, with the changed words marked, a plain impact rating and what the change means for an SEO or content team. I built the monitoring, the archive and the public site."
 notion_url: https://app.notion.com/p/403992da7a57817c8a0ad5105de78b0e
 notion_last_edited: 2026-10-24T17:28:05.687Z

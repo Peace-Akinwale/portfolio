@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useEffect, useId, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import { NAV_LINKS } from '@/lib/site';
+import { ThemeToggle } from '@/components/ThemeToggle';
 
 // One top bar for every page: the name on the left, the six sections on the
 // right, "Book a call" last. Sticky, on the page's own ground, with a hairline.
@@ -44,15 +45,18 @@ export function Header() {
               {item.label}
             </Link>
           ))}
+          <ThemeToggle />
           <Link href="/contact" className="button button-ink text-[14px]">
             Book a call
           </Link>
         </nav>
 
+        <div className="flex items-center gap-1 md:hidden">
+        <ThemeToggle />
         <button
           type="button"
           onClick={() => setOpen((v) => !v)}
-          className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-full text-foreground md:hidden"
+          className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-full text-foreground"
           aria-label={open ? 'Close menu' : 'Open menu'}
           aria-expanded={open}
           aria-controls={menuId}
@@ -67,6 +71,7 @@ export function Header() {
             </svg>
           )}
         </button>
+        </div>
       </div>
 
       {open && (

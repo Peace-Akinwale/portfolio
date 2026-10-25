@@ -1,9 +1,10 @@
 ---
 title: "What AI search apps do before they answer: a public reference"
+name: "A public reference to AI search traffic"
+blurb: "Explains the fields AI search apps send and receive, built from recorded conversations, with the evidence for each."
 kind: built
 status: "published, public"
 date: 2026-10-02
-for: "Notebook Agency"
 summary: "When you ask ChatGPT, Claude, Perplexity, Gemini or Google's AI Mode a question, the app sends and receives data in the background: the searches it writes, the pages it pulls in, the sources it attaches to each sentence. I recorded hundreds of real AI search conversations, built the pipeline that turned that traffic into a labeled reference, and published it as a public article with eight platform pages and narrated audio. A reader can look up the field names catalogued from the recorded sessions and see what it holds, where it appears and whether that meaning was observed or inferred."
 notion_url: https://app.notion.com/p/403992da7a5781549c62ef65f6569916
 notion_last_edited: 2026-10-24T17:28:34.379Z

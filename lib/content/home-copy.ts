@@ -94,7 +94,6 @@ export const HOW_I_WORK = {
   // brief
   p1: 'I use AI to help me research articles and build tools, and I check whether the result does what I need it to do. For an article, that means reading the sources and checking that they support the claims. For a tool, it means trying the tasks someone will use it for and checking what happens when a step fails, so they know what went wrong and what to do next.',
   p2: 'Every project I run keeps a decisions file that’s read before each session. I came to building from writing, and the two feed each other.',
-  log: 'https://github.com/Peace-Akinwale/portfolio/blob/master/case-studies/steve-toth/index.md',
 };
 
 export const OFFER = {

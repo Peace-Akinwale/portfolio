@@ -8,7 +8,7 @@
 .record-open figure { margin: 0; }
 .record-open img { width: 220px; aspect-ratio: 1; object-fit: cover; border-radius: 2px; }
 
-.record-bar { position: sticky; top: 56px; z-index: 20; background: color-mix(in srgb, var(--background) 92%, white); backdrop-filter: blur(6px); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+.record-bar { position: sticky; top: 56px; z-index: 20; background: color-mix(in srgb, var(--background) 92%, white); backdrop-filter: blur(6px); border-top: 1px solid var(--border-strong); border-bottom: 1px solid var(--border); }
 .record-bar .inner { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 52px; }
 .record-filters { display: flex; gap: 6px; flex-wrap: wrap; padding: 8px 0; }
 .record-filters button { font: inherit; font-size: 14px; font-weight: 500; background: transparent; color: var(--muted-foreground); border: 1px solid transparent; border-radius: 999px; padding: 6px 12px; cursor: pointer; min-height: 36px; }
@@ -36,6 +36,7 @@
 .entry time { font-variant-numeric: tabular-nums; font-weight: 500; color: var(--foreground); }
 .kind { display: inline-block; padding: 1px 8px; border: 1px solid var(--border); border-radius: 999px; font-size: 12.5px; font-weight: 500; color: var(--foreground); }
 .entry[data-kind="built"] .kind { border-color: var(--accent); color: var(--accent); }
+.entry .kind { border-color: var(--border-strong); }
 .entry h2 { font-size: clamp(1.6rem, 3vw, 2.25rem); max-width: 22ch; margin: 0 0 14px; font-weight: 520; }
 .entry h2 a { text-decoration: none; }
 .entry h2 a:hover { text-decoration: underline; text-decoration-thickness: 2px; }

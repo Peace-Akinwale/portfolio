@@ -1,5 +1,7 @@
 ---
 title: "ContentDB: collect research and question your sources"
+name: "ContentDB"
+blurb: "One library for articles, transcripts and documents, searchable from a chat or from a connected AI assistant."
 kind: built
 status: "my own app, private beta"
 date: 2026-04-15

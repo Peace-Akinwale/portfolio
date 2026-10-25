@@ -1,3 +1,4 @@
+import { ogImagePath } from '@/lib/og';
 import { getAllPostSlugs, getStaticPage, getAllStaticPageSlugs } from '@/lib/hashnode/client';
 import '@/components/article/article.css';
 import { loadPost, loadAllPosts, isLocalArticle, relatedTo } from '@/lib/content/posts';
@@ -101,6 +102,8 @@ export async function generateMetadata({ params }: ArticlePageProps): Promise<Me
   const post = await loadPost(slug);
 
   if (post) {
+    const canva = isLocalArticle(post) ? ogImagePath(`article-${post.slug}`) : null;
+    const images = canva ? [canva] : post.coverImage?.url ? [post.coverImage.url] : [];
     return {
       title: post.seo?.title || post.title,
       description: post.seo?.description || post.brief,
@@ -110,7 +113,7 @@ export async function generateMetadata({ params }: ArticlePageProps): Promise<Me
       openGraph: {
         title: post.seo?.title || post.title,
         description: post.seo?.description || post.brief,
-        images: post.coverImage?.url ? [post.coverImage.url] : [],
+        images,
         type: 'article',
         publishedTime: post.publishedAt,
         authors: [post.author.name],
@@ -119,7 +122,7 @@ export async function generateMetadata({ params }: ArticlePageProps): Promise<Me
         card: 'summary_large_image',
         title: post.seo?.title || post.title,
         description: post.seo?.description || post.brief,
-        images: post.coverImage?.url ? [post.coverImage.url] : [],
+        images,
       },
     };
   }
@@ -333,7 +336,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
           <h1>{post.title}</h1>
           {post.brief && <p className="standfirst">{post.brief}</p>}
           <p className="meta">
-            <span>By {post.author.name}</span>
+            <span>By <Link href="/about" className="underline underline-offset-4 hover:text-accent" rel="author">{post.author.name}</Link></span>
             <time dateTime={post.publishedAt}>{formatDate(post.publishedAt, 'd MMMM yyyy')}</time>
             <span>{formatReadingTime(post.readTimeInMinutes)}</span>
           </p>

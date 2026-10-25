@@ -16,6 +16,8 @@ export type CaseStudyKind = 'built' | 'wrote';
 export interface CaseStudy {
   slug: string;
   title: string;
+  name: string; // short name for indexes
+  blurb: string; // one line for indexes
   kind: CaseStudyKind;
   status: string;
   date: string;
@@ -53,6 +55,8 @@ export function readCaseStudyFile(file: string): CaseStudy {
   return {
     slug,
     title: asString(data.title, slug),
+    name: asString(data.name, asString(data.title, slug)),
+    blurb: asString(data.blurb, asString(data.summary)),
     kind,
     status: asString(data.status),
     date: asString(data.date),

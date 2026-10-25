@@ -1,3 +1,4 @@
+import { ogImagePath } from '@/lib/og';
 import Link from 'next/link';
 import type { Metadata } from 'next';
 import { MANYREQUESTS_ARTICLE_COUNT, MANYREQUESTS_SINCE } from '@/lib/portfolio/manyrequests';
@@ -11,24 +12,19 @@ export const metadata: Metadata = {
     canonical: 'https://peaceakinwale.com/case-studies/manyrequests',
   },
   openGraph: {
-    title: `Case Study: ManyRequests — ${MANYREQUESTS_ARTICLE_COUNT} product-led articles, page-1 rankings`,
+    title: `Case study: ${MANYREQUESTS_ARTICLE_COUNT} product-led articles for ManyRequests`,
     description:
       `How I wrote ${MANYREQUESTS_ARTICLE_COUNT} product-led articles for ManyRequests and made the product useful inside the piece.`,
     url: 'https://peaceakinwale.com/case-studies/manyrequests',
     siteName: 'Peace Akinwale',
     type: 'article',
-    images: [
-      {
-        url: 'https://peaceakinwale.com/images/case-studies/manyrequests/manyrequests-homepage.png',
-        width: 1512,
-        height: 793,
-        alt: 'ManyRequests — The Client Portal Built For Agencies',
-      },
-    ],
+    images: ogImagePath('case-study-manyrequests')
+      ? [{ url: ogImagePath('case-study-manyrequests')!, width: 1200, height: 630, alt: '51 product-led articles for ManyRequests' }]
+      : [{ url: 'https://peaceakinwale.com/images/case-studies/manyrequests/manyrequests-homepage.png', width: 1512, height: 793, alt: 'The ManyRequests homepage' }],
   },
   twitter: {
     card: 'summary_large_image',
-    title: `Case Study: ManyRequests — ${MANYREQUESTS_ARTICLE_COUNT} product-led articles, page-1 rankings`,
+    title: `Case study: ${MANYREQUESTS_ARTICLE_COUNT} product-led articles for ManyRequests`,
     description:
       `How I wrote ${MANYREQUESTS_ARTICLE_COUNT} product-led articles for ManyRequests and made the product useful inside the piece.`,
     images: ['https://peaceakinwale.com/images/case-studies/manyrequests/manyrequests-homepage.png'],

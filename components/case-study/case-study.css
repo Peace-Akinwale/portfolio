@@ -2,8 +2,8 @@
    at 66ch, figures with sans captions, a facts column on wide screens. */
 
 .cs-head { display: grid; grid-template-columns: minmax(0, 1fr) 280px; gap: 32px 56px; padding: 48px 0 32px; border-bottom: 1px solid var(--border); align-items: end; }
-.cs-head h1 { font-size: clamp(2rem, 4.4vw, 3.6rem); font-weight: 520; max-width: 18ch; margin: 0 0 18px; }
-.cs-head .summary { font-family: var(--font-serif); font-optical-sizing: auto; font-size: clamp(1.15rem, 1.6vw, 1.35rem); line-height: 1.45; max-width: 36ch; margin: 0; }
+.cs-head h1 { font-size: clamp(1.9rem, 3.6vw, 3rem); font-weight: 520; max-width: 20ch; margin: 0 0 16px; }
+.cs-head .summary { font-family: var(--font-serif); font-optical-sizing: auto; font-size: 1.12rem; line-height: 1.5; max-width: 62ch; margin: 0; color: var(--muted-foreground); }
 .cs-facts { font-size: 14.5px; display: grid; gap: 10px; }
 .cs-facts dt { color: var(--muted-foreground); }
 .cs-facts dd { margin: 0 0 4px; }
@@ -34,13 +34,17 @@
 .cs-group { border-top: 1px solid var(--border); padding: 32px 0 8px; }
 .cs-group h2 { font-size: 1.2rem; font-family: var(--font-sans); font-weight: 600; margin: 0 0 6px; letter-spacing: 0; }
 .cs-group > p { font-size: 15px; color: var(--muted-foreground); max-width: var(--measure); margin: 0 0 20px; }
-.cs-cards { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 24px 32px; }
+.cs-cards { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 8px 32px; }
 .cs-card { border-top: 1px solid var(--border); padding: 18px 0 24px; }
 .cs-card .meta { font-size: 13.5px; color: var(--muted-foreground); margin: 0 0 8px; }
-.cs-card h3 { font-size: 1.5rem; font-weight: 520; margin: 0 0 8px; max-width: 22ch; }
+.cs-card { position: relative; }
+.cs-card h3 { font-size: 1.3rem; font-weight: 540; margin: 0 0 6px; max-width: 24ch; }
+.cs-card h3 a::after { content: ""; position: absolute; inset: 0; }
 .cs-card h3 a { text-decoration: none; }
 .cs-card h3 a:hover { text-decoration: underline; text-decoration-thickness: 2px; }
-.cs-card p { font-family: var(--font-serif); font-optical-sizing: auto; font-size: 1.05rem; line-height: 1.5; margin: 0 0 10px; }
+.cs-card p { font-family: var(--font-serif); font-optical-sizing: auto; font-size: 1rem; line-height: 1.45; margin: 0; color: var(--muted-foreground); }
+.cs-card .meta { font-family: var(--font-sans); }
+.cs-card:hover h3 a { text-decoration: underline; text-decoration-thickness: 2px; }
 .cs-card .go { margin: 0; }
 
 @media (max-width: 900px) {

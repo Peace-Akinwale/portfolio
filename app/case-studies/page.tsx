@@ -1,3 +1,4 @@
+import { withOg } from '@/lib/og';
 import Link from 'next/link';
 import type { Metadata } from 'next';
 import '@/components/case-study/case-study.css';
@@ -6,12 +7,12 @@ import { dayLabel } from '@/lib/content/dates';
 import { MANYREQUESTS_ARTICLE_COUNT, MANYREQUESTS_SINCE } from '@/lib/portfolio/manyrequests';
 import { SITE_URL } from '@/lib/site';
 
-export const metadata: Metadata = {
+export const metadata: Metadata = withOg({
   title: 'Case studies',
   description:
     'What I was asked to build or write, the decisions that mattered, and what someone can do with the result. Tools for content teams, and one long writing engagement.',
   alternates: { canonical: `${SITE_URL}/case-studies` },
-};
+}, { key: 'case-studies', path: '/case-studies', alt: 'Case studies by Peace Akinwale' });
 
 export default function CaseStudiesPage() {
   const studies = listCaseStudies();
@@ -27,14 +28,13 @@ export default function CaseStudiesPage() {
 
       <section className="cs-group" aria-labelledby="built-h">
         <h2 id="built-h">Tools I built</h2>
-        <p>Most of them for an AI-search agency, two of them my own. Newest first.</p>
+        <p>Newest first. Each card opens the full case study.</p>
         <ul className="cs-cards">
           {built.map((cs) => (
             <li key={cs.slug} className="cs-card">
-              <p className="meta"><time dateTime={cs.date}>{dayLabel(cs.date)}</time> · {[cs.for, cs.status].filter(Boolean).join(', ')}</p>
-              <h3><Link href={`/case-studies/${cs.slug}`}>{cs.title}</Link></h3>
-              <p>{cs.summary}</p>
-              <p className="go"><Link href={`/case-studies/${cs.slug}`}>Read the case study</Link></p>
+              <p className="meta"><time dateTime={cs.date}>{dayLabel(cs.date)}</time> · {cs.status}</p>
+              <h3><Link href={`/case-studies/${cs.slug}`}>{cs.name}</Link></h3>
+              <p>{cs.blurb}</p>
             </li>
           ))}
         </ul>
@@ -47,15 +47,13 @@ export default function CaseStudiesPage() {
           <li className="cs-card">
             <p className="meta">ManyRequests · B2B SaaS, client portal software · since {MANYREQUESTS_SINCE}</p>
             <h3><Link href="/case-studies/manyrequests">{MANYREQUESTS_ARTICLE_COUNT} product-led articles for ManyRequests</Link></h3>
-            <p>Articles where the product shows up inside the piece, in the comparisons, the how-to steps and the screenshots, and what they did in search.</p>
-            <p className="go"><Link href="/case-studies/manyrequests">Read the case study</Link></p>
+            <p>Articles where the product shows up inside the piece, and what they did in search.</p>
           </li>
           {wrote.map((cs) => (
             <li key={cs.slug} className="cs-card">
-              <p className="meta"><time dateTime={cs.date}>{dayLabel(cs.date)}</time> · {[cs.for, cs.status].filter(Boolean).join(', ')}</p>
-              <h3><Link href={`/case-studies/${cs.slug}`}>{cs.title}</Link></h3>
-              <p>{cs.summary}</p>
-              <p className="go"><Link href={`/case-studies/${cs.slug}`}>Read the case study</Link></p>
+              <p className="meta"><time dateTime={cs.date}>{dayLabel(cs.date)}</time> · {cs.status}</p>
+              <h3><Link href={`/case-studies/${cs.slug}`}>{cs.name}</Link></h3>
+              <p>{cs.blurb}</p>
             </li>
           ))}
         </ul>
@@ -66,12 +64,12 @@ export default function CaseStudiesPage() {
         <p>Lessons rather than a walkthrough.</p>
         <ul className="cs-cards">
           <li className="cs-card">
-            <h3><Link href="/the-success-message-was-the-bug">The success message was the bug: five lessons from building an AI-assisted reading tool</Link></h3>
-            <p className="go"><Link href="/the-success-message-was-the-bug">Read the article</Link></p>
+            <h3><Link href="/the-success-message-was-the-bug">The success message was the bug</Link></h3>
+            <p>Five lessons from building an AI-assisted reading tool.</p>
           </li>
           <li className="cs-card">
             <h3><Link href="/build-a-course-portal-around-the-instructors-workflow">Build a course portal around the instructor’s workflow</Link></h3>
-            <p className="go"><Link href="/build-a-course-portal-around-the-instructors-workflow">Read the article</Link></p>
+            <p>Which parts of an existing process the software should leave alone.</p>
           </li>
         </ul>
       </section>

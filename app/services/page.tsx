@@ -1,14 +1,15 @@
+import { withOg } from '@/lib/og';
 import Link from 'next/link';
 import type { Metadata } from 'next';
 import { AVAILABILITY, CALENDLY_URL, EMAIL, SITE_URL } from '@/lib/site';
 import { OFFER } from '@/lib/content/home-copy';
 
-export const metadata: Metadata = {
+export const metadata: Metadata = withOg({
   title: 'Services and prices',
   description:
     'Bottom-of-funnel articles for B2B SaaS companies and agencies, priced per article or per month, and tool building for content teams, scoped around the task you keep doing by hand.',
   alternates: { canonical: `${SITE_URL}/services` },
-};
+}, { key: 'services', path: '/services', alt: 'Writing with me, and building with me' });
 
 const SERVICE_COPY = OFFER.writing;
 const TOOL_CTA = OFFER.building;
@@ -47,7 +48,7 @@ const FAQS = [
   { q: 'What about building a tool?', a: 'Tell me about the task first. Some tasks don’t need software, and I’ll say so. If a tool would help, we scope it together around how the team already works, and I build it with a decisions file and a live check before anything is called done.' },
 ];
 
-const CLIENTS = ['ManyRequests', 'Jabra', 'Marker.io', 'HigherVisibility', 'Pangea.ai', 'Spicy Margarita', 'Notebook Agency'];
+const CLIENTS = ['ManyRequests', 'Jabra', 'Marker.io', 'HigherVisibility', 'Pangea.ai', 'Spicy Margarita'];
 
 export default function ServicesPage() {
   return (
@@ -57,12 +58,12 @@ export default function ServicesPage() {
         <h1 className="max-w-[18ch]">Writing with me, and building with me.</h1>
         <p className="serif mt-5 max-w-[60ch] text-[1.2rem] leading-[1.45]">{SERVICE_COPY}</p>
         <p className="mt-3 max-w-[60ch] text-[15px] text-muted-foreground">
-          I’ve written for {CLIENTS.slice(0, -1).join(', ')} and built tools for {CLIENTS[CLIENTS.length - 1]}. The evidence is on <Link href="/portfolio" className="underline underline-offset-4">the work page</Link>.
+          I’ve written for {CLIENTS.slice(0, -1).join(', ')} and {CLIENTS[CLIENTS.length - 1]}. The evidence, and the tools, are on <Link href="/portfolio" className="underline underline-offset-4">the work page</Link>.
         </p>
       </section>
 
       <section className="offer" id="prices" aria-labelledby="writing-h">
-        <div className="ground-paper border-t border-border">
+        <div className="border-t border-border">
           <h2 id="writing-h">Writing</h2>
           <p>Each article is researched from your product and your customers’ own words, written to the outcome the piece has to produce, and checked against its sources before you see it.</p>
           <ul>
@@ -72,7 +73,7 @@ export default function ServicesPage() {
           <a className="button button-ink" href={`mailto:${EMAIL}?subject=An%20article`}>Email about an article</a>
           <a className="button button-line" href={CALENDLY_URL} rel="noopener" target="_blank">Book a 30-minute call</a>
         </div>
-        <div className="ground-night border-t border-border" id="building">
+        <div className="border-t border-border bg-[var(--accent-wash)]" id="building">
           <h2>Building</h2>
           <p>{TOOL_CTA}</p>
           <p className="note">Scoped per project after we’ve talked about the task. Every tool I build keeps a decisions file, and nothing is called done until a real person has used it on the live app. The case studies show what that looks like.</p>

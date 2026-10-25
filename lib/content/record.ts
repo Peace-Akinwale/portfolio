@@ -17,7 +17,7 @@ export interface RecordEntry {
   month: string; // YYYY-MM, for the rail
   title: string;
   href?: string; // where the title goes (internal or https)
-  context?: string; // "for Notebook Agency, public"
+  context?: string; // e.g. "live, public" or "on my blog"
   body: string[]; // paragraphs
   figure?: { src: string; width: number; height: number; alt: string; caption?: string; narrow?: boolean };
   quote?: { text: string; by: string };
@@ -43,10 +43,10 @@ export function buildRecord(): RecordEntry[] {
     date: cs.date,
     dateLabel: dayLabel(cs.date),
     month: cs.date.slice(0, 7),
-    title: cs.title,
+    title: cs.name,
     href: `/case-studies/${cs.slug}`,
-    context: [cs.for, cs.status].filter(Boolean).join(', '),
-    body: [cs.summary],
+    context: cs.status,
+    body: [cs.blurb],
     figure: cs.cover ? { src: cs.cover.src, width: 1600, height: 1000, alt: cs.cover.alt } : undefined,
     links: [{ label: 'Read the case study', href: `/case-studies/${cs.slug}` }, ...cs.links.slice(0, 1)],
   }));

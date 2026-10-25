@@ -1,5 +1,7 @@
 ---
 title: "Reach: hands on my Mac for AI agents that can't reach it"
+name: "Reach"
+blurb: "Hands a task that needs my Mac’s screen from an AI coding session to a local one, and returns the result."
 kind: built
 status: "personal tool, two Macs"
 date: 2026-09-27

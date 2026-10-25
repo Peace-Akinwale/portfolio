@@ -1,12 +1,16 @@
 ---
 title: "Building an OKF that a team can ask for guidance"
+name: "An OKF a team can ask"
+blurb: "A founder’s notes turned into linked notes a team can question, with answers that cite the notes they came from."
 kind: built
 status: "in team use, private"
 date: 2026-10-20
-for: "Notebook Agency"
 summary: "An OKF (Open Knowledge Format) is a folder of short notes, one idea per note, each recording where it came from, whether a person checked it and when it goes stale. I turned an SEO agency founder's 1.23 million words of notes into an OKF of 683 linked notes. The team can ask it questions and get answers that cite the exact notes they came from. I then built a kit that does the same for a client's own documents, which the client hosts themselves."
 notion_url: https://app.notion.com/p/403992da7a578116ae4ee9a53710f316
 notion_last_edited: 2026-10-24T22:18:34.889Z
+links:
+  - "Google’s OKF specification on GitHub | https://github.com/GoogleCloudPlatform/knowledge-catalog/blob/main/okf/SPEC.md"
+  - "Marie Haynes on building an OKF brain | https://www.youtube.com/watch?v=esYAIA6lU-s"
 tags:
   - "knowledge"
   - "OKF"
@@ -18,6 +22,9 @@ related:
 ### What an OKF is
 
 Open Knowledge Format stores knowledge as short, linked text notes that people and AI tools can read. Each note records its sources and review status, with a date for checking whether it is still current. That gives a team more context than an answer copied from an unlabelled document.
+
+<figure class="video"><iframe src="https://www.youtube-nocookie.com/embed/esYAIA6lU-s" title="Build an OKF brain like mine! (Marie Haynes, YouTube)" loading="lazy" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture; fullscreen" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe><figcaption>Marie Haynes walks through the OKF brain she built for her own SEO work: how a note is structured, how it differs from retrieval over whole documents, and approving an update plan before anything is added. 23 minutes, June 2026. The format itself is Google’s, and its <a href="https://github.com/GoogleCloudPlatform/knowledge-catalog/blob/main/okf/SPEC.md">specification is on GitHub</a>.</figcaption></figure>
+
 
 ### The founder's knowledge was scattered, and the team kept asking
 

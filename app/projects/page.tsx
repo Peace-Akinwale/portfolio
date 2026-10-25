@@ -1,14 +1,15 @@
+import { withOg } from '@/lib/og';
 import Link from 'next/link';
 import type { Metadata } from 'next';
 
-export const metadata: Metadata = {
+export const metadata: Metadata = withOg({
   title: "Things I've Built | Peace Akinwale",
   description:
     'I use AI tools to automate content marketing processes where it makes sense. A collection of projects built for real problems.',
   alternates: {
     canonical: 'https://peaceakinwale.com/projects',
   },
-};
+}, { key: 'projects', path: '/projects', alt: 'Things I’ve built' });
 
 const projects = [
   {
@@ -79,7 +80,7 @@ export default function ProjectsPage() {
           for the following projects.
         </p>
         <p className="mt-4 max-w-2xl text-base text-muted-foreground">
-          The newer tools, built for an AI-search agency and for myself, each have a{' '}
+          The newer tools each have a{' '}
           <Link href="/case-studies" className="underline underline-offset-4">case study</Link>: AI Docs Watch, the fanout query analysis tool, Quality Rater, an OKF, Aloud, Reach and more.
         </p>
       </header>

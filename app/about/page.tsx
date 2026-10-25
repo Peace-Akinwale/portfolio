@@ -1,3 +1,4 @@
+import { withOg } from '@/lib/og';
 import { getStaticPage } from '@/lib/hashnode/client';
 import type { Metadata } from 'next';
 import Image from 'next/image';
@@ -5,11 +6,11 @@ import Link from 'next/link';
 import '@/components/article/article.css';
 import { SITE_URL } from '@/lib/site';
 
-export const metadata: Metadata = {
+export const metadata: Metadata = withOg({
   title: 'About',
   description: 'Peace Akinwale, Lagos. I write bottom-of-funnel content for B2B SaaS companies and agencies, and I build AI-assisted tools for content teams.',
   alternates: { canonical: `${SITE_URL}/about` },
-};
+}, { key: 'about', path: '/about', alt: 'About Peace Akinwale' });
 
 export default async function AboutPage() {
   const page = await getStaticPage('about').catch(() => null);

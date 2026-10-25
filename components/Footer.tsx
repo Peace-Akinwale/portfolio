@@ -8,11 +8,11 @@ const WORK_LINKS = [
   { href: '/rss.xml', label: 'RSS' },
 ];
 
-export function Footer() {
+export function Footer({ night = false }: { night?: boolean }) {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="ground-night mt-auto border-t border-border">
+    <footer className={`${night ? 'ground-night' : ''} mt-auto border-t border-border`}>
       <div className="gutter grid gap-10 py-12 md:grid-cols-[1.4fr_1fr_1fr_1fr]">
         <div>
           <p className="display text-[26px] font-[560] leading-none">Peace Akinwale</p>

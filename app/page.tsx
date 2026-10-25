@@ -1,3 +1,4 @@
+import { withOg } from '@/lib/og';
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -8,12 +9,12 @@ import {
   HERO, QUESTIONS, DOCS_WATCH, CONTENTDB, MANYREQUESTS, AEO, FANOUT, GARDE, EDITOR, ALOUD, READING_APP, HOW_I_WORK, OFFER,
 } from '@/lib/content/home-copy';
 
-export const metadata: Metadata = {
+export const metadata: Metadata = withOg({
   title: 'Peace Akinwale. Articles for B2B SaaS companies and agencies, and AI tools for content teams',
   description:
     'I build AI products and I write. Most of the work is deciding what’s worth making and checking that it’s true. Three questions, answered with the writing and the tools.',
   alternates: { canonical: SITE_URL },
-};
+}, { key: 'home', path: '/', alt: 'Good work starts with good questions. Peace Akinwale' });
 
 function Ext({ href, children }: { href: string; children: React.ReactNode }) {
   return (
@@ -70,7 +71,7 @@ export default function HomePage() {
         </div>
         <div className="split-night ground-night">
           <p className="mobile-q">The building answer to the same question</p>
-          <p className="eyebrow"><b>Building</b> AI Docs Watch, for Notebook Agency, live</p>
+          <p className="eyebrow"><b>Building</b> AI Docs Watch, live</p>
           <h3><Link href={DOCS_WATCH.caseStudy}>Show the page before and after. Then say what’s true now.</Link></h3>
           <div className="body">
             <p>{DOCS_WATCH.p1}</p>
@@ -111,7 +112,7 @@ export default function HomePage() {
         </div>
         <div className="split-night ground-night">
           <p className="mobile-q">The building answer to the same question</p>
-          <p className="eyebrow"><b>Building</b> Fanout query analysis tool, for Notebook Agency</p>
+          <p className="eyebrow"><b>Building</b> Fanout query analysis tool</p>
           <h3><Link href={FANOUT.caseStudy}>Research before code, then analysis as the output.</Link></h3>
           <div className="body">
             <p>{FANOUT.p1}</p>
@@ -179,7 +180,7 @@ export default function HomePage() {
           <div>
             <p>{HOW_I_WORK.p1}</p>
             <p>{HOW_I_WORK.p2}</p>
-            <p className="go"><Ext href={HOW_I_WORK.log}>See the public work log on GitHub</Ext></p>
+            <p className="go"><Link href="/portfolio">See the record of the work</Link></p>
           </div>
         </div>
       </section>

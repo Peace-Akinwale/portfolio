@@ -1,5 +1,7 @@
 ---
 title: "Aloud: listen to saved articles and return to useful passages"
+name: "Aloud"
+blurb: "A personal audio library for saved articles and documents, with a reading view and saved passages."
 kind: built
 status: "my own app, invite-only"
 date: 2026-09-28

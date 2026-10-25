@@ -17,11 +17,11 @@
 .hero-portrait img { width: 100%; height: auto; max-height: calc(100vh - 56px); object-fit: cover; object-position: 50% 20%; display: block; }
 
 /* question nav */
-.qnav { position: sticky; top: 56px; z-index: 25; background: var(--paper); border-top: 1px solid var(--paper-rule); border-bottom: 1px solid var(--paper-rule); }
+.qnav { position: sticky; top: 56px; z-index: 25; background: var(--background); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
 .qnav ol { list-style: none; margin: 0; padding: 0 var(--gutter); display: flex; gap: 4px 22px; flex-wrap: wrap; min-height: 46px; align-items: center; }
-.qnav a { text-decoration: none; font-size: 15px; font-weight: 500; color: var(--paper-soft); padding: 12px 0; display: inline-block; border-bottom: 2px solid transparent; }
-.qnav a[aria-current="true"] { color: var(--paper-ink); border-bottom-color: var(--paper-accent); }
-.qnav a:hover { color: var(--paper-ink); }
+.qnav a { text-decoration: none; font-size: 15px; font-weight: 500; color: var(--muted-foreground); padding: 12px 0; display: inline-block; border-bottom: 2px solid transparent; }
+.qnav a[aria-current="true"] { color: var(--foreground); border-bottom-color: var(--accent); }
+.qnav a:hover { color: var(--foreground); }
 
 /* the pairs */
 .split { display: grid; grid-template-columns: 1fr 1fr; transition: grid-template-columns .35s ease; }

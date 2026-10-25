@@ -1,3 +1,4 @@
+import { withOg } from '@/lib/og';
 import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -13,12 +14,12 @@ import { SITE_URL } from '@/lib/site';
 
 export const revalidate = 300;
 
-export const metadata: Metadata = {
+export const metadata: Metadata = withOg({
   title: 'Work: the record of what I built, wrote and decided',
   description:
     'A dated record of the tools I built and the articles I wrote, newest first, with the evidence beside each one. Plus every writing sample, by client.',
   alternates: { canonical: `${SITE_URL}/portfolio` },
-};
+}, { key: 'portfolio', path: '/portfolio', alt: 'The record: what I built, wrote and decided' });
 
 const MARKERIO_SECTION = {
   heading: 'Ghostwritten for Marker.io',

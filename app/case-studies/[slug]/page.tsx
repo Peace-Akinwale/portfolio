@@ -1,3 +1,4 @@
+import { ogImagePath } from '@/lib/og';
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
@@ -20,7 +21,11 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     title: cs.title,
     description: cs.summary,
     alternates: { canonical: `${SITE_URL}/case-studies/${cs.slug}` },
-    openGraph: { title: cs.title, description: cs.summary, url: `${SITE_URL}/case-studies/${cs.slug}`, type: 'article', images: cs.cover ? [cs.cover.src] : undefined },
+    openGraph: {
+      title: cs.title, description: cs.blurb, url: `${SITE_URL}/case-studies/${cs.slug}`, siteName: 'Peace Akinwale', type: 'article',
+      images: ogImagePath(`case-study-${cs.slug}`) ? [{ url: ogImagePath(`case-study-${cs.slug}`)!, width: 1200, height: 630, alt: cs.name }] : undefined,
+    },
+    twitter: { card: 'summary_large_image', title: cs.title, description: cs.blurb, images: ogImagePath(`case-study-${cs.slug}`) ? [ogImagePath(`case-study-${cs.slug}`)!] : undefined },
   };
 }
 
@@ -85,8 +90,8 @@ export default async function CaseStudyPage({ params }: { params: Promise<{ slug
           {next.map((c) => (
             <li key={c.slug}>
               <Link href={`/case-studies/${c.slug}`}>
-                <b>{c.title}</b>
-                <span>{[c.for, c.status].filter(Boolean).join(', ')}</span>
+                <b>{c.name}</b>
+                <span>{c.blurb}</span>
               </Link>
             </li>
           ))}

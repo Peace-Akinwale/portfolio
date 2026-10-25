@@ -5,20 +5,31 @@
    keep their old names so every existing page and the MyLinks workspace pick up
    the new palette unchanged. */
 
+/* Two palettes (docs/design-reference-2026-10.md):
+   - Dated, the default for every page: stone ground, black ink, one deep green.
+   - Seam, the homepage only (.theme-seam on the chrome wrapper): paper for
+     writing and indigo night for building, switched per half with
+     .ground-paper / .ground-night.
+   Dark mode (the header toggle, or the system setting until someone picks)
+   swaps the stone and the paper for warm darks; the indigo night stays. */
+
 :root {
+  --stone: #F1F1EC; --stone-2: #E7E7E0; --stone-ink: #15160F; --stone-soft: #585A50; --stone-rule: #D3D4CB; --stone-rule-strong: #B9BBB0; --stone-accent: #1F5A3D; --stone-wash: #E3EBE5;
   --paper: #EFEAE0; --paper-2: #E6E0D3; --paper-ink: #17150F; --paper-soft: #5E584B; --paper-rule: #CFC7B6; --paper-accent: #B5411D;
   --night: #151A3A; --night-2: #1C2248; --night-ink: #ECEBF4; --night-soft: #AEB0C8; --night-rule: #2E355E; --night-accent: #F0683A;
 
-  --background: var(--paper);
-  --foreground: var(--paper-ink);
-  --muted: var(--paper-2);
-  --muted-foreground: var(--paper-soft);
-  --border: var(--paper-rule);
-  --accent: var(--paper-accent);
+  --background: var(--stone);
+  --foreground: var(--stone-ink);
+  --muted: var(--stone-2);
+  --muted-foreground: var(--stone-soft);
+  --border: var(--stone-rule);
+  --border-strong: var(--stone-rule-strong);
+  --accent: var(--stone-accent);
   --accent-foreground: #ffffff;
-  --accent2: var(--paper-accent);
-  --navy: var(--paper-ink);
-  --orange: var(--paper-accent);
+  --accent-wash: var(--stone-wash);
+  --accent2: var(--accent);
+  --navy: var(--foreground);
+  --orange: var(--accent);
 
   --gutter: clamp(18px, 4vw, 56px);
   --measure: 62ch;
@@ -36,18 +47,6 @@
   --color-border: var(--border);
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
-  --color-paper: var(--paper);
-  --color-paper-2: var(--paper-2);
-  --color-paper-ink: var(--paper-ink);
-  --color-paper-soft: var(--paper-soft);
-  --color-paper-rule: var(--paper-rule);
-  --color-paper-accent: var(--paper-accent);
-  --color-night: var(--night);
-  --color-night-2: var(--night-2);
-  --color-night-ink: var(--night-ink);
-  --color-night-soft: var(--night-soft);
-  --color-night-rule: var(--night-rule);
-  --color-night-accent: var(--night-accent);
 
   --font-serif: var(--font-serif-stack);
   --font-sans: var(--font-sans-stack);
@@ -57,49 +56,47 @@
   --spacing-content: 2rem;
 }
 
-/* The night ground, for a whole page in dark mode or for one half of a split. */
-.ground-night, [data-theme="dark"] {
-  --background: var(--night);
-  --foreground: var(--night-ink);
-  --muted: var(--night-2);
-  --muted-foreground: var(--night-soft);
-  --border: var(--night-rule);
-  --accent: var(--night-accent);
-  --accent-foreground: var(--night);
-  --accent2: var(--night-accent);
-  --navy: var(--night-ink);
-  --orange: var(--night-accent);
-  background: var(--background);
-  color: var(--foreground);
-}
-.ground-paper {
-  --background: var(--paper);
-  --foreground: var(--paper-ink);
-  --muted: var(--paper-2);
-  --muted-foreground: var(--paper-soft);
-  --border: var(--paper-rule);
-  --accent: var(--paper-accent);
-  --accent-foreground: #ffffff;
-  --accent2: var(--paper-accent);
-  --navy: var(--paper-ink);
-  --orange: var(--paper-accent);
-  background: var(--background);
-  color: var(--foreground);
+/* Dark stone, for every page but the homepage. */
+[data-theme="dark"] {
+  --background: #131411; --foreground: #ECECE6; --muted: #1D1E1A; --muted-foreground: #A6A89D;
+  --border: #30322B; --border-strong: #464940; --accent: #8FCFA9; --accent-foreground: #0F1A14; --accent-wash: #1C2A22;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --background: var(--night);
-    --foreground: var(--night-ink);
-    --muted: var(--night-2);
-    --muted-foreground: var(--night-soft);
-    --border: var(--night-rule);
-    --accent: var(--night-accent);
-    --accent-foreground: var(--night);
-    --accent2: var(--night-accent);
-    --navy: var(--night-ink);
-    --orange: var(--night-accent);
+    --background: #131411; --foreground: #ECECE6; --muted: #1D1E1A; --muted-foreground: #A6A89D;
+    --border: #30322B; --border-strong: #464940; --accent: #8FCFA9; --accent-foreground: #0F1A14; --accent-wash: #1C2A22;
   }
 }
+
+/* The homepage's chrome and its paper halves. */
+.theme-seam, .ground-paper {
+  --background: var(--paper); --foreground: var(--paper-ink); --muted: var(--paper-2); --muted-foreground: var(--paper-soft);
+  --border: var(--paper-rule); --border-strong: var(--paper-rule); --accent: var(--paper-accent); --accent-foreground: #ffffff;
+  background: var(--background); color: var(--foreground);
+}
+[data-theme="dark"] .theme-seam, [data-theme="dark"] .ground-paper {
+  --background: #191712; --foreground: #EFEAE0; --muted: #221F19; --muted-foreground: #ABA595;
+  --border: #39352C; --border-strong: #4A4539; --accent: #F0835A; --accent-foreground: #191712;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .theme-seam, :root:not([data-theme="light"]) .ground-paper {
+    --background: #191712; --foreground: #EFEAE0; --muted: #221F19; --muted-foreground: #ABA595;
+    --border: #39352C; --border-strong: #4A4539; --accent: #F0835A; --accent-foreground: #191712;
+  }
+}
+/* Indigo night stays the same in both modes. */
+.ground-night, [data-theme="dark"] .ground-night {
+  --background: var(--night); --foreground: var(--night-ink); --muted: var(--night-2); --muted-foreground: var(--night-soft);
+  --border: var(--night-rule); --border-strong: var(--night-rule); --accent: var(--night-accent); --accent-foreground: var(--night);
+  background: var(--background); color: var(--foreground);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .ground-night {
+    --background: var(--night); --foreground: var(--night-ink); --muted: var(--night-2); --muted-foreground: var(--night-soft);
+    --border: var(--night-rule); --border-strong: var(--night-rule); --accent: var(--night-accent); --accent-foreground: var(--night);
+  }
+}
+.theme-dated { background: var(--background); color: var(--foreground); }
 
 /* Blog posts once forced a white reading surface; they now read on the page ground. */
 .reading-light { color: var(--foreground); }
@@ -110,7 +107,8 @@
 }
 
 html {
-  overflow-x: hidden;
+  /* clip, not hidden: hidden on html and body makes body a scroll container and breaks position: sticky */
+  overflow-x: clip;
 }
 
 body {
@@ -121,9 +119,8 @@ body {
   line-height: 1.55;
   text-wrap: pretty;
   transition: background-color 0.3s ease, color 0.3s ease;
-  overflow-x: hidden;
+  overflow-x: clip;
   width: 100%;
-  max-width: 100vw;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -368,6 +365,9 @@ a, button { transition: color .15s ease, background-color .15s ease, border-colo
   *, *::before, *::after { transition: none !important; animation: none !important; }
 }
 html { scroll-behavior: smooth; scroll-padding-top: 72px; }
+/* Pages with a second sticky bar under the header land anchors below both. */
+html:has(.record-bar) { scroll-padding-top: 124px; }
+@media (min-width: 761px) { html:has(.qnav) { scroll-padding-top: 116px; } }
 
 /* Link styling */
 a {
@@ -463,3 +463,15 @@ a {
   .offer { grid-template-columns: 1fr; }
   .offer > div { padding: 40px var(--gutter) 44px; }
 }
+
+/* Light/dark toggle in the header: show the moon in light mode, the sun in dark. */
+.theme-toggle { display: inline-flex; align-items: center; justify-content: center; min-width: 44px; min-height: 44px; border-radius: 999px; color: var(--foreground); background: transparent; border: 1px solid transparent; cursor: pointer; }
+.theme-toggle:hover { border-color: var(--border); }
+.theme-toggle .icon-sun { display: none; }
+[data-theme="dark"] .theme-toggle .icon-sun { display: block; }
+[data-theme="dark"] .theme-toggle .icon-moon { display: none; }
+
+/* Embedded video (case studies): 16:9, captioned like a figure. */
+.prose figure.video { margin: 2rem 0; }
+.prose figure.video iframe { display: block; width: 100%; aspect-ratio: 16 / 9; height: auto; margin: 0; border: 1px solid var(--border); border-radius: 2px; background: #000; }
+.prose figure.video figcaption a { color: inherit; text-decoration: underline; }

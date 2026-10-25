@@ -1,9 +1,10 @@
 ---
 title: "Quality Rater: reviewing pages using Google’s quality guidelines"
+name: "Quality Rater"
+blurb: "Flags pages for human review against Google’s quality guidelines and links each finding to its passage."
 kind: built
 status: "in team use, accuracy not yet measured"
 date: 2026-10-13
-for: "Notebook Agency"
 summary: "Google employs human quality raters who judge pages against its quality guidelines. Quality Rater uses those guidelines to flag pages for human review. It assigns provisional ratings and links findings to passages, helping a writer decide what needs attention. It's a work in progress: live for the agency's team, with accuracy measurement as the next stage."
 notion_url: https://app.notion.com/p/403992da7a5781f583bef06d8253072c
 notion_last_edited: 2026-10-24T17:30:32.907Z

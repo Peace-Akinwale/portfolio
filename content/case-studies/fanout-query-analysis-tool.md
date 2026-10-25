@@ -1,9 +1,10 @@
 ---
 title: "Fanout query analysis tool"
+name: "Fanout query analysis tool"
+blurb: "Records the searches behind AI answers and separates the pages returned from the pages cited."
 kind: built
 status: "in team use, private"
 date: 2026-10-01
-for: "Notebook Agency"
 summary: "I built a fanout query analysis tool for an agency’s content strategists, extending a teammate’s bookmarklet into a Chrome extension and shared dashboard. It records the searches behind AI answers and distinguishes returned pages from citations. Strategists can review client visibility and send the recorded material to Claude for analysis."
 notion_url: https://app.notion.com/p/403992da7a578155bc78c7d8e436e561
 notion_last_edited: 2026-10-24T22:21:21.230Z
