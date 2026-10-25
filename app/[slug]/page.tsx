@@ -1,4 +1,4 @@
-import { ogImagePath } from '@/lib/og';
+import { ogImagePath, DEFAULT_OG } from '@/lib/og';
 import { getAllPostSlugs, getStaticPage, getAllStaticPageSlugs } from '@/lib/hashnode/client';
 import '@/components/article/article.css';
 import { loadPost, loadAllPosts, isLocalArticle, relatedTo } from '@/lib/content/posts';
@@ -103,7 +103,7 @@ export async function generateMetadata({ params }: ArticlePageProps): Promise<Me
 
   if (post) {
     const canva = isLocalArticle(post) ? ogImagePath(`article-${post.slug}`) : null;
-    const images = canva ? [canva] : post.coverImage?.url ? [post.coverImage.url] : [];
+    const images = canva ? [canva] : post.coverImage?.url ? [post.coverImage.url] : [DEFAULT_OG];
     return {
       title: post.seo?.title || post.title,
       description: post.seo?.description || post.brief,

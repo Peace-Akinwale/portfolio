@@ -1,4 +1,4 @@
-import { ogImagePath } from '@/lib/og';
+import { ogImageFor } from '@/lib/og';
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
@@ -23,9 +23,9 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     alternates: { canonical: `${SITE_URL}/case-studies/${cs.slug}` },
     openGraph: {
       title: cs.title, description: cs.blurb, url: `${SITE_URL}/case-studies/${cs.slug}`, siteName: 'Peace Akinwale', type: 'article',
-      images: ogImagePath(`case-study-${cs.slug}`) ? [{ url: ogImagePath(`case-study-${cs.slug}`)!, width: 1200, height: 630, alt: cs.name }] : undefined,
+      images: [{ url: ogImageFor(`case-study-${cs.slug}`), width: 1200, height: 630, alt: cs.name }],
     },
-    twitter: { card: 'summary_large_image', title: cs.title, description: cs.blurb, images: ogImagePath(`case-study-${cs.slug}`) ? [ogImagePath(`case-study-${cs.slug}`)!] : undefined },
+    twitter: { card: 'summary_large_image', title: cs.title, description: cs.blurb, images: [ogImageFor(`case-study-${cs.slug}`)] },
   };
 }
 
