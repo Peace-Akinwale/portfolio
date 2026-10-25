@@ -1,75 +1,46 @@
 import { getStaticPage } from '@/lib/hashnode/client';
 import type { Metadata } from 'next';
 import Image from 'next/image';
+import Link from 'next/link';
+import '@/components/article/article.css';
+import { SITE_URL } from '@/lib/site';
 
 export const metadata: Metadata = {
-  title: 'About | Peace Akinwale',
-  description: 'Peace Akinwale is a B2B SaaS content writer who specializes in product-led content that rank on Google and is cited in AI search.',
-  alternates: {
-    canonical: 'https://peaceakinwale.com/about',
-  },
+  title: 'About',
+  description: 'Peace Akinwale, Lagos. I write bottom-of-funnel content for B2B SaaS companies and agencies, and I build AI-assisted tools for content teams.',
+  alternates: { canonical: `${SITE_URL}/about` },
 };
 
 export default async function AboutPage() {
-  const page = await getStaticPage('about');
+  const page = await getStaticPage('about').catch(() => null);
 
   return (
-    <div className="max-w-7xl mx-auto px-6 py-24">
-      <div className="max-w-4xl mx-auto">
-      {/* Photo */}
-      <div className="mb-12">
-        <div className="relative w-full max-w-md mx-auto aspect-[3/4] overflow-hidden rounded-lg shadow-xl">
-          <Image
-            src="/images/peace-akinwale-about-wedding.jpg"
-            alt="Peace Akinwale"
-            fill
-            sizes="(max-width: 480px) 100vw, 448px"
-            className="object-cover object-top"
-            priority
-          />
-        </div>
-      </div>
-
-      {/* Header */}
-      <div className="mb-12">
-        <h1 className="text-4xl md:text-5xl font-bold mb-4 text-foreground">
-          {page?.title || "I'm Peace Akinwale"}
-        </h1>
-      </div>
-
-      {/* Content */}
-      {page?.content?.html ? (
-        <div
-          className="prose prose-lg max-w-none"
-          dangerouslySetInnerHTML={{ __html: page.content.html }}
-        />
-      ) : (
-        <div className="prose prose-lg max-w-none">
-          <p className="text-lg leading-relaxed mb-6 text-muted-foreground">
-            I&rsquo;m a B2B SaaS content writer based in Lagos. I write product-led articles that rank on Google, show up in ChatGPT and Perplexity, and actually move the needle for the companies I work with.
-          </p>
-          <p className="mb-6 text-muted-foreground">
-            My background is in understanding how products work and how buyers think. Before I write anything, I dig into your product, your ICP, and what your competitors are getting wrong. The article only happens after that.
-          </p>
-
-          <h2 className="text-2xl font-bold mb-4 mt-10 text-foreground">
-            How I work
-          </h2>
-          <p className="mb-4 text-muted-foreground">
-            I write one first draft — no AI scaffolding, no outsourced outlines. I evaluate every topic for business potential before I accept it, and I push back if the fit isn&rsquo;t there. Most clients go from two rounds of feedback to zero by the end of an engagement.
-          </p>
-          <p className="mb-4 text-muted-foreground">
-            I also build lightweight AI systems and content workflows for teams who want to reduce the manual work on their plate without sacrificing quality on the output.
-          </p>
-
-          <h2 className="text-2xl font-bold mb-4 mt-10 text-foreground">
-            Who I&rsquo;ve written for
-          </h2>
-          <p className="mb-4 text-muted-foreground">
-            ManyRequests, Marker.io, HigherVisibility, Jabra, Pangea.ai, Spicy Margarita, and a handful of other B2B SaaS brands over the past few years.
+    <div className="article gutter">
+      <header className="article-head">
+        <p className="kicker">About</p>
+        <h1>{page?.title || "I'm Peace Akinwale"}</h1>
+        <p className="standfirst">I write bottom-of-funnel content for B2B SaaS companies and agencies, and I build AI-assisted tools for content teams. Lagos.</p>
+      </header>
+      <div className="article-layout">
+        <div>
+          {page?.content?.html ? (
+            // The WordPress page repeats its title as an <h1>; the header above already has it.
+            <div className="prose" dangerouslySetInnerHTML={{ __html: page.content.html.replace(/^\s*<h1[^>]*>[\s\S]*?<\/h1>/, '') }} />
+          ) : (
+            <div className="prose">
+              <p>I came to building from writing, and the two feed each other. Before I write anything, I dig into the product, the buyer and what the competitors are getting wrong. Before I build anything, I ask which part of the existing process should be left alone.</p>
+              <p>Every project I run keeps a decisions file that’s read before each session, and nothing is called done until a real person has used it on the live app. The <Link href="/portfolio">record of the work</Link> and the <Link href="/case-studies">case studies</Link> show what that looks like.</p>
+            </div>
+          )}
+          <p className="go mt-8">
+            <Link href="/portfolio">The work</Link>
+            <Link href="/services">Services and prices</Link>
+            <Link href="/contact">Contact</Link>
           </p>
         </div>
-      )}
+        <figure className="m-0 max-w-[360px]">
+          <Image src="/images/peace-akinwale-about-wedding.jpg" alt="Peace Akinwale" width={900} height={1200} sizes="(max-width: 760px) 100vw, 360px" className="rounded-[2px] border border-border" priority />
+        </figure>
       </div>
     </div>
   );

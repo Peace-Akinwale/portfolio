@@ -67,7 +67,7 @@ const projects = [
 
 export default function ProjectsPage() {
   return (
-    <main className="mx-auto max-w-7xl px-6 py-16">
+    <div className="gutter mx-auto max-w-[1180px] py-16">
       <div className="max-w-5xl">
       <header className="mb-16">
         <h1 className="mb-6 text-5xl font-bold leading-tight md:text-6xl lg:text-7xl">
@@ -77,6 +77,10 @@ export default function ProjectsPage() {
           I use AI tools to automate content marketing processes where it makes sense. For my personal
           work as a B2B SaaS content writer for brands and agencies, I&apos;ve found great use cases
           for the following projects.
+        </p>
+        <p className="mt-4 max-w-2xl text-base text-muted-foreground">
+          The newer tools, built for an AI-search agency and for myself, each have a{' '}
+          <Link href="/case-studies" className="underline underline-offset-4">case study</Link>: AI Docs Watch, the fanout query analysis tool, Quality Rater, an OKF, Aloud, Reach and more.
         </p>
       </header>
 
@@ -144,6 +148,6 @@ export default function ProjectsPage() {
         </div>
       </section>
       </div>
-    </main>
+    </div>
   );
 }

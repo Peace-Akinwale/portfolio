@@ -61,7 +61,7 @@ export default function ContactForm() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-6 py-20 sm:py-28">
+    <div className="gutter mx-auto max-w-[1180px] py-14 sm:py-20">
       <div className="max-w-3xl mx-auto">
 
       {/* ── Header ─────────────────────────────────── */}

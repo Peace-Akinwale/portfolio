@@ -118,6 +118,7 @@ export default function ContentDbPage() {
         </p>
         <div className="flex flex-col gap-4">
           <h1 className="text-4xl font-bold leading-tight md:text-5xl lg:text-6xl">contentDB</h1>
+        <p className="mt-3 text-[15px]"><Link href="/case-studies/contentdb" className="underline underline-offset-4">How it was built, in the case study</Link></p>
           <p className="max-w-3xl text-lg leading-relaxed text-muted-foreground">
             contentDB stores customer conversations, research, and content in one place so you can query it through MCP in Claude, ChatGPT, or the
             contentDB web chat while you research, write, or update an article.

@@ -3,6 +3,8 @@ import { AVAILABILITY } from '@/lib/site';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Fragment } from 'react';
+import fs from 'node:fs';
+import path from 'node:path';
 
 type TextSegment = {
   text: string;
@@ -183,12 +185,20 @@ const screenshotTestimonials: ScreenshotTestimonial[] = [
     image: '/images/testimonials/melissa-malec-jabra.png',
     alt: 'Screenshot of Melissa Malec praising the research, structure, and product placements in the article.',
   },
-];
+  {
+    name: 'Lateef Maleek',
+    role: 'Agency owner',
+    company: 'Exceed SEO',
+    note: 'A message from 21 September 2026 about the depth and specificity of the research, with my reply',
+    image: '/images/testimonials/lateef-research-depth.png',
+    alt: 'Screenshot of a message from Lateef Maleek on Monday 21 September praising the depth and specificity of the research in an article, followed by Peace’s reply.',
+  },
+].filter((t) => fs.existsSync(path.join(process.cwd(), 'public', t.image)));
 
 export const metadata: Metadata = {
-  title: 'Client Testimonials | Peace Akinwale',
+  title: 'What clients say',
   description:
-    'Read what clients say about working with Peace Akinwale - B2B SaaS content writer for product-led software companies.',
+    'What editors, heads of content and agency owners said about working with me, in their own words and screenshots.',
   alternates: {
     canonical: 'https://peaceakinwale.com/testimonials',
   },

@@ -2,8 +2,8 @@ import type { Metadata } from 'next';
 import ContactForm from './ContactForm';
 
 export const metadata: Metadata = {
-  title: 'Contact | Peace Akinwale',
-  description: 'Get in touch with Peace Akinwale to discuss B2B SaaS content writing projects, content refreshes, or AI-supported editorial systems.',
+  title: 'Contact',
+  description: 'Tell me about an article you need or a task your team keeps doing by hand. Book a call or send a message; I reply within one business day.',
   alternates: {
     canonical: 'https://peaceakinwale.com/contact',
   },
