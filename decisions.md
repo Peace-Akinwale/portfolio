@@ -93,3 +93,9 @@ Peace's brief of 25 Oct (verbatim in `docs/superpowers/specs/2026-10-25-site-reb
 - **Informal pass** (Peace: "everything should be informal, copy and design"): round buttons, tags and cards, a marigold accent next to the green, a marker stroke under one word in some headings, no all-caps labels, and conversational framing copy everywhere (nav labels too: My work, Things I built, Blog, Hire me, About me, Say hi). Peace's approved passages and her case-study prose are unchanged. The informal rules live in `app/informal.css`: appended to globals.css, the Next dev server silently dropped them; a separate file works in dev and in the production build.
 - **Social images**: `lib/og.ts` uses `public/og/<key>.png` when present (Canva set in progress), else the generated default.
 
+
+## 2026-10-25 (late): case-study pages lose numbers and green; no availability line; Canva OG images
+
+- **Case-study pages have no chapter numbers and no green.** Peace asked for both to go. The cover is now a plain card with ink type, and the chapter index and chapters are unnumbered. Inside `.cs-page` (both case-study templates and the index), `--accent` maps to ink, so the Dated green never shows there. The ManyRequests page also lost its "Step 01–03" labels. The rest of the site keeps the Dated green accent.
+- **No availability line anywhere.** Peace isn't "Currently accepting 2 new clients". The `AVAILABILITY` constant and its three uses (services, contact, testimonials) are gone, with nothing put in their place. The untracked `app/services-v2` draft still has the old line and is not part of the site.
+- **OG images come from Canva.** There are 21 PNGs (1200x630) in `public/og/`, made in one 21-page Canva design in a private folder, "peaceakinwale.com OG images". They use Fraunces and DM Sans, because Sprat isn't in Canva. Their labels still use the Dated green, and the case-study ones say "Case study".

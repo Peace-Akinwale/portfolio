@@ -30,7 +30,7 @@ figure.shot img, .prose img { box-shadow: 0 1px 0 rgba(0,0,0,.03), 0 18px 36px -
 
 /* A marker stroke under a word or two in a page's main heading. */
 .hl { background: linear-gradient(transparent 62%, var(--sun-wash) 62%, var(--sun-wash) 92%, transparent 92%); padding: 0 .06em; }
-.ground-night .hl, .cs-cover .hl { background: linear-gradient(transparent 62%, rgba(242,181,68,.38) 62%, rgba(242,181,68,.38) 92%, transparent 92%); }
+.ground-night .hl { background: linear-gradient(transparent 62%, rgba(242,181,68,.38) 62%, rgba(242,181,68,.38) 92%, transparent 92%); }
 
 /* Pull quotes: a rounded card rather than a rule. */
 .pull { border-left: 0; padding: 18px 22px; border-radius: var(--radius); background: var(--card); }

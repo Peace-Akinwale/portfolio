@@ -35,12 +35,10 @@ function Href({ href, children, className }: { href: string; children: React.Rea
   return <a href={href} rel="noopener" target="_blank" className={className}>{children}</a>;
 }
 
-const two = (n: number) => String(n).padStart(2, '0');
-
-// A case study reads as a cover and a set of numbered chapters: the green
-// cover holds the name, the one-line point, the facts and a chapter index; the
-// summary follows in full; each section of the draft becomes a chapter with its
-// number in the margin. The prose is Peace's, unchanged.
+// A case study reads as a cover and a set of chapters: the cover holds the name,
+// the one-line point, the facts and a chapter index; the summary follows in
+// full; each section of the draft becomes a chapter. No chapter numbers and no
+// green (Peace removed both, 2026-10-25). The prose is Peace's.
 export default async function CaseStudyPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const cs = getCaseStudy(slug);
@@ -52,12 +50,12 @@ export default async function CaseStudyPage({ params }: { params: Promise<{ slug
 
   return (
     <>
-      <header className="cs-cover">
+      <header className="cs-cover cs-page">
         <div className="gutter mx-auto max-w-[1180px]">
           <p className="cs-crumbs">
-            <Link href="/portfolio">The record</Link>
+            <Link href="/portfolio">My work</Link>
             <span aria-hidden="true"> / </span>
-            <Link href="/case-studies">Case studies</Link>
+            <Link href="/case-studies">Things I built</Link>
           </p>
           <p className="cs-kicker">{cs.kind === 'built' ? 'I built this' : 'I wrote this'} · {cs.status}</p>
           <h1>{cs.name}</h1>
@@ -75,28 +73,27 @@ export default async function CaseStudyPage({ params }: { params: Promise<{ slug
           {chapters.length > 1 && (
             <nav className="cs-index-nav" aria-label="In this case study">
               <p>What’s in here</p>
-              <ol>
-                {chapters.map((c, i) => (
-                  <li key={c.id}><a href={`#${c.id}`}><span>{two(i + 1)}</span>{c.title}</a></li>
+              <ul>
+                {chapters.map((c) => (
+                  <li key={c.id}><a href={`#${c.id}`}>{c.title}</a></li>
                 ))}
-              </ol>
+              </ul>
             </nav>
           )}
         </div>
       </header>
 
-      <div className="gutter mx-auto max-w-[1180px]">
+      <div className="gutter mx-auto max-w-[1180px] cs-page">
         <section className="cs-short" aria-label="In short">
           <p className="cs-short-label">The short version</p>
           <p className="cs-short-text">{cs.summary}</p>
           {cs.title !== cs.name && <p className="cs-short-title">{cs.title}</p>}
         </section>
 
-        {intro && <div className="cs-chapter"><div /><div className="prose" dangerouslySetInnerHTML={{ __html: intro }} /></div>}
+        {intro && <div className="cs-chapter"><div className="prose" dangerouslySetInnerHTML={{ __html: intro }} /></div>}
 
-        {chapters.map((c, i) => (
+        {chapters.map((c) => (
           <section key={c.id} id={c.id} className="cs-chapter" aria-labelledby={`${c.id}-h`}>
-            <p className="cs-num" aria-hidden="true">{two(i + 1)}</p>
             <div>
               <h2 id={`${c.id}-h`}>{c.title}</h2>
               <div className="prose" dangerouslySetInnerHTML={{ __html: c.html }} />

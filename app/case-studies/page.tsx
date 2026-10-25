@@ -20,7 +20,7 @@ export default function CaseStudiesPage() {
   const wrote = studies.filter((s) => s.kind === 'wrote');
 
   return (
-    <div className="gutter mx-auto max-w-[1180px]">
+    <div className="gutter mx-auto max-w-[1180px] cs-page">
       <header className="cs-index">
         <h1>Things I’ve <span className="hl">built</span>, and how they came together.</h1>
         <p className="lead">Each one comes from the project’s own notes. If a tool is private, I’ve blurred what needs blurring. If it isn’t finished, I say so.</p>

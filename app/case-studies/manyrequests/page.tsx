@@ -3,6 +3,7 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 import { MANYREQUESTS_ARTICLE_COUNT, MANYREQUESTS_SINCE } from '@/lib/portfolio/manyrequests';
 import { getFaviconUrl } from '@/lib/ogImage';
+import '@/components/case-study/case-study.css';
 
 export const metadata: Metadata = {
   title: 'Case Study: ManyRequests | Peace Akinwale',
@@ -27,7 +28,7 @@ export const metadata: Metadata = {
     title: `Case study: ${MANYREQUESTS_ARTICLE_COUNT} product-led articles for ManyRequests`,
     description:
       `How I wrote ${MANYREQUESTS_ARTICLE_COUNT} product-led articles for ManyRequests and made the product useful inside the piece.`,
-    images: ['https://peaceakinwale.com/images/case-studies/manyrequests/manyrequests-homepage.png'],
+    images: [ogImagePath('case-study-manyrequests') ?? 'https://peaceakinwale.com/images/case-studies/manyrequests/manyrequests-homepage.png'],
   },
 };
 
@@ -35,7 +36,7 @@ const MR_FAVICON = getFaviconUrl('manyrequests.com', 32);
 
 export default function ManyRequestsCaseStudyPage() {
   return (
-    <>
+    <div className="cs-page">
       {/* ── Breadcrumb ──────────────────────────────────── */}
       <div className="bg-background border-b border-border/50">
         <div className="max-w-4xl mx-auto px-6 py-3">
@@ -196,7 +197,6 @@ export default function ManyRequestsCaseStudyPage() {
 
           {/* Step 1 */}
           <div className="mb-14">
-            <p className="text-[11px] font-bold uppercase tracking-[0.12em] mb-3" style={{ color: 'var(--accent)' }}>Step 01</p>
             <h3 className="text-xl font-extrabold text-foreground mb-4" style={{ letterSpacing: '-0.02em' }}>
               I chose topics where I could explain how the product works inside the article
             </h3>
@@ -225,7 +225,6 @@ export default function ManyRequestsCaseStudyPage() {
 
           {/* Step 2 */}
           <div className="mb-14">
-            <p className="text-[11px] font-bold uppercase tracking-[0.12em] mb-3" style={{ color: 'var(--accent)' }}>Step 02</p>
             <h3 className="text-xl font-extrabold text-foreground mb-4" style={{ letterSpacing: '-0.02em' }}>
               I showed the product through workflows, screenshots, and customer proof
             </h3>
@@ -304,7 +303,6 @@ export default function ManyRequestsCaseStudyPage() {
 
           {/* Step 3 */}
           <div>
-            <p className="text-[11px] font-bold uppercase tracking-[0.12em] mb-3" style={{ color: 'var(--accent)' }}>Step 03</p>
             <h3 className="text-xl font-extrabold text-foreground mb-4" style={{ letterSpacing: '-0.02em' }}>
               I wrote each article to answer the next question a buyer would ask
             </h3>
@@ -447,6 +445,6 @@ export default function ManyRequestsCaseStudyPage() {
           </div>
         </div>
       </section>
-    </>
+    </div>
   );
 }

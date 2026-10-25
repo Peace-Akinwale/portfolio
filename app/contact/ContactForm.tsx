@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { AVAILABILITY } from '@/lib/site';
 
 const PROJECT_TYPES = [
   'Select a type',
@@ -76,10 +75,6 @@ export default function ContactForm() {
           >
             Let&rsquo;s talk about it.
           </h1>
-          <span className="inline-flex items-center gap-2 text-xs font-semibold px-3 py-1.5 rounded-full border border-border text-muted-foreground whitespace-nowrap self-start sm:self-auto">
-            <span className="w-1.5 h-1.5 rounded-full bg-accent inline-block" />
-            {AVAILABILITY}
-          </span>
         </div>
         <p className="text-sm leading-relaxed text-muted-foreground mt-4 max-w-lg">
           Grab a free 30-minute call below. No pressure, it&rsquo;s just a chat. Or scroll down and send me a message instead.

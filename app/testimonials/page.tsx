@@ -1,6 +1,5 @@
 import { withOg } from '@/lib/og';
 import type { Metadata } from 'next';
-import { AVAILABILITY } from '@/lib/site';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Fragment } from 'react';
@@ -357,10 +356,6 @@ export default function TestimonialsPage() {
       <section className="border-t border-border bg-background">
         <div className="mx-auto max-w-7xl px-6 py-20 sm:py-24">
           <div className="max-w-3xl">
-            <span className="mb-8 inline-flex items-center gap-2 rounded-full border border-border px-3 py-1.5 text-xs font-semibold text-muted-foreground">
-              <span className="inline-block h-1.5 w-1.5 rounded-full bg-accent" />
-              {AVAILABILITY}
-            </span>
             <h2
               className="mb-4 text-2xl font-extrabold text-foreground sm:text-3xl"
               style={{ letterSpacing: '-0.02em' }}
