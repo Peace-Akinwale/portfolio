@@ -1,80 +1,106 @@
+import type { Metadata } from 'next';
+import Image from 'next/image';
+import Link from 'next/link';
+import '@/components/record/record.css';
 import { getStaticPage } from '@/lib/hashnode/client';
 import { parsePortfolioHtml } from '@/lib/hashnode/parsePortfolio';
-import { PortfolioGrid } from '@/components/PortfolioGrid';
-import { fetchOgImagesForPortfolio } from '@/lib/fetchOgImages';
 import { FEATURED_MANYREQUESTS_ARTICLES, withCurrentManyRequestsSamples } from '@/lib/portfolio/manyrequests';
-import type { Metadata } from 'next';
+import { buildRecord, months } from '@/lib/content/record';
+import { Entries } from '@/components/record/Record';
+import { RecordFilters, RecordNow, MonthRail, OpenDetailsFromHash } from '@/components/record/RecordControls';
+import { WritingSamples } from '@/components/record/WritingSamples';
+import { SITE_URL } from '@/lib/site';
+
+export const revalidate = 300;
 
 export const metadata: Metadata = {
-  title: 'Portfolio | Peace Akinwale',
-  description: 'Explore the portfolio of Peace Akinwale - featured B2B SaaS writing projects.',
-  alternates: {
-    canonical: 'https://peaceakinwale.com/portfolio',
-  },
+  title: 'Work: the record of what I built, wrote and decided',
+  description:
+    'A dated record of the tools I built and the articles I wrote, newest first, with the evidence beside each one. Plus every writing sample, by client.',
+  alternates: { canonical: `${SITE_URL}/portfolio` },
 };
 
 const MARKERIO_SECTION = {
-  heading: 'Ghostwritten content for Marker.io',
+  heading: 'Ghostwritten for Marker.io',
   clientName: 'Marker.io',
   projects: [
-    {
-      title: 'What is Regression Testing? A Practical Guide',
-      link: 'https://marker.io/blog/regression-testing',
-    },
-    {
-      title: 'How To Write Test Cases: A Step-By-Step Guide',
-      link: 'https://marker.io/blog/how-to-write-test-cases',
-    },
-    {
-      title: 'What is Black Box Testing? A Practical Guide',
-      link: 'https://marker.io/blog/black-box-testing',
-    },
+    { title: 'What is Regression Testing? A Practical Guide', link: 'https://marker.io/blog/regression-testing' },
+    { title: 'How To Write Test Cases: A Step-By-Step Guide', link: 'https://marker.io/blog/how-to-write-test-cases' },
+    { title: 'What is Black Box Testing? A Practical Guide', link: 'https://marker.io/blog/black-box-testing' },
   ],
   readMoreLink: '/b2b-content-for-marker.io',
 };
 
 const JABRA_SECTION = {
-  heading: 'Ghostwritten content for Jabra',
+  heading: 'Ghostwritten for Jabra',
   clientName: 'Jabra',
   projects: [
-    {
-      title: '7 Modern Meeting Room Designs & What You Need to Nail Them',
-      link: 'https://www.jabra.com/discover/modern-meeting-room',
-    },
-    {
-      title: 'How to Increase Employee Engagement (By Fixing What\'s Broken)',
-      link: 'https://www.jabra.com/discover/increase-employee-engagement',
-    },
+    { title: '7 Modern Meeting Room Designs & What You Need to Nail Them', link: 'https://www.jabra.com/discover/modern-meeting-room' },
+    { title: "How to Increase Employee Engagement (By Fixing What's Broken)", link: 'https://www.jabra.com/discover/increase-employee-engagement' },
   ],
 };
 
-export default async function PortfolioPage() {
-  const page = await getStaticPage('portfolio');
-  const parsed = page?.content?.html
-    ? withCurrentManyRequestsSamples(parsePortfolioHtml(page.content.html), FEATURED_MANYREQUESTS_ARTICLES)
-    : null;
-
-  if (parsed && parsed.sections.length > 0) {
+async function loadSamples() {
+  try {
+    const page = await getStaticPage('portfolio');
+    if (!page?.content?.html) return null;
+    const parsed = withCurrentManyRequestsSamples(parsePortfolioHtml(page.content.html), FEATURED_MANYREQUESTS_ARTICLES);
+    if (parsed.sections.length === 0) return null;
     parsed.sections.splice(1, 0, MARKERIO_SECTION);
     parsed.sections.splice(2, 0, JABRA_SECTION);
-    const ogImages = await fetchOgImagesForPortfolio(parsed);
-    return <PortfolioGrid parsed={parsed} pageTitle={page?.title || 'Portfolio'} ogImages={ogImages} />;
+    return parsed;
+  } catch {
+    return null;
   }
+}
+
+export default async function PortfolioPage() {
+  const entries = buildRecord();
+  const monthList = months(entries);
+  const samples = (await loadSamples()) ?? { sections: [MARKERIO_SECTION, JABRA_SECTION] };
 
   return (
-    <div className="max-w-4xl mx-auto px-6 py-24">
-      <div className="mb-12">
-        <h1
-          className="text-4xl md:text-5xl font-bold mb-4 text-foreground"
-        >
-          {page?.title || 'Portfolio'}
-        </h1>
+    <>
+      <div className="gutter mx-auto max-w-[1180px]">
+        <section className="record-open" aria-labelledby="record-h">
+          <div>
+            <h1 id="record-h">The record. What I built, wrote and decided, newest first.</h1>
+            <p className="who">
+              <strong>Two kinds of work, one list.</strong> Entries marked <em>Built</em> are tools, each with its own case study. Entries marked <em>Wrote</em> are articles, with the evidence beside them. Every entry links to the thing itself where it’s public. Writing samples by client are <a href="#writing">further down</a>.
+            </p>
+          </div>
+          <figure>
+            <Image src="/images/home/peace-square.jpg" width={900} height={900} alt="Peace Akinwale, smiling, arms folded, in a navy pinstripe suit and red tie, leaning on a wall in a hallway." sizes="220px" priority />
+          </figure>
+        </section>
       </div>
-      <div className="space-y-6">
-        <p className="text-xl leading-relaxed text-muted-foreground">
-          A showcase of my B2B SaaS writing projects and work samples.
-        </p>
+
+      <div className="record-bar" id="record">
+        <div className="gutter mx-auto max-w-[1180px]">
+          <div className="inner">
+            <RecordFilters />
+            <p className="record-now"><RecordNow initialMonth={monthList[0] ?? '2026-10'} /></p>
+          </div>
+        </div>
       </div>
-    </div>
+
+      <div className="gutter mx-auto max-w-[1180px]">
+        <div className="record">
+          <MonthRail months={monthList} />
+          <Entries entries={entries} />
+        </div>
+        <OpenDetailsFromHash />
+
+        <WritingSamples parsed={samples} />
+
+        <section className="border-t border-border py-12" aria-label="Next">
+          <p className="go">
+            <Link href="/case-studies">Every case study</Link>
+            <Link href="/projects">Every tool, including the older ones</Link>
+            <Link href="/contact">Work with me</Link>
+          </p>
+        </section>
+      </div>
+    </>
   );
 }

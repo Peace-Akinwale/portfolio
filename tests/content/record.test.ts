@@ -1,0 +1,29 @@
+import { describe, it, expect } from 'vitest';
+import { buildRecord, months } from '@/lib/content/record';
+
+describe('the dated record', () => {
+  const entries = buildRecord();
+
+  it('is sorted newest first with well-formed dates and months', () => {
+    for (let i = 1; i < entries.length; i++) expect(entries[i - 1].date >= entries[i].date, `${entries[i - 1].id} before ${entries[i].id}`).toBe(true);
+    for (const e of entries) {
+      expect(e.date).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+      expect(e.month).toBe(e.date.slice(0, 7));
+      expect(['built', 'wrote', 'said', 'decided']).toContain(e.kind);
+      expect(e.id).toMatch(/^[a-z0-9-]+$/);
+    }
+    expect(new Set(entries.map((e) => e.id)).size).toBe(entries.length);
+  });
+
+  it('only links to the site or to https pages', () => {
+    for (const e of entries) {
+      for (const l of [...(e.href ? [{ href: e.href }] : []), ...e.links]) expect(l.href, e.id).toMatch(/^(\/|https:\/\/)/);
+    }
+  });
+
+  it('derives the month rail from the entries', () => {
+    const m = months(entries);
+    expect(m.length).toBeGreaterThan(0);
+    expect(m[0]).toBe(entries[0].month);
+  });
+});
