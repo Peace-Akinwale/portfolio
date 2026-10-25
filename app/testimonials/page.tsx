@@ -243,17 +243,17 @@ export default function TestimonialsPage() {
               className="mb-4 text-xs font-bold uppercase tracking-[0.15em]"
               style={{ color: 'var(--accent)' }}
             >
-              Client testimonials
+              Kind words
             </p>
             <h1
               className="mb-6 text-3xl font-extrabold leading-[1.1] text-foreground sm:text-4xl md:text-5xl"
               style={{ letterSpacing: '-0.03em' }}
             >
-              What my clients say
+              Nice things clients said
             </h1>
             <p className="max-w-2xl text-base leading-relaxed text-muted-foreground sm:text-lg">
-              Every testimonial here is from a client I&apos;ve worked with directly - sourced from LinkedIn
-              recommendations and direct feedback from real projects.
+              Every one of these is from someone I&apos;ve worked with, copied from LinkedIn or screenshotted
+              straight from the doc or the chat. I haven&apos;t tidied any of them up.
             </p>
           </div>
         </div>
@@ -365,11 +365,10 @@ export default function TestimonialsPage() {
               className="mb-4 text-2xl font-extrabold text-foreground sm:text-3xl"
               style={{ letterSpacing: '-0.02em' }}
             >
-              Ready to work together?
+              Want to be next?
             </h2>
             <p className="mb-10 max-w-xl text-base leading-relaxed text-muted-foreground">
-              Book a free 30-minute call. No commitment, no pressure - just a conversation about your
-              content goals.
+              Grab a free 30-minute call. No pressure, it&apos;s just a chat about what you&apos;re working on.
             </p>
             <div className="flex flex-col gap-3 sm:flex-row">
               <a

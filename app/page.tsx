@@ -69,7 +69,7 @@ export default function HomePage() {
           </p>
         </div>
         <div className="split-night ground-night">
-          <p className="mobile-q">The building answer to the same question</p>
+          <p className="mobile-q">And from the building side</p>
           <p className="eyebrow"><b>Building</b> AI Docs Watch, live</p>
           <h3><Link href={DOCS_WATCH.caseStudy}>Show the page before and after. Then say what’s true now.</Link></h3>
           <div className="body">
@@ -82,7 +82,7 @@ export default function HomePage() {
           </figure>
           <p className="go">
             <Ext href={DOCS_WATCH.site}>Open AI Docs Watch</Ext>
-            <Link href={DOCS_WATCH.caseStudy}>How it was built</Link>
+            <Link href={DOCS_WATCH.caseStudy}>How I built it</Link>
           </p>
         </div>
       </section>
@@ -101,14 +101,14 @@ export default function HomePage() {
           <p className="go"><Link href={AEO.href}>Read the article</Link></p>
         </div>
         <div className="split-night ground-night">
-          <p className="mobile-q">The building answer to the same question</p>
+          <p className="mobile-q">And from the building side</p>
           <p className="eyebrow"><b>Building</b> Fanout query analysis tool</p>
           <h3><Link href={FANOUT.caseStudy}>Research before code, then analysis as the output.</Link></h3>
           <div className="body">
             <p>{FANOUT.p1}</p>
             <p>{FANOUT.p2}</p>
           </div>
-          <p className="go"><Link href={FANOUT.caseStudy}>How the fanout query analysis tool came about</Link></p>
+          <p className="go"><Link href={FANOUT.caseStudy}>How it came about</Link></p>
         </div>
       </section>
 
@@ -124,10 +124,10 @@ export default function HomePage() {
             <Image src="/images/home/editor-comment-jabra.png" width={335} height={469} loading="lazy" sizes="330px" alt={EDITOR.alt} />
             <figcaption>{EDITOR.caption}</figcaption>
           </figure>
-          <p className="go"><Link href="/testimonials">What other clients said</Link></p>
+          <p className="go"><Link href="/testimonials">More nice things clients said</Link></p>
         </div>
         <div className="split-night ground-night">
-          <p className="mobile-q">The building answer to the same question</p>
+          <p className="mobile-q">And from the building side</p>
           <p className="eyebrow"><b>Building</b> Aloud, my own app, 28 Sep 2026</p>
           <h3><Link href={ALOUD.caseStudy}>Done is measured on the live app, not reported by a test.</Link></h3>
           <div className="body"><p>{ALOUD.p1}</p></div>
@@ -141,7 +141,7 @@ export default function HomePage() {
           </dl>
           <div className="body"><p>{ALOUD.p2}</p></div>
           <p className="go">
-            <Link href={ALOUD.caseStudy}>The Aloud case study</Link>
+            <Link href={ALOUD.caseStudy}>The whole Aloud story</Link>
             <Ext href={ALOUD.log}>Read the Aloud log</Ext>
           </p>
         </div>
@@ -153,7 +153,7 @@ export default function HomePage() {
           <div>
             <p>{HOW_I_WORK.p1}</p>
             <p>{HOW_I_WORK.p2}</p>
-            <p className="go"><Link href="/portfolio">See the record of the work</Link></p>
+            <p className="go"><Link href="/portfolio">See everything I’ve worked on</Link></p>
           </div>
         </div>
       </section>
@@ -166,14 +166,14 @@ export default function HomePage() {
             {OFFER.prices.map((p) => <li key={p}>{p}</li>)}
           </ul>
           <a className="button button-ink" href={`mailto:${EMAIL}?subject=An%20article`}>Email about an article</a>
-          <Link className="button button-line" href="/services">What’s included</Link>
+          <Link className="button button-line" href="/services">What you get</Link>
         </div>
         <div className="ground-night">
           <h2>Building with me</h2>
           <p>{OFFER.building}</p>
-          <p className="note">Scoped per project, after we’ve talked about the task.</p>
+          <p className="note">No price list for this one. We talk about the task first, then I scope it.</p>
           <Ext href={CALENDLY_URL}><span className="button button-accent">Book a 30-minute call</span></Ext>
-          <Link className="button button-line" href="/contact">Write to me instead</Link>
+          <Link className="button button-line" href="/contact">Or just write to me</Link>
         </div>
       </section>
     </div>

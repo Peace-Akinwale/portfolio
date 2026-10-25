@@ -11,10 +11,10 @@ export const X_URL = 'https://x.com/PeaceAkinwaleA';
 
 // The site's one navigation, read by the header, the footer and the tests.
 export const NAV_LINKS: { href: string; label: string }[] = [
-  { href: '/portfolio', label: 'Work' },
-  { href: '/case-studies', label: 'Case studies' },
+  { href: '/portfolio', label: 'My work' },
+  { href: '/case-studies', label: 'Things I built' },
   { href: '/blog', label: 'Blog' },
-  { href: '/services', label: 'Services' },
-  { href: '/about', label: 'About' },
-  { href: '/contact', label: 'Contact' },
+  { href: '/services', label: 'Hire me' },
+  { href: '/about', label: 'About me' },
+  { href: '/contact', label: 'Say hi' },
 ];

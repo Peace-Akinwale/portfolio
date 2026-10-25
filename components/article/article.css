@@ -9,17 +9,17 @@
 .article-head .standfirst { font-family: var(--font-serif); font-optical-sizing: auto; font-size: clamp(1.15rem, 1.5vw, 1.3rem); line-height: 1.45; margin: 0 0 18px; }
 .article-head .meta { font-size: 14.5px; color: var(--muted-foreground); display: flex; flex-wrap: wrap; gap: 6px 14px; margin: 0; }
 .article-cover { margin: 28px 0 0; }
-.article-cover img { border: 1px solid var(--border); border-radius: 2px; }
+.article-cover img { border-radius: var(--radius); }
 .article-layout { display: grid; grid-template-columns: minmax(0, 66ch) minmax(0, 1fr); gap: 40px 64px; padding: 32px 0 48px; }
 .article-layout .prose { max-width: 66ch; }
 .article-layout .prose > p:first-of-type { font-size: 1.2rem; }
 .article-layout .prose ol { padding-left: 1.4rem; }
 .article-foot { max-width: 66ch; border-top: 1px solid var(--border); padding: 28px 0 0; }
-.article-foot h2 { font-family: var(--font-sans); font-size: 12.5px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; color: var(--muted-foreground); margin: 0 0 10px; }
+.article-foot h2 { font-family: var(--font-sans); font-size: 15px; font-weight: 600; color: var(--muted-foreground); margin: 0 0 10px; }
 .article-tags { display: flex; flex-wrap: wrap; gap: 8px; list-style: none; margin: 0 0 24px; padding: 0; }
 .article-tags a, .article-tags span { display: inline-block; font-size: 14px; padding: 4px 10px; border: 1px solid var(--border); border-radius: 999px; text-decoration: none; }
 .article-tags a:hover { border-color: var(--foreground); }
-.article-cta { border: 1px solid var(--border); padding: 24px 28px; margin: 32px 0 0; max-width: 66ch; }
+.article-cta { border: 0; border-radius: 24px; background: var(--card); padding: 26px 30px; margin: 32px 0 0; max-width: 66ch; }
 .article-cta p { margin: 0 0 10px; font-family: var(--font-serif); font-optical-sizing: auto; font-size: 1.05rem; }
 .article-cta .button { margin: 10px 12px 0 0; }
 .review-note { background: var(--muted); border: 1px dashed var(--accent); padding: 12px 16px; font-size: 14.5px; margin: 0 0 24px; max-width: 66ch; }

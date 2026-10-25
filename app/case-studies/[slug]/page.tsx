@@ -59,13 +59,13 @@ export default async function CaseStudyPage({ params }: { params: Promise<{ slug
             <span aria-hidden="true"> / </span>
             <Link href="/case-studies">Case studies</Link>
           </p>
-          <p className="cs-kicker">{cs.kind === 'built' ? 'Built' : 'Wrote'} · {cs.status}</p>
+          <p className="cs-kicker">{cs.kind === 'built' ? 'I built this' : 'I wrote this'} · {cs.status}</p>
           <h1>{cs.name}</h1>
           <p className="cs-point">{cs.blurb}</p>
           <dl className="cs-strip">
             <div><dt>When</dt><dd><time dateTime={cs.date}>{dayLabel(cs.date)}</time></dd></div>
-            <div><dt>Where it stands</dt><dd>{cs.status}</dd></div>
-            <div><dt>Reading</dt><dd>{cs.readingMinutes} min</dd></div>
+            <div><dt>Where it’s at</dt><dd>{cs.status}</dd></div>
+            <div><dt>Reading time</dt><dd>about {cs.readingMinutes} min</dd></div>
           </dl>
           {cs.links.length > 0 && (
             <p className="cs-links">
@@ -74,7 +74,7 @@ export default async function CaseStudyPage({ params }: { params: Promise<{ slug
           )}
           {chapters.length > 1 && (
             <nav className="cs-index-nav" aria-label="In this case study">
-              <p>In this case study</p>
+              <p>What’s in here</p>
               <ol>
                 {chapters.map((c, i) => (
                   <li key={c.id}><a href={`#${c.id}`}><span>{two(i + 1)}</span>{c.title}</a></li>
@@ -87,7 +87,7 @@ export default async function CaseStudyPage({ params }: { params: Promise<{ slug
 
       <div className="gutter mx-auto max-w-[1180px]">
         <section className="cs-short" aria-label="In short">
-          <p className="cs-short-label">In short</p>
+          <p className="cs-short-label">The short version</p>
           <p className="cs-short-text">{cs.summary}</p>
           {cs.title !== cs.name && <p className="cs-short-title">{cs.title}</p>}
         </section>
@@ -105,7 +105,7 @@ export default async function CaseStudyPage({ params }: { params: Promise<{ slug
         ))}
 
         <section className="cs-next" aria-labelledby="next-h">
-          <h2 id="next-h">Related work</h2>
+          <h2 id="next-h">If you liked this one</h2>
           <ul>
             {next.map((c) => (
               <li key={c.slug}>
@@ -117,8 +117,8 @@ export default async function CaseStudyPage({ params }: { params: Promise<{ slug
             ))}
           </ul>
           <p className="go mt-6">
-            <Link href="/portfolio">The whole record</Link>
-            <Link href="/contact">Tell me about a task your team keeps doing by hand</Link>
+            <Link href="/portfolio">See everything I’ve worked on</Link>
+            <Link href="/contact">Got a task your team keeps doing by hand? Tell me</Link>
           </p>
         </section>
       </div>

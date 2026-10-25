@@ -16,9 +16,9 @@ export const QUESTIONS = [
 
 // Draft one-line answers under each question, for Peace to approve (26 Oct 2026).
 export const ANSWERS = {
-  Q1: 'I check a claim against its source before anyone relies on it: an article against its research, a tool’s summary against the page it describes.',
-  Q2: 'Before I write or build, I look at what already exists and make the part that’s missing.',
-  Q3: 'Done is when the person it’s for can use it without me: an editor with nothing to fix, an app that finishes the job and says what happened.',
+  Q1: 'I check what I make against the source before anyone relies on it, whether that’s an article’s research or the page a tool reports on.',
+  Q2: 'Before I write or build anything, I look at what’s already out there and make the bit that’s missing.',
+  Q3: 'It’s done when the person it’s for can use it without me. The editor has nothing left to fix, and the app finishes the job and tells you what happened.',
 };
 
 export const DOCS_WATCH = {

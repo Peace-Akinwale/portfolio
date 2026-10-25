@@ -8,7 +8,7 @@ import { MANYREQUESTS_ARTICLE_COUNT, MANYREQUESTS_SINCE } from '@/lib/portfolio/
 import { SITE_URL } from '@/lib/site';
 
 export const metadata: Metadata = withOg({
-  title: 'Case studies',
+  title: 'Things I built',
   description:
     'What I was asked to build or write, the decisions that mattered, and what someone can do with the result. Tools for content teams, and one long writing engagement.',
   alternates: { canonical: `${SITE_URL}/case-studies` },
@@ -22,13 +22,13 @@ export default function CaseStudiesPage() {
   return (
     <div className="gutter mx-auto max-w-[1180px]">
       <header className="cs-index">
-        <h1>Case studies: the problem, the decisions, what you can do with the result.</h1>
-        <p className="lead">Each one is written from the project’s own record. Where a tool is private, the screens are anonymised; where it isn’t finished, the page says so.</p>
+        <h1>Things I’ve <span className="hl">built</span>, and how they came together.</h1>
+        <p className="lead">Each one comes from the project’s own notes. If a tool is private, I’ve blurred what needs blurring. If it isn’t finished, I say so.</p>
       </header>
 
       <section className="cs-group" aria-labelledby="built-h">
-        <h2 id="built-h">Tools I built</h2>
-        <p>Newest first. Each card opens the full case study.</p>
+        <h2 id="built-h">The tools</h2>
+        <p>Newest first. Tap one to read the whole story.</p>
         <ul className="cs-cards">
           {built.map((cs) => (
             <li key={cs.slug} className="cs-card">
@@ -41,8 +41,8 @@ export default function CaseStudiesPage() {
       </section>
 
       <section className="cs-group" aria-labelledby="wrote-h">
-        <h2 id="wrote-h">Writing</h2>
-        <p>One long engagement, written up in full. The individual samples are on <Link href="/portfolio#writing" className="underline underline-offset-4">the work page</Link>.</p>
+        <h2 id="wrote-h">And one long writing gig</h2>
+        <p>Written up in full. The individual articles live on <Link href="/portfolio#writing" className="underline underline-offset-4">my work page</Link>.</p>
         <ul className="cs-cards">
           <li className="cs-card">
             <p className="meta">ManyRequests · B2B SaaS, client portal software · since {MANYREQUESTS_SINCE}</p>
@@ -60,8 +60,8 @@ export default function CaseStudiesPage() {
       </section>
 
       <section className="cs-group" aria-label="Articles about building">
-        <h2>Two of the builds are articles instead</h2>
-        <p>Lessons rather than a walkthrough.</p>
+        <h2>Two builds I wrote up as articles instead</h2>
+        <p>More about what I learned than how it works.</p>
         <ul className="cs-cards">
           <li className="cs-card">
             <h3><Link href="/the-success-message-was-the-bug">The success message was the bug</Link></h3>

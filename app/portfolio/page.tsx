@@ -15,7 +15,7 @@ import { SITE_URL } from '@/lib/site';
 export const revalidate = 300;
 
 export const metadata: Metadata = withOg({
-  title: 'Work: the record of what I built, wrote and decided',
+  title: 'My work, newest first',
   description:
     'A dated record of the tools I built and the articles I wrote, newest first, with the evidence beside each one. Plus every writing sample, by client.',
   alternates: { canonical: `${SITE_URL}/portfolio` },
@@ -65,9 +65,9 @@ export default async function PortfolioPage() {
       <div className="gutter mx-auto max-w-[1180px]">
         <section className="record-open" aria-labelledby="record-h">
           <div>
-            <h1 id="record-h">The record. What I built, wrote and decided, newest first.</h1>
+            <h1 id="record-h">Everything I’ve built and written <span className="hl">lately</span>, newest first.</h1>
             <p className="who">
-              <strong>Two kinds of work, one list.</strong> Entries marked <em>Built</em> are tools, each with its own case study. Entries marked <em>Wrote</em> are articles, with the evidence beside them. Every entry links to the thing itself where it’s public. Writing samples by client are <a href="#writing">further down</a>.
+              <strong>Two kinds of work, one list.</strong> The ones tagged <em>Built</em> are tools, and each has its own write-up. The ones tagged <em>Wrote</em> are articles, with whatever proof I have next to them. If it’s public, there’s a link. Looking for writing samples by client? They’re <a href="#writing">further down</a>.
             </p>
           </div>
           <figure>
@@ -96,9 +96,9 @@ export default async function PortfolioPage() {
 
         <section className="border-t border-border py-12" aria-label="Next">
           <p className="go">
-            <Link href="/case-studies">Every case study</Link>
-            <Link href="/projects">Every tool, including the older ones</Link>
-            <Link href="/contact">Work with me</Link>
+            <Link href="/case-studies">All the things I built</Link>
+            <Link href="/projects">The older tools too</Link>
+            <Link href="/contact">Want to work together?</Link>
           </p>
         </section>
       </div>

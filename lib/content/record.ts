@@ -39,7 +39,7 @@ export interface RecordEntry {
 export const KIND_LABEL: Record<RecordKind, string> = {
   built: 'Built',
   wrote: 'Wrote',
-  said: 'A client said',
+  said: 'A client said this',
   decided: 'Decided',
 };
 
@@ -58,7 +58,7 @@ export function buildRecord(): RecordEntry[] {
     context: cs.status,
     body: APPROVED_BODY[cs.slug] ?? [cs.blurb],
     figure: cs.cover ? { src: cs.cover.src, width: 1600, height: 1000, alt: cs.cover.alt } : undefined,
-    links: [{ label: 'Read the case study', href: `/case-studies/${cs.slug}` }, ...(EXTRA_LINKS[cs.slug] ?? cs.links.slice(0, 1))],
+    links: [{ label: 'How I built it', href: `/case-studies/${cs.slug}` }, ...(EXTRA_LINKS[cs.slug] ?? cs.links.slice(0, 1))],
   }));
 
   const fromArticles: RecordEntry[] = listLocalArticles().map((a) => ({
@@ -71,7 +71,7 @@ export function buildRecord(): RecordEntry[] {
     href: `/${a.slug}`,
     context: 'on my blog',
     body: [a.brief],
-    links: [{ label: 'Read the article', href: `/${a.slug}` }],
+    links: [{ label: 'Read it', href: `/${a.slug}` }],
   }));
 
   const ids = new Set([...fromStudies, ...fromArticles].map((e) => e.id));

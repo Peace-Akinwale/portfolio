@@ -65,7 +65,7 @@ export default function ServicesPage() {
       <section className="offer" id="prices" aria-labelledby="writing-h">
         <div className="border-t border-border">
           <h2 id="writing-h">Writing</h2>
-          <p>Each article is researched from your product and your customers’ own words, written to the outcome the piece has to produce, and checked against its sources before you see it.</p>
+          <p>I research every article from your product and your customers’ own words, and I check it against its sources before you ever see it.</p>
           <ul>
             {PRICES.map((p) => <li key={p}>{p}</li>)}
           </ul>
@@ -78,19 +78,19 @@ export default function ServicesPage() {
           <p>{TOOL_CTA}</p>
           <p className="note">Scoped per project after we’ve talked about the task. Every tool I build keeps a decisions file, and nothing is called done until a real person has used it on the live app. The case studies show what that looks like.</p>
           <Link className="button button-accent" href="/contact">Tell me about the task</Link>
-          <Link className="button button-line" href="/case-studies">See the tools</Link>
+          <Link className="button button-line" href="/case-studies">See what I’ve built</Link>
         </div>
       </section>
 
       <section className="gutter mx-auto max-w-[1180px] grid gap-10 border-t border-border py-12 md:grid-cols-2" aria-label="What an article includes">
         <div>
-          <h2 className="text-[1.5rem]">What every article includes</h2>
+          <h2 className="text-[1.5rem]">What you get with every article</h2>
           <ul className="mt-4 list-disc pl-5 text-[16px] leading-relaxed">
             {WHATS_INCLUDED.map((i) => <li key={i} className="mb-1.5">{i}</li>)}
           </ul>
         </div>
         <div>
-          <h2 className="text-[1.5rem]">What it doesn’t</h2>
+          <h2 className="text-[1.5rem]">What’s not included</h2>
           <ul className="mt-4 list-disc pl-5 text-[16px] leading-relaxed text-muted-foreground">
             {WHATS_NOT.map((i) => <li key={i} className="mb-1.5">{i}</li>)}
           </ul>
@@ -110,8 +110,8 @@ export default function ServicesPage() {
       </section>
 
       <section className="gutter mx-auto max-w-[1180px] border-t border-border py-12" aria-label="Next step">
-        <h2 className="text-[1.75rem]">Next step</h2>
-        <p className="serif mt-3 max-w-[56ch] text-[1.1rem]">Email me the topic or the task, or book a 30-minute call. Either way you’ll hear back within one business day, and if I’m not the right person for it I’ll say so.</p>
+        <h2 className="text-[1.75rem]">So, what’s next?</h2>
+        <p className="serif mt-3 max-w-[56ch] text-[1.1rem]">Email me the topic or the task, or grab a 30-minute call. You’ll hear back within a business day. And if I’m not the right person for it, I’ll tell you.</p>
         <p className="mt-4">
           <Link href="/contact" className="button button-ink">Contact</Link>
           <a href={CALENDLY_URL} rel="noopener" target="_blank" className="button button-line ml-3">Book a call</a>

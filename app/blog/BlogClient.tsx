@@ -19,8 +19,8 @@ export function BlogClient({ initialPosts, wordpressDown }: { initialPosts: Hash
   return (
     <div className="gutter mx-auto max-w-[1100px]">
       <header className="posts-head">
-        <h1>Writing about the work: articles, essays and what I learned building.</h1>
-        <p className="lead">How I write for B2B SaaS companies, what I’ve learned building tools with AI coding agents, and the decisions in between. Newest first.</p>
+        <h1>Stuff I’ve <span className="hl">written</span>, about writing and about building.</h1>
+        <p className="lead">How I write for B2B SaaS companies, what I’ve learned building tools with AI coding agents, and the odd essay in between. Newest first.</p>
         <SearchBar onSearch={setQuery} />
         {query && (
           <p className="mt-3 text-[14px] text-muted-foreground" aria-live="polite">
@@ -30,7 +30,7 @@ export function BlogClient({ initialPosts, wordpressDown }: { initialPosts: Hash
       </header>
 
       {wordpressDown && (
-        <p className="review-note">Some articles are published on WordPress and could not be loaded just now. The list below is what’s available.</p>
+        <p className="review-note">Some of my posts live on WordPress and didn’t load just now. Here’s what did. Try again in a minute for the rest.</p>
       )}
 
       {posts.length > 0 ? (
@@ -38,7 +38,7 @@ export function BlogClient({ initialPosts, wordpressDown }: { initialPosts: Hash
           {posts.map((post) => <ArticleCard key={post.id} post={post} />)}
         </ul>
       ) : (
-        <p className="posts-empty">{query ? `Nothing matches “${query}”.` : 'Nothing published yet.'}</p>
+        <p className="posts-empty">{query ? `Nothing matches “${query}” yet. Try another word?` : 'Nothing here yet.'}</p>
       )}
     </div>
   );

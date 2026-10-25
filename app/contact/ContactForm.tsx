@@ -67,14 +67,14 @@ export default function ContactForm() {
       {/* ── Header ─────────────────────────────────── */}
       <div className="mb-10">
         <p className="text-xs font-bold uppercase tracking-[0.15em] mb-4" style={{ color: 'var(--accent)' }}>
-          Get in touch
+          Say hi
         </p>
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <h1
             className="text-3xl sm:text-4xl font-extrabold text-foreground leading-[1.1]"
             style={{ letterSpacing: '-0.03em' }}
           >
-            Let&rsquo;s work together.
+            Let&rsquo;s talk about it.
           </h1>
           <span className="inline-flex items-center gap-2 text-xs font-semibold px-3 py-1.5 rounded-full border border-border text-muted-foreground whitespace-nowrap self-start sm:self-auto">
             <span className="w-1.5 h-1.5 rounded-full bg-accent inline-block" />
@@ -82,10 +82,10 @@ export default function ContactForm() {
           </span>
         </div>
         <p className="text-sm leading-relaxed text-muted-foreground mt-4 max-w-lg">
-          Book a free 30-minute discovery call below. No commitment, no pressure. Or scroll down to send a message instead.
+          Grab a free 30-minute call below. No pressure, it&rsquo;s just a chat. Or scroll down and send me a message instead.
         </p>
         <p className="text-sm leading-relaxed text-muted-foreground mt-2 max-w-lg">
-          Rather email? <a href="mailto:akindayopeaceakinwale@gmail.com" className="underline underline-offset-2 text-foreground">akindayopeaceakinwale@gmail.com</a>
+          Or just email me at <a href="mailto:akindayopeaceakinwale@gmail.com" className="underline underline-offset-2 text-foreground">akindayopeaceakinwale@gmail.com</a>
         </p>
       </div>
 
@@ -117,7 +117,7 @@ export default function ContactForm() {
       <div className="flex items-center gap-4 mb-12">
         <span className="flex-1 h-px bg-border" />
         <p className="text-xs font-bold uppercase tracking-[0.15em] text-muted-foreground whitespace-nowrap">
-          Prefer to write first?
+          Rather write first?
         </p>
         <span className="flex-1 h-px bg-border" />
       </div>
@@ -126,7 +126,7 @@ export default function ContactForm() {
       {status === 'sent' ? (
         <div className="flex flex-col gap-4 py-10">
           <p className="text-2xl font-extrabold text-foreground" style={{ letterSpacing: '-0.02em' }}>Message sent.</p>
-          <p className="text-sm text-muted-foreground leading-relaxed">Thanks for reaching out. I&rsquo;ll get back to you within one business day.</p>
+          <p className="text-sm text-muted-foreground leading-relaxed">Thanks for writing. I&rsquo;ll get back to you within a business day.</p>
           <button
             onClick={() => { setStatus('idle'); setForm({ name: '', email: '', company: '', projectType: '', stage: '', about: '', message: '', budget: '' }); }}
             className="text-xs font-bold uppercase tracking-[0.08em] underline underline-offset-2 mt-2 self-start"

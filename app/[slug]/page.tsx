@@ -355,7 +355,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
             <footer className="article-foot">
               {post.tags && post.tags.length > 0 && (
                 <>
-                  <h2>Tagged</h2>
+                  <h2>Filed under</h2>
                   <ul className="article-tags">
                     {post.tags.map((tag) => (
                       <li key={tag.id}>{local ? <span>{tag.name}</span> : <Link href={`/tag/${tag.slug}`}>{tag.name}</Link>}</li>
@@ -363,7 +363,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
                   </ul>
                 </>
               )}
-              <h2>Share</h2>
+              <h2>Know someone who’d like this?</h2>
               <ShareButtons url={post.url} title={post.title} />
               <ArticleEndCta />
             </footer>
@@ -373,7 +373,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
 
         {relatedPosts.length > 0 && (
           <section className="related" aria-labelledby="related-h">
-            <h2 id="related-h">Also on the blog</h2>
+            <h2 id="related-h">Read this next</h2>
             <ul className="posts">
               {relatedPosts.map((relatedPost) => (
                 <ArticleCard key={relatedPost.id} post={relatedPost} heading="h3" />

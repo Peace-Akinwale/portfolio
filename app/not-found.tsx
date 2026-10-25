@@ -7,11 +7,11 @@ export const metadata: Metadata = {
 };
 
 const PLACES = [
-  { href: '/portfolio', label: 'The work', note: 'What I built, wrote and decided, newest first, plus every writing sample by client' },
-  { href: '/case-studies', label: 'Case studies', note: 'The tools, one page each, and the ManyRequests engagement' },
-  { href: '/blog', label: 'Blog', note: 'Articles on writing for B2B SaaS and on building with AI coding agents' },
-  { href: '/services', label: 'Services and prices', note: 'What I write and build, and what it costs' },
-  { href: '/contact', label: 'Contact', note: 'Book a call or send a message' },
+  { href: '/portfolio', label: 'My work', note: 'Everything I’ve built and written lately, plus every writing sample by client' },
+  { href: '/case-studies', label: 'Things I built', note: 'One page per tool, with the whole story' },
+  { href: '/blog', label: 'The blog', note: 'Posts about writing for B2B SaaS and building with AI coding agents' },
+  { href: '/services', label: 'Hire me', note: 'What I write and build, and what it costs' },
+  { href: '/contact', label: 'Say hi', note: 'Book a call or send a message' },
 ];
 
 export default function NotFound() {
@@ -19,8 +19,8 @@ export default function NotFound() {
     <div className="gutter mx-auto max-w-[1180px] py-20">
       <div className="max-w-[60ch]">
         <p className="eyebrow mb-4">404</p>
-        <h1>This page doesn’t exist, or it moved.</h1>
-        <p className="serif mt-4 text-[1.15rem]">If you followed a link to an old article, it may have a new address. These are the pages most people are looking for.</p>
+        <h1>Hmm, there’s nothing here.</h1>
+        <p className="serif mt-4 text-[1.15rem]">Maybe the link is old, or I moved something. Here’s where most people are headed.</p>
         <ul className="mt-10 border-t border-border">
           {PLACES.map((place) => (
             <li key={place.href} className="border-b border-border">
