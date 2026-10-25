@@ -447,3 +447,19 @@ a {
     scroll-behavior: auto !important;
   }
 }
+
+/* The two-ground offer block, used on the homepage and the services page. */
+/* working with me */
+.offer { display: grid; grid-template-columns: 1fr 1fr; }
+.offer > div { padding: 52px var(--gutter) 60px; min-width: 0; }
+.offer h2 { font-size: clamp(1.8rem, 3vw, 2.6rem); font-weight: 520; margin: 0 0 12px; }
+.offer p { max-width: var(--measure); font-family: var(--font-serif); font-optical-sizing: auto; font-size: 1.1rem; line-height: 1.5; }
+.offer ul { margin: 0 0 18px; padding-left: 18px; font-family: var(--font-sans); font-size: 16px; }
+.offer li { margin-bottom: 6px; }
+.offer .note { font-family: var(--font-sans); font-size: 14.5px; color: var(--muted-foreground); }
+.offer .button { margin: 8px 12px 8px 0; }
+
+@media (max-width: 760px) {
+  .offer { grid-template-columns: 1fr; }
+  .offer > div { padding: 40px var(--gutter) 44px; }
+}

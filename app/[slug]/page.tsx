@@ -18,7 +18,6 @@ import { ImageLightbox } from '@/components/ImageLightbox';
 import { CodeBlockEnhancer } from '@/components/CodeBlockEnhancer';
 import { ArticleEndCta } from '@/components/ArticleEndCta';
 import { Comments } from '@/components/Comments';
-import { BlogPageBackground } from '@/components/BlogPageBackground';
 import { NEW_MANYREQUESTS_ARTICLES, withCurrentManyRequestsSamples } from '@/lib/portfolio/manyrequests';
 
 interface ArticlePageProps {

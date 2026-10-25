@@ -9,22 +9,28 @@ import { monthLabel, monthShort } from '@/lib/content/dates';
 // record is visible and the in-page anchors still work.
 type Filter = 'all' | 'built' | 'wrote';
 
+function applyFilter(filter: Filter): number {
+  const entries = Array.from(document.querySelectorAll<HTMLElement>('.entry'));
+  let shown = 0;
+  for (const e of entries) {
+    const kind = e.dataset.kind;
+    const visible = filter === 'all' || kind === filter || (filter === 'wrote' && kind === 'said') || (filter === 'built' && kind === 'decided');
+    e.hidden = !visible;
+    if (visible) shown++;
+  }
+  window.dispatchEvent(new Event('record:filtered'));
+  return shown;
+}
+
 export function RecordFilters() {
   const [filter, setFilter] = useState<Filter>('all');
   const [status, setStatus] = useState('');
 
-  useEffect(() => {
-    const entries = Array.from(document.querySelectorAll<HTMLElement>('.entry'));
-    let shown = 0;
-    for (const e of entries) {
-      const kind = e.dataset.kind;
-      const visible = filter === 'all' || kind === filter || (filter === 'wrote' && kind === 'said') || (filter === 'built' && kind === 'decided');
-      e.hidden = !visible;
-      if (visible) shown++;
-    }
+  function choose(next: Filter) {
+    const shown = applyFilter(next);
+    setFilter(next);
     setStatus(`${shown} ${shown === 1 ? 'entry' : 'entries'} shown`);
-    window.dispatchEvent(new Event('record:filtered'));
-  }, [filter]);
+  }
 
   const options: { key: Filter; label: string }[] = [
     { key: 'all', label: 'Everything' },
@@ -36,7 +42,7 @@ export function RecordFilters() {
     <>
       <div className="record-filters" role="group" aria-label="Show">
         {options.map((o) => (
-          <button key={o.key} type="button" aria-pressed={filter === o.key} onClick={() => setFilter(o.key)}>
+          <button key={o.key} type="button" aria-pressed={filter === o.key} onClick={() => choose(o.key)}>
             {o.label}
           </button>
         ))}

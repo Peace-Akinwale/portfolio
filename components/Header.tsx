@@ -14,10 +14,6 @@ export function Header() {
   const menuId = useId();
 
   useEffect(() => {
-    setOpen(false);
-  }, [pathname]);
-
-  useEffect(() => {
     if (!open) return;
     function onKey(event: KeyboardEvent) {
       if (event.key === 'Escape') setOpen(false);
