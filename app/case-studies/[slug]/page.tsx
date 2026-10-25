@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import '@/components/case-study/case-study.css';
 import { getCaseStudy, listCaseStudies } from '@/lib/content/case-studies';
+import { splitChapters } from '@/lib/content/markdown';
 import { dayLabel } from '@/lib/content/dates';
 import { SITE_URL } from '@/lib/site';
 
@@ -29,11 +30,17 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   };
 }
 
-function Href({ href, children }: { href: string; children: React.ReactNode }) {
-  if (href.startsWith('/')) return <Link href={href}>{children}</Link>;
-  return <a href={href} rel="noopener" target="_blank">{children}</a>;
+function Href({ href, children, className }: { href: string; children: React.ReactNode; className?: string }) {
+  if (href.startsWith('/')) return <Link href={href} className={className}>{children}</Link>;
+  return <a href={href} rel="noopener" target="_blank" className={className}>{children}</a>;
 }
 
+const two = (n: number) => String(n).padStart(2, '0');
+
+// A case study reads as a cover and a set of numbered chapters: the green
+// cover holds the name, the one-line point, the facts and a chapter index; the
+// summary follows in full; each section of the draft becomes a chapter with its
+// number in the margin. The prose is Peace's, unchanged.
 export default async function CaseStudyPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const cs = getCaseStudy(slug);
@@ -41,62 +48,80 @@ export default async function CaseStudyPage({ params }: { params: Promise<{ slug
   const all = listCaseStudies();
   const related = cs.related.map((r) => all.find((c) => c.slug === r)).filter((c): c is NonNullable<typeof c> => !!c);
   const next = related.length ? related : all.filter((c) => c.slug !== cs.slug).slice(0, 2);
+  const { intro, chapters } = splitChapters(cs.html);
 
   return (
-    <div className="gutter mx-auto max-w-[1180px]">
-      <p className="pt-6 text-[14px]">
-        <Link href="/portfolio" className="underline underline-offset-4 hover:text-accent">The record</Link>
-        <span className="text-muted-foreground"> / </span>
-        <Link href="/case-studies" className="underline underline-offset-4 hover:text-accent">Case studies</Link>
-      </p>
-      <header className="cs-head">
-        <div>
-          <p className="eyebrow"><b>{cs.kind === 'built' ? 'Built' : 'Wrote'}</b> {[cs.for, cs.status].filter(Boolean).join(', ')}</p>
-          <h1>{cs.title}</h1>
-          <p className="summary">{cs.summary}</p>
+    <>
+      <header className="cs-cover">
+        <div className="gutter mx-auto max-w-[1180px]">
+          <p className="cs-crumbs">
+            <Link href="/portfolio">The record</Link>
+            <span aria-hidden="true"> / </span>
+            <Link href="/case-studies">Case studies</Link>
+          </p>
+          <p className="cs-kicker">{cs.kind === 'built' ? 'Built' : 'Wrote'} · {cs.status}</p>
+          <h1>{cs.name}</h1>
+          <p className="cs-point">{cs.blurb}</p>
+          <dl className="cs-strip">
+            <div><dt>When</dt><dd><time dateTime={cs.date}>{dayLabel(cs.date)}</time></dd></div>
+            <div><dt>Where it stands</dt><dd>{cs.status}</dd></div>
+            <div><dt>Reading</dt><dd>{cs.readingMinutes} min</dd></div>
+          </dl>
+          {cs.links.length > 0 && (
+            <p className="cs-links">
+              {cs.links.map((l) => <Href key={l.href} href={l.href} className="button cs-button">{l.label}</Href>)}
+            </p>
+          )}
+          {chapters.length > 1 && (
+            <nav className="cs-index-nav" aria-label="In this case study">
+              <p>In this case study</p>
+              <ol>
+                {chapters.map((c, i) => (
+                  <li key={c.id}><a href={`#${c.id}`}><span>{two(i + 1)}</span>{c.title}</a></li>
+                ))}
+              </ol>
+            </nav>
+          )}
         </div>
-        <dl className="cs-facts">
-          <div><dt>When</dt><dd><time dateTime={cs.date}>{dayLabel(cs.date)}</time></dd></div>
-          {cs.for && <div><dt>For</dt><dd>{cs.for}</dd></div>}
-          <div><dt>Where it stands</dt><dd>{cs.status}</dd></div>
-          {cs.links.map((l) => (
-            <div key={l.href}><dt>Link</dt><dd><Href href={l.href}>{l.label}</Href></dd></div>
-          ))}
-          <div><dt>Reading time</dt><dd>{cs.readingMinutes} min</dd></div>
-        </dl>
       </header>
 
-      <div className="cs-body">
-        <article className="prose" dangerouslySetInnerHTML={{ __html: cs.html }} />
-        <aside className="cs-aside" aria-label="Also">
-          {cs.tags.length > 0 && (
-            <>
-              <h2>About</h2>
-              <ul>{cs.tags.map((t) => <li key={t}>{t}</li>)}</ul>
-            </>
-          )}
-          <h2>Elsewhere on the site</h2>
-          <ul>
-            <li><Link href="/portfolio">The whole record</Link></li>
-            <li><Link href="/projects">Every tool, including the older ones</Link></li>
-            <li><Link href="/contact">Tell me about a task your team keeps doing by hand</Link></li>
-          </ul>
-        </aside>
-      </div>
+      <div className="gutter mx-auto max-w-[1180px]">
+        <section className="cs-short" aria-label="In short">
+          <p className="cs-short-label">In short</p>
+          <p className="cs-short-text">{cs.summary}</p>
+          {cs.title !== cs.name && <p className="cs-short-title">{cs.title}</p>}
+        </section>
 
-      <section className="cs-next" aria-labelledby="next-h">
-        <h2 id="next-h">Related</h2>
-        <ul>
-          {next.map((c) => (
-            <li key={c.slug}>
-              <Link href={`/case-studies/${c.slug}`}>
-                <b>{c.name}</b>
-                <span>{c.blurb}</span>
-              </Link>
-            </li>
-          ))}
-        </ul>
-      </section>
-    </div>
+        {intro && <div className="cs-chapter"><div /><div className="prose" dangerouslySetInnerHTML={{ __html: intro }} /></div>}
+
+        {chapters.map((c, i) => (
+          <section key={c.id} id={c.id} className="cs-chapter" aria-labelledby={`${c.id}-h`}>
+            <p className="cs-num" aria-hidden="true">{two(i + 1)}</p>
+            <div>
+              <h2 id={`${c.id}-h`}>{c.title}</h2>
+              <div className="prose" dangerouslySetInnerHTML={{ __html: c.html }} />
+            </div>
+          </section>
+        ))}
+
+        <section className="cs-next" aria-labelledby="next-h">
+          <h2 id="next-h">Related work</h2>
+          <ul>
+            {next.map((c) => (
+              <li key={c.slug}>
+                <Link href={`/case-studies/${c.slug}`}>
+                  <b>{c.name}</b>
+                  <span>{c.blurb}</span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+          <p className="go mt-6">
+            <Link href="/portfolio">The whole record</Link>
+            <Link href="/contact">Tell me about a task your team keeps doing by hand</Link>
+          </p>
+        </section>
+      </div>
+    </>
   );
 }

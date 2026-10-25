@@ -43,3 +43,30 @@ export function imageRefs(md: string): string[] {
   while ((m = re.exec(md))) out.push(m[1]);
   return out;
 }
+
+const ENTITIES: Record<string, string> = { amp: '&', lt: '<', gt: '>', quot: '"', '#39': "'", apos: "'", nbsp: ' ' };
+function decodeEntities(s: string): string {
+  return s.replace(/&(#\d+|#x[0-9a-f]+|[a-z]+);/gi, (m, e: string) => {
+    if (ENTITIES[e]) return ENTITIES[e];
+    if (e[0] === '#') return String.fromCodePoint(e[1] === 'x' || e[1] === 'X' ? parseInt(e.slice(2), 16) : parseInt(e.slice(1), 10));
+    return m;
+  });
+}
+
+// Splits rendered HTML into chapters at each <h3>, so a page can lay sections
+// out as numbered chapters. Content before the first <h3> is the intro.
+export interface Chapter { id: string; title: string; html: string }
+export function splitChapters(html: string): { intro: string; chapters: Chapter[] } {
+  const parts = html.split(/<h3[^>]*>([\s\S]*?)<\/h3>/);
+  const intro = parts[0].trim();
+  const chapters: Chapter[] = [];
+  const used = new Set<string>();
+  for (let i = 1; i < parts.length; i += 2) {
+    const title = decodeEntities(parts[i].replace(/<[^>]+>/g, '').trim());
+    let id = title.toLowerCase().replace(/&[a-z#0-9]+;/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 60) || `part-${(i + 1) / 2}`;
+    while (used.has(id)) id += '-2';
+    used.add(id);
+    chapters.push({ id, title, html: (parts[i + 1] ?? '').trim() });
+  }
+  return { intro, chapters };
+}

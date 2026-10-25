@@ -26,4 +26,13 @@ describe('the dated record', () => {
     expect(m.length).toBeGreaterThan(0);
     expect(m[0]).toBe(entries[0].month);
   });
+
+  it('carries the passages that moved off the homepage, word for word', async () => {
+    const { CONTENTDB, READING_APP, GARDE } = await import('@/lib/content/home-copy');
+    const byId = new Map(entries.map((e) => [e.id, e]));
+    expect(byId.get('contentdb')?.body).toEqual([CONTENTDB.p1]);
+    expect(byId.get('reading-app')?.body).toEqual([READING_APP.p1]);
+    expect(byId.get('reading-app')?.links.map((l) => l.href)).toContain('/the-success-message-was-the-bug');
+    expect(byId.get('garde')?.body.join(' ')).toContain(GARDE.p1);
+  });
 });

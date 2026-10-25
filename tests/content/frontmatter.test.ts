@@ -43,3 +43,14 @@ describe('merging local articles with WordPress posts', () => {
     expect(merged.filter((p) => p.slug === 'the-success-message-was-the-bug')).toHaveLength(1);
   });
 });
+
+import { splitChapters } from '@/lib/content/markdown';
+describe('chapters', () => {
+  it('splits at each h3, keeps the intro, and gives each chapter a unique id', () => {
+    const { intro, chapters } = splitChapters('<p>Intro</p><h3>Before &amp; after</h3><p>A</p><h3>Before &amp; after</h3><p>B</p>');
+    expect(intro).toBe('<p>Intro</p>');
+    expect(chapters.map((c) => c.id)).toEqual(['before-after', 'before-after-2']);
+    expect(chapters[1].html).toBe('<p>B</p>');
+    expect(splitChapters("<h3>The founder&#39;s notes</h3><p>x</p>").chapters[0].title).toBe("The founder's notes");
+  });
+});

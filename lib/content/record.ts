@@ -1,6 +1,16 @@
 import { listCaseStudies } from './case-studies';
 import { listLocalArticles } from './articles';
 import { STATIC_ENTRIES } from './record-static';
+import { CONTENTDB, READING_APP } from './home-copy';
+
+// Entries whose homepage passage moved here (26 Oct 2026): Peace's approved wording replaces the index blurb.
+const APPROVED_BODY: Record<string, string[]> = {
+  contentdb: [CONTENTDB.p1],
+  'reading-app': [READING_APP.p1],
+};
+const EXTRA_LINKS: Record<string, { label: string; href: string }[]> = {
+  'reading-app': [{ label: 'Five lessons from building it', href: READING_APP.article }],
+};
 
 // The dated record on /portfolio: everything Peace built, wrote and decided,
 // newest first, in one list. Built entries come from the case studies, article
@@ -46,9 +56,9 @@ export function buildRecord(): RecordEntry[] {
     title: cs.name,
     href: `/case-studies/${cs.slug}`,
     context: cs.status,
-    body: [cs.blurb],
+    body: APPROVED_BODY[cs.slug] ?? [cs.blurb],
     figure: cs.cover ? { src: cs.cover.src, width: 1600, height: 1000, alt: cs.cover.alt } : undefined,
-    links: [{ label: 'Read the case study', href: `/case-studies/${cs.slug}` }, ...cs.links.slice(0, 1)],
+    links: [{ label: 'Read the case study', href: `/case-studies/${cs.slug}` }, ...(EXTRA_LINKS[cs.slug] ?? cs.links.slice(0, 1))],
   }));
 
   const fromArticles: RecordEntry[] = listLocalArticles().map((a) => ({

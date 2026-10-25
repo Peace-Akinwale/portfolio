@@ -6,13 +6,13 @@ import '@/components/home/home.css';
 import { QuestionNav } from '@/components/home/QuestionNav';
 import { CALENDLY_URL, EMAIL, SITE_URL } from '@/lib/site';
 import {
-  HERO, QUESTIONS, DOCS_WATCH, CONTENTDB, MANYREQUESTS, AEO, FANOUT, GARDE, EDITOR, ALOUD, READING_APP, HOW_I_WORK, OFFER,
+  HERO, QUESTIONS, ANSWERS, DOCS_WATCH, MANYREQUESTS, AEO, FANOUT, EDITOR, ALOUD, HOW_I_WORK, OFFER,
 } from '@/lib/content/home-copy';
 
 export const metadata: Metadata = withOg({
   title: 'Peace Akinwale. Articles for B2B SaaS companies and agencies, and AI tools for content teams',
   description:
-    'I build AI products and I write. Most of the work is deciding what’s worth making and checking that it’s true. Three questions, answered with the writing and the tools.',
+    'I build AI products and I write. Most of what I do is deciding what’s worth making and checking that it’s true. Three questions, answered with the writing and the tools.',
   alternates: { canonical: SITE_URL },
 }, { key: 'home', path: '/', alt: 'Good work starts with good questions. Peace Akinwale' });
 
@@ -55,6 +55,7 @@ export default function HomePage() {
       <section className="split" id="q1" aria-labelledby="q1h">
         <div className="split-paper ground-paper">
           <h2 id="q1h">Is this true?</h2>
+          <p className="answer">{ANSWERS.Q1}</p>
           <p className="eyebrow"><b>Writing</b> For ManyRequests, 5 Jan 2026</p>
           <h3><Ext href={MANYREQUESTS.url}>{MANYREQUESTS.title}</Ext></h3>
           <div className="body"><p>{MANYREQUESTS.body}</p></div>
@@ -62,8 +63,6 @@ export default function HomePage() {
             <Image src="/images/home/serp-design-annotation.png" width={1299} height={872} loading="lazy" sizes="(max-width: 760px) 100vw, 50vw" alt="Google results for 'design annotation tools' in April 2026, with the ManyRequests article in third place" />
             <figcaption>{MANYREQUESTS.caption}</figcaption>
           </figure>
-          <blockquote className="pull">“{MANYREQUESTS.quote}”</blockquote>
-          <p className="pull-by">{MANYREQUESTS.quoteBy}</p>
           <p className="go">
             <Ext href={MANYREQUESTS.url}>Read the article on ManyRequests</Ext>
             <Link href={MANYREQUESTS.caseStudy}>How the ManyRequests work went</Link>
@@ -85,16 +84,6 @@ export default function HomePage() {
             <Ext href={DOCS_WATCH.site}>Open AI Docs Watch</Ext>
             <Link href={DOCS_WATCH.caseStudy}>How it was built</Link>
           </p>
-          <div className="then">
-            <p className="eyebrow"><b>Building</b> ContentDB, my own app</p>
-            <h3><Link href={CONTENTDB.caseStudy}>Keep the surrounding conversation beside the quote.</Link></h3>
-            <div className="body"><p>{CONTENTDB.p1}</p></div>
-            <figure className="shot">
-              <Image src="/images/home/search-results.png" width={953} height={896} loading="lazy" sizes="(max-width: 760px) 100vw, 40vw" alt="ContentDB search for 'productize' showing a highlighted quote from a YouTube transcript with the sentences before and after it" />
-              <figcaption>{CONTENTDB.caption}</figcaption>
-            </figure>
-            <p className="go"><Link href={CONTENTDB.caseStudy}>The ContentDB case study</Link></p>
-          </div>
         </div>
       </section>
 
@@ -102,6 +91,7 @@ export default function HomePage() {
       <section className="split" id="q2" aria-labelledby="q2h">
         <div className="split-paper ground-paper">
           <h2 id="q2h">What’s worth making?</h2>
+          <p className="answer">{ANSWERS.Q2}</p>
           <p className="eyebrow"><b>Writing</b> On my blog, 14 Apr 2026</p>
           <h3><Link href={AEO.href}>{AEO.heading}</Link></h3>
           <div className="body">
@@ -119,15 +109,6 @@ export default function HomePage() {
             <p>{FANOUT.p2}</p>
           </div>
           <p className="go"><Link href={FANOUT.caseStudy}>How the fanout query analysis tool came about</Link></p>
-          <div className="then">
-            <p className="eyebrow"><b>Building</b> Garde, my first app, 30 Mar 2026</p>
-            <h3><Link href={GARDE.essay}>And sometimes the answer is to stop.</Link></h3>
-            <div className="body">
-              <p>{GARDE.lead}</p>
-              <p>{GARDE.p1}</p>
-            </div>
-            <p className="go"><Link href={GARDE.essay}>Read the essay</Link></p>
-          </div>
         </div>
       </section>
 
@@ -135,6 +116,7 @@ export default function HomePage() {
       <section className="split" id="q3" aria-labelledby="q3h">
         <div className="split-paper ground-paper">
           <h2 id="q3h">What does done mean?</h2>
+          <p className="answer">{ANSWERS.Q3}</p>
           <p className="eyebrow"><b>Writing</b> Ghostwritten for Jabra, 29 May 2025</p>
           <h3>What an editor wrote on the first draft.</h3>
           <div className="body"><p>{EDITOR.intro}</p></div>
@@ -142,9 +124,6 @@ export default function HomePage() {
             <Image src="/images/home/editor-comment-jabra.png" width={335} height={469} loading="lazy" sizes="330px" alt={EDITOR.alt} />
             <figcaption>{EDITOR.caption}</figcaption>
           </figure>
-          <blockquote className="pull">“{EDITOR.nathan}”</blockquote>
-          <p className="pull-by">{EDITOR.nathanBy}</p>
-          <div className="body"><p>{EDITOR.done}</p></div>
           <p className="go"><Link href="/testimonials">What other clients said</Link></p>
         </div>
         <div className="split-night ground-night">
@@ -165,12 +144,6 @@ export default function HomePage() {
             <Link href={ALOUD.caseStudy}>The Aloud case study</Link>
             <Ext href={ALOUD.log}>Read the Aloud log</Ext>
           </p>
-          <div className="then">
-            <p className="eyebrow"><b>Building</b> A reading app for a content team</p>
-            <h3><Link href={READING_APP.article}>The success message was the bug.</Link></h3>
-            <div className="body"><p>{READING_APP.p1}</p></div>
-            <p className="go"><Link href={READING_APP.article}>Five lessons from building it</Link></p>
-          </div>
         </div>
       </section>
 

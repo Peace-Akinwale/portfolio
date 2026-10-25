@@ -14,6 +14,13 @@ export const QUESTIONS = [
   { id: 'q3', label: 'What does done mean?' },
 ] as const;
 
+// Draft one-line answers under each question, for Peace to approve (26 Oct 2026).
+export const ANSWERS = {
+  Q1: 'I check a claim against its source before anyone relies on it: an article against its research, a tool’s summary against the page it describes.',
+  Q2: 'Before I write or build, I look at what already exists and make the part that’s missing.',
+  Q3: 'Done is when the person it’s for can use it without me: an editor with nothing to fix, an app that finishes the job and says what happened.',
+};
+
 export const DOCS_WATCH = {
   // brief
   p1: 'AI Docs Watch checks API documentation for product changes across AI platforms such as OpenAI and Anthropic. It keeps the before-and-after versions so readers can see exactly what changed.',
