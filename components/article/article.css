@@ -1,0 +1,47 @@
+/* Reading pages (blog posts and local articles) and the blog index. */
+
+.article { max-width: 1100px; margin: 0 auto; }
+.article-head { padding: 48px 0 28px; border-bottom: 1px solid var(--border); max-width: 60ch; }
+.article-head .kicker { font-size: 14px; color: var(--muted-foreground); margin: 0 0 14px; }
+.article-head .kicker a { text-decoration: none; }
+.article-head .kicker a:hover { text-decoration: underline; color: var(--accent); }
+.article-head h1 { font-size: clamp(2rem, 4.4vw, 3.5rem); font-weight: 520; margin: 0 0 16px; }
+.article-head .standfirst { font-family: var(--font-serif); font-optical-sizing: auto; font-size: clamp(1.15rem, 1.5vw, 1.3rem); line-height: 1.45; margin: 0 0 18px; }
+.article-head .meta { font-size: 14.5px; color: var(--muted-foreground); display: flex; flex-wrap: wrap; gap: 6px 14px; margin: 0; }
+.article-cover { margin: 28px 0 0; }
+.article-cover img { border: 1px solid var(--border); border-radius: 2px; }
+.article-layout { display: grid; grid-template-columns: minmax(0, 66ch) minmax(0, 1fr); gap: 40px 64px; padding: 32px 0 48px; }
+.article-layout .prose { max-width: 66ch; }
+.article-layout .prose > p:first-of-type { font-size: 1.2rem; }
+.article-layout .prose ol { padding-left: 1.4rem; }
+.article-foot { max-width: 66ch; border-top: 1px solid var(--border); padding: 28px 0 0; }
+.article-foot h2 { font-family: var(--font-sans); font-size: 12.5px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; color: var(--muted-foreground); margin: 0 0 10px; }
+.article-tags { display: flex; flex-wrap: wrap; gap: 8px; list-style: none; margin: 0 0 24px; padding: 0; }
+.article-tags a, .article-tags span { display: inline-block; font-size: 14px; padding: 4px 10px; border: 1px solid var(--border); border-radius: 999px; text-decoration: none; }
+.article-tags a:hover { border-color: var(--foreground); }
+.article-cta { border: 1px solid var(--border); padding: 24px 28px; margin: 32px 0 0; max-width: 66ch; }
+.article-cta p { margin: 0 0 10px; font-family: var(--font-serif); font-optical-sizing: auto; font-size: 1.05rem; }
+.article-cta .button { margin: 10px 12px 0 0; }
+.review-note { background: var(--muted); border: 1px dashed var(--accent); padding: 12px 16px; font-size: 14.5px; margin: 0 0 24px; max-width: 66ch; }
+.related { border-top: 1px solid var(--border); padding: 36px 0 48px; }
+.related h2 { font-size: 1.5rem; font-weight: 520; margin: 0 0 8px; }
+
+/* index */
+.posts-head { padding: 48px 0 24px; }
+.posts-head h1 { font-size: clamp(2rem, 4.2vw, 3.4rem); font-weight: 520; max-width: 16ch; margin: 0 0 14px; }
+.posts-head .lead { font-family: var(--font-serif); font-optical-sizing: auto; font-size: 1.2rem; max-width: var(--measure); margin: 0 0 24px; }
+.posts { list-style: none; margin: 0; padding: 0; }
+.post-row { display: grid; grid-template-columns: 150px minmax(0, 1fr); gap: 8px 40px; border-top: 1px solid var(--border); padding: 24px 0 28px; }
+.post-row .when { font-size: 14.5px; color: var(--muted-foreground); font-variant-numeric: tabular-nums; }
+.post-row .when small { display: block; margin-top: 4px; }
+.post-row h2, .post-row h3 { font-size: clamp(1.4rem, 2.4vw, 1.9rem); font-weight: 520; margin: 0 0 8px; max-width: 26ch; }
+.post-row h2 a, .post-row h3 a { text-decoration: none; }
+.post-row h2 a:hover, .post-row h3 a:hover { text-decoration: underline; text-decoration-thickness: 2px; }
+.post-row p { font-family: var(--font-serif); font-optical-sizing: auto; font-size: 1.05rem; line-height: 1.5; margin: 0 0 8px; max-width: 60ch; }
+.post-row .tagline { font-size: 13.5px; color: var(--muted-foreground); margin: 0; font-family: var(--font-sans); }
+.posts-empty { padding: 32px 0; color: var(--muted-foreground); }
+
+@media (max-width: 760px) {
+  .article-layout { grid-template-columns: 1fr; }
+  .post-row { grid-template-columns: 1fr; gap: 4px; }
+}

@@ -1,9 +1,9 @@
-import { getPosts } from '@/lib/hashnode/client';
+import { loadAllPosts } from '@/lib/content/posts';
 
 export const revalidate = 3600;
 
 export async function GET() {
-  const { posts } = await getPosts(50);
+  const { posts } = await loadAllPosts();
   const baseUrl = 'https://peaceakinwale.com';
 
   const items = posts
@@ -28,7 +28,7 @@ export async function GET() {
   <channel>
     <title>Peace Akinwale</title>
     <link>${baseUrl}</link>
-    <description>B2B SaaS content writing insights — articles on product-led content, content refreshes, SEO, and AI search.</description>
+    <description>Articles by Peace Akinwale on writing for B2B SaaS companies, AI search, and building tools with AI coding agents.</description>
     <language>en-us</language>
     <atom:link href="${baseUrl}/rss.xml" rel="self" type="application/rss+xml"/>
 ${items}

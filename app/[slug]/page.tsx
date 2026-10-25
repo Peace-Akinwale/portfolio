@@ -1,4 +1,7 @@
-import { getPostBySlug, getAllPostSlugs, getStaticPage, getAllStaticPageSlugs, getPosts } from '@/lib/hashnode/client';
+import { getAllPostSlugs, getStaticPage, getAllStaticPageSlugs } from '@/lib/hashnode/client';
+import '@/components/article/article.css';
+import { loadPost, loadAllPosts, isLocalArticle, relatedTo } from '@/lib/content/posts';
+import { listLocalArticles } from '@/lib/content/articles';
 import { formatDate, formatReadingTime } from '@/lib/hashnode/utils';
 import { parsePortfolioHtml } from '@/lib/hashnode/parsePortfolio';
 import { notFound } from 'next/navigation';
@@ -22,7 +25,6 @@ interface ArticlePageProps {
   params: Promise<{ slug: string }>;
 }
 
-const HIDDEN_FROM_RELATED = new Set(['content-manager-roles']);
 
 function getAssetName(url: string): string {
   try {
@@ -86,17 +88,18 @@ export const revalidate = 3600;
 
 // Generate static paths for all articles and static pages
 export async function generateStaticParams() {
+  const localSlugs = listLocalArticles().map((a) => a.slug);
   const postSlugs = await getAllPostSlugs();
   const staticPageSlugs = await getAllStaticPageSlugs();
-  return [...postSlugs, ...staticPageSlugs].map((slug) => ({ slug }));
+  return [...new Set([...localSlugs, ...postSlugs, ...staticPageSlugs])].map((slug) => ({ slug }));
 }
 
 // Generate metadata for SEO
 export async function generateMetadata({ params }: ArticlePageProps): Promise<Metadata> {
   const { slug } = await params;
 
-  // Try fetching as a blog post first
-  let post = await getPostBySlug(slug);
+  // A local article first, then a WordPress post
+  const post = await loadPost(slug);
 
   if (post) {
     return {
@@ -143,8 +146,8 @@ export async function generateMetadata({ params }: ArticlePageProps): Promise<Me
 export default async function ArticlePage({ params }: ArticlePageProps) {
   const { slug } = await params;
 
-  // Try fetching as a blog post first
-  let post = await getPostBySlug(slug);
+  // A local article first, then a WordPress post
+  const post = await loadPost(slug);
   let isStaticPage = false;
   let staticPage = null;
 
@@ -304,156 +307,80 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
     );
   }
 
-  // Render blog post
+  // Render the article (a local one or a WordPress post)
   if (!post) {
     notFound();
   }
 
-  // Get related posts, preferring tag overlap and falling back to the latest posts.
-  // The 2025 job-hunting post stays readable at its URL but is not promoted next to client-facing articles.
-  const { posts: allPosts } = await getPosts(20);
-  const postTagSlugs = new Set(post.tags?.map((tag) => tag.slug.toLowerCase()) ?? []);
-  const renderedPostHtml = stripLeadingDuplicateCoverImage(post.content.html, post.coverImage?.url);
-  const relatedPosts = allPosts
-    .filter((candidate) => candidate.id !== post.id && !HIDDEN_FROM_RELATED.has(candidate.slug))
-    .map((candidate) => {
-      const overlap =
-        candidate.tags?.filter((tag) => postTagSlugs.has(tag.slug.toLowerCase())).length ?? 0;
-
-      return {
-        candidate,
-        overlap,
-        recency: new Date(candidate.publishedAt).getTime(),
-      };
-    })
-    .sort((left, right) => {
-      if (right.overlap !== left.overlap) {
-        return right.overlap - left.overlap;
-      }
-
-      return right.recency - left.recency;
-    })
-    .slice(0, 3)
-    .map((entry) => entry.candidate);
+  const { posts: allPosts } = await loadAllPosts();
+  const relatedPosts = relatedTo(post, allPosts);
+  const local = isLocalArticle(post);
+  const renderedPostHtml = local ? post.content.html : stripLeadingDuplicateCoverImage(post.content.html, post.coverImage?.url);
+  const showReview = local && post.review && process.env.NODE_ENV !== 'production';
 
   return (
     <div className="reading-light">
-      <BlogPageBackground />
       <ReadingProgress />
       <TableOfContents />
       <ImageLightbox />
       <CodeBlockEnhancer />
 
-      <article className="max-w-4xl mx-auto px-6 py-16">
-        {/* Article Header */}
-        <header className="mb-12">
-        {/* Tags */}
-        {post.tags && post.tags.length > 0 && (
-          <div className="mb-4">
-            <span className="text-sm uppercase tracking-wider text-muted-foreground">
-              {post.tags[0].name}
-            </span>
+      <article className="article gutter">
+        <header className="article-head">
+          <p className="kicker">
+            <Link href="/blog">Blog</Link>
+            {post.tags && post.tags.length > 0 && <> · {post.tags[0].name}</>}
+          </p>
+          <h1>{post.title}</h1>
+          {post.brief && <p className="standfirst">{post.brief}</p>}
+          <p className="meta">
+            <span>By {post.author.name}</span>
+            <time dateTime={post.publishedAt}>{formatDate(post.publishedAt, 'd MMMM yyyy')}</time>
+            <span>{formatReadingTime(post.readTimeInMinutes)}</span>
+          </p>
+          {post.coverImage?.url && (
+            <figure className="article-cover">
+              <Image src={post.coverImage.url} alt="" width={1200} height={675} sizes="(max-width: 960px) 100vw, 896px" priority />
+            </figure>
+          )}
+        </header>
+
+        <div className="article-layout">
+          <div>
+            {showReview && <p className="review-note"><b>Review note (not shown in production):</b> {post.review}</p>}
+            <div className="prose" dangerouslySetInnerHTML={{ __html: renderedPostHtml }} />
+
+            <footer className="article-foot">
+              {post.tags && post.tags.length > 0 && (
+                <>
+                  <h2>Tagged</h2>
+                  <ul className="article-tags">
+                    {post.tags.map((tag) => (
+                      <li key={tag.id}>{local ? <span>{tag.name}</span> : <Link href={`/tag/${tag.slug}`}>{tag.name}</Link>}</li>
+                    ))}
+                  </ul>
+                </>
+              )}
+              <h2>Share</h2>
+              <ShareButtons url={post.url} title={post.title} />
+              <ArticleEndCta />
+            </footer>
           </div>
-        )}
-
-        {/* Title */}
-        <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
-          {post.title}
-        </h1>
-
-        {/* Author & Meta */}
-        <div className="flex flex-wrap items-center gap-4 text-muted-foreground mb-8">
-          <Link
-            href="/blog"
-            className="text-sm font-medium hover:text-accent transition-colors"
-          >
-            By {post.author.name}
-          </Link>
-          <span>•</span>
-          <time dateTime={post.publishedAt} className="text-sm">
-            {formatDate(post.publishedAt, 'MMMM dd, yyyy')}
-          </time>
-          <span>•</span>
-          <span className="text-sm font-medium px-3 py-1 bg-muted rounded-sm">
-            {formatReadingTime(post.readTimeInMinutes)}
-          </span>
+          <div aria-hidden="true" />
         </div>
 
-        {/* Cover Image */}
-        {post.coverImage?.url && (
-          <div className="relative aspect-[16/9] overflow-hidden bg-muted mb-12">
-            <Image
-              src={post.coverImage.url}
-              alt={post.title}
-              fill
-              sizes="(max-width: 960px) 100vw, 896px"
-              className="object-cover"
-              priority
-            />
-          </div>
-        )}
-      </header>
-
-      {/* Article Content */}
-      <div
-        className="prose prose-lg max-w-none"
-        dangerouslySetInnerHTML={{ __html: renderedPostHtml }}
-      />
-
-      {/* Article Footer */}
-      <footer className="mt-16 pt-8 border-t border-border">
-        {/* Tags */}
-        {post.tags && post.tags.length > 0 && (
-          <div className="mb-8">
-            <h3 className="text-sm uppercase tracking-wider text-muted-foreground mb-3">
-              Tags
-            </h3>
-            <div className="flex flex-wrap gap-2">
-              {post.tags.map((tag) => (
-                <span
-                  key={tag.id}
-                  className="px-3 py-1 bg-muted text-sm hover:bg-accent hover:text-accent-foreground transition-colors"
-                >
-                  {tag.name}
-                </span>
+        {relatedPosts.length > 0 && (
+          <section className="related" aria-labelledby="related-h">
+            <h2 id="related-h">Also on the blog</h2>
+            <ul className="posts">
+              {relatedPosts.map((relatedPost) => (
+                <ArticleCard key={relatedPost.id} post={relatedPost} heading="h3" />
               ))}
-            </div>
-          </div>
+            </ul>
+          </section>
         )}
 
-        {/* Share */}
-        <div className="mb-8">
-          <h3 className="text-sm uppercase tracking-wider text-muted-foreground mb-3">
-            Share
-          </h3>
-          <ShareButtons url={post.url} title={post.title} />
-        </div>
-
-        <ArticleEndCta />
-      </footer>
-
-      {/* Related Articles */}
-      {relatedPosts.length > 0 && (
-        <section className="mt-24 pt-12 border-t border-border">
-          <h2 className="text-3xl font-bold mb-8">Related Articles</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {relatedPosts.map((relatedPost) => (
-              <ArticleCard key={relatedPost.id} post={relatedPost} />
-            ))}
-          </div>
-        </section>
-      )}
-
-      {/* Back to Blog */}
-      <div className="mt-16 text-center">
-        <Link
-          href="/blog"
-          className="inline-block text-sm uppercase tracking-wide border-b-2 border-foreground hover:border-muted-foreground hover:text-muted-foreground transition-colors"
-        >
-          ← Back to Blog
-        </Link>
-      </div>
-      <Comments postSlug={post.slug} postTitle={post.title} />
+        <Comments postSlug={post.slug} postTitle={post.title} />
       </article>
     </div>
   );
