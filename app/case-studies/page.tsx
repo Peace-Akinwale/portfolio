@@ -1,122 +1,80 @@
 import Link from 'next/link';
 import type { Metadata } from 'next';
+import '@/components/case-study/case-study.css';
+import { listCaseStudies } from '@/lib/content/case-studies';
+import { dayLabel } from '@/lib/content/dates';
 import { MANYREQUESTS_ARTICLE_COUNT, MANYREQUESTS_SINCE } from '@/lib/portfolio/manyrequests';
-import { getFaviconUrl } from '@/lib/ogImage';
+import { SITE_URL } from '@/lib/site';
 
 export const metadata: Metadata = {
-  title: 'Case Studies | Peace Akinwale',
+  title: 'Case studies',
   description:
-    'Deep-dives into B2B SaaS content engagements — what I was hired to do, how I approached it, and what the work produced.',
-  alternates: {
-    canonical: 'https://peaceakinwale.com/case-studies',
-  },
+    'What I was asked to build or write, the decisions that mattered, and what someone can do with the result. Tools for content teams, and one long writing engagement.',
+  alternates: { canonical: `${SITE_URL}/case-studies` },
 };
 
-const CASE_STUDIES = [
-  {
-    client: 'ManyRequests',
-    domain: 'manyrequests.com',
-    category: 'B2B SaaS · Client portal software',
-    headline: `${MANYREQUESTS_ARTICLE_COUNT} product-led articles, including page-1 rankings against Workfront and the design crowd`,
-    summary:
-      `ManyRequests hired me to write articles where the product shows up inside the piece — in the comparisons, in the how-to steps, in the screenshots, in real customer stories. Since ${MANYREQUESTS_SINCE} I have written ${MANYREQUESTS_ARTICLE_COUNT} of them.`,
-    stats: [
-      { value: String(MANYREQUESTS_ARTICLE_COUNT), label: 'Articles credited on manyrequests.com' },
-      { value: '#6', label: 'Google for "Workfront alternatives"' },
-      { value: MANYREQUESTS_SINCE, label: 'Retainer running since' },
-    ],
-    href: '/case-studies/manyrequests',
-  },
-];
-
 export default function CaseStudiesPage() {
+  const studies = listCaseStudies();
+  const built = studies.filter((s) => s.kind === 'built');
+  const wrote = studies.filter((s) => s.kind === 'wrote');
+
   return (
-    <>
-      {/* ── Hero ───────────────────────────────────────── */}
-      <section className="bg-background border-b border-border">
-        <div className="max-w-7xl mx-auto px-6 pt-16 sm:pt-24 pb-16">
-          <div className="max-w-3xl">
-            <p
-              className="text-xs font-bold uppercase tracking-[0.15em] mb-5"
-              style={{ color: 'var(--accent)' }}
-            >
-              Case Studies
-            </p>
-            <h1
-              className="text-3xl sm:text-4xl md:text-5xl font-extrabold leading-[1.1] mb-6 text-foreground"
-              style={{ letterSpacing: '-0.03em' }}
-            >
-              Client work, broken down
-            </h1>
-            <p className="text-base sm:text-lg leading-relaxed text-muted-foreground max-w-2xl">
-              What I was hired to do, how I approached it, and what the work produced. Numbers where I have them.
-            </p>
-          </div>
-        </div>
+    <div className="gutter mx-auto max-w-[1180px]">
+      <header className="cs-index">
+        <h1>Case studies: the problem, the decisions, what you can do with the result.</h1>
+        <p className="lead">Each one is written from the project’s own record. Where a tool is private, the screens are anonymised; where it isn’t finished, the page says so.</p>
+      </header>
+
+      <section className="cs-group" aria-labelledby="built-h">
+        <h2 id="built-h">Tools I built</h2>
+        <p>Most of them for an AI-search agency, two of them my own. Newest first.</p>
+        <ul className="cs-cards">
+          {built.map((cs) => (
+            <li key={cs.slug} className="cs-card">
+              <p className="meta"><time dateTime={cs.date}>{dayLabel(cs.date)}</time> · {[cs.for, cs.status].filter(Boolean).join(', ')}</p>
+              <h3><Link href={`/case-studies/${cs.slug}`}>{cs.title}</Link></h3>
+              <p>{cs.summary}</p>
+              <p className="go"><Link href={`/case-studies/${cs.slug}`}>Read the case study</Link></p>
+            </li>
+          ))}
+        </ul>
       </section>
 
-      {/* ── Case study cards ───────────────────────────── */}
-      <section className="bg-background">
-        <div className="max-w-7xl mx-auto px-6 py-16 sm:py-20">
-          <div className="flex flex-col gap-6 max-w-4xl">
-            {CASE_STUDIES.map((cs) => (
-              <Link
-                key={cs.href}
-                href={cs.href}
-                className="group rounded-xl border border-border p-8 sm:p-10 transition-all hover:border-accent/40 hover:shadow-md"
-                style={{ background: 'var(--background)' }}
-              >
-                <div className="flex items-center gap-3 mb-6">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={getFaviconUrl(cs.domain, 32)}
-                    alt=""
-                    width={20}
-                    height={20}
-                    className="rounded"
-                    loading="lazy"
-                  />
-                  <span className="text-xs font-bold uppercase tracking-[0.15em] text-muted-foreground">
-                    {cs.client} &middot; {cs.category}
-                  </span>
-                </div>
-                <h2
-                  className="text-xl sm:text-2xl font-extrabold text-foreground mb-4 leading-[1.2] group-hover:text-accent transition-colors"
-                  style={{ letterSpacing: '-0.02em' }}
-                >
-                  {cs.headline}
-                </h2>
-                <p className="text-[14px] leading-[1.8] text-muted-foreground mb-8 max-w-2xl">
-                  {cs.summary}
-                </p>
-                <div className="flex flex-wrap gap-4 mb-8">
-                  {cs.stats.map((s, i) => (
-                    <div
-                      key={i}
-                      className="rounded-lg border border-border px-4 py-3"
-                      style={{ background: 'var(--muted)' }}
-                    >
-                      <p
-                        className="text-xl font-extrabold mb-0.5"
-                        style={{ letterSpacing: '-0.02em', color: 'var(--accent)' }}
-                      >
-                        {s.value}
-                      </p>
-                      <p className="text-[11px] text-muted-foreground">{s.label}</p>
-                    </div>
-                  ))}
-                </div>
-                <span
-                  className="inline-flex items-center gap-2 text-sm font-bold underline underline-offset-4 transition-opacity group-hover:opacity-70"
-                  style={{ color: 'var(--accent)' }}
-                >
-                  Read the full breakdown &rarr;
-                </span>
-              </Link>
-            ))}
-          </div>
-        </div>
+      <section className="cs-group" aria-labelledby="wrote-h">
+        <h2 id="wrote-h">Writing</h2>
+        <p>One long engagement, written up in full. The individual samples are on <Link href="/portfolio#writing" className="underline underline-offset-4">the work page</Link>.</p>
+        <ul className="cs-cards">
+          <li className="cs-card">
+            <p className="meta">ManyRequests · B2B SaaS, client portal software · since {MANYREQUESTS_SINCE}</p>
+            <h3><Link href="/case-studies/manyrequests">{MANYREQUESTS_ARTICLE_COUNT} product-led articles for ManyRequests</Link></h3>
+            <p>Articles where the product shows up inside the piece, in the comparisons, the how-to steps and the screenshots, and what they did in search.</p>
+            <p className="go"><Link href="/case-studies/manyrequests">Read the case study</Link></p>
+          </li>
+          {wrote.map((cs) => (
+            <li key={cs.slug} className="cs-card">
+              <p className="meta"><time dateTime={cs.date}>{dayLabel(cs.date)}</time> · {[cs.for, cs.status].filter(Boolean).join(', ')}</p>
+              <h3><Link href={`/case-studies/${cs.slug}`}>{cs.title}</Link></h3>
+              <p>{cs.summary}</p>
+              <p className="go"><Link href={`/case-studies/${cs.slug}`}>Read the case study</Link></p>
+            </li>
+          ))}
+        </ul>
       </section>
-    </>
+
+      <section className="cs-group" aria-label="Articles about building">
+        <h2>Two of the builds are articles instead</h2>
+        <p>Lessons rather than a walkthrough.</p>
+        <ul className="cs-cards">
+          <li className="cs-card">
+            <h3><Link href="/the-success-message-was-the-bug">The success message was the bug: five lessons from building an AI-assisted reading tool</Link></h3>
+            <p className="go"><Link href="/the-success-message-was-the-bug">Read the article</Link></p>
+          </li>
+          <li className="cs-card">
+            <h3><Link href="/build-a-course-portal-around-the-instructors-workflow">Build a course portal around the instructor’s workflow</Link></h3>
+            <p className="go"><Link href="/build-a-course-portal-around-the-instructors-workflow">Read the article</Link></p>
+          </li>
+        </ul>
+      </section>
+    </div>
   );
 }
