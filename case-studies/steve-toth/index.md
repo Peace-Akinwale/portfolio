@@ -5023,3 +5023,36 @@ Same-day follow-up to the morning's polish entry. The evening finished the bug h
 - **Rules learned the hard way are written into the tools.** The working-tree trap, the unlocked migration and the dropped encoding flag are now detectors in the bug-hunt skill, not just notes.
 
 ---
+
+## 2026-10-26, Five keys rotated, a leaked key's silent outage made loud, ChatGPT's signed-out format change read in two parsers, and a 27-finding audit with 13 fixes live
+
+A full day across three products. It started as a status check, turned into a key rotation done through the browser, and surfaced an outage nobody had been told about. Written the same evening from the session, the commits in content-ops, Lens and fanout-notebook, the deploy logs and the email thread.
+
+### What shipped
+
+- **Five keys rotated and the old ones deleted:** three Cloudflare tokens (the account token cut to read-only), the company Resend key and the Supabase management token. Every consumer was updated and tested, including a Worker secret, GitHub secrets, two Supabase SMTP configs and four Railway services, and the record went into `docs/runbooks/key-rotation-2026-10-26.md` with names only, never values.
+- **ChatGPT's signed-out format change, read again.** Since 2026-10-23 ChatGPT sends a signed-out answer only as a text rendering of its whole widget, with the old answer field empty. Lens (PR #13, merged) and Fanout (parser 1.9.4) now read it, cut the interactive form off the end, and take citations and brands from the widget's own components.
+- **Lens sign-in limited to the team**, at the repo owner's request: PR #15 merged three minutes after it opened, then two follow-ups pushed straight to main with Peace's go-ahead (the token refresh path checks the same list, so an outside session ends within 30 minutes; the one outside guest is admitted at both of his email addresses). 13 of 13 Go test packages pass.
+- **Fanout deep bug hunt: 27 findings, 13 fixed and deployed** (runner, dashboard and a new extension build). Gate from the repo root after the last change: 163 test files, 2,724 tests, typecheck and lint.
+
+### Decisions worth recording
+
+- **Make the outage loud before fixing its cause.** The shared OpenAI key had been disabled by OpenAI as leaked on 2026-10-24, and Fanout's runner had logged "key rejected" every five minutes since 2026-10-21 to nobody. The replacement key is Steve's to mint, so the fix that could ship now was the alarm: a rejected key now emails the person who started the batch and pings Slack once per process. It fired on its first sweep after deploy.
+- **Keys move through the password manager, not chat.** Peace asked Steve for the new OpenAI key through Dashlane, and the rotation kept new values out of the session entirely.
+- **Direct to main only for work the owner asked for.** Lens is Gregory's repo; the follow-ups to his own request went straight to main, anything else stays a PR.
+
+### Frictions and course corrections
+
+- **A key value reached the session once**, read from an old credentials file. That token was rotated first and the file trashed.
+- **Railway's Restart does not reload changed variables.** Services kept the old Resend key until they were redeployed.
+- **Green builder runs hid a red suite.** Three package-scoped runs passed while the root suite failed 4 tests: the truncation fix stored a whole reason string where a reason word belonged. Rewritten as one shared helper both write paths use.
+- **The last stale copy was in the build, not the source.** After every three-engine list was replaced with the seven-engine one, the stamp script still rewrote the shipped extension description to three. Found by reading the built manifest, not the code.
+- **The guest's address was wrong by a domain.** The allow-list held the address given in the request; his email that afternoon came from a second domain. Both domains receive mail, so both were admitted.
+
+### Why this matters for the portfolio
+
+- **A silent failure is the expensive kind.** Five days of failed runs cost nothing visible; the durable fix was making the next failure announce itself.
+- **Upstream changes get read, not guessed.** The new ChatGPT shape was recorded live, fixed in both parsers the same day, and checked against the recording.
+- **Verification is measured where it ships**: the root suite, the clean worktree, the built artifact.
+
+---
