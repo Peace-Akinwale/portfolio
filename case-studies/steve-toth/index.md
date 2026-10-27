@@ -5084,3 +5084,33 @@ Two evening threads after the day's key and audit work: a weekly newsletter note
 - **"Why didn't it catch this?" got a root cause, not a shrug.** Two defects, both proven from the database and the logs, with a fix scoped and held for the owner's approval.
 
 ---
+
+## 2026-10-27, the docs monitor widened from 64 to 508 pages in one night, after the miss the client caught
+
+Follow-on to the previous entry's diagnosis. The client's question ("why didn't Docs Watch catch this?") got a same-night answer, a link showing the exact change, and a monitor sized to the job.
+
+### What shipped
+
+- **The missed change, shown properly.** Google's page was added with a baseline taken from an Internet Archive copy dated eleven days before the change, so Radar reported the real before-and-after rather than treating today's page as the starting point. The link went to the client the same night.
+- **444 more pages watched across six platforms** (Google 253, OpenAI 108, Anthropic 53, Perplexity 36, Bing 28, Gemini 26), each read through the monitor's own fetcher before it was added, from lists kept in the repository so the reason for every page survives the database.
+- **The broken weekly scan fixed** with a one-line permission migration, then run by hand.
+- **Two defects found on the way and fixed:** scraped LinkedIn posts carrying an invisible NUL character made the database reject whole batches (4 or 5 a day were being dropped), and the monitor's run lock lasted 20 minutes while the widened run took 54.
+
+### Decisions worth recording
+
+- **Add pages as live database rows, not only code.** Rows are picked up by the running crawler at once; a code list needs a deploy. The table defaulted new rows to the "code" type that the crawler switches off when missing from its list, so the import script sets the other type explicitly and refuses page names that would collide on the public site.
+- **Spend stated, not assumed.** Most pages are free to check. 29 only render in a browser at a measured two cents a run, about $17 a month, and the per-change write-up cost was given as an estimate with its assumption.
+- **Measure before trusting a constant.** The 20-minute lock was fine for 64 pages; timing the first real run is what showed it was not for 508.
+
+### Frictions and course corrections
+
+- **The archive was unreachable from the work machine all night**, its DNS pointing at an address that drops connections. The first copy came through the owner's own browser with his approval; four other changed pages could not get a before-copy and were watched from now instead.
+- **An early cost figure was wrong by four times** (half a cent a run guessed, two cents measured). Corrected before the owner acted on it.
+- **One research agent's "publishers FAQ" URL now serves a retirement notice**: the vendor had folded several articles into one. Caught by comparing extracted content, not titles.
+
+### Why this matters for the portfolio
+
+- **A miss becomes a system change, not an apology.** The client got the answer, the evidence, and a monitor eight times wider by morning.
+- **Scale exposes old assumptions.** Growing the workload overnight surfaced a lock and a data-cleaning bug that small inputs had hidden; both were measured and fixed before the next scheduled run.
+
+---
