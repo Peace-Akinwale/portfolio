@@ -5114,3 +5114,35 @@ Follow-on to the previous entry's diagnosis. The client's question ("why didn't 
 - **Scale exposes old assumptions.** Growing the workload overnight surfaced a lock and a data-cleaning bug that small inputs had hidden; both were measured and fixed before the next scheduled run.
 
 ---
+
+## 2026-10-27, a before-copy fetched from the server when the laptop could not reach the archive, one nav for the whole site, and a leaked key replaced everywhere it lived
+
+The day after the docs-monitor widening. Four pages Google and OpenAI had changed before we watched them still had no "before" to compare against, the replacement for a leaked API key arrived, and the client asked for his site's navigation to match on every page.
+
+### What shipped
+
+- **Three of the four missed changes now show real diffs.** The work machine could not reach the Internet Archive at all (its DNS sends the host to an address that drops connections), so an admin-only endpoint on the hosted app now does the lookup and seeds a page's first version from the newest archived copy before a given date. Called from the owner's signed-in tab, it worked first time on three pages. The fourth has never been archived by anyone, so it is watched from today. One of the three is a real behavior change worth a post: Search Console's control for AI Overviews and AI Mode.
+- **The new API key went into every place that uses it**: five hosted services and four local configuration files, set through standard input so the value never touched a command line, each checked by its last four characters, with a live call proving it works. The copies of the dead key left in old archive folders were overwritten with the word REVOKED.
+- **A retired service deleted** after its cold archive verified 80 of 80 checksums.
+- **One global navigation for the client's site.** Every page used to carry its own hand-copied header; ten had an outdated one, and the other 24 came in six slightly different variants. Now one source file is written into all 34 pages by a small script, and the deploy runs that script in check mode first. Compared on every page at two widths in both themes (136 views), each nav item matched the reference page within one pixel.
+- **A teammate's pull request rebased** onto the morning's merges, version bumped, every gate run against a scratch database, and merged by the lead engineer the same afternoon.
+
+### Decisions worth recording
+
+- **Move the fetch to where the network works, instead of working around this machine's DNS.** A local DNS override was refused by the permission layer and was not ours to route around. The server endpoint is a standing feature now, and it refuses to touch a page that already has history.
+- **Static, committed navigation over a runtime include.** A script tag or server-side include would have been less code, but it would cost search visibility or break the site's own performance rules (no render-blocking resources). The generated block carries a marker so the next edit goes to the source, and a check fails the build when a page drifts.
+- **Small site changes go straight to main.** The owner's call: a pull request for a nav change would only wait on the lead engineer's eyes for no gain.
+- **Explain the bill before paying it.** The organization had spent its 2,000 free build minutes (2,032 used, mostly one repository's test runs), and GitHub worded that as a failed payment. A $10 monthly cap on the existing budget was the fix, set by the account owner with exact clicks, after a change the week before had already trimmed about 314 minutes a month of unneeded runs.
+
+### Frictions and course corrections
+
+- **Most of the morning went on routes to the archive that all failed the same way**: two browsers, the in-app browser, curl, a second archive and a Memento aggregator. The answer was to stop treating it as a fetch problem and run the fetch elsewhere.
+- **The first nav preview was visibly wrong** (a logo at 14 pixels instead of 19.7) because only part of the nav's styles had been extracted. Extracting all of them fixed that, but then pulled in a dead rule pointing at a 107 KB image, which raised the performance warnings from 2 to 5. Removing the rule brought them back to 2. Both were caught before anything shipped.
+- **The saved test script pointed at the live development database.** A copy aimed at the scratch database ran instead, and the script's own fix is logged.
+
+### Why this matters for the portfolio
+
+- **When a tool cannot reach something, move the work, not the rules.** The fix that worked was architectural (run the fetch on the server), not a clever bypass of a guardrail.
+- **Consistency as a system, not a checklist.** The client asked about one page; the answer made every page share one source and made drift fail loudly.
+
+---
