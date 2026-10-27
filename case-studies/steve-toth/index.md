@@ -5056,3 +5056,31 @@ A full day across three products. It started as a status check, turned into a ke
 - **Verification is measured where it ships**: the root suite, the clean worktree, the built artifact.
 
 ---
+
+## 2026-10-26, a refused note video traced to a wrong denominator, and why the docs monitor missed a Google change
+
+Two evening threads after the day's key and audit work: a weekly newsletter note's video was refused by the pipeline's own quality gate, and the client asked why the documentation monitor had not caught a Google guidance update the trade press covered that afternoon.
+
+### What shipped
+
+- **The note video is live** (2 minutes 30 seconds, 1080p) after a fix to how the narration is prepared (commit `64131456`). The full Radar suite passed after the change: 160 files, 1,743 tests.
+- **The day's work logged** as six outcome-titled tasks and a daily note in the team's task dashboard.
+- **A diagnosis of the docs monitor miss**, with the database and log evidence, a proposed fix and a drafted reply to the client. Nothing changed yet; the fix waits for Peace's yes.
+
+### Decisions worth recording
+
+- **Fix the denominator, keep the floor.** The pipeline refuses a narration script that covers less than 85% of the source, a guard that once caught a real truncation. This note was refused at 83% because about 120 words of newsletter extras (a subject line, a banner, repeated "chat about this post" links, tool links, a signup line) counted as source. The extras are now removed before measuring. Prose alone puts the same script at 103%. Lowering the floor was rejected.
+- **The extras filter anchors on the greeting only when a note has one,** and matches the signup line only at the start of a paragraph, so the same words inside real prose are still read aloud. Checked against the ten newest notes before shipping.
+- **A missing API key was not the cause,** though it was the obvious suspect that evening. The narration runs on a different provider; the dead key only blocks an optional transcript check.
+
+### Frictions and course corrections
+
+- **The docs monitor failed twice over.** The changed Google page was never on its list (it watches 6 of about 160 pages in that section). And the weekly scan built two weeks earlier to suggest new pages had crashed on every run with "permission denied", because the migration that created its table never granted the service role access. Its table held zero rows, and no alert reached anyone.
+- **Today's credential rotation briefly cut the database connector.** The running session kept the old token, so the evidence was gathered through the API with the new one, without printing it.
+
+### Why this matters for the portfolio
+
+- **A quality gate that fires is information, not an obstacle.** The answer was to correct what it measured, not to weaken it.
+- **"Why didn't it catch this?" got a root cause, not a shrug.** Two defects, both proven from the database and the logs, with a fix scoped and held for the owner's approval.
+
+---
