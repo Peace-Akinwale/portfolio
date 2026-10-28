@@ -5,7 +5,6 @@ import { notFound } from 'next/navigation';
 import '@/components/case-study/case-study.css';
 import { getCaseStudy, listCaseStudies } from '@/lib/content/case-studies';
 import { splitChapters } from '@/lib/content/markdown';
-import { dayLabel } from '@/lib/content/dates';
 import { SITE_URL } from '@/lib/site';
 
 export const dynamicParams = false;
@@ -60,8 +59,7 @@ export default async function CaseStudyPage({ params }: { params: Promise<{ slug
           <h1>{cs.name}</h1>
           <p className="cs-point">{cs.blurb}</p>
           <dl className="cs-strip">
-            <div><dt>When</dt><dd><time dateTime={cs.date}>{dayLabel(cs.date)}</time></dd></div>
-            <div><dt>Where it’s at</dt><dd>{cs.status}</dd></div>
+            <div><dt>Who can use it</dt><dd>{cs.status}</dd></div>
             <div><dt>Reading time</dt><dd>about {cs.readingMinutes} min</dd></div>
           </dl>
           {cs.links.length > 0 && (
