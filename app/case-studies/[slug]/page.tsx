@@ -57,7 +57,6 @@ export default async function CaseStudyPage({ params }: { params: Promise<{ slug
             <span aria-hidden="true"> / </span>
             <Link href="/case-studies">Things I built</Link>
           </p>
-          <p className="cs-kicker">{cs.kind === 'built' ? 'I built this' : 'I wrote this'} · {cs.status}</p>
           <h1>{cs.name}</h1>
           <p className="cs-point">{cs.blurb}</p>
           <dl className="cs-strip">
