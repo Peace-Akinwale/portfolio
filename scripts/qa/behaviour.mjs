@@ -103,7 +103,7 @@ for (const [route, hash, w] of [['/', '#q2', 1440], ['/', '#q3', 390], ['/portfo
   await p.goto(base + '/case-studies/aloud', { waitUntil: 'networkidle0' });
   const r = await p.evaluate(() => ({ bg: getComputedStyle(document.body).backgroundColor, fg: getComputedStyle(document.body).color, h1: getComputedStyle(document.querySelector('.cs-short-text')).color }));
   const main = await p.evaluate(() => getComputedStyle(document.querySelector('.theme-dated')).backgroundColor);
-  ok('dark mode (system): dark stone with light ink, not indigo', main === 'rgb(19, 20, 17)' && r.h1 === 'rgb(236, 236, 230)', JSON.stringify({ ...r, main }));
+  ok('dark mode (system): ink ground with light text, same family as light', main === 'rgb(15, 35, 52)' && r.h1 === 'rgb(230, 238, 244)', JSON.stringify({ ...r, main }));
   await p.close();
 }
 
@@ -117,7 +117,7 @@ for (const [route, hash, w] of [['/', '#q2', 1440], ['/', '#q3', 390], ['/portfo
   const after = await p.evaluate(() => ({ bg: getComputedStyle(document.querySelector('.theme-dated')).backgroundColor, theme: document.documentElement.dataset.theme, stored: localStorage.getItem('theme') }));
   await p.reload({ waitUntil: 'networkidle0' });
   const reloaded = await p.evaluate(() => document.documentElement.dataset.theme);
-  ok('toggle: light to dark, stored, kept on reload', before === 'rgb(241, 241, 236)' && after.bg === 'rgb(19, 20, 17)' && after.stored === 'dark' && reloaded === 'dark', JSON.stringify({ before, after, reloaded }));
+  ok('toggle: light to dark, stored, kept on reload', before === 'rgb(217, 228, 236)' && after.bg === 'rgb(15, 35, 52)' && after.stored === 'dark' && reloaded === 'dark', JSON.stringify({ before, after, reloaded }));
   await p.evaluate(() => localStorage.removeItem('theme'));
   await p.close();
 }

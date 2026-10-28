@@ -5,28 +5,34 @@
    keep their old names so every existing page and the MyLinks workspace pick up
    the new palette unchanged. */
 
-/* Two palettes (docs/design-reference-2026-10.md):
-   - Dated, the default for every page: stone ground, black ink, one deep green.
-   - Seam, the homepage only (.theme-seam on the chrome wrapper): paper for
-     writing and indigo night for building, switched per half with
-     .ground-paper / .ground-night.
-   Dark mode (the header toggle, or the system setting until someone picks)
-   swaps the stone and the paper for warm darks; the indigo night stays. */
+/* One colour family (28 Oct 2026, decisions.md): sky and ink blue, with marigold
+   as the only accent. Every ground on the site is a value of the same family,
+   so light mode, dark mode and the homepage's night half all belong together.
+   The page-level tokens (--background, --accent, ...) keep their names so every
+   page and the MyLinks workspace pick up the palette unchanged.
+   - Dated, the default for every page: sky ground, ink-blue text, deep blue accent.
+   - Seam, the homepage only (.theme-seam on the chrome wrapper): the sky half for
+     writing and the ink half for building, switched with .ground-paper / .ground-night.
+   Dark mode (the header toggle, or the system setting until someone picks) uses
+   the two darkest values of the family. */
 
 :root {
-  --stone: #F1F1EC; --stone-2: #E7E7E0; --stone-ink: #15160F; --stone-soft: #585A50; --stone-rule: #D3D4CB; --stone-rule-strong: #B9BBB0; --stone-accent: #1F5A3D; --stone-wash: #E3EBE5;
-  --paper: #EFEAE0; --paper-2: #E6E0D3; --paper-ink: #17150F; --paper-soft: #5E584B; --paper-rule: #CFC7B6; --paper-accent: #B5411D;
-  --night: #151A3A; --night-2: #1C2248; --night-ink: #ECEBF4; --night-soft: #AEB0C8; --night-rule: #2E355E; --night-accent: #F0683A;
+  --sky: #D9E4EC; --sky-2: #C9D8E3; --sky-3: #B9CFDE; --sky-ink: #0D1E2C; --sky-soft: #3F5B70; --sky-rule: #B6C8D5; --sky-rule-strong: #93ACBE; --sky-accent: #1E3F5A; --sky-wash: #C3D5E2;
+  --ink: #0F2334; --ink-2: #16304A; --ink-3: #1E3F5A; --ink-deep: #0A1826; --ink-text: #E6EEF4; --ink-soft: #A4B9C9; --ink-rule: #243E55; --ink-rule-strong: #335170; --ink-accent: #B9CFDE; --ink-wash: #1A3A54;
+  --marigold: #F2B33A; --marigold-ink: #1C1500;
 
-  --background: var(--stone);
-  --foreground: var(--stone-ink);
-  --muted: var(--stone-2);
-  --muted-foreground: var(--stone-soft);
-  --border: var(--stone-rule);
-  --border-strong: var(--stone-rule-strong);
-  --accent: var(--stone-accent);
-  --accent-foreground: #ffffff;
-  --accent-wash: var(--stone-wash);
+  /* Old family names, kept as aliases so nothing that still says paper or night breaks. */
+  --stone: var(--sky); --paper: var(--sky); --night: var(--ink); --night-2: var(--ink-2); --night-ink: var(--ink-text); --night-soft: var(--ink-soft); --night-rule: var(--ink-rule); --night-accent: var(--marigold);
+
+  --background: var(--sky);
+  --foreground: var(--sky-ink);
+  --muted: var(--sky-2);
+  --muted-foreground: var(--sky-soft);
+  --border: var(--sky-rule);
+  --border-strong: var(--sky-rule-strong);
+  --accent: var(--sky-accent);
+  --accent-foreground: #F3F7FA;
+  --accent-wash: var(--sky-wash);
   --accent2: var(--accent);
   --navy: var(--foreground);
   --orange: var(--accent);
@@ -56,45 +62,44 @@
   --spacing-content: 2rem;
 }
 
-/* Dark stone, for every page but the homepage. */
+/* Dark mode: the ink values of the same family, for every page. */
 [data-theme="dark"] {
-  --background: #131411; --foreground: #ECECE6; --muted: #1D1E1A; --muted-foreground: #A6A89D;
-  --border: #30322B; --border-strong: #464940; --accent: #8FCFA9; --accent-foreground: #0F1A14; --accent-wash: #1C2A22;
+  --background: var(--ink); --foreground: var(--ink-text); --muted: var(--ink-2); --muted-foreground: var(--ink-soft);
+  --border: var(--ink-rule); --border-strong: var(--ink-rule-strong); --accent: var(--ink-accent); --accent-foreground: var(--sky-ink); --accent-wash: var(--ink-wash);
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --background: #131411; --foreground: #ECECE6; --muted: #1D1E1A; --muted-foreground: #A6A89D;
-    --border: #30322B; --border-strong: #464940; --accent: #8FCFA9; --accent-foreground: #0F1A14; --accent-wash: #1C2A22;
+    --background: var(--ink); --foreground: var(--ink-text); --muted: var(--ink-2); --muted-foreground: var(--ink-soft);
+    --border: var(--ink-rule); --border-strong: var(--ink-rule-strong); --accent: var(--ink-accent); --accent-foreground: var(--sky-ink); --accent-wash: var(--ink-wash);
   }
 }
 
-/* The homepage's chrome and its paper halves. */
+/* The homepage's chrome and its sky halves: the same values as every other page. */
 .theme-seam, .ground-paper {
-  --background: var(--paper); --foreground: var(--paper-ink); --muted: var(--paper-2); --muted-foreground: var(--paper-soft);
-  --border: var(--paper-rule); --border-strong: var(--paper-rule); --accent: var(--paper-accent); --accent-foreground: #ffffff;
+  --background: var(--sky); --foreground: var(--sky-ink); --muted: var(--sky-2); --muted-foreground: var(--sky-soft);
+  --border: var(--sky-rule); --border-strong: var(--sky-rule-strong); --accent: var(--sky-accent); --accent-foreground: #F3F7FA; --accent-wash: var(--sky-wash);
   background: var(--background); color: var(--foreground);
 }
 [data-theme="dark"] .theme-seam, [data-theme="dark"] .ground-paper {
-  --background: #191712; --foreground: #EFEAE0; --muted: #221F19; --muted-foreground: #ABA595;
-  --border: #39352C; --border-strong: #4A4539; --accent: #F0835A; --accent-foreground: #191712;
+  --background: var(--ink); --foreground: var(--ink-text); --muted: var(--ink-2); --muted-foreground: var(--ink-soft);
+  --border: var(--ink-rule); --border-strong: var(--ink-rule-strong); --accent: var(--ink-accent); --accent-foreground: var(--sky-ink); --accent-wash: var(--ink-wash);
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) .theme-seam, :root:not([data-theme="light"]) .ground-paper {
-    --background: #191712; --foreground: #EFEAE0; --muted: #221F19; --muted-foreground: #ABA595;
-    --border: #39352C; --border-strong: #4A4539; --accent: #F0835A; --accent-foreground: #191712;
+    --background: var(--ink); --foreground: var(--ink-text); --muted: var(--ink-2); --muted-foreground: var(--ink-soft);
+    --border: var(--ink-rule); --border-strong: var(--ink-rule-strong); --accent: var(--ink-accent); --accent-foreground: var(--sky-ink); --accent-wash: var(--ink-wash);
   }
 }
-/* Indigo night stays the same in both modes. */
-.ground-night, [data-theme="dark"] .ground-night {
-  --background: var(--night); --foreground: var(--night-ink); --muted: var(--night-2); --muted-foreground: var(--night-soft);
-  --border: var(--night-rule); --border-strong: var(--night-rule); --accent: var(--night-accent); --accent-foreground: var(--night);
+/* The homepage's night half: ink in light mode, and the deepest ink in dark mode
+   so the two halves still read as two. Marigold is the accent on it. */
+.ground-night {
+  --background: var(--ink); --foreground: var(--ink-text); --muted: var(--ink-2); --muted-foreground: var(--ink-soft);
+  --border: var(--ink-rule); --border-strong: var(--ink-rule-strong); --accent: var(--marigold); --accent-foreground: var(--marigold-ink); --accent-wash: var(--ink-wash);
   background: var(--background); color: var(--foreground);
 }
+[data-theme="dark"] .ground-night { --background: var(--ink-deep); --muted: var(--ink); }
 @media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) .ground-night {
-    --background: var(--night); --foreground: var(--night-ink); --muted: var(--night-2); --muted-foreground: var(--night-soft);
-    --border: var(--night-rule); --border-strong: var(--night-rule); --accent: var(--night-accent); --accent-foreground: var(--night);
-  }
+  :root:not([data-theme="light"]) .ground-night { --background: var(--ink-deep); --muted: var(--ink); }
 }
 .theme-dated { background: var(--background); color: var(--foreground); }
 
@@ -171,7 +176,7 @@ h4, h5, h6 { font-family: var(--font-sans); font-weight: 600; line-height: 1.3; 
 .go a { margin-right: 20px; text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; }
 .go a:hover { color: var(--accent); }
 figure.shot { margin: 20px 0 10px; }
-figure.shot img { border: 1px solid var(--border); background: #fff; border-radius: 2px; }
+figure.shot img { border: 1px solid var(--border); background: var(--card); border-radius: 2px; }
 figure.shot figcaption { font-family: var(--font-sans); font-size: 14px; color: var(--muted-foreground); margin-top: 10px; max-width: var(--measure); }
 .pull { font-family: var(--font-serif); font-optical-sizing: auto; font-size: clamp(1.25rem, 1.7vw, 1.5rem); line-height: 1.35; margin: 14px 0 6px; padding-left: 16px; border-left: 3px solid var(--accent); max-width: 32ch; }
 .pull-by { font-family: var(--font-sans); font-size: 14px; color: var(--muted-foreground); margin: 0 0 16px; }
@@ -351,7 +356,7 @@ figure.shot figcaption { font-family: var(--font-sans); font-size: 14px; color: 
   margin: 1.5rem 0 .5rem;
   border: 1px solid var(--border);
   border-radius: 2px;
-  background: #fff;
+  background: var(--card);
 }
 .prose figure { margin: 2rem 0; }
 .prose figcaption, .prose img + em { display: block; font-family: var(--font-sans); font-size: 14px; color: var(--muted-foreground); margin-top: .5rem; }

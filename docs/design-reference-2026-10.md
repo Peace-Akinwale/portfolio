@@ -2,18 +2,24 @@
 
 Extracted from the two prototypes Peace chose on 23 Oct 2026 (`prototypes/2026-10-21-three-directions/seam.html` for the homepage, `dated.html` for /portfolio) and her brief of 25 Oct 2026 (fonts). Supersedes `docs/design-reference.md` (the adire palette) for the whole site once the rebuild ships.
 
-## Colours (from seam.html, two grounds)
+## Colours (one family, 28 Oct 2026)
 
-| Token | Paper (writing, default ground) | Night (building, dark ground) |
+Replaced the paper/night and stone/green palettes on 28 Oct 2026 (decisions.md). One hue family, sky to ink blue, does every ground on the site, light and dark, and marigold is the only accent. The method came from re-reading thejasminejade.com: her colour works because every ground is one family at several values plus one warm accent, not because of the hue. The study with the three candidates is `prototypes/2026-10-21-three-directions/palette.html`; Peace chose C.
+
+| Token | Sky (light mode, every page) | Ink (dark mode, and the homepage's night half) |
 |---|---|---|
-| ground | `#EFEAE0` | `#151A3A` |
-| ground-2 (panels, code) | `#E6E0D3` | `#1C2248` |
-| ink (text) | `#17150F` | `#ECEBF4` |
-| ink-soft (meta, captions) | `#5E584B` | `#AEB0C8` |
-| rule (hairlines) | `#CFC7B6` | `#2E355E` |
-| accent (links on hover, active marks, buttons) | `#B5411D` | `#F0683A` |
+| ground | `#D9E4EC` | `#0F2334` (night half in dark mode: `#0A1826`) |
+| ground-2 (panels, pills, muted) | `#C9D8E3` | `#16304A` |
+| ground-3 (tag washes, strips) | `#B9CFDE` | `#1E3F5A` |
+| card | `#F3F7FA` | `#0A1826` (night half: `#16304A`) |
+| ink (text) | `#0D1E2C` | `#E6EEF4` |
+| ink-soft (meta, captions) | `#3F5B70` | `#A4B9C9` |
+| rule (hairlines) | `#B6C8D5` / strong `#93ACBE` | `#243E55` / strong `#335170` |
+| accent (links, buttons) | `#1E3F5A` | `#B9CFDE` (night half: marigold) |
+| marigold (highlights, tags on the night half, the one warm accent) | `#F2B33A` on `#1C1500` text | same |
+| marigold wash (the `.hl` marker) | `#F7DFA3` | `#4A3A12` |
 
-Dark mode = the night column as the page ground; the split sections keep both grounds in both modes (paper half, night half). Contrast: ink on ground 14.9:1 (paper), 13.6:1 (night); accent on paper 5.3:1; night-accent on night 6.1:1.
+Contrast: ink on sky 13.9:1; ink-text on ink 13.6:1; accent on sky 7.6:1; marigold-ink on marigold 11.5:1. The tokens live in `app/globals.css` (`--sky-*`, `--ink-*`, `--marigold`) and `app/informal.css` (`--sun`, `--card`). The old names (`--stone`, `--paper`, `--night`) are aliases of the new ones.
 
 ## Type
 
