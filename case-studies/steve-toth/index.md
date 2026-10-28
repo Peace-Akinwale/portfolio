@@ -5146,3 +5146,34 @@ The day after the docs-monitor widening. Four pages Google and OpenAI had change
 - **Consistency as a system, not a checklist.** The client asked about one page; the answer made every page share one source and made drift fail loudly.
 
 ---
+
+## 2026-10-27 to 2026-10-28, what the docs monitor costs, a third of its browser bill removed, and a model upgrade measured before it shipped
+
+The client asked what the docs monitor now costs to run at 506 pages. Answering it turned into three pieces of work: finding which pages really needed a paid headless browser, moving the monitor's AI calls to newer models, and proving each change on real data before it reached production.
+
+### What shipped
+
+- **A cost answer from measured numbers.** Per detected change on the new models: about $0.066 for the internal brief, $0.081 for the public article, and $0.0003 for the check that decides whether a change matters. All in, about $35 to $70 a month, with the wide range stated plainly because only one full day existed at the new size.
+- **16 of 29 browser-only pages moved to free official sources.** One vendor's help pages are a JavaScript shell, but its own help API returns each article; another vendor's help center sits behind a bot check, but it publishes the same articles on its support platform. The watched address never changes, and any failure falls back to the paid browser. The browser bill dropped from about $17 to about $8 a month.
+- **The monitor moved to newer AI models, tested first.** A read-only script ran stored changes through the old and new models with identical prompts and printed what each said and cost. Six changes end to end, then the classifier alone on 30: same verdict on 28 of 30, the old classifier's one malformed reply gone, and write-ups as good or better. On a page the monitor had misreported the day before, the new model said the page "restates its existing rules", which was true; the old one had called it new.
+- **A bug hunt before shipping** checked every other caller of the shared AI client, the backup models the provider falls back to on a refusal (both accept the same request, probed live), the regenerate button's time budget, and stored prompt overrides. Then the deploy went in its required order, and the next morning's real run produced 31 changes with every brief and article written.
+
+### Decisions worth recording
+
+- **Change only this feature's models.** The brand-voice writer stayed on the old model; the monitor got its own model settings, so neither can move the other by accident.
+- **Treat a refusal as an error everywhere.** Newer models can decline with a normal success response and empty or partial text. Every caller already handled a thrown error, so the shared client now throws instead of passing half an answer on.
+- **Keep the classifier at its lowest effort setting.** A higher setting looked like a quality lever but flipped 6 of 30 verdicts instead of 2.
+- **Declined: a spending cap and a typography filter.** Both were designed (the filter would ignore curly versus straight quotes in the change fingerprint only, because the public site's source links match the stored text exactly). The owner judged them not worth the added complexity at this cost, and they stay on file for a week that runs over budget.
+
+### Frictions and course corrections
+
+- **The price list promised a 20% saving that did not appear.** The newer writer thinks before it writes, and that thinking is billed as output: 2 to 3 times the output tokens, so the writer's cost came out flat ($0.581 to $0.587 on four changes). The earlier estimate was corrected in writing, and the case for the move rests on quality and reliability, not money.
+- **One self-inflicted false alert.** I set a page's fetch mode by hand before the run that should have detected the change of mode, so the monitor compared a full page against an old truncated copy and published a change that never happened. It was unpublished four minutes later; the rule now sits beside the code, and the bug-hunt library learned the pattern.
+- **The first push was refused by the owner's own push guard**, whose confirmation box had closed unseen on a phone. It read like a standing hold; it was explained in plain words, the worker was checked idle, and the push went out on the owner's click.
+
+### Why this matters for the portfolio
+
+- **Cost questions get measured answers, with the uncertainty shown.** A range from one day of data, labeled as such, beats a confident number the next week contradicts.
+- **Upgrades are proven on the client's own data before they ship.** The same prompts, old against new, with the cost of every call recorded, turned "newer is better" into evidence, including the part that was not true.
+
+---
