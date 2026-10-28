@@ -12,6 +12,8 @@ const ok = (name, pass, detail = '') => out.push(`${pass ? 'PASS' : 'FAIL'} ${na
 async function page(w = 1440, h = 900, opts = {}) {
   const p = await browser.newPage();
   await p.setViewport({ width: w, height: h });
+  // The production build prefetches every link in view, so a long page like /portfolio takes a while to go network-idle.
+  p.setDefaultNavigationTimeout(90000);
   if (opts.reducedMotion) await p.emulateMediaFeatures([{ name: 'prefers-reduced-motion', value: 'reduce' }]);
   if (opts.dark) await p.emulateMediaFeatures([{ name: 'prefers-color-scheme', value: 'dark' }]);
   return p;
