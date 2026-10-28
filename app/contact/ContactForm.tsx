@@ -94,7 +94,7 @@ export default function ContactForm() {
         className="sm:hidden flex w-full items-center justify-center py-4 mb-16 text-xs font-bold uppercase tracking-[0.08em] rounded-md transition-all hover:opacity-90"
         style={{ background: 'var(--accent)', color: 'var(--accent-foreground)' }}
       >
-        Pick a time on Calendly &rarr;
+        Pick a time on Calendly
       </a>
       <div className="hidden sm:block rounded-xl border border-border overflow-hidden mb-16" style={{ background: 'var(--muted)' }}>
         <iframe

@@ -29,7 +29,7 @@ I added separate ways in for links and uploaded files. Batch imports bring in Yo
 
 ![contentdb add content demo](images/contentdb/contentdb-add-content-demo.png)
 
-*Existing portfolio capture of the import screen with demonstration data; capture date unverified.*
+*The import screen, with demonstration data.*
 
 Adding a group of sources needs more feedback than adding one article. Each item can take a while or fail on its own.
 

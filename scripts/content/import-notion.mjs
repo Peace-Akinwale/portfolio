@@ -58,6 +58,10 @@ function imageBlocks(body) {
   }
   return blocks;
 }
+// Captions in the export that were working notes, not reader copy.
+const CAPTION_FIXES = {
+  'Existing portfolio capture of the import screen with demonstration data; capture date unverified.': 'The import screen, with demonstration data.',
+};
 function withInformal(slug, originalBody) {
   const file = path.join(INFORMAL, `${slug}.md`);
   if (!fs.existsSync(file)) return { body: originalBody, informal: false };
@@ -66,7 +70,9 @@ function withInformal(slug, originalBody) {
   const markers = (draft.match(/\[\[img\]\]/g) || []).length;
   if (markers !== blocks.length) throw new Error(`${slug}: informal draft has ${markers} image markers, original has ${blocks.length} images`);
   let k = 0;
-  return { body: draft.replace(/\[\[img\]\]/g, () => blocks[k++]), informal: true };
+  let body = draft.replace(/\[\[img\]\]/g, () => blocks[k++]);
+  for (const [from, to] of Object.entries(CAPTION_FIXES)) body = body.replace(from, to);
+  return { body, informal: true };
 }
 
 function readExport(name) {

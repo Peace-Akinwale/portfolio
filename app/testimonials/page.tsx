@@ -1,3 +1,4 @@
+import { WorkWithMe } from '@/components/WorkWithMe';
 import { withOg } from '@/lib/og';
 import type { Metadata } from 'next';
 import Link from 'next/link';
@@ -238,12 +239,6 @@ export default function TestimonialsPage() {
       <section className="border-b border-border bg-background">
         <div className="mx-auto max-w-7xl px-6 pb-16 pt-16 sm:pb-20 sm:pt-24">
           <div className="max-w-3xl">
-            <p
-              className="mb-4 text-xs font-bold uppercase tracking-[0.15em]"
-              style={{ color: 'var(--accent)' }}
-            >
-              Kind words
-            </p>
             <h1
               className="mb-6 text-3xl font-extrabold leading-[1.1] text-foreground sm:text-4xl md:text-5xl"
               style={{ letterSpacing: '-0.03em' }}
@@ -354,35 +349,12 @@ export default function TestimonialsPage() {
       </section>
 
       <section className="border-t border-border bg-background">
-        <div className="mx-auto max-w-7xl px-6 py-20 sm:py-24">
-          <div className="max-w-3xl">
-            <h2
-              className="mb-4 text-2xl font-extrabold text-foreground sm:text-3xl"
-              style={{ letterSpacing: '-0.02em' }}
-            >
-              Want to be next?
-            </h2>
-            <p className="mb-10 max-w-xl text-base leading-relaxed text-muted-foreground">
-              Grab a free 30-minute call. No pressure, it&apos;s a chat about what you&apos;re working on.
-            </p>
-            <div className="flex flex-col gap-3 sm:flex-row">
-              <a
-                href="https://calendly.com/akindayopeaceakinwale/30min"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-block rounded-md px-7 py-3 text-center text-xs font-bold uppercase tracking-[0.08em] text-accent-foreground transition-all hover:opacity-90"
-                style={{ background: 'var(--accent)' }}
-              >
-                Book a free discovery call -&gt;
-              </a>
-              <Link
-                href="/contact"
-                className="inline-block rounded-md border border-border px-7 py-3 text-center text-xs font-bold uppercase tracking-[0.08em] text-foreground transition-all hover:bg-muted"
-              >
-                Send a message
-              </Link>
-            </div>
-          </div>
+        <div className="mx-auto max-w-7xl px-6 py-16 sm:py-20">
+          <WorkWithMe
+            heading="Want to be next?"
+            body="Book a 30-minute call and tell me what you’re working on. If I’m not the right person for it, I’ll say so."
+            secondary={{ label: 'Send a message', href: '/contact' }}
+          />
         </div>
       </section>
     </>

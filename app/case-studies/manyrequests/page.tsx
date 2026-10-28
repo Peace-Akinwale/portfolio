@@ -44,7 +44,7 @@ export default function ManyRequestsCaseStudyPage() {
             href="/case-studies"
             className="text-xs text-muted-foreground hover:text-accent transition-colors inline-flex items-center gap-1.5"
           >
-            &larr; Case Studies
+            All the things I built
           </Link>
         </div>
       </div>
@@ -54,14 +54,11 @@ export default function ManyRequestsCaseStudyPage() {
         <div className="max-w-4xl mx-auto px-6 pt-16 sm:pt-24 pb-12">
           <div className="flex items-center gap-3 mb-8">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={MR_FAVICON} alt="" width={24} height={24} className="rounded" />
+            <img src={MR_FAVICON} alt="ManyRequests" width={24} height={24} className="rounded" />
             <span className="text-xs font-bold uppercase tracking-[0.15em] text-muted-foreground">
               ManyRequests &middot; B2B SaaS &middot; Client portal software
             </span>
           </div>
-          <p className="text-xs font-bold uppercase tracking-[0.15em] mb-5" style={{ color: 'var(--accent)' }}>
-            Case study
-          </p>
           <h1
             className="text-3xl sm:text-4xl md:text-5xl font-extrabold leading-[1.1] mb-6 text-foreground"
             style={{ letterSpacing: '-0.03em' }}
@@ -131,7 +128,7 @@ export default function ManyRequestsCaseStudyPage() {
             The goal was simple. Make the article useful enough to earn trust, then make the product feel like a logical next step inside the article itself.
           </p>
           <p className="text-base leading-[1.85] text-muted-foreground mb-10">
-            That approach worked. According to Regine Garcia, Head of Content at ManyRequests, the product-led posts led to more traffic and demo requests.
+            That approach worked. According to Regine Garcia, who runs operations, content and systems at ManyRequests, the product-led posts led to more traffic and demo requests.
           </p>
 
           <p className="text-xs font-bold uppercase tracking-[0.12em] mb-4 text-muted-foreground">Results at a glance</p>
@@ -192,7 +189,7 @@ export default function ManyRequestsCaseStudyPage() {
             How I approached the work
           </p>
           <h2 className="text-2xl sm:text-3xl font-extrabold mb-10 text-foreground" style={{ letterSpacing: '-0.02em' }}>
-            Three things I did across all {MANYREQUESTS_ARTICLE_COUNT} articles
+            What I did across all {MANYREQUESTS_ARTICLE_COUNT} articles
           </h2>
 
           {/* Step 1 */}
@@ -232,7 +229,7 @@ export default function ManyRequestsCaseStudyPage() {
               Once a topic passed that first filter, I made the product useful inside the article. Not visible. Useful.
             </p>
             <p className="text-base leading-[1.85] text-muted-foreground mb-6">
-              In most articles, that meant three things.
+              In most articles, that meant the same pattern.
             </p>
 
             <ul className="flex flex-col gap-2.5 mb-8">
@@ -254,7 +251,7 @@ export default function ManyRequestsCaseStudyPage() {
 
             {/* Wrike vs ClickUp */}
             <div className="rounded-xl border border-border p-6 mb-4" style={{ background: 'var(--muted)' }}>
-              <a href="https://www.manyrequests.com/blog/wrike-vs-clickup" target="_blank" rel="noopener noreferrer" className="text-sm font-bold text-foreground mb-3 underline underline-offset-2 hover:opacity-70 transition-opacity block">Wrike vs ClickUp &rarr;</a>
+              <a href="https://www.manyrequests.com/blog/wrike-vs-clickup" target="_blank" rel="noopener noreferrer" className="text-sm font-bold text-foreground mb-3 underline underline-offset-2 hover:opacity-70 transition-opacity block">Wrike vs ClickUp</a>
               <p className="text-[15px] leading-[1.75] text-muted-foreground mb-4">
                 The reader is comparing more than task management tools. Many of them are trying to figure out what works for an agency that has to manage client approvals and billing in one place.
               </p>
@@ -273,7 +270,7 @@ export default function ManyRequestsCaseStudyPage() {
 
             {/* Agency Retainer Model */}
             <div className="rounded-xl border border-border p-6 mb-4" style={{ background: 'var(--muted)' }}>
-              <a href="https://www.manyrequests.com/blog/agency-retainer-model" target="_blank" rel="noopener noreferrer" className="text-sm font-bold text-foreground mb-3 underline underline-offset-2 hover:opacity-70 transition-opacity block">Agency Retainer Model &rarr;</a>
+              <a href="https://www.manyrequests.com/blog/agency-retainer-model" target="_blank" rel="noopener noreferrer" className="text-sm font-bold text-foreground mb-3 underline underline-offset-2 hover:opacity-70 transition-opacity block">Agency Retainer Model</a>
               <p className="text-[15px] leading-[1.75] text-muted-foreground mb-5">
                 The product fit is less obvious at first, which is why I like it as proof. The article is teaching the reader how to structure and run a retainer. That gave me a practical place to show add-on services and intake forms inside ManyRequests. The product was not tacked on. It was part of the operational advice.
               </p>
@@ -289,7 +286,7 @@ export default function ManyRequestsCaseStudyPage() {
 
             {/* Design Annotation Tools */}
             <div className="rounded-xl border border-border p-6" style={{ background: 'var(--muted)' }}>
-              <a href="https://www.manyrequests.com/blog/design-annotation-software" target="_blank" rel="noopener noreferrer" className="text-sm font-bold text-foreground mb-3 underline underline-offset-2 hover:opacity-70 transition-opacity block">Design Annotation Tools &rarr;</a>
+              <a href="https://www.manyrequests.com/blog/design-annotation-software" target="_blank" rel="noopener noreferrer" className="text-sm font-bold text-foreground mb-3 underline underline-offset-2 hover:opacity-70 transition-opacity block">Design Annotation Tools</a>
               <p className="text-[15px] leading-[1.75] text-muted-foreground mb-5">
                 The fit is direct. The feature is the topic. That article let me explain the markup flow and video feedback with screenshots and concrete use cases instead of generic feature copy.
               </p>
@@ -329,7 +326,7 @@ export default function ManyRequestsCaseStudyPage() {
             What this looked like in the work
           </p>
           <h2 className="text-2xl sm:text-3xl font-extrabold mb-8 text-foreground" style={{ letterSpacing: '-0.02em' }}>
-            Three articles that explain the whole approach
+            The articles that explain the approach
           </h2>
           <ul className="flex flex-col gap-5">
             {[
@@ -400,7 +397,7 @@ export default function ManyRequestsCaseStudyPage() {
               />
               <div>
                 <p className="text-sm font-bold text-foreground">Regine Garcia</p>
-                <p className="text-xs text-muted-foreground">Head of Content &middot; ManyRequests</p>
+                <p className="text-xs text-muted-foreground">Operations, Content &amp; Systems &middot; ManyRequests</p>
               </div>
             </figcaption>
           </figure>
@@ -435,7 +432,7 @@ export default function ManyRequestsCaseStudyPage() {
               className="inline-block px-7 py-3 text-xs font-bold uppercase tracking-[0.08em] rounded-md transition-all hover:opacity-90 text-center"
               style={{ background: 'var(--accent)', color: 'var(--accent-foreground)' }}
             >
-              See services &rarr;
+              See my prices
             </Link>
             <a
               href="https://calendly.com/akindayopeaceakinwale/30min"
@@ -443,7 +440,7 @@ export default function ManyRequestsCaseStudyPage() {
               rel="noopener noreferrer"
               className="inline-block px-7 py-3 text-xs font-bold uppercase tracking-[0.08em] rounded-md border border-border text-foreground transition-all hover:bg-muted text-center"
             >
-              Book a discovery call
+              Book a 30-minute call
             </a>
           </div>
         </div>

@@ -85,7 +85,6 @@ export default async function CaseStudyPage({ params }: { params: Promise<{ slug
         <section className="cs-short" aria-label="In short">
           <p className="cs-short-label">The short version</p>
           <p className="cs-short-text">{cs.summary}</p>
-          {cs.title !== cs.name && <p className="cs-short-title">{cs.title}</p>}
         </section>
 
         {intro && <div className="cs-chapter"><div className="prose" dangerouslySetInnerHTML={{ __html: intro }} /></div>}

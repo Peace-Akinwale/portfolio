@@ -55,7 +55,6 @@ export default function ServicesPage() {
   return (
     <>
       <section className="gutter mx-auto max-w-[1180px] py-12 md:py-16">
-        <p className="eyebrow mb-4"><b>Services</b></p>
         <h1 className="max-w-[18ch]">Writing with me, and building with me.</h1>
         <p className="serif mt-5 max-w-[60ch] text-[1.2rem] leading-[1.45]">{SERVICE_COPY}</p>
         <p className="mt-3 max-w-[60ch] text-[15px] text-muted-foreground">

@@ -238,7 +238,7 @@ export function Comments({ postSlug, postTitle }: CommentsProps) {
       <div className="max-w-3xl">
         <h2 className="text-3xl font-bold mb-3">Comments</h2>
         <p className="text-muted-foreground leading-relaxed mb-8">
-          Leave a thought, question, or response. Your email stays private. If you use
+          Leave a thought or a question. Your email stays private. If you use
           an email linked to Gravatar, your profile image may show automatically.
         </p>
 
@@ -286,7 +286,7 @@ export function Comments({ postSlug, postTitle }: CommentsProps) {
 
             <label className="mt-4 block">
               <span className="mb-2 block text-xs font-semibold uppercase tracking-[0.12em] text-muted-foreground">
-                Social Link Or Website
+                Website or social link
               </span>
               <input
                 type="url"

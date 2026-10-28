@@ -3,9 +3,9 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = withOg({
-  title: "Things I've Built | Peace Akinwale",
+  title: "Things I've built | Peace Akinwale",
   description:
-    'I decide which content marketing processes are worth automating and build the tools to do it, with AI where it makes sense. A collection of projects built for real problems.',
+    'I decide which content marketing processes are worth automating and build the tools that do it. Each project came out of my own work as a B2B SaaS writer.',
   alternates: {
     canonical: 'https://peaceakinwale.com/projects',
   },
@@ -72,12 +72,12 @@ export default function ProjectsPage() {
       <div className="max-w-5xl">
       <header className="mb-16">
         <h1 className="mb-6 text-5xl font-bold leading-tight md:text-6xl lg:text-7xl">
-          Things I&apos;ve Built
+          Things I&apos;ve built
         </h1>
         <p className="max-w-2xl text-lg leading-relaxed text-muted-foreground">
           I decide which content marketing processes are worth automating and build the tools
-          that do it, with AI where it makes sense. For my personal work as a B2B SaaS content writer
-          for brands and agencies, I&apos;ve found great use cases for the following projects.
+          that do it. Each project below came out of my own work as a B2B SaaS writer for brands
+          and agencies.
         </p>
         <p className="mt-4 max-w-2xl text-base text-muted-foreground">
           The newer tools each have a{' '}
@@ -101,9 +101,6 @@ export default function ProjectsPage() {
               </h2>
               <p className="leading-relaxed text-muted-foreground">{project.description}</p>
             </div>
-            <span className="self-center text-xl text-muted-foreground transition-all group-hover:translate-x-1 group-hover:text-accent">
-              {'->'}
-            </span>
           </Link>
         ))}
       </div>
@@ -120,17 +117,13 @@ export default function ProjectsPage() {
             That&apos;s the perspective I bring to a team.
           </p>
           <p>
-            When I join a new team, I find out what slows you down and what we can solve with AI
-            without adding more work to your desk.
+            When I join a team, I find out what slows people down and build the tool that takes it
+            off their desk. I did that for my own work first, which is where every project above
+            came from.
           </p>
           <p>
-            I&apos;ve built my way out of the manual tasks I could automate. If you can recognize
-            what those &ldquo;manual tasks to automate&rdquo; are, I can help you automate them.
-          </p>
-          <p>
-            And as a content lead or agency owner, it&apos;s imperative to find a writer with good
-            editorial judgment who can also build systems to make life easier for your team. I am
-            that writer.
+            If you lead content at a company or an agency, that is what you get with me. A writer
+            with editorial judgement who also builds the systems around the writing.
           </p>
           <p>
             <a href="mailto:akindayopeaceakinwale@gmail.com">Send an email</a> or{' '}
