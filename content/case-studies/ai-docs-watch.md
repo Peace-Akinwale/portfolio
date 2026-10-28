@@ -5,7 +5,7 @@ blurb: "Shows you an AI platform’s docs as they were before and after each cha
 kind: built
 status: "live, public"
 date: 2026-10-14
-summary: "AI Docs Watch keeps an eye on the official help pages, policies, terms and API docs of Google, Gemini, OpenAI, Anthropic, Bing and Perplexity, every single day. When one of those pages changes, it publishes the page as it looked before and after, with the changed words marked. Each change gets a plain impact rating and a note on what it means for an SEO or content team. I built the monitoring, the archive and the public site."
+summary: "AI Docs Watch keeps an eye on the official help pages, policies, terms and API docs of Google, Gemini, OpenAI, Anthropic, Bing and Perplexity, every single day. When one of those pages changes, it publishes the page as it looked before and after, with the changed words marked. Each change gets a plain impact rating and a few words on what it means for an SEO or content team. I built the monitoring, the archive and the public site."
 voice: informal
 notion_url: https://app.notion.com/p/403992da7a57817c8a0ad5105de78b0e
 notion_last_edited: 2026-10-24T17:28:05.687Z

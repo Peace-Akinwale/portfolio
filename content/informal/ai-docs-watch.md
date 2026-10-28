@@ -1,6 +1,6 @@
 ## Portfolio summary
 
-AI Docs Watch keeps an eye on the official help pages, policies, terms and API docs of Google, Gemini, OpenAI, Anthropic, Bing and Perplexity, every single day. When one of those pages changes, it publishes the page as it looked before and after, with the changed words marked. Each change gets a plain impact rating and a note on what it means for an SEO or content team. I built the monitoring, the archive and the public site.
+AI Docs Watch keeps an eye on the official help pages, policies, terms and API docs of Google, Gemini, OpenAI, Anthropic, Bing and Perplexity, every single day. When one of those pages changes, it publishes the page as it looked before and after, with the changed words marked. Each change gets a plain impact rating and a few words on what it means for an SEO or content team. I built the monitoring, the archive and the public site.
 
 ## Case study
 
