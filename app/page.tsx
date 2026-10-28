@@ -43,7 +43,7 @@ export default function HomePage() {
               height={2097}
               priority
               sizes="(max-width: 760px) 100vw, 50vw"
-              alt="Peace Akinwale in a pinstriped suit, arms folded, smiling"
+              alt="Peace Akinwale in a pinstriped suit, smiling with arms folded"
             />
           </figure>
         </div>
@@ -77,7 +77,7 @@ export default function HomePage() {
             <p>{DOCS_WATCH.p2}</p>
           </div>
           <figure className="shot">
-            <Image src="/images/home/docswatch-change.jpg" width={1400} height={758} loading="lazy" sizes="(max-width: 760px) 100vw, 50vw" alt="A Docs Watch change page: 'Low impact edit to Usage Policy', a one-sentence summary, a 'See the change side by side' button, and a dated list of every version of the page" />
+            <Image src="/images/home/docswatch-change.jpg" width={1400} height={758} loading="lazy" sizes="(max-width: 760px) 100vw, 50vw" alt="A Docs Watch change page titled 'Low impact edit to Usage Policy', with a one-sentence summary and a 'See the change side by side' button. Below them, a dated list of every version of the page." />
             <figcaption>{DOCS_WATCH.caption}</figcaption>
           </figure>
           <p className="go">
@@ -173,7 +173,7 @@ export default function HomePage() {
           <p>{OFFER.building}</p>
           <p className="note">No price list for this one. We talk about the task first, then I scope it.</p>
           <Ext href={CALENDLY_URL}><span className="button button-accent">Book a 30-minute call</span></Ext>
-          <Link className="button button-line" href="/contact">Or just write to me</Link>
+          <Link className="button button-line" href="/contact">Or write to me</Link>
         </div>
       </section>
     </div>

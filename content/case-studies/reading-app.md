@@ -21,33 +21,37 @@ related:
 
 ### Get recurring research out of the social feed
 
-The founder runs an SEO agency and two newsletters, and their research happened in the gaps of the day. In their words, LinkedIn was "on the home screen of my phone," they were "opening it 10 times a day," and every useful post went into one of three Google Tasks lists to come back to later. By June 2026 those lists held 714 saved items.
+The founder runs an SEO agency and two newsletters, and their research happened in the gaps of the day. In their words, LinkedIn was "on the home screen of my phone," and they were "opening it 10 times a day."
 
-They wanted "a way to totally replace" that process with something that followed the people they trust, gathered those posts in one place and let them work through it "in a condensed and manageable way." They'd also rather listen to long articles than read them.
+Every useful post went into one of three Google Tasks lists to come back to later. By June 2026 those lists held 714 saved items.
 
-Until June 10, 2026, I'd been building a different tool, an engine that drafted LinkedIn posts. On a call that day, the founder said their own writing setup already produced better posts, and that the real problem was all the checking and saving. I wrote up the new requirements from the call, then built and deployed the first version of the reading app that same night. The post engine's infrastructure stayed, and went to work for the new app.
+They wanted "a way to totally replace" that process. It had to follow the people they trust and let them work through those posts "in a condensed and manageable way." They also prefer listening to long articles over reading them.
+
+I'd been building a different tool until June 10, 2026. It was an engine that drafted LinkedIn posts. On a call that day, the founder said their own writing setup already produced better posts. They said the real problem was all the checking and saving.
+
+I wrote up the new requirements from the call and shipped the first version of the reading app that same night. The post engine's infrastructure stayed and went to work for the new app.
 
 ### Review collected posts in one feed
 
-The app crawls about 190 people's public posts every day, plus selected YouTube and X accounts and industry news feeds. The top of the feed says what the crawl did, so the founder knows how much is waiting before they start.
+The app crawls about 190 people's public posts every day. It also follows selected YouTube and X accounts and industry news feeds. The top of the feed says what the crawl did, so the founder knows how much is waiting before they start.
 
 
-The founder can go through posts in one place and star the ones worth using. Off-topic updates are hidden by default, with a “Show everything” switch to see what got left out. Feedback helps tune the feed. That gives the founder a research queue to work through on purpose, instead of reopening LinkedIn over and over to see what's new.
+The founder can go through posts in one place and star the ones worth using. Off-topic updates are hidden by default, with a “Show everything” switch to see what got left out. Feedback helps tune the feed. That gives the founder a research queue to work through on purpose, instead of reopening LinkedIn to check what's new.
 
 ### Listen to digests and newsletter notes
 
-The founder likes listening, so I added audio versions of the weekly LinkedIn and industry-news digests. They can catch up without reading every collected post. Newsletter notes also got narrated and short-video versions, so the same edited material can go out in another format.
+The founder likes listening. So I added audio versions of the weekly LinkedIn and industry-news digests. They can catch up without reading every collected post. Newsletter notes also got narrated and short-video versions, so the same edited material can go out in another format.
 
 ### From a star to a newsletter note
 
-Starring a post does two things. It clears the post from the unread list, and it adds it to that week's newsletter note. On the Roundups screen, starred posts wait under "Building now," where they can be reordered, held for next week, or topped with a note from the founder.
+Starring a post does two things. It clears the post from the unread list, and it adds it to that week's newsletter note. On the Roundups screen, starred posts wait under "Building now." There the founder can reorder them or top them with a note.
 
 
-The app drafts a newsletter note from three chosen posts and the founder's own commentary, sticking to the limit they picked. The founder edits it before sending it to the publishing system as a draft. So their research picks become the starting point for the newsletter, and they don't have to collect the same links all over again.
+The app drafts a newsletter note from three chosen posts and the founder's own commentary, sticking to the limit they picked. The founder edits it before sending it to the publishing system as a draft. So their research picks become the starting point for the newsletter, and they don't have to collect the same links again.
 
 ### Rules that protect the account
 
-I set account-protection rules before writing any code. The app holds no LinkedIn login or cookies, and there's no way to post or comment from it. Engagement stays with the founder, through links they open themselves. Public posts come through a third-party data service that doesn't need the founder's account.
+I set account-protection rules before writing any code. The app holds no LinkedIn login or cookies. There's no way to post or comment from it. Engagement stays with the founder, through links they open themselves. Public posts come through a third-party data service that doesn't need the founder's account.
 
 Two smaller rules came from watching the app in use. The feed only refreshes when asked, so posts don't jump around while you're reading. And a separate check stops generated newsletter copy from promising agency services, so an automated draft can't make commitments the founder hasn't approved.
 
@@ -58,4 +62,4 @@ As more outputs got added, I brought them together in a shared Library. The foun
 
 ### What the build delivered
 
-I directed the build with AI coding agents, turning the founder's requests into one connected reading and publishing workflow. It gave them a place to review collected research and turn chosen posts into newsletter drafts, with reader accounts for teammates.
+I turned the founder's requests into one connected reading and publishing workflow, and directed AI coding agents through the build. It gave them a place to review collected research and turn chosen posts into newsletter drafts. Teammates get reader accounts.

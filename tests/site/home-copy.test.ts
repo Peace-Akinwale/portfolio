@@ -15,12 +15,13 @@ describe('homepage copy', () => {
     expect(all).not.toContain('most of them for an AI-search agency');
   });
 
-  it('uses the approved passages verbatim', () => {
+  it('uses the approved passages, as edited to the 28 Oct copy rules', () => {
     expect(copy.DOCS_WATCH.p1).toContain('AI Docs Watch checks API documentation for product changes across AI platforms such as OpenAI and Anthropic.');
     expect(copy.CONTENTDB.p1.startsWith('I built ContentDB to help writers use the expertise already sitting in a company’s content.')).toBe(true);
     expect(copy.AEO.heading).toBe('What AEO checklists leave out');
     expect(copy.FANOUT.p2).toContain('export the results as JSON for further analysis in Claude');
-    expect(copy.HOW_I_WORK.p1.startsWith('I use AI to help me research articles and build tools')).toBe(true);
+    expect(copy.HOW_I_WORK.p1.startsWith('I research every article and design every tool myself.')).toBe(true);
+    expect(copy.HOW_I_WORK.p1).not.toMatch(/^I use AI/);
     expect(copy.OFFER.prices).toEqual([
       'Refresh an existing article, $400 (2,000 to 2,500 words)',
       'Write a new article, $600 (2,000 to 3,000 words)',

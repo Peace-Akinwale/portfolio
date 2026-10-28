@@ -5,7 +5,7 @@ blurb: "Checks every page against Google’s quality guidelines and points at th
 kind: built
 status: "in team use, accuracy not yet measured"
 date: 2026-10-13
-summary: "Google employs human quality raters who judge pages against its quality guidelines. Quality Rater uses those same guidelines to flag pages for a person to review. It gives provisional ratings and links each finding to a passage, so a writer can decide what needs attention. It's still a work in progress. It's live for the agency's team, and measuring its accuracy is the next step."
+summary: "Google employs human quality raters who judge pages against its guidelines. Quality Rater uses the same guidelines to flag pages for a person to review. It gives provisional ratings and links each finding to a passage, so a writer can decide what needs attention. It's live for the agency's team as a work in progress. Measuring its accuracy is the next step."
 voice: informal
 notion_url: https://app.notion.com/p/403992da7a5781f583bef06d8253072c
 notion_last_edited: 2026-10-24T17:30:32.907Z
@@ -28,19 +28,19 @@ Once a site has been checked, the run screen groups the high-priority pages and 
 
 ### Show the passage behind each suggested fix
 
-Each report links its finding to a passage and explains the suggested fix. The strategist can read that passage before deciding to accept the recommendation, reject it or come back to it later. Recording a reason keeps the reviewer's judgment right next to the model's suggestion.
+Each report links its finding to a passage and explains the suggested fix. The strategist can read that passage before deciding to accept the recommendation or reject it. Recording a reason keeps the reviewer's judgment next to the model's suggestion.
 
 
-A reviewer can ask for a rewrite through the draft checker. A separate writing model prepares it, with checks meant to reject changes to quoted source material. That keeps rewriting tied to a person's decision, instead of acting on every flagged issue automatically.
+A reviewer can ask for a rewrite through the draft checker. A separate writing model prepares it, with checks meant to reject changes to quoted source material. That keeps rewriting tied to a person's decision, instead of acting on every flagged issue.
 
 ### Tie findings to numbered sentences
 
-I split pages into numbered sentences, so the decision model can point to a specific spot instead of vaguely criticising the whole page. A second pass checks those picks before a finding is shown. That makes a recommendation easier for a strategist to check, although it doesn't prove the judgment is right.
+I split pages into numbered sentences, so the decision model can point to a specific spot instead of making a general criticism of the whole page. A second pass checks those picks before a finding is shown. That makes a recommendation easier for a strategist to check, although it doesn't prove the judgment is right.
 
-I directed the first build with AI coding agents over about two weeks in October 2026. It went live for the agency team on October 13.
+I designed the first build and directed AI coding agents through it over about two weeks in October 2026. It went live for the agency team on October 13.
 
 ### Still in progress
 
 This is an independent tool built for the agency. We haven't measured yet how often it agrees with human reviewers.
 
-It's still a work in progress, and I'll update this page once the feed is a lot less noisy than it is right now.
+It's still a work in progress, and I'll update this page once the feed is less noisy than it is now.

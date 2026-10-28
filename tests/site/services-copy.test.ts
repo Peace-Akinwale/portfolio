@@ -5,14 +5,14 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 describe('services copy', () => {
-  it('uses the approved service sentence, prices and tool CTA', () => {
-    expect(SERVICE_COPY).toBe('I write BOFU content for B2B SaaS companies and agencies, and conduct enough product research to explain what someone can actually do with your product.');
+  it('uses the approved service sentence (edited to the 28 Oct copy rules), prices and tool CTA', () => {
+    expect(SERVICE_COPY).toBe('I write BOFU content for B2B SaaS companies and agencies, and conduct enough product research to explain what someone can do with your product.');
     expect(PRICES).toEqual([
       'Refresh an existing article, $400 (2,000 to 2,500 words)',
       'Write a new article, $600 (2,000 to 3,000 words)',
       'Five articles a month, $2,700',
     ]);
-    expect(TOOL_CTA).toBe('Tell me about the task your team keeps doing manually. I’ll help you work out whether building a tool would make it easier, then build around how the team works.');
+    expect(TOOL_CTA).toBe('Tell me about the task your team keeps doing by hand. I’ll tell you whether a tool would make it easier, then build it around how the team works.');
   });
 
   it('invents no tool prices: the only dollar figures on the page are the known ones', () => {

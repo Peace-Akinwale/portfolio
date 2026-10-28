@@ -88,7 +88,7 @@ export default function ManyRequestsCaseStudyPage() {
             </div>
             <div className="rounded-xl border border-border p-5" style={{ background: 'var(--muted)' }}>
               <p className="text-3xl font-extrabold mb-1" style={{ letterSpacing: '-0.03em', color: 'var(--accent)' }}>22</p>
-              <p className="text-[12px] leading-relaxed text-muted-foreground">High-fit topics where the product could be shown directly</p>
+              <p className="text-[12px] leading-relaxed text-muted-foreground">High-fit topics where the product could be shown inside the article</p>
             </div>
             <div className="rounded-xl border border-border p-5" style={{ background: 'var(--muted)' }}>
               <p className="text-sm font-extrabold mb-1 text-foreground leading-snug">Page one</p>
@@ -108,7 +108,7 @@ export default function ManyRequestsCaseStudyPage() {
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src="/images/case-studies/manyrequests/manyrequests-homepage.png"
-            alt="ManyRequests homepage — the client portal built for agencies"
+            alt="The ManyRequests homepage, the client portal built for agencies"
             className="w-full rounded-xl border border-border"
             loading="lazy"
           />
@@ -122,7 +122,7 @@ export default function ManyRequestsCaseStudyPage() {
             Overview
           </p>
           <p className="text-base leading-[1.85] text-foreground mb-5">
-            <a href="https://www.manyrequests.com/" target="_blank" rel="noopener noreferrer" className="underline underline-offset-[3px] hover:opacity-80 transition-all" style={{ color: 'var(--accent)', textDecorationColor: 'var(--accent)' }}>ManyRequests</a> did not need more blog posts that mentioned the product once near the end and called that product-led content. They needed articles that could rank for the right searches, answer the reader properly, and show where the product fit while the reader was still making up their mind.
+            <a href="https://www.manyrequests.com/" target="_blank" rel="noopener noreferrer" className="underline underline-offset-[3px] hover:opacity-80 transition-all" style={{ color: 'var(--accent)', textDecorationColor: 'var(--accent)' }}>ManyRequests</a> did not need more blog posts that mentioned the product once near the end and called that product-led content. They needed articles that could rank for the right searches and show where the product fit while the reader was still making up their mind.
           </p>
           <p className="text-base leading-[1.85] text-muted-foreground mb-5">
             I&rsquo;ve written {MANYREQUESTS_ARTICLE_COUNT} articles for ManyRequests since {MANYREQUESTS_SINCE}. Most of them sit close to the bottom of the funnel. Comparison pages, alternatives pages, workflow guides, and operational topics where agency owners are already trying to decide what tool to use or how to run a cleaner system.
@@ -138,7 +138,7 @@ export default function ManyRequestsCaseStudyPage() {
           <ul className="flex flex-col gap-3 mb-10">
             {[
               `${MANYREQUESTS_ARTICLE_COUNT} published articles across BOFU and product-adjacent agency operations topics`,
-              '22 high-fit topics where the product could be explained and shown directly in the body',
+              '22 high-fit topics where the product could be explained and shown in the body',
               'Page one rankings for searches like "Workfront alternatives" and "design annotation tools" at the time of review',
               'Retainer still active',
             ].map((r, i) => (
@@ -174,13 +174,13 @@ export default function ManyRequestsCaseStudyPage() {
             A crowded category where the easy version of this work is familiar
           </h2>
           <p className="text-base leading-[1.85] text-muted-foreground mb-5">
-            ManyRequests sells client portal and agency management software for creative agencies and productized service businesses. That puts them in a crowded search space. They are competing with generic <a href="https://manyrequests.com/blog/client-facing-project-management-tool" target="_blank" rel="noopener noreferrer" className="underline underline-offset-[3px] hover:opacity-80 transition-all" style={{ color: 'var(--accent)', textDecorationColor: 'var(--accent)' }}>project management tools</a>, alternatives sites, affiliate roundups, and bigger software brands with more authority.
+            ManyRequests sells client portal and agency management software for creative agencies and productized service businesses. That puts them in a crowded search space. They are competing with generic <a href="https://manyrequests.com/blog/client-facing-project-management-tool" target="_blank" rel="noopener noreferrer" className="underline underline-offset-[3px] hover:opacity-80 transition-all" style={{ color: 'var(--accent)', textDecorationColor: 'var(--accent)' }}>project management tools</a> and bigger software brands with more authority.
           </p>
           <p className="text-base leading-[1.85] text-muted-foreground mb-5">
-            The easy version of this work is familiar. Pick a comparison keyword, write a listicle, add the client&rsquo;s logo at the top, mention the product in the conclusion, and move on. That kind of article can rank for a while, but it usually does a weak job of helping the reader understand why this product matters and how it helps.
+            The easy version of this work is familiar. Write a listicle for a comparison keyword and mention the product in the conclusion. That kind of article can rank for a while, but it does a weak job of helping the reader understand why this product matters and how it helps.
           </p>
           <p className="text-base leading-[1.85] text-muted-foreground">
-            ManyRequests needed something better. The brief was not just to publish content. It was to write articles where the product could do real work inside the body of the piece.
+            ManyRequests needed something better. The brief was not to publish content for its own sake. It was to write articles where the product could do real work inside the body of the piece.
           </p>
         </div>
       </section>
@@ -192,7 +192,7 @@ export default function ManyRequestsCaseStudyPage() {
             How I approached the work
           </p>
           <h2 className="text-2xl sm:text-3xl font-extrabold mb-10 text-foreground" style={{ letterSpacing: '-0.02em' }}>
-            Three things I did consistently across {MANYREQUESTS_ARTICLE_COUNT} articles
+            Three things I did across all {MANYREQUESTS_ARTICLE_COUNT} articles
           </h2>
 
           {/* Step 1 */}
@@ -201,13 +201,13 @@ export default function ManyRequestsCaseStudyPage() {
               I chose topics where I could explain how the product works inside the article
             </h3>
             <p className="text-base leading-[1.85] text-muted-foreground mb-4">
-              Before I wrote anything, I looked at each topic through a simple question: can I show the reader where ManyRequests fits before the article is over?
+              Before I wrote anything, I asked one question of each topic. Can I show the reader where ManyRequests fits before the article is over?
             </p>
             <p className="text-base leading-[1.85] text-muted-foreground mb-4">
               If the answer was yes, the topic scored higher (using the <a href="https://blog.timsoulo.com/business-potential-the-most-important-metric-in-content-marketing/" target="_blank" rel="noopener noreferrer" className="underline underline-offset-[3px] hover:opacity-80 transition-all" style={{ color: 'var(--accent)', textDecorationColor: 'var(--accent)' }}>business potential score</a>). If the fit was weak, I either changed the angle or treated the piece as broader educational content instead of trying to force the product into it.
             </p>
             <p className="text-base leading-[1.85] text-muted-foreground mb-4">
-              That is what pushed the work toward topics like <a href="https://manyrequests.com/blog/workfront-alternatives" target="_blank" rel="noopener noreferrer" className="underline underline-offset-[3px] hover:opacity-80 transition-all" style={{ color: 'var(--accent)', textDecorationColor: 'var(--accent)' }}>Workfront alternatives</a>, <a href="https://www.manyrequests.com/blog/clickup-alternatives" target="_blank" rel="noopener noreferrer" className="underline underline-offset-[3px] hover:opacity-80 transition-all" style={{ color: 'var(--accent)', textDecorationColor: 'var(--accent)' }}>ClickUp alternatives</a>, <a href="https://manyrequests.com/blog/client-facing-project-management-tool" target="_blank" rel="noopener noreferrer" className="underline underline-offset-[3px] hover:opacity-80 transition-all" style={{ color: 'var(--accent)', textDecorationColor: 'var(--accent)' }}>client-facing project management tool</a>, <a href="https://manyrequests.com/blog/retainer-management-software" target="_blank" rel="noopener noreferrer" className="underline underline-offset-[3px] hover:opacity-80 transition-all" style={{ color: 'var(--accent)', textDecorationColor: 'var(--accent)' }}>retainer management software</a>, and <a href="https://manyrequests.com/blog/design-annotation-software" target="_blank" rel="noopener noreferrer" className="underline underline-offset-[3px] hover:opacity-80 transition-all" style={{ color: 'var(--accent)', textDecorationColor: 'var(--accent)' }}>design annotation tools</a>. In those searches, the reader is already comparing tools or trying to solve an operational problem that ManyRequests actually helps with.
+              That is what pushed the work toward topics like these. <a href="https://manyrequests.com/blog/workfront-alternatives" target="_blank" rel="noopener noreferrer" className="underline underline-offset-[3px] hover:opacity-80 transition-all" style={{ color: 'var(--accent)', textDecorationColor: 'var(--accent)' }}>Workfront alternatives</a>, <a href="https://www.manyrequests.com/blog/clickup-alternatives" target="_blank" rel="noopener noreferrer" className="underline underline-offset-[3px] hover:opacity-80 transition-all" style={{ color: 'var(--accent)', textDecorationColor: 'var(--accent)' }}>ClickUp alternatives</a>, <a href="https://manyrequests.com/blog/client-facing-project-management-tool" target="_blank" rel="noopener noreferrer" className="underline underline-offset-[3px] hover:opacity-80 transition-all" style={{ color: 'var(--accent)', textDecorationColor: 'var(--accent)' }}>client-facing project management tool</a>, <a href="https://manyrequests.com/blog/retainer-management-software" target="_blank" rel="noopener noreferrer" className="underline underline-offset-[3px] hover:opacity-80 transition-all" style={{ color: 'var(--accent)', textDecorationColor: 'var(--accent)' }}>retainer management software</a>, and <a href="https://manyrequests.com/blog/design-annotation-software" target="_blank" rel="noopener noreferrer" className="underline underline-offset-[3px] hover:opacity-80 transition-all" style={{ color: 'var(--accent)', textDecorationColor: 'var(--accent)' }}>design annotation tools</a>. In those searches, the reader is already comparing tools or trying to solve an operational problem that ManyRequests helps with.
             </p>
             <p className="text-base leading-[1.85] text-muted-foreground mb-8">
               That filter also helped on broader topics like <a href="https://www.manyrequests.com/blog/agency-retainer-model" target="_blank" rel="noopener noreferrer" className="underline underline-offset-[3px] hover:opacity-80 transition-all" style={{ color: 'var(--accent)', textDecorationColor: 'var(--accent)' }}>agency retainer model</a>. It kept me honest. If the product could not help explain the workflow, I had no reason to wedge it into the piece.
@@ -226,18 +226,18 @@ export default function ManyRequestsCaseStudyPage() {
           {/* Step 2 */}
           <div className="mb-14">
             <h3 className="text-xl font-extrabold text-foreground mb-4" style={{ letterSpacing: '-0.02em' }}>
-              I showed the product through workflows, screenshots, and customer proof
+              I showed the product through workflows and screenshots
             </h3>
             <p className="text-base leading-[1.85] text-muted-foreground mb-4">
-              Once a topic passed that first filter, I tried to make the product useful inside the article. Not visible. Useful.
+              Once a topic passed that first filter, I made the product useful inside the article. Not visible. Useful.
             </p>
             <p className="text-base leading-[1.85] text-muted-foreground mb-6">
-              That usually meant three things:
+              In most articles, that meant three things.
             </p>
 
             <ul className="flex flex-col gap-2.5 mb-8">
               {[
-                'Explain the workflow, not just the feature',
+                'Explain the workflow, not only the feature',
                 'Show the product where a screenshot helps the reader understand the step',
                 'Use customer examples where proof matters more than marketing copy',
               ].map((item, i) => (
@@ -249,14 +249,17 @@ export default function ManyRequestsCaseStudyPage() {
             </ul>
 
             <p className="text-base leading-[1.85] text-muted-foreground mb-6">
-              You can see that pattern clearly in the work.
+              You can see that pattern in the work.
             </p>
 
             {/* Wrike vs ClickUp */}
             <div className="rounded-xl border border-border p-6 mb-4" style={{ background: 'var(--muted)' }}>
               <a href="https://www.manyrequests.com/blog/wrike-vs-clickup" target="_blank" rel="noopener noreferrer" className="text-sm font-bold text-foreground mb-3 underline underline-offset-2 hover:opacity-70 transition-opacity block">Wrike vs ClickUp &rarr;</a>
+              <p className="text-[15px] leading-[1.75] text-muted-foreground mb-4">
+                The reader is comparing more than task management tools. Many of them are trying to figure out what works for an agency that has to manage client approvals and billing in one place.
+              </p>
               <p className="text-[15px] leading-[1.75] text-muted-foreground mb-5">
-                The reader is not just comparing task management tools. They are often trying to figure out what works for an agency that has to manage clients, approvals, billing, and delivery in one place. That gave me room to explain why a client portal, proofing, and white-label delivery matter in the first place, and where ManyRequests fits better than another internal PM tool.
+                That gave me room to explain why a client portal and white-label delivery matter in the first place. It also let me show where ManyRequests fits better than another internal PM tool.
               </p>
               {/* Figure 3 */}
               {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -272,7 +275,7 @@ export default function ManyRequestsCaseStudyPage() {
             <div className="rounded-xl border border-border p-6 mb-4" style={{ background: 'var(--muted)' }}>
               <a href="https://www.manyrequests.com/blog/agency-retainer-model" target="_blank" rel="noopener noreferrer" className="text-sm font-bold text-foreground mb-3 underline underline-offset-2 hover:opacity-70 transition-opacity block">Agency Retainer Model &rarr;</a>
               <p className="text-[15px] leading-[1.75] text-muted-foreground mb-5">
-                The product fit is less obvious at first, which is why I like it as proof. The article is teaching the reader how to structure and run a retainer. That gave me a practical place to show add-on services, intake forms, and cleaner request handling inside ManyRequests. The product was not tacked on. It was part of the operational advice.
+                The product fit is less obvious at first, which is why I like it as proof. The article is teaching the reader how to structure and run a retainer. That gave me a practical place to show add-on services and intake forms inside ManyRequests. The product was not tacked on. It was part of the operational advice.
               </p>
               {/* Figure 4 */}
               {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -288,7 +291,7 @@ export default function ManyRequestsCaseStudyPage() {
             <div className="rounded-xl border border-border p-6" style={{ background: 'var(--muted)' }}>
               <a href="https://www.manyrequests.com/blog/design-annotation-software" target="_blank" rel="noopener noreferrer" className="text-sm font-bold text-foreground mb-3 underline underline-offset-2 hover:opacity-70 transition-opacity block">Design Annotation Tools &rarr;</a>
               <p className="text-[15px] leading-[1.75] text-muted-foreground mb-5">
-                The fit is direct. The feature is the topic. That article let me explain the dashboard, markup flow, and video feedback with screenshots and concrete use cases instead of generic feature copy.
+                The fit is direct. The feature is the topic. That article let me explain the markup flow and video feedback with screenshots and concrete use cases instead of generic feature copy.
               </p>
               {/* Figure 5 */}
               {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -310,10 +313,10 @@ export default function ManyRequestsCaseStudyPage() {
               Search intent gets someone into the article. It does not finish the job.
             </p>
             <p className="text-base leading-[1.85] text-muted-foreground mb-4">
-              A reader searching &ldquo;Workfront alternatives&rdquo; is also wondering whether the alternative works for agencies, whether clients can submit requests cleanly, whether the team can manage billing, whether feedback stays organized, and whether the whole thing still works once the agency grows.
+              A reader searching &ldquo;Workfront alternatives&rdquo; also has other questions. Does the alternative work for agencies? Is there a clean way for clients to submit requests? Can the team manage billing in the same place? Does the whole thing still work once the agency grows?
             </p>
             <p className="text-base leading-[1.85] text-muted-foreground">
-              So I wrote the body to answer those follow-up questions inside the piece. That is part of what made the work feel product-led without turning it into a sales page. The product showed up where the reader naturally needed an answer, not where the brand wanted one more mention.
+              So I wrote the body to answer those follow-up questions inside the piece. That is part of what made the work feel product-led without turning it into a sales page. The product showed up where the reader needed an answer, not where the brand wanted one more mention.
             </p>
           </div>
         </div>
@@ -332,7 +335,7 @@ export default function ManyRequestsCaseStudyPage() {
             {[
               {
                 title: 'Wrike vs ClickUp',
-                desc: 'Shows how I handle hard comparison content. The article meets the search intent, but it also reframes the decision around what agencies actually need, not just what a general PM buyer might want.',
+                desc: 'Shows how I handle hard comparison content. The article meets the search intent. It also reframes the decision around what agencies need, not only what a general PM buyer might want.',
               },
               {
                 title: 'Agency Retainer Model',
@@ -367,10 +370,10 @@ export default function ManyRequestsCaseStudyPage() {
 
           <ul className="flex flex-col gap-3 mb-10">
             {[
-              `${MANYREQUESTS_ARTICLE_COUNT} published articles across comparisons, alternatives, workflow guides, and agency operations topics`,
+              `${MANYREQUESTS_ARTICLE_COUNT} published articles across comparison and agency operations topics`,
               'Strong concentration around high-intent searches where ManyRequests had real product fit',
               'Page one visibility for "Workfront alternatives" and "design annotation tools" during review',
-              'Ongoing retainer — which usually tells you as much as any vanity metric',
+              'Ongoing retainer, which tells you as much as any vanity metric',
             ].map((r, i) => (
               <li key={i} className="flex items-start gap-3 text-[15px] leading-[1.75] text-muted-foreground">
                 <span className="mt-1 flex-shrink-0 w-1.5 h-1.5 rounded-full" style={{ background: 'var(--accent)' }} />
@@ -409,10 +412,10 @@ export default function ManyRequestsCaseStudyPage() {
       <section className="bg-background border-b border-border">
         <div className="max-w-3xl mx-auto px-6 py-14 sm:py-16">
           <p className="text-base leading-[1.85] text-foreground mb-5">
-            What worked here was not just volume. It was product judgment.
+            What worked here was more than volume. It was product judgment.
           </p>
           <p className="text-base leading-[1.85] text-muted-foreground">
-            The articles did not treat ManyRequests like a logo to attach at the end of a post. They used the product to help explain the problem, the workflow, and the decision the reader was already trying to make. That is what made the content more useful, and more commercial, at the same time.
+            The articles did not treat ManyRequests like a logo to attach at the end of a post. They used the product to help explain the workflow and the decision the reader was already trying to make. That is what made the content more useful and more commercial at the same time.
           </p>
         </div>
       </section>
@@ -424,7 +427,7 @@ export default function ManyRequestsCaseStudyPage() {
             Want articles like these for your product?
           </h2>
           <p className="text-base leading-relaxed text-muted-foreground mb-10 max-w-xl">
-            If your blog publishes regularly but the product never really shows up in the work, that&rsquo;s usually where I start.
+            If your blog publishes on a schedule but the product never shows up in the work, that&rsquo;s where I start.
           </p>
           <div className="flex flex-col sm:flex-row gap-3">
             <Link

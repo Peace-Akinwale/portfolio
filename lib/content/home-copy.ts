@@ -1,6 +1,8 @@
 // The homepage's words, in one place so the page stays a layout and the copy
 // stays reviewable. Passages marked "brief" are Peace's approved wording from
-// the 25 Oct 2026 brief and are used verbatim.
+// the 25 Oct 2026 brief, edited by hand on 28 Oct 2026 to the copy rules in
+// docs/qa/copy-rules-2026-10-28.md at her request. The originals are in
+// docs/superpowers/specs/2026-10-25-site-rebuild-brief.md.
 
 export const HERO = {
   heading: 'Good work starts with good questions.',
@@ -23,17 +25,18 @@ export const ANSWERS = {
 
 export const DOCS_WATCH = {
   // brief
-  p1: 'AI Docs Watch checks API documentation for product changes across AI platforms such as OpenAI and Anthropic. It keeps the before-and-after versions so readers can see exactly what changed.',
+  p1: 'AI Docs Watch checks API documentation for product changes across AI platforms such as OpenAI and Anthropic. It keeps the before-and-after versions so readers can see the exact wording that changed.',
   p2: 'Each change page includes a brief explaining the update and why it matters to someone using the platform. Readers can compare the original page with the updated version and follow the source link to check the details for themselves.',
-  caption: 'A change page on the public site, 21 Oct 2026: the summary, the side-by-side button and every archived version of the page underneath.',
+  caption: 'A change page on the public site, 21 Oct 2026, with the side-by-side button and every archived version of the page underneath.',
   site: 'https://docswatch.stevetoth.ai',
   caseStudy: '/case-studies/ai-docs-watch',
 };
 
 export const CONTENTDB = {
   // brief
-  p1: 'I built ContentDB to help writers use the expertise already sitting in a company’s content. It brings existing articles, videos and research into a searchable library that connects to an AI tool through MCP. When you need an expert insight for a new article, you can ask your AI tool to find relevant material in that library instead of searching through old studies, ebooks and thought-leadership pieces yourself.',
-  caption: 'A search in my own workspace. The quote about three packages reads differently once you see the sentence after it.',
+  p1: 'I built ContentDB to help writers use the expertise already sitting in a company’s content. It brings existing articles and videos into a searchable library that connects to an AI tool through MCP.',
+  p2: 'When you need an expert insight for a new article, you ask your AI tool to find it in that library. You don’t have to dig through old studies and ebooks yourself.',
+  caption: 'A search in my own workspace. The quote about three packages means something else once you see the sentence after it.',
   caseStudy: '/case-studies/contentdb',
 };
 
@@ -65,7 +68,7 @@ export const FANOUT = {
 
 export const GARDE = {
   // brief. This paragraph belongs to Garde, never to Aloud.
-  p1: 'A few friends liked it, but I couldn\'t find a way to go viral and reach more people. I also found that there were many free, faster alternatives. After four months of building and spending out of pocket, I stopped paying for cloud resources and shut it down. I wrote about that decision too.',
+  p1: 'A few friends liked it, but I couldn\'t find a way to go viral and reach more people. I also found that there were many free, faster alternatives. After four months of building and spending out of pocket, I stopped paying for cloud resources and shut it down. I wrote about that decision.',
   lead: 'Garde turned recipe videos into text so you could cook without rewinding.',
   essay: '/what-i-learned-vibe-coding-my-first-app-shutting-it-down',
 };
@@ -76,16 +79,16 @@ export const EDITOR = {
   caption: 'Melissa Malec, content lead at Jabra through Spicy Margarita. A screenshot of the document, not a quote I tidied up.',
   nathan: 'we never needed more than one round of feedback per article - and none towards the end of our project!',
   nathanBy: 'Nathan Vander Heyden, Head of Marketing at Marker.io, 25 Sep 2025',
-  done: 'Done, for a section, means the reader gets the answer first. For a client’s heading “What is regression testing?” I opened with the definition and nothing before it. The editor kept it exactly that way.',
+  done: 'Done, for a section, means the reader gets the answer first. For a client’s heading “What is regression testing?” I opened with the definition and nothing before it. The editor kept it that way.',
 };
 
 export const ALOUD = {
-  p1: 'Aloud is my audio reader. Paste a link, a PDF or an EPUB and hear it read. An AI cleanup pass had been quietly rewriting every paragraph before narration. Rewriting someone’s book, I wrote in the decisions file, “is scraping away the integrity of the author’s text.” The pass now runs only on text I paste myself.',
+  p1: 'Aloud is my audio reader. Paste a link or upload a PDF or EPUB, and hear it read. At first I let an AI cleanup pass rewrite every paragraph before narration. Rewriting someone’s book, I wrote in the decisions file, “is scraping away the integrity of the author’s text.” So I limited the pass to text I paste myself.',
   kv: [
     { k: '8 to 0', v: 'times a repeating page header was read out, on a ten-page test book' },
     { k: '18 to 32.2 min', v: 'how far a 33-minute article now narrates' },
   ],
-  p2: 'Nothing I build is called done until a real person has walked it on the live app. The log of every change to Aloud is public, mistakes left in.',
+  p2: 'I don’t call a build done until a real person has walked it on the live app. The log of every change to Aloud is public, mistakes left in.',
   caseStudy: '/case-studies/aloud',
   log: 'https://github.com/Peace-Akinwale/portfolio/blob/master/case-studies/aloud/index.md',
 };
@@ -99,17 +102,17 @@ export const READING_APP = {
 
 export const HOW_I_WORK = {
   // brief
-  p1: 'I use AI to help me research articles and build tools, and I check whether the result does what I need it to do. For an article, that means reading the sources and checking that they support the claims. For a tool, it means trying the tasks someone will use it for and checking what happens when a step fails, so they know what went wrong and what to do next.',
-  p2: 'Every project I run keeps a decisions file that’s read before each session. I came to building from writing, and the two feed each other.',
+  p1: 'I research every article and design every tool myself. AI is one of the tools I direct, and the part I own is the check. For an article, I read the sources and make sure they back the claims. For a tool, I run the tasks someone will use it for, and make sure a failed step tells them what to do next.',
+  p2: 'I keep a decisions file for every project, and every session starts by reading it. The writing and the building feed each other.',
 };
 
 export const OFFER = {
   // brief
-  writing: 'I write BOFU content for B2B SaaS companies and agencies, and conduct enough product research to explain what someone can actually do with your product.',
+  writing: 'I write BOFU content for B2B SaaS companies and agencies, and conduct enough product research to explain what someone can do with your product.',
   prices: [
     'Refresh an existing article, $400 (2,000 to 2,500 words)',
     'Write a new article, $600 (2,000 to 3,000 words)',
     'Five articles a month, $2,700',
   ],
-  building: 'Tell me about the task your team keeps doing manually. I’ll help you work out whether building a tool would make it easier, then build around how the team works.',
+  building: 'Tell me about the task your team keeps doing by hand. I’ll tell you whether a tool would make it easier, then build it around how the team works.',
 };

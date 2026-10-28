@@ -17,9 +17,9 @@ export const revalidate = 300;
 export const metadata: Metadata = withOg({
   title: 'My work, newest first',
   description:
-    'A dated record of the tools I built and the articles I wrote, newest first, with the evidence beside each one. Plus every writing sample, by client.',
+    'A dated record of the tools I built and the articles I wrote, newest first. Each one has its evidence beside it, and every writing sample is listed by client.',
   alternates: { canonical: `${SITE_URL}/portfolio` },
-}, { key: 'portfolio', path: '/portfolio', alt: 'The record: what I built, wrote and decided' });
+}, { key: 'portfolio', path: '/portfolio', alt: 'The record of what I built and wrote' });
 
 const MARKERIO_SECTION = {
   heading: 'Ghostwritten for Marker.io',
@@ -65,13 +65,13 @@ export default async function PortfolioPage() {
       <div className="gutter mx-auto max-w-[1180px]">
         <section className="record-open" aria-labelledby="record-h">
           <div>
-            <h1 id="record-h">Everything I’ve built and written <span className="hl">lately</span>, newest first.</h1>
+            <h1 id="record-h">Everything I’ve built and written, newest first.</h1>
             <p className="who">
               <strong>Two kinds of work, one list.</strong> The ones tagged <em>Built</em> are tools, and each has its own write-up. The ones tagged <em>Wrote</em> are articles, with whatever proof I have next to them. If it’s public, there’s a link. Looking for writing samples by client? They’re <a href="#writing">further down</a>.
             </p>
           </div>
           <figure>
-            <Image src="/images/home/peace-square.jpg" width={900} height={900} alt="Peace Akinwale, smiling, arms folded, in a navy pinstripe suit and red tie, leaning on a wall in a hallway." sizes="220px" priority />
+            <Image src="/images/home/peace-square.jpg" width={900} height={900} alt="Peace Akinwale leaning on a hallway wall with arms folded and smiling, in a navy pinstripe suit and red tie." sizes="220px" priority />
           </figure>
         </section>
       </div>

@@ -1,6 +1,6 @@
 ## Portfolio summary
 
-When you ask ChatGPT, Claude, Perplexity, Gemini or Google's AI Mode a question, the app sends and receives data in the background. That includes the searches it writes, the pages it pulls in and the sources it attaches to each sentence. I recorded hundreds of real AI search conversations, built the pipeline that turned all that traffic into a labelled reference, and published it as a public article with eight platform pages and narrated audio. A reader can look up a field name from the recorded sessions and see what it holds, where it shows up, and whether we saw that meaning or inferred it.
+An AI search app sends and receives data in the background before it answers. That includes the searches it writes and the sources it cites. I recorded hundreds of real conversations and built the pipeline that turned that traffic into a labelled reference. It's a public article with eight platform pages and narrated audio. Each field is labelled as seen or inferred.
 
 ## Case study
 
@@ -10,7 +10,9 @@ The agency's founder wanted a reference that explained the field names that show
 
 ### Hundreds of recorded conversations to start from
 
-The reference is built on browser recordings I made and cleaned in September for an earlier research project. There are 284 three-turn conversations across ChatGPT and its deep research mode, Gemini, Google AI Mode, Google AI Overviews, Claude, Perplexity and Brave. A teammate chose which sessions to record. I recorded them, stripped out personal and account data, and built a parser for each platform.
+The reference is built on browser recordings I made and cleaned in September for an earlier research project. It rests on 284 three-turn conversations. They span ChatGPT and its deep research mode, Gemini, Google AI Mode, Google AI Overviews, Claude, Perplexity and Brave.
+
+A teammate chose which sessions to record. I recorded them and stripped out personal and account data. Then I built a parser for each platform.
 
 ### Turn recordings into entries a researcher can check
 
@@ -32,14 +34,20 @@ Entries keep visible data apart from an interpretation of what it means. Words l
 
 ### A version you can listen to
 
-Some people take things in better by listening, so I added narration to the article and all eight platform pages. That's nine audio tracks, generated from the published pages themselves. When the pages changed, I re-rendered the tracks from the new text and changed the file addresses, so returning listeners got the new audio instead of an old cached copy.
+Some people take things in better by listening. So I added narration to the article and all eight platform pages. That's nine audio tracks, generated from the published pages themselves.
+
+When the pages changed, I re-rendered the tracks from the new text and changed the file addresses. That way returning listeners got the new audio instead of an old cached copy.
 
 ### Handing the pages over to the founder
 
-The first complete version went live on October 2, 2026, after a round of review notes from the founder that I applied everywhere the same issue came up. Over the next two days, the founder rewrote and extended all the pages, and added a check that keeps every required section in place.
+The first complete version went live on October 2, 2026. Before launch I applied a round of the founder's review notes everywhere the same issue came up. Over the next two days the founder rewrote and extended all the pages. They also added a check that keeps every required section in place.
 
 My original generator could have overwritten the founder's edits with older source material. So I retired it and used the edited pages for every update after that, narration included. That kept the editorial work intact, and kept listeners on the same version as readers.
 
 ### Keep the reference current as the apps change
 
-The reference describes the apps as they behaved when the conversations were recorded in September 2026. AI apps change their traffic as they ship new models. On October 8, ChatGPT moved to a new model, and its answers started marking citations differently. I compared fresh traffic against the ChatGPT page the same day, and 133 of its 183 labels still showed up. That's why the reference needs dated observations and fresh recordings. Researchers can check whether an entry still matches the traffic they see, instead of assuming a field will stay the same.
+The reference describes the apps as they behaved when the conversations were recorded in September 2026. AI apps change their traffic as they ship new models.
+
+On October 8 ChatGPT moved to a new model, and its answers started marking citations in a new way. I compared fresh traffic against the ChatGPT page the same day, and 133 of its 183 labels still showed up.
+
+That's why the reference needs dated observations and fresh recordings. Researchers can check whether an entry still matches the traffic they see, instead of assuming a field will stay the same.

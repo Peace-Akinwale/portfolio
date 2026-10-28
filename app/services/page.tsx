@@ -7,7 +7,7 @@ import { OFFER } from '@/lib/content/home-copy';
 export const metadata: Metadata = withOg({
   title: 'Services and prices',
   description:
-    'Bottom-of-funnel articles for B2B SaaS companies and agencies, priced per article or per month, and tool building for content teams, scoped around the task you keep doing by hand.',
+    'Bottom-of-funnel articles for B2B SaaS companies and agencies, priced per article or per month. Tool building for content teams, scoped around the task you keep doing by hand.',
   alternates: { canonical: `${SITE_URL}/services` },
 }, { key: 'services', path: '/services', alt: 'Writing with me, and building with me' });
 
@@ -17,35 +17,36 @@ const PRICES = OFFER.prices;
 
 const WHATS_INCLUDED = [
   '2,000 to 3,000 words per article',
-  '1 round of revisions (usually zero by month 2)',
-  'Original research, including Reddit, G2 and Capterra',
+  '1 round of revisions (zero for most clients by month 2)',
+  'Original research from Reddit and review sites like G2 and Capterra',
   'Internal linking and product-led framing',
-  'Meta title, meta description, alt text, CTAs',
+  'Meta title and meta description',
+  'Alt text and CTAs',
   'Product screenshots and GIFs where relevant',
   'Long-tail semantic keyword optimisation for LLM search',
 ];
 
 const WHATS_NOT = [
-  'Design, illustration, or video production',
-  'Publishing directly to your CMS (+$20 per post)',
+  'Design or video production',
+  'Publishing to your CMS (+$20 per post)',
   'Link building or outreach',
   'Ghostwriting for founders’ LinkedIn',
-  'Whitepapers, eBooks, case studies (ask me to scope separately)',
+  'Whitepapers and case studies (ask me to scope them as their own project)',
   'Rush delivery under 2 business days ($700 per article)',
   'Keyword stuffing or AI-generated drafts',
 ];
 
 const FAQS = [
-  { q: 'Do you use AI to write your drafts?', a: 'No. I use AI as a research assistant and to automate part of my process. It helps me process research, gut-check structure, and move faster. The thinking, the opinions, the product depth, and the writing itself are mine.' },
-  { q: 'How long does it take to get a finished article?', a: 'Usually 3 to 5 business days from brief to first draft. For retainer clients we agree on a fixed delivery cadence upfront that matches your publishing schedule.' },
+  { q: 'Do you use AI to write your drafts?', a: 'No. The opinions and the writing are mine. I use AI as a research assistant and to automate steps in my process, like sorting research and gut-checking structure.' },
+  { q: 'How long does it take to get a finished article?', a: '3 to 5 business days from brief to first draft for most articles. For retainer clients we agree on a fixed delivery cadence upfront that matches your publishing schedule.' },
   { q: 'What if the first draft misses the mark?', a: 'One round of revisions is included on every article. If it still doesn’t land, we work on it together until it does. I don’t ship drafts I’m not proud of, and I don’t leave clients stuck.' },
   { q: 'Can I cancel mid-bundle? What’s the notice period?', a: '14 days written notice to cancel or pause. No long contracts. Month-to-month, always.' },
-  { q: 'How do you invoice?', a: 'Per article: 50% upfront, 50% on delivery. Bundle: 50% upfront, 50% on completion. Stripe or wire transfer. Net-15 terms after the first invoice.' },
-  { q: 'What if you’re full when I want to start?', a: 'I cap at 4 active clients at a time. If I’m full, I’ll say so and give you a realistic timeline for the next opening. I won’t take a client I can’t properly serve.' },
+  { q: 'How do you invoice?', a: 'Per article, 50% upfront and 50% on delivery. For a bundle, 50% upfront and 50% on completion. Stripe or wire transfer. Net-15 terms after the first invoice.' },
+  { q: 'What if you’re full when I want to start?', a: 'I cap at 4 active clients at a time. If I’m full, I’ll say so and give you a realistic timeline for the next opening. I won’t take a client I don’t have the time to serve.' },
   { q: 'Do you sign NDAs?', a: 'Yes. Mutual NDA available before the discovery call if you need to share sensitive product or roadmap context.' },
-  { q: 'What do you need from me to get started?', a: 'A brief or topic plus target keyword, your ICP, and access to your product. If you can’t give me product access, I need access to someone on your team who knows the product well.' },
-  { q: 'Do you write for early-stage startups?', a: 'Yes, with a caveat: early-stage works best when you have a clear ICP and at least one thing you know works for your product. If positioning is still unclear, I’ll flag that before we start. Content can’t fix a messaging problem.' },
-  { q: 'What about building a tool?', a: 'Tell me about the task first. Some tasks don’t need software, and I’ll say so. If a tool would help, we scope it together around how the team already works, and I build it with a decisions file and a live check before anything is called done.' },
+  { q: 'What do you need from me to get started?', a: 'Access to your product and a brief or topic with a target keyword. I also need to know your ICP. If you can’t give me product access, I need access to someone on your team who knows the product.' },
+  { q: 'Do you write for early-stage startups?', a: 'Yes, with a caveat. Early-stage works best when you have a clear ICP and at least one thing you know works for your product. If positioning is unclear, I’ll flag that before we start. Content can’t fix a messaging problem.' },
+  { q: 'What about building a tool?', a: 'Tell me about the task first. Some tasks don’t need software, and I’ll say so. If a tool would help, we scope it together around how the team already works. I make the build decisions and log them in a decisions file, and nothing is called done until it passes a live check.' },
 ];
 
 const CLIENTS = ['ManyRequests', 'Jabra', 'Marker.io', 'HigherVisibility', 'Pangea.ai', 'Spicy Margarita'];
@@ -58,14 +59,14 @@ export default function ServicesPage() {
         <h1 className="max-w-[18ch]">Writing with me, and building with me.</h1>
         <p className="serif mt-5 max-w-[60ch] text-[1.2rem] leading-[1.45]">{SERVICE_COPY}</p>
         <p className="mt-3 max-w-[60ch] text-[15px] text-muted-foreground">
-          I’ve written for {CLIENTS.slice(0, -1).join(', ')} and {CLIENTS[CLIENTS.length - 1]}. The evidence, and the tools, are on <Link href="/portfolio" className="underline underline-offset-4">the work page</Link>.
+          Here’s who I’ve written for. {CLIENTS.slice(0, -1).join(', ')} and {CLIENTS[CLIENTS.length - 1]}. The evidence, and the tools, are on <Link href="/portfolio" className="underline underline-offset-4">the work page</Link>.
         </p>
       </section>
 
       <section className="offer" id="prices" aria-labelledby="writing-h">
         <div className="border-t border-border">
           <h2 id="writing-h">Writing</h2>
-          <p>I research every article from your product and your customers’ own words, and I check it against its sources before you ever see it.</p>
+          <p>I research every article from your product and your customers’ own words, and I check it against its sources before you see it.</p>
           <ul>
             {PRICES.map((p) => <li key={p}>{p}</li>)}
           </ul>
@@ -76,7 +77,8 @@ export default function ServicesPage() {
         <div className="border-t border-border bg-[var(--accent-wash)]" id="building">
           <h2>Building</h2>
           <p>{TOOL_CTA}</p>
-          <p className="note">Scoped per project after we’ve talked about the task. Every tool I build keeps a decisions file, and nothing is called done until a real person has used it on the live app. The case studies show what that looks like.</p>
+          <p className="note">Scoped per project after we’ve talked about the task. I write the requirements and decide the architecture. Then I build the tool and set its security rules, directing coding agents through the work.</p>
+          <p className="note">Every tool I build keeps a decisions file, and nothing is called done until a real person has used it on the live app. The case studies show what that looks like.</p>
           <Link className="button button-accent" href="/contact">Tell me about the task</Link>
           <Link className="button button-line" href="/case-studies">See what I’ve built</Link>
         </div>

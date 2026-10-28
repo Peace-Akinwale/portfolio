@@ -19,8 +19,8 @@ export function BlogClient({ initialPosts, wordpressDown }: { initialPosts: Hash
   return (
     <div className="gutter mx-auto max-w-[1100px]">
       <header className="posts-head">
-        <h1>Stuff I’ve <span className="hl">written</span>, about writing and about building.</h1>
-        <p className="lead">How I write for B2B SaaS companies, what I’ve learned building tools with AI coding agents, and the odd essay in between. Newest first.</p>
+        <h1>Stuff I’ve written, about writing and about building.</h1>
+        <p className="lead">How I write for B2B SaaS companies, and what I’ve learned from the tools I’ve built. Newest first.</p>
         <SearchBar onSearch={setQuery} />
         {query && (
           <p className="mt-3 text-[14px] text-muted-foreground" aria-live="polite">
@@ -30,7 +30,7 @@ export function BlogClient({ initialPosts, wordpressDown }: { initialPosts: Hash
       </header>
 
       {wordpressDown && (
-        <p className="review-note">Some of my posts live on WordPress and didn’t load just now. Here’s what did. Try again in a minute for the rest.</p>
+        <p className="review-note">Some of my posts live on WordPress and didn’t load. Here’s what did. Try again in a minute for the rest.</p>
       )}
 
       {posts.length > 0 ? (

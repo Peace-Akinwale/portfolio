@@ -14,7 +14,8 @@ export const STATIC_ENTRIES: RecordEntry[] = [
     month: '2026-08',
     title: 'Research before code.',
     body: [
-      'I was asked to lead a browser extension that records how AI assistants search the web and which pages they cite. I spent the first day not building. Both competing extensions were free, and one was written by the author of the research the whole method rests on. Building first would have reproduced an existing tool with fewer features. The one thing neither did was analysis as the output, so that became the brief.',
+      'I was asked to lead a browser extension that records how AI assistants search the web and which pages they cite. I spent the first day researching what already existed.',
+      'Both competing extensions were free, and one was written by the author of the research the whole method rests on. Building first would have reproduced an existing tool with fewer features. The one thing neither did was analysis as the output, so I made that the brief.',
       'The same day, a capture reported six citations where ten existed, because a parser dropped a whole class of them. I checked it against the raw stream and corrected it before the client saw the number.',
     ],
     links: [{ label: 'How the fanout query analysis tool came about', href: '/case-studies/fanout-query-analysis-tool' }],
@@ -27,7 +28,7 @@ export const STATIC_ENTRIES: RecordEntry[] = [
     month: '2026-07',
     title: 'Refuse the sign-up form.',
     body: [
-      'The members’ site for an eight-week course lets people in from a list of email addresses. A form that accepts a password from whoever is at the keyboard proves nothing about who is typing. So there is no password sign-up. You get an emailed link, then you set a password.',
+      'The members’ site for an eight-week course lets people in from a list of email addresses. A form that accepts a password from whoever is at the keyboard proves nothing about who is typing. So I left out password sign-up. You get an emailed link, then you set a password.',
     ],
     links: [{ label: 'The course portal, in an article', href: '/build-a-course-portal-around-the-instructors-workflow' }],
   },
@@ -45,12 +46,12 @@ export const STATIC_ENTRIES: RecordEntry[] = [
       by: 'From the article',
     },
     body: [
-      'Many AEO guides recommend the same content changes, such as opening sections with direct answers and adding FAQs. The piece is about what you add after the checklist: original research, and the buyer’s own words for their problem.',
+      'Many AEO guides recommend the same content changes, such as opening sections with direct answers and adding FAQs. The piece is about what you add after the checklist, which is original research and the buyer’s own words for their problem.',
     ],
     more: {
       summary: 'One decision from inside the article',
       body: [
-        'For a client’s section titled “What is regression testing?” I opened with the answer: “Regression testing ensures that previously developed features or actions perform as expected after developers made changes to the code.” No preamble about why QA teams do it. The editor kept it exactly that way, because it’s what you expect to see under that heading.',
+        'For a client’s section titled “What is regression testing?” I opened with the definition. “Regression testing ensures that previously developed features or actions perform as expected after developers made changes to the code.” No preamble about why QA teams do it. The editor kept it that way, because it’s what you expect to see under that heading.',
       ],
     },
     links: [{ label: 'Read the article', href: '/how-to-optimize-for-aeo' }],
@@ -69,7 +70,8 @@ export const STATIC_ENTRIES: RecordEntry[] = [
       by: 'What I told my wife on the night I decided to shut Garde down',
     },
     body: [
-      'Garde turned recipe videos into text so you could cook without rewinding. A few friends liked it, but I couldn\'t find a way to go viral and reach more people. I also found that there were many free, faster alternatives. After four months of building and spending out of pocket, I stopped paying for cloud resources and shut it down. I wrote about that decision too.',
+      'Garde turned recipe videos into text so you could cook without rewinding.',
+      'A few friends liked it, but I couldn\'t find a way to go viral and reach more people. I also found that there were many free, faster alternatives. After four months of building and spending out of pocket, I stopped paying for cloud resources and shut it down. I wrote about that decision.',
     ],
     links: [{ label: 'Read the essay', href: '/what-i-learned-vibe-coding-my-first-app-shutting-it-down' }],
   },

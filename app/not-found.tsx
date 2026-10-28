@@ -7,9 +7,9 @@ export const metadata: Metadata = {
 };
 
 const PLACES = [
-  { href: '/portfolio', label: 'My work', note: 'Everything I’ve built and written lately, plus every writing sample by client' },
+  { href: '/portfolio', label: 'My work', note: 'My recent builds and writing, plus every writing sample by client' },
   { href: '/case-studies', label: 'Things I built', note: 'One page per tool, with the whole story' },
-  { href: '/blog', label: 'The blog', note: 'Posts about writing for B2B SaaS and building with AI coding agents' },
+  { href: '/blog', label: 'The blog', note: 'Posts about writing for B2B SaaS and directing AI coding agents through a build' },
   { href: '/services', label: 'Hire me', note: 'What I write and build, and what it costs' },
   { href: '/contact', label: 'Say hi', note: 'Book a call or send a message' },
 ];

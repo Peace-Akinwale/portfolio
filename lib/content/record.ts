@@ -5,7 +5,7 @@ import { CONTENTDB, READING_APP } from './home-copy';
 
 // Entries whose homepage passage moved here (26 Oct 2026): Peace's approved wording replaces the index blurb.
 const APPROVED_BODY: Record<string, string[]> = {
-  contentdb: [CONTENTDB.p1],
+  contentdb: [CONTENTDB.p1, CONTENTDB.p2],
   'reading-app': [READING_APP.p1],
 };
 const EXTRA_LINKS: Record<string, { label: string; href: string }[]> = {

@@ -24,7 +24,7 @@ const BUDGETS = [
 
 const STAGES = [
   'Where are you in the process?',
-  'We have a content strategy and clear topics. We just need someone to write.',
+  'We have a content strategy and clear topics. All we need is someone to write.',
   'We have a content strategy but aren\'t confident about the keywords and topics to prioritize.',
   'We don\'t have a content strategy yet and need help building one.',
 ];
@@ -77,10 +77,10 @@ export default function ContactForm() {
           </h1>
         </div>
         <p className="text-sm leading-relaxed text-muted-foreground mt-4 max-w-lg">
-          Grab a free 30-minute call below. No pressure, it&rsquo;s just a chat. Or scroll down and send me a message instead.
+          Grab a free 30-minute call below. No pressure, it&rsquo;s a chat. Or scroll down and send me a message instead.
         </p>
         <p className="text-sm leading-relaxed text-muted-foreground mt-2 max-w-lg">
-          Or just email me at <a href="mailto:akindayopeaceakinwale@gmail.com" className="underline underline-offset-2 text-foreground">akindayopeaceakinwale@gmail.com</a>
+          Or email me at <a href="mailto:akindayopeaceakinwale@gmail.com" className="underline underline-offset-2 text-foreground">akindayopeaceakinwale@gmail.com</a>
         </p>
       </div>
 
@@ -178,7 +178,7 @@ export default function ContactForm() {
 
           <div>
             <label htmlFor="contact-about" className={labelClass}>Tell me about your company <span style={{ color: 'var(--accent)' }}>*</span></label>
-            <textarea id="contact-about" name="about" required value={form.about} onChange={handleChange} rows={3} placeholder="What you do, who you serve, links to helpful resources..." className={inputClass + ' resize-none'} />
+            <textarea id="contact-about" name="about" required value={form.about} onChange={handleChange} rows={3} placeholder="What you do and who you serve..." className={inputClass + ' resize-none'} />
           </div>
 
           <div>

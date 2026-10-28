@@ -183,7 +183,7 @@ const screenshotTestimonials: ScreenshotTestimonial[] = [
     company: 'Jabra (via Spicy Margarita)',
     note: 'Full feedback on the hybrid work schedule piece',
     image: '/images/testimonials/melissa-malec-jabra.png',
-    alt: 'Screenshot of Melissa Malec praising the research, structure, and product placements in the article.',
+    alt: 'Screenshot of Melissa Malec praising the research and the product placements in the article.',
   },
   {
     name: 'Lateef Maleek',
@@ -198,7 +198,7 @@ const screenshotTestimonials: ScreenshotTestimonial[] = [
 export const metadata: Metadata = withOg({
   title: 'What clients say',
   description:
-    'What editors, heads of content and agency owners said about working with me, in their own words and screenshots.',
+    'What editors and agency owners said about working with me, in their own words and screenshots.',
   alternates: {
     canonical: 'https://peaceakinwale.com/testimonials',
   },
@@ -251,8 +251,8 @@ export default function TestimonialsPage() {
               Nice things clients said
             </h1>
             <p className="max-w-2xl text-base leading-relaxed text-muted-foreground sm:text-lg">
-              Every one of these is from someone I&apos;ve worked with, copied from LinkedIn or screenshotted
-              straight from the doc or the chat. I haven&apos;t tidied any of them up.
+              Every one of these is from someone I&apos;ve worked with. I copied each one from LinkedIn or
+              took a screenshot of the doc or chat it came from. I haven&apos;t tidied any of them up.
             </p>
           </div>
         </div>
@@ -363,7 +363,7 @@ export default function TestimonialsPage() {
               Want to be next?
             </h2>
             <p className="mb-10 max-w-xl text-base leading-relaxed text-muted-foreground">
-              Grab a free 30-minute call. No pressure, it&apos;s just a chat about what you&apos;re working on.
+              Grab a free 30-minute call. No pressure, it&apos;s a chat about what you&apos;re working on.
             </p>
             <div className="flex flex-col gap-3 sm:flex-row">
               <a

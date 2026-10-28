@@ -10,7 +10,7 @@ import { SITE_URL } from '@/lib/site';
 export const metadata: Metadata = withOg({
   title: 'Things I built',
   description:
-    'What I was asked to build or write, the decisions that mattered, and what someone can do with the result. Tools for content teams, and one long writing engagement.',
+    'The decisions that mattered in each project, and what someone can do with the result. Tools for content teams, and one long writing engagement.',
   alternates: { canonical: `${SITE_URL}/case-studies` },
 }, { key: 'case-studies', path: '/case-studies', alt: 'Case studies by Peace Akinwale' });
 
@@ -22,7 +22,7 @@ export default function CaseStudiesPage() {
   return (
     <div className="gutter mx-auto max-w-[1180px] cs-page">
       <header className="cs-index">
-        <h1>Things I’ve <span className="hl">built</span>, and how they came together.</h1>
+        <h1>Things I’ve built, and how they came together.</h1>
         <p className="lead">Each one comes from the project’s own notes. If a tool is private, I’ve blurred what needs blurring. If it isn’t finished, I say so.</p>
       </header>
 
