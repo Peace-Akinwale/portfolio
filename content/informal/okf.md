@@ -8,7 +8,7 @@ An OKF (Open Knowledge Format) is a folder of short notes, one idea per note. Ea
 
 Open Knowledge Format stores knowledge as short linked notes that people and AI tools can both read. Each note records its sources and its review status. It also carries a date for checking whether it's still current. That gives a team more context than an answer copied out of an unlabelled document.
 
-### The founder's knowledge was scattered, and the team kept asking
+### The team kept asking the founder, because the knowledge was scattered
 
 The agency's founder had years of thinking spread across two Notion archives and their own head. When the team needed an answer, they asked the founder. Or they asked an AI tool connected to the raw archives. It searched whole pages and gave patchy answers. The goal was one distilled source the team could ask instead, in the founder's own frameworks.
 

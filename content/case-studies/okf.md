@@ -27,7 +27,7 @@ Open Knowledge Format stores knowledge as short linked notes that people and AI 
 <figure class="video"><iframe src="https://www.youtube-nocookie.com/embed/esYAIA6lU-s" title="Build an OKF brain like mine! (Marie Haynes, YouTube)" loading="lazy" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture; fullscreen" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe><figcaption>Marie Haynes walks through the OKF brain she built for her own SEO work. She shows how a note is structured and how it differs from retrieval over whole documents. 23 minutes, June 2026. The format itself is Google’s, and its <a href="https://github.com/GoogleCloudPlatform/knowledge-catalog/blob/main/okf/SPEC.md">specification is on GitHub</a>.</figcaption></figure>
 
 
-### The founder's knowledge was scattered, and the team kept asking
+### The team kept asking the founder, because the knowledge was scattered
 
 The agency's founder had years of thinking spread across two Notion archives and their own head. When the team needed an answer, they asked the founder. Or they asked an AI tool connected to the raw archives. It searched whole pages and gave patchy answers. The goal was one distilled source the team could ask instead, in the founder's own frameworks.
 

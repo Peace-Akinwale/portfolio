@@ -1,3 +1,4 @@
+import { WorkWithMe } from '@/components/WorkWithMe';
 import { ogImageFor } from '@/lib/og';
 import type { Metadata } from 'next';
 import Link from 'next/link';
@@ -110,11 +111,12 @@ export default async function CaseStudyPage({ params }: { params: Promise<{ slug
               </li>
             ))}
           </ul>
-          <p className="go mt-6">
-            <Link href="/portfolio">See everything I’ve worked on</Link>
-            <Link href="/contact">Got a task your team keeps doing by hand? Tell me</Link>
-          </p>
         </section>
+        <WorkWithMe
+          heading="Want a tool like this for your team?"
+          body="Tell me about the work your team repeats every week. On a 30-minute call I’ll tell you whether a tool would take it off their plate, and what building it would involve."
+          secondary={{ label: 'See everything I’ve worked on', href: '/portfolio' }}
+        />
       </div>
     </>
   );

@@ -7,7 +7,7 @@ import { OFFER } from '@/lib/content/home-copy';
 export const metadata: Metadata = withOg({
   title: 'Services and prices',
   description:
-    'Bottom-of-funnel articles for B2B SaaS companies and agencies, priced per article or per month. Tool building for content teams, scoped around the task you keep doing by hand.',
+    'Bottom-of-funnel articles for B2B SaaS companies and agencies, priced per article or per month. Tool building for content teams, scoped around the work your team repeats every week.',
   alternates: { canonical: `${SITE_URL}/services` },
 }, { key: 'services', path: '/services', alt: 'Writing with me, and building with me' });
 

@@ -4,7 +4,7 @@ import ContactForm from './ContactForm';
 
 export const metadata: Metadata = withOg({
   title: 'Contact',
-  description: 'Tell me about an article you need or a task your team keeps doing by hand. Book a call or send a message. I reply within one business day.',
+  description: 'Tell me about an article you need or work your team repeats every week. Book a call or send a message. I reply within one business day.',
   alternates: {
     canonical: 'https://peaceakinwale.com/contact',
   },

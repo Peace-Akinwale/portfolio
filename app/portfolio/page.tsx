@@ -1,3 +1,4 @@
+import { WorkWithMe } from '@/components/WorkWithMe';
 import { withOg } from '@/lib/og';
 import type { Metadata } from 'next';
 import Image from 'next/image';
@@ -94,13 +95,17 @@ export default async function PortfolioPage() {
 
         <WritingSamples parsed={samples} />
 
-        <section className="border-t border-border py-12" aria-label="Next">
+        <section className="border-t border-border pt-12" aria-label="More">
           <p className="go">
             <Link href="/case-studies">All the things I built</Link>
             <Link href="/projects">The older tools too</Link>
-            <Link href="/contact">Want to work together?</Link>
           </p>
         </section>
+        <WorkWithMe
+          heading="Want to work together?"
+          body="I write BOFU articles for B2B SaaS companies and agencies, and I build tools for content teams. Book a call and tell me what you need."
+          secondary={{ label: 'See my prices', href: '/services' }}
+        />
       </div>
     </>
   );

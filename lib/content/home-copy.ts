@@ -114,5 +114,5 @@ export const OFFER = {
     'Write a new article, $600 (2,000 to 3,000 words)',
     'Five articles a month, $2,700',
   ],
-  building: 'Tell me about the task your team keeps doing by hand. I’ll tell you whether a tool would make it easier, then build it around how the team works.',
+  building: 'Tell me about the work your team repeats every week. I’ll tell you whether a tool would take it off their plate, then build it around how the team works.',
 };

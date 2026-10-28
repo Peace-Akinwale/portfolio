@@ -64,7 +64,7 @@ export default function AboutPage() {
             <p>{"Melissa Malec, Content Lead, Jabra (via Spicy Margarita)"}</p>
             <h2>{"Work with me"}</h2>
             <p>{"Need an article that explains your product to the people choosing it? I can write it or refresh a piece you already have. I also work with teams on a monthly retainer."}</p>
-            <p>{"If there's a task your team keeps doing by hand, I can help you work out whether a tool would make it easier. Then I build it around how the team works."}</p>
+            <p>{"If your team repeats the same work every week, I can tell you whether a tool would take it off their plate. Then I build it around how the team works."}</p>
             <p>See my <Link href="/services">services and prices</Link> or <Link href="/portfolio">explore my work</Link>. You can also <a href="mailto:akindayopeaceakinwale@gmail.com">email me</a> to discuss what you need.</p>
             <p><Link href="https://calendly.com/akindayopeaceakinwale/30min">{"Book a 30-minute call"}</Link></p>
             <p><Link href="https://forms.gle/TatjQSbivWXY1B1m9">{"Send a content brief"}</Link></p>
