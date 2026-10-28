@@ -11,8 +11,6 @@
 .hero-line { font-family: var(--font-serif); font-optical-sizing: auto; font-size: clamp(1.2rem, 1.7vw, 1.45rem); line-height: 1.35; max-width: 32ch; margin: 0; }
 .hero-who { font-size: 15.5px; color: var(--muted-foreground); max-width: var(--measure); margin: 14px 0 0; }
 .hero-night { position: relative; overflow: hidden; display: grid; align-items: end; padding: 0; }
-.hero-night::before { content: ""; position: absolute; inset: 0; opacity: .12; background-size: 120px 120px;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120' fill='none' stroke='%238A93D8' stroke-width='1.2'%3E%3Ccircle cx='30' cy='30' r='14'/%3E%3Ccircle cx='30' cy='30' r='5'/%3E%3Cpath d='M70 10v40M90 10v40M110 10v40' stroke-dasharray='3 5'/%3E%3Crect x='66' y='66' width='44' height='44'/%3E%3Cpath d='M74 74h28M74 88h28M74 102h28'/%3E%3Cpath d='M10 70l40 40M10 110l40-40' /%3E%3C/svg%3E"); }
 .hero-portrait { position: relative; z-index: 1; width: min(100%, 560px); margin: 0; justify-self: center; align-self: end; }
 .hero-portrait img { width: 100%; height: auto; max-height: min(70vh, 640px); object-fit: cover; object-position: 50% 20%; display: block; }
 

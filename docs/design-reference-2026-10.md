@@ -8,7 +8,7 @@ Replaced the paper/night and stone/green palettes on 28 Oct 2026 (decisions.md).
 
 | Token | Sky (light mode, every page) | Ink (dark mode, and the homepage's night half) |
 |---|---|---|
-| ground | `#D9E4EC` | `#0F2334` (night half in dark mode: `#0A1826`) |
+| ground | `#D9E4EC` | `#0F2334` (the homepage's night half is `#1E3F5A` in both modes) |
 | ground-2 (panels, pills, muted) | `#C9D8E3` | `#16304A` |
 | ground-3 (tag washes, strips) | `#B9CFDE` | `#1E3F5A` |
 | card | `#F3F7FA` | `#0A1826` (night half: `#16304A`) |

@@ -90,16 +90,14 @@
     --border: var(--ink-rule); --border-strong: var(--ink-rule-strong); --accent: var(--ink-accent); --accent-foreground: var(--sky-ink); --accent-wash: var(--ink-wash);
   }
 }
-/* The homepage's night half: ink in light mode, and the deepest ink in dark mode
-   so the two halves still read as two. Marigold is the accent on it. */
+/* The homepage's night half: the deep blue of the family (not the near-black
+   ink, which read as black on a phone). The same in both modes: in dark mode
+   the sky half becomes ink, so the halves still read as two. Marigold is the
+   accent on it. */
 .ground-night {
-  --background: var(--ink); --foreground: var(--ink-text); --muted: var(--ink-2); --muted-foreground: var(--ink-soft);
-  --border: var(--ink-rule); --border-strong: var(--ink-rule-strong); --accent: var(--marigold); --accent-foreground: var(--marigold-ink); --accent-wash: var(--ink-wash);
+  --background: var(--ink-3); --foreground: var(--ink-text); --muted: #2A4D6B; --muted-foreground: #BFD0DD;
+  --border: #335170; --border-strong: #4A6A88; --accent: var(--marigold); --accent-foreground: var(--marigold-ink); --accent-wash: #2A4D6B;
   background: var(--background); color: var(--foreground);
-}
-[data-theme="dark"] .ground-night { --background: var(--ink-deep); --muted: var(--ink); }
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) .ground-night { --background: var(--ink-deep); --muted: var(--ink); }
 }
 .theme-dated { background: var(--background); color: var(--foreground); }
 
