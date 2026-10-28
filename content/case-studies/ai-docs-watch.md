@@ -5,7 +5,7 @@ blurb: "Shows you an AI platform’s docs as they were before and after each cha
 kind: built
 status: "live, public"
 date: 2026-10-14
-summary: "AI Docs Watch keeps an eye on the official help pages, policies, terms and API docs of Google, Gemini, OpenAI, Anthropic, Bing and Perplexity, every single day. When one of those pages changes, it publishes the page as it looked before and after, with the changed words marked. Each change gets a plain impact rating and a few words on what it means for an SEO or content team. I built the monitoring, the archive and the public site."
+summary: "AI Docs Watch keeps an eye on the official help pages, policies, terms and API docs of Google, Gemini, OpenAI, Anthropic, Bing and Perplexity, every single day. When one of those pages changes, it publishes the page as it looked before and after, with the changed words marked. Each change gets a plain impact rating and a few words on what it means for an SEO or marketing team. I built the monitoring, the archive and the public site."
 voice: informal
 notion_url: https://app.notion.com/p/403992da7a57817c8a0ad5105de78b0e
 notion_last_edited: 2026-10-24T17:28:05.687Z
@@ -19,7 +19,7 @@ related:
   - "fanout-query-analysis-tool"
 ---
 
-### Help content teams keep up when platform guidance changes
+### Help SEO and marketing teams keep up when platform guidance changes
 
 If you work in SEO or content, you need to know when a platform changes its official guidance. And you don't want to reread the same documentation every day to find out. The agency's founder asked for a monitoring tool, so I built one around archived copies of the pages. That way, you can check the exact wording that changed before you decide whether your own work needs to change too.
 
