@@ -19,9 +19,17 @@ related:
   - "fanout-query-analysis-tool"
 ---
 
-### Help SEO and marketing teams keep up when platform guidance changes
+### Help SEO and marketing teams see what AI platforms are doing differently
 
-If you work in SEO or content, you need to know when a platform changes its official guidance. And you don't want to reread the same documentation every day to find out. The agency's founder asked for a monitoring tool, so I built one around archived copies of the pages. That way, you can check the exact wording that changed before you decide whether your own work needs to change too.
+AI platforms change how they work all the time, and their own documentation is the clearest record of it. A new opt-out, a new crawler, a ranking factor that's quietly gone. Each edit tells you a little more about how the platform decides what to show, and that's what you need to know if you want to be visible in it. The agency's founder asked for a way to catch these edits without rereading the same pages every day, so I built a monitoring tool around archived copies of them. You can see the exact wording that changed, and when, then decide whether your tactics need to change too.
+
+Three changes it caught show what I mean.
+
+- **Google added an AI opt-out to Search Console.** AI Docs Watch caught it on October 27, 2026. Google's documentation now lists a site-wide control that takes a site out of AI Overviews and AI Mode. If you're a publisher who doesn't want your content used there, that's the switch. If you're a brand that wants to be seen, it's a reason to make sure nobody flips it by accident, and any site in your space that opts out leaves more room in those answers for the ones that stay.
+- **ChatGPT spelled out how it ranks products.** Caught on July 23, 2026. OpenAI's shopping help page named the factors it ranks merchants by, which are availability, price, quality, and whether you're the maker or the primary seller. It also said Shopify stores are fed in with no setup, and it dropped Instant Checkout from the list of ranking factors. A brand selling through ChatGPT now knows which product data to fix first.
+- **OpenAI's product feed came with a condition.** Caught on October 14, 2026. OpenAI's merchant feed terms now say a merchant who submits a feed can't block OpenAI's crawlers and gives up any text-and-data-mining opt-out against OpenAI. That's a trade worth making on purpose, not one to find out about after you've signed.
+
+Each of these got its own change page the day it was caught, with the old and new wording side by side.
 
 ### Before and after, on the publisher's own page
 
