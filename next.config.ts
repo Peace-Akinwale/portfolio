@@ -3,6 +3,14 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   async redirects() {
     return [
+      // www is served by the same Railway service so https://www links keep
+      // working; one permanent hop to the canonical root (29 Oct 2026).
+      {
+        source: '/:path*',
+        has: [{ type: 'host', value: 'www.peaceakinwale.com' }],
+        destination: 'https://peaceakinwale.com/:path*',
+        permanent: true,
+      },
       {
         source: '/how-to-write-sales-enablement-content',
         destination: '/sales-enablement-content-strategy',
