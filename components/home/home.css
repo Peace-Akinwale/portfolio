@@ -42,7 +42,8 @@
 .how { padding: 60px var(--gutter) 64px; border-bottom: 1px solid var(--border); }
 .how-inner { max-width: 1100px; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr); gap: 40px; }
 .how h2 { font-size: clamp(2rem, 3.6vw, 3rem); font-weight: 520; max-width: 12ch; margin: 0; }
-.how p { max-width: var(--measure); font-family: var(--font-serif); font-optical-sizing: auto; font-size: 1.15rem; line-height: 1.5; }
+.how p { max-width: var(--measure); font-family: var(--font-serif); font-optical-sizing: auto; font-size: 1.15rem; line-height: 1.5; margin: 0; }
+.how p + p { margin-top: 14px; }
 
 @media (max-width: 900px) {
   .hero h1 { font-size: clamp(2.3rem, 7vw, 3.5rem); }

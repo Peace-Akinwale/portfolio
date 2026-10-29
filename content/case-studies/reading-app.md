@@ -27,7 +27,7 @@ Every useful post went into one of three Google Tasks lists to come back to late
 
 They wanted "a way to totally replace" that process. It had to follow the people they trust and let them work through those posts "in a condensed and manageable way." They also prefer listening to long articles over reading them.
 
-I'd been building a different tool until June 10, 2026. It was an engine that drafted LinkedIn posts. On a call that day, the founder said their own writing setup already produced better posts. They said the real problem was all the checking and saving.
+I'd been building a different tool until June 10, 2026. It was an engine that drafted LinkedIn posts. On a call that day, the founder said drafting wasn't the problem. The checking and saving was.
 
 I wrote up the new requirements from the call and shipped the first version of the reading app that same night. The post engine's infrastructure stayed and went to work for the new app.
 

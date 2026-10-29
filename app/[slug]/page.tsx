@@ -80,6 +80,15 @@ function stripLeadingDuplicateCoverImage(html: string, coverUrl?: string): strin
   return html;
 }
 
+// Posts whose body repeats the cover image under a different file name, so the
+// stem comparison above cannot catch it (review, 29 Oct 2026). slug -> the body
+// copy's file stem.
+const DUPLICATE_COVER: Record<string, string> = { 'how-to-optimize-for-aeo': 'image-6' };
+function stripImageByStem(html: string, stem: string): string {
+  const img = new RegExp(`(?:<figure\\b[^>]*>\\s*)?<img\\b[^>]*src=["'][^"']*\\/${stem}\\.[a-z0-9]+(?:\\?[^"']*)?["'][^>]*>\\s*(?:<figcaption[^>]*>.*?<\\/figcaption>\\s*)?(?:<\\/figure>)?`, 'is');
+  return html.replace(img, '');
+}
+
 // Allow dynamic generation for slugs not pre-rendered at build time
 export const dynamicParams = true;
 
@@ -317,7 +326,11 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
   const { posts: allPosts } = await loadAllPosts();
   const relatedPosts = relatedTo(post, allPosts);
   const local = isLocalArticle(post);
-  const renderedPostHtml = local ? post.content.html : stripLeadingDuplicateCoverImage(post.content.html, post.coverImage?.url);
+  const renderedPostHtml = local
+    ? post.content.html
+    : DUPLICATE_COVER[post.slug]
+      ? stripImageByStem(post.content.html, DUPLICATE_COVER[post.slug])
+      : stripLeadingDuplicateCoverImage(post.content.html, post.coverImage?.url);
   const showReview = local && post.review && process.env.NODE_ENV !== 'production';
 
   return (

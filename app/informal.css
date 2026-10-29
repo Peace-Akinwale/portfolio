@@ -35,8 +35,8 @@ figure.shot img, .prose img { box-shadow: 0 1px 0 rgba(0,0,0,.03), 0 18px 36px -
 .pull { border-left: 0; padding: 18px 22px; border-radius: var(--radius); background: var(--card); }
 
 /* Cards sit on the stone with a hairline and a soft shadow so they read as cards. */
-.cs-card, .cs-next li a, .cs-short, .article-cta, .entry details, .pull { box-shadow: inset 0 0 0 1px rgba(13,30,44,.06), 0 10px 24px -20px rgba(13,30,44,.35); }
-[data-theme="dark"] .cs-card, [data-theme="dark"] .cs-next li a, [data-theme="dark"] .cs-short, [data-theme="dark"] .article-cta { box-shadow: inset 0 0 0 1px rgba(255,255,255,.06); }
+.cs-next li a, .cs-short, .article-cta, .entry details, .pull { box-shadow: inset 0 0 0 1px rgba(13,30,44,.06), 0 10px 24px -20px rgba(13,30,44,.35); }
+[data-theme="dark"] .cs-next li a, [data-theme="dark"] .cs-short, [data-theme="dark"] .article-cta { box-shadow: inset 0 0 0 1px rgba(255,255,255,.06); }
 
 /* End-of-page call to action (components/WorkWithMe.tsx, 28 Oct 2026): a card
    with a heading, one line and two buttons, so it reads as an action. */

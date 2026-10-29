@@ -1,12 +1,13 @@
 import { ogImagePath } from '@/lib/og';
 import Link from 'next/link';
 import type { Metadata } from 'next';
+import { WorkWithMe } from '@/components/WorkWithMe';
 import { MANYREQUESTS_ARTICLE_COUNT, MANYREQUESTS_SINCE } from '@/lib/portfolio/manyrequests';
-import { getFaviconUrl } from '@/lib/ogImage';
 import '@/components/case-study/case-study.css';
+import './manyrequests.css';
 
 export const metadata: Metadata = {
-  title: 'Case Study: ManyRequests | Peace Akinwale',
+  title: '51 product-led articles for ManyRequests | Peace Akinwale',
   description:
     `How I wrote ${MANYREQUESTS_ARTICLE_COUNT} product-led articles for ManyRequests and made the product useful inside the piece.`,
   alternates: {
@@ -32,419 +33,248 @@ export const metadata: Metadata = {
   },
 };
 
-const MR_FAVICON = getFaviconUrl('manyrequests.com', 32);
+// The chapters, in page order. The cover's "What's in here" list reads them.
+const CHAPTERS = [
+  { id: 'the-challenge', title: 'A crowded category where the easy version of this work is familiar' },
+  { id: 'what-i-did', title: `What I did across all ${MANYREQUESTS_ARTICLE_COUNT} articles` },
+  { id: 'the-articles', title: 'The articles that explain the approach' },
+  { id: 'the-results', title: 'What the work produced' },
+];
 
+function Ext({ href, children }: { href: string; children: React.ReactNode }) {
+  return <a href={href} target="_blank" rel="noopener noreferrer">{children}</a>;
+}
+
+// The one hand-built case study (the others come from content/informal/*.md
+// through app/case-studies/[slug]). It uses the same cover, short version and
+// chapters as the template so the site reads as one design. The prose is Peace's.
 export default function ManyRequestsCaseStudyPage() {
   return (
-    <div className="cs-page">
-      {/* ── Breadcrumb ──────────────────────────────────── */}
-      <div className="bg-background border-b border-border/50">
-        <div className="max-w-4xl mx-auto px-6 py-3">
-          <Link
-            href="/case-studies"
-            className="text-xs text-muted-foreground hover:text-accent transition-colors inline-flex items-center gap-1.5"
-          >
-            All the things I built
-          </Link>
-        </div>
-      </div>
-
-      {/* ── Hero ────────────────────────────────────────── */}
-      <section className="bg-background border-b border-border">
-        <div className="max-w-4xl mx-auto px-6 pt-16 sm:pt-24 pb-12">
-          <div className="flex items-center gap-3 mb-8">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={MR_FAVICON} alt="ManyRequests" width={24} height={24} className="rounded" />
-            <span className="text-xs font-bold uppercase tracking-[0.15em] text-muted-foreground">
-              ManyRequests &middot; B2B SaaS &middot; Client portal software
-            </span>
-          </div>
-          <h1
-            className="text-3xl sm:text-4xl md:text-5xl font-extrabold leading-[1.1] mb-6 text-foreground"
-            style={{ letterSpacing: '-0.03em' }}
-          >
-            How I wrote {MANYREQUESTS_ARTICLE_COUNT} product-led articles for ManyRequests and made the product useful inside the piece
-          </h1>
-          <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-xs text-muted-foreground">
-            <span>By Peace Akinwale</span>
-            <span aria-hidden>&middot;</span>
-            <span>April 25, 2026</span>
-            <span aria-hidden>&middot;</span>
-            <span>8 min read</span>
-          </div>
-        </div>
-      </section>
-
-      {/* ── Stats strip ─────────────────────────────────── */}
-      <section className="bg-background border-b border-border">
-        <div className="max-w-4xl mx-auto px-6 py-10">
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-5">
-            <div className="rounded-xl border border-border p-5" style={{ background: 'var(--muted)' }}>
-              <p className="text-3xl font-extrabold mb-1" style={{ letterSpacing: '-0.03em', color: 'var(--accent)' }}>{MANYREQUESTS_ARTICLE_COUNT}</p>
-              <p className="text-[12px] leading-relaxed text-muted-foreground">Articles published</p>
-            </div>
-            <div className="rounded-xl border border-border p-5" style={{ background: 'var(--muted)' }}>
-              <p className="text-3xl font-extrabold mb-1" style={{ letterSpacing: '-0.03em', color: 'var(--accent)' }}>22</p>
-              <p className="text-[12px] leading-relaxed text-muted-foreground">High-fit topics where the product could be shown inside the article</p>
-            </div>
-            <div className="rounded-xl border border-border p-5" style={{ background: 'var(--muted)' }}>
-              <p className="text-sm font-extrabold mb-1 text-foreground leading-snug">Page one</p>
-              <p className="text-[12px] leading-relaxed text-muted-foreground">For &ldquo;Workfront alternatives&rdquo; and &ldquo;design annotation tools&rdquo;</p>
-            </div>
-            <div className="rounded-xl border border-border p-5" style={{ background: 'var(--muted)' }}>
-              <p className="text-sm font-extrabold mb-1 text-foreground leading-snug">Active</p>
-              <p className="text-[12px] leading-relaxed text-muted-foreground">Retainer still running</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ── Product visual ──────────────────────────────── */}
-      <section className="bg-background border-b border-border">
-        <div className="max-w-4xl mx-auto px-6 py-10">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src="/images/case-studies/manyrequests/manyrequests-homepage.png"
-            alt="The ManyRequests homepage, the client portal built for agencies"
-            className="w-full rounded-xl border border-border"
-            loading="lazy"
-          />
-        </div>
-      </section>
-
-      {/* ── Overview ────────────────────────────────────── */}
-      <section className="bg-background border-b border-border">
-        <div className="max-w-3xl mx-auto px-6 py-14 sm:py-16">
-          <p className="text-xs font-bold uppercase tracking-[0.15em] mb-5" style={{ color: 'var(--accent)' }}>
-            Overview
+    <>
+      <header className="cs-cover cs-page">
+        <div className="gutter mx-auto max-w-[1180px]">
+          <p className="cs-crumbs">
+            <Link href="/portfolio">My work</Link>
+            <span aria-hidden="true"> / </span>
+            <Link href="/case-studies">Things I built</Link>
           </p>
-          <p className="text-base leading-[1.85] text-foreground mb-5">
-            <a href="https://www.manyrequests.com/" target="_blank" rel="noopener noreferrer" className="underline underline-offset-[3px] hover:opacity-80 transition-all" style={{ color: 'var(--accent)', textDecorationColor: 'var(--accent)' }}>ManyRequests</a> did not need more blog posts that mentioned the product once near the end and called that product-led content. They needed articles that could rank for the right searches and show where the product fit while the reader was still making up their mind.
-          </p>
-          <p className="text-base leading-[1.85] text-muted-foreground mb-5">
-            I&rsquo;ve written {MANYREQUESTS_ARTICLE_COUNT} articles for ManyRequests since {MANYREQUESTS_SINCE}. Most of them sit close to the bottom of the funnel. Comparison pages, alternatives pages, workflow guides, and operational topics where agency owners are already trying to decide what tool to use or how to run a cleaner system.
-          </p>
-          <p className="text-base leading-[1.85] text-muted-foreground mb-5">
-            The goal was simple. Make the article useful enough to earn trust, then make the product feel like a logical next step inside the article itself.
-          </p>
-          <p className="text-base leading-[1.85] text-muted-foreground mb-10">
-            That approach worked. According to Regine Garcia, who runs operations, content and systems at ManyRequests, the product-led posts led to more traffic and demo requests.
-          </p>
-
-          <p className="text-xs font-bold uppercase tracking-[0.12em] mb-4 text-muted-foreground">Results at a glance</p>
-          <ul className="flex flex-col gap-3 mb-10">
-            {[
-              `${MANYREQUESTS_ARTICLE_COUNT} published articles across BOFU and product-adjacent agency operations topics`,
-              '22 high-fit topics where the product could be explained and shown in the body',
-              'Page one rankings for searches like "Workfront alternatives" and "design annotation tools" at the time of review',
-              'Retainer still active',
-            ].map((r, i) => (
-              <li key={i} className="flex items-start gap-3 text-[15px] leading-[1.7] text-muted-foreground">
-                <span className="mt-1.5 flex-shrink-0 w-1.5 h-1.5 rounded-full" style={{ background: 'var(--accent)' }} />
-                {r}
-              </li>
-            ))}
-          </ul>
-
-          {/* Product demo video */}
-          <div className="relative w-full rounded-xl overflow-hidden border border-border" style={{ paddingBottom: '56.25%' }}>
-            <iframe
-              className="absolute inset-0 w-full h-full"
-              src="https://www.youtube.com/embed/jYtpAL8aPyE?si=2YFGZwcHvBzKUZ2f"
-              title="ManyRequests product demo"
-              frameBorder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-              referrerPolicy="strict-origin-when-cross-origin"
-              allowFullScreen
-            />
-          </div>
-        </div>
-      </section>
-
-      {/* ── The Challenge ───────────────────────────────── */}
-      <section className="bg-background border-b border-border">
-        <div className="max-w-3xl mx-auto px-6 py-14 sm:py-16">
-          <p className="text-xs font-bold uppercase tracking-[0.15em] mb-5" style={{ color: 'var(--accent)' }}>
-            The challenge
-          </p>
-          <h2 className="text-2xl sm:text-3xl font-extrabold mb-6 text-foreground" style={{ letterSpacing: '-0.02em' }}>
-            A crowded category where the easy version of this work is familiar
-          </h2>
-          <p className="text-base leading-[1.85] text-muted-foreground mb-5">
-            ManyRequests sells client portal and agency management software for creative agencies and productized service businesses. That puts them in a crowded search space. They are competing with generic <a href="https://manyrequests.com/blog/client-facing-project-management-tool" target="_blank" rel="noopener noreferrer" className="underline underline-offset-[3px] hover:opacity-80 transition-all" style={{ color: 'var(--accent)', textDecorationColor: 'var(--accent)' }}>project management tools</a> and bigger software brands with more authority.
-          </p>
-          <p className="text-base leading-[1.85] text-muted-foreground mb-5">
-            The easy version of this work is familiar. Write a listicle for a comparison keyword and mention the product in the conclusion. That kind of article can rank for a while, but it does a weak job of helping the reader understand why this product matters and how it helps.
-          </p>
-          <p className="text-base leading-[1.85] text-muted-foreground">
-            ManyRequests needed something better. The brief was not to publish content for its own sake. It was to write articles where the product could do real work inside the body of the piece.
-          </p>
-        </div>
-      </section>
-
-      {/* ── How I approached the work ───────────────────── */}
-      <section className="bg-background border-b border-border">
-        <div className="max-w-3xl mx-auto px-6 py-14 sm:py-16">
-          <p className="text-xs font-bold uppercase tracking-[0.15em] mb-5" style={{ color: 'var(--accent)' }}>
-            How I approached the work
-          </p>
-          <h2 className="text-2xl sm:text-3xl font-extrabold mb-10 text-foreground" style={{ letterSpacing: '-0.02em' }}>
-            What I did across all {MANYREQUESTS_ARTICLE_COUNT} articles
-          </h2>
-
-          {/* Step 1 */}
-          <div className="mb-14">
-            <h3 className="text-xl font-extrabold text-foreground mb-4" style={{ letterSpacing: '-0.02em' }}>
-              I chose topics where I could explain how the product works inside the article
-            </h3>
-            <p className="text-base leading-[1.85] text-muted-foreground mb-4">
-              Before I wrote anything, I asked one question of each topic. Can I show the reader where ManyRequests fits before the article is over?
-            </p>
-            <p className="text-base leading-[1.85] text-muted-foreground mb-4">
-              If the answer was yes, the topic scored higher (using the <a href="https://blog.timsoulo.com/business-potential-the-most-important-metric-in-content-marketing/" target="_blank" rel="noopener noreferrer" className="underline underline-offset-[3px] hover:opacity-80 transition-all" style={{ color: 'var(--accent)', textDecorationColor: 'var(--accent)' }}>business potential score</a>). If the fit was weak, I either changed the angle or treated the piece as broader educational content instead of trying to force the product into it.
-            </p>
-            <p className="text-base leading-[1.85] text-muted-foreground mb-4">
-              That is what pushed the work toward topics like these. <a href="https://manyrequests.com/blog/workfront-alternatives" target="_blank" rel="noopener noreferrer" className="underline underline-offset-[3px] hover:opacity-80 transition-all" style={{ color: 'var(--accent)', textDecorationColor: 'var(--accent)' }}>Workfront alternatives</a>, <a href="https://www.manyrequests.com/blog/clickup-alternatives" target="_blank" rel="noopener noreferrer" className="underline underline-offset-[3px] hover:opacity-80 transition-all" style={{ color: 'var(--accent)', textDecorationColor: 'var(--accent)' }}>ClickUp alternatives</a>, <a href="https://manyrequests.com/blog/client-facing-project-management-tool" target="_blank" rel="noopener noreferrer" className="underline underline-offset-[3px] hover:opacity-80 transition-all" style={{ color: 'var(--accent)', textDecorationColor: 'var(--accent)' }}>client-facing project management tool</a>, <a href="https://manyrequests.com/blog/retainer-management-software" target="_blank" rel="noopener noreferrer" className="underline underline-offset-[3px] hover:opacity-80 transition-all" style={{ color: 'var(--accent)', textDecorationColor: 'var(--accent)' }}>retainer management software</a>, and <a href="https://manyrequests.com/blog/design-annotation-software" target="_blank" rel="noopener noreferrer" className="underline underline-offset-[3px] hover:opacity-80 transition-all" style={{ color: 'var(--accent)', textDecorationColor: 'var(--accent)' }}>design annotation tools</a>. In those searches, the reader is already comparing tools or trying to solve an operational problem that ManyRequests helps with.
-            </p>
-            <p className="text-base leading-[1.85] text-muted-foreground mb-8">
-              That filter also helped on broader topics like <a href="https://www.manyrequests.com/blog/agency-retainer-model" target="_blank" rel="noopener noreferrer" className="underline underline-offset-[3px] hover:opacity-80 transition-all" style={{ color: 'var(--accent)', textDecorationColor: 'var(--accent)' }}>agency retainer model</a>. It kept me honest. If the product could not help explain the workflow, I had no reason to wedge it into the piece.
-            </p>
-
-            {/* Figure 2 */}
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="/images/case-studies/manyrequests/manyrequests-business-potential-score.png"
-              alt="Business potential score spreadsheet showing topic fit ratings for ManyRequests articles"
-              className="w-full rounded-xl border border-border"
-              loading="lazy"
-            />
-          </div>
-
-          {/* Step 2 */}
-          <div className="mb-14">
-            <h3 className="text-xl font-extrabold text-foreground mb-4" style={{ letterSpacing: '-0.02em' }}>
-              I showed the product through workflows and screenshots
-            </h3>
-            <p className="text-base leading-[1.85] text-muted-foreground mb-4">
-              Once a topic passed that first filter, I made the product useful inside the article. Not visible. Useful.
-            </p>
-            <p className="text-base leading-[1.85] text-muted-foreground mb-6">
-              In most articles, that meant the same pattern.
-            </p>
-
-            <ul className="flex flex-col gap-2.5 mb-8">
-              {[
-                'Explain the workflow, not only the feature',
-                'Show the product where a screenshot helps the reader understand the step',
-                'Use customer examples where proof matters more than marketing copy',
-              ].map((item, i) => (
-                <li key={i} className="flex items-start gap-3 text-[15px] leading-[1.7] text-muted-foreground">
-                  <span className="mt-1.5 flex-shrink-0 w-1.5 h-1.5 rounded-full" style={{ background: 'var(--accent)' }} />
-                  {item}
-                </li>
+          <h1>{MANYREQUESTS_ARTICLE_COUNT} product-led articles for ManyRequests</h1>
+          <p className="cs-point">Articles where the product shows up inside the piece, and what they did in search.</p>
+          <dl className="cs-strip">
+            <div><dt>Written for</dt><dd>ManyRequests, since {MANYREQUESTS_SINCE}</dd></div>
+            <div><dt>Reading time</dt><dd>about 8 min</dd></div>
+          </dl>
+          <nav className="cs-index-nav" aria-label="In this case study">
+            <p>What’s in here</p>
+            <ul>
+              {CHAPTERS.map((c) => (
+                <li key={c.id}><a href={`#${c.id}`}>{c.title}</a></li>
               ))}
             </ul>
+          </nav>
+        </div>
+      </header>
 
-            <p className="text-base leading-[1.85] text-muted-foreground mb-6">
-              You can see that pattern in the work.
+      <div className="gutter mx-auto max-w-[1180px] cs-page">
+        <section className="cs-short" aria-label="In short">
+          <p className="cs-short-label">The short version</p>
+          <p className="cs-short-text">
+            <Ext href="https://www.manyrequests.com/">ManyRequests</Ext> did not need more blog posts that mentioned the product once near the end and called that product-led content. They needed articles that could rank for the right searches and show where the product fit while the reader was still making up their mind.
+          </p>
+        </section>
+
+        <div className="cs-chapter">
+          <div className="prose">
+            <p>
+              I&rsquo;ve written {MANYREQUESTS_ARTICLE_COUNT} articles for ManyRequests since {MANYREQUESTS_SINCE}. Most of them sit close to the bottom of the funnel. Comparison pages, alternatives pages, workflow guides, and operational topics where agency owners are already trying to decide what tool to use or how to run a cleaner system.
             </p>
-
-            {/* Wrike vs ClickUp */}
-            <div className="rounded-xl border border-border p-6 mb-4" style={{ background: 'var(--muted)' }}>
-              <a href="https://www.manyrequests.com/blog/wrike-vs-clickup" target="_blank" rel="noopener noreferrer" className="text-sm font-bold text-foreground mb-3 underline underline-offset-2 hover:opacity-70 transition-opacity block">Wrike vs ClickUp</a>
-              <p className="text-[15px] leading-[1.75] text-muted-foreground mb-4">
-                The reader is comparing more than task management tools. Many of them are trying to figure out what works for an agency that has to manage client approvals and billing in one place.
-              </p>
-              <p className="text-[15px] leading-[1.75] text-muted-foreground mb-5">
-                That gave me room to explain why a client portal and white-label delivery matter in the first place. It also let me show where ManyRequests fits better than another internal PM tool.
-              </p>
-              {/* Figure 3 */}
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src="/images/case-studies/manyrequests/wrike-vs-clickup-product.png"
-                alt="ManyRequests product shown inside the Wrike vs ClickUp article"
-                className="w-full rounded-lg border border-border"
+            <p>
+              The goal was simple. Make the article useful enough to earn trust, then make the product feel like a logical next step inside the article itself.
+            </p>
+            <figure className="video">
+              <iframe
+                src="https://www.youtube.com/embed/jYtpAL8aPyE?si=2YFGZwcHvBzKUZ2f"
+                title="ManyRequests product demo"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                referrerPolicy="strict-origin-when-cross-origin"
+                allowFullScreen
                 loading="lazy"
               />
-            </div>
-
-            {/* Agency Retainer Model */}
-            <div className="rounded-xl border border-border p-6 mb-4" style={{ background: 'var(--muted)' }}>
-              <a href="https://www.manyrequests.com/blog/agency-retainer-model" target="_blank" rel="noopener noreferrer" className="text-sm font-bold text-foreground mb-3 underline underline-offset-2 hover:opacity-70 transition-opacity block">Agency Retainer Model</a>
-              <p className="text-[15px] leading-[1.75] text-muted-foreground mb-5">
-                The product fit is less obvious at first, which is why I like it as proof. The article is teaching the reader how to structure and run a retainer. That gave me a practical place to show add-on services and intake forms inside ManyRequests. The product was not tacked on. It was part of the operational advice.
-              </p>
-              {/* Figure 4 */}
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src="/images/case-studies/manyrequests/agency-retainer-model-product.png"
-                alt="ManyRequests product shown inside the Agency Retainer Model article"
-                className="w-full rounded-lg border border-border"
-                loading="lazy"
-              />
-            </div>
-
-            {/* Design Annotation Tools */}
-            <div className="rounded-xl border border-border p-6" style={{ background: 'var(--muted)' }}>
-              <a href="https://www.manyrequests.com/blog/design-annotation-software" target="_blank" rel="noopener noreferrer" className="text-sm font-bold text-foreground mb-3 underline underline-offset-2 hover:opacity-70 transition-opacity block">Design Annotation Tools</a>
-              <p className="text-[15px] leading-[1.75] text-muted-foreground mb-5">
-                The fit is direct. The feature is the topic. That article let me explain the markup flow and video feedback with screenshots and concrete use cases instead of generic feature copy.
-              </p>
-              {/* Figure 5 */}
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src="/images/case-studies/manyrequests/design-annotation-tools-product.png"
-                alt="ManyRequests product shown inside the Design Annotation Tools article"
-                className="w-full rounded-lg border border-border"
-                loading="lazy"
-              />
-            </div>
+              <figcaption>ManyRequests&rsquo; product demo.</figcaption>
+            </figure>
           </div>
+        </div>
 
-          {/* Step 3 */}
+        <section id="the-challenge" className="cs-chapter" aria-labelledby="the-challenge-h">
           <div>
-            <h3 className="text-xl font-extrabold text-foreground mb-4" style={{ letterSpacing: '-0.02em' }}>
-              I wrote each article to answer the next question a buyer would ask
-            </h3>
-            <p className="text-base leading-[1.85] text-muted-foreground mb-4">
-              Search intent gets someone into the article. It does not finish the job.
-            </p>
-            <p className="text-base leading-[1.85] text-muted-foreground mb-4">
-              A reader searching &ldquo;Workfront alternatives&rdquo; also has other questions. Does the alternative work for agencies? Is there a clean way for clients to submit requests? Can the team manage billing in the same place? Does the whole thing still work once the agency grows?
-            </p>
-            <p className="text-base leading-[1.85] text-muted-foreground">
-              So I wrote the body to answer those follow-up questions inside the piece. That is part of what made the work feel product-led without turning it into a sales page. The product showed up where the reader needed an answer, not where the brand wanted one more mention.
-            </p>
+            <h2 id="the-challenge-h">{CHAPTERS[0].title}</h2>
+            <div className="prose">
+              <p>
+                ManyRequests sells client portal and agency management software for creative agencies and productized service businesses. That puts them in a crowded search space. They are competing with generic <Ext href="https://manyrequests.com/blog/client-facing-project-management-tool">project management tools</Ext> and bigger software brands with more authority.
+              </p>
+              <p>
+                The easy version of this work is familiar. Write a listicle for a comparison keyword and mention the product in the conclusion. That kind of article can rank for a while, but it does a weak job of helping the reader understand why this product matters and how it helps.
+              </p>
+              <p>
+                ManyRequests needed something better. The brief was not to publish content for its own sake. It was to write articles where the product could do real work inside the body of the piece.
+              </p>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* ── What this looked like in the work ───────────── */}
-      <section className="bg-background border-b border-border">
-        <div className="max-w-3xl mx-auto px-6 py-14 sm:py-16">
-          <p className="text-xs font-bold uppercase tracking-[0.15em] mb-5" style={{ color: 'var(--accent)' }}>
-            What this looked like in the work
-          </p>
-          <h2 className="text-2xl sm:text-3xl font-extrabold mb-8 text-foreground" style={{ letterSpacing: '-0.02em' }}>
-            The articles that explain the approach
-          </h2>
-          <ul className="flex flex-col gap-5">
-            {[
-              {
-                title: 'Wrike vs ClickUp',
-                desc: 'Shows how I handle hard comparison content. The article meets the search intent. It also reframes the decision around what agencies need, not only what a general PM buyer might want.',
-              },
-              {
-                title: 'Agency Retainer Model',
-                desc: 'Shows how I handle broader educational queries. The topic is not an alternatives page. The product has to earn its place through the workflow.',
-              },
-              {
-                title: 'Design Annotation Tools',
-                desc: "Shows the clearest version of the method. The product belongs in the article from the start, and the screenshots make that obvious.",
-              },
-            ].map((item, i) => (
-              <li key={i} className="rounded-xl border border-border p-6" style={{ background: 'var(--muted)' }}>
-                <p className="text-sm font-bold text-foreground mb-2">{item.title}</p>
-                <p className="text-[14px] leading-[1.75] text-muted-foreground">{item.desc}</p>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </section>
+        <section id="what-i-did" className="cs-chapter" aria-labelledby="what-i-did-h">
+          <div>
+            <h2 id="what-i-did-h">{CHAPTERS[1].title}</h2>
+            <div className="prose">
+              <h3>I chose topics where I could explain how the product works inside the article</h3>
+              <p>
+                Before I wrote anything, I asked one question of each topic. Can I show the reader where ManyRequests fits before the article is over?
+              </p>
+              <p>
+                If the answer was yes, the topic scored higher (using the <Ext href="https://blog.timsoulo.com/business-potential-the-most-important-metric-in-content-marketing/">business potential score</Ext>). If the fit was weak, I either changed the angle or treated the piece as broader educational content instead of trying to force the product into it.
+              </p>
+              <p>
+                That is what pushed the work toward topics like these. <Ext href="https://manyrequests.com/blog/workfront-alternatives">Workfront alternatives</Ext>, <Ext href="https://www.manyrequests.com/blog/clickup-alternatives">ClickUp alternatives</Ext>, <Ext href="https://manyrequests.com/blog/client-facing-project-management-tool">client-facing project management tool</Ext>, <Ext href="https://manyrequests.com/blog/retainer-management-software">retainer management software</Ext>, and <Ext href="https://manyrequests.com/blog/design-annotation-software">design annotation tools</Ext>. In those searches, the reader is already comparing tools or trying to solve an operational problem that ManyRequests helps with.
+              </p>
+              <p>
+                That filter also helped on broader topics like <Ext href="https://www.manyrequests.com/blog/agency-retainer-model">agency retainer model</Ext>. It kept me honest. If the product could not help explain the workflow, I had no reason to wedge it into the piece.
+              </p>
+              <figure>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="/images/case-studies/manyrequests/manyrequests-business-potential-score.png"
+                  alt="Business potential score spreadsheet showing topic fit ratings for ManyRequests articles"
+                  loading="lazy"
+                />
+                <figcaption>The business potential score for each topic, in the keyword sheet.</figcaption>
+              </figure>
 
-      {/* ── Results ──────────────────────────────────────── */}
-      <section className="bg-background border-b border-border">
-        <div className="max-w-3xl mx-auto px-6 py-14 sm:py-16">
-          <p className="text-xs font-bold uppercase tracking-[0.15em] mb-5" style={{ color: 'var(--accent)' }}>
-            The results
-          </p>
-          <h2 className="text-2xl sm:text-3xl font-extrabold mb-6 text-foreground" style={{ letterSpacing: '-0.02em' }}>
-            What the work produced
-          </h2>
-          <p className="text-base leading-[1.85] text-muted-foreground mb-8">
-            This work produced a large body of published content for ManyRequests and helped strengthen the bottom of their funnel around commercial and product-adjacent searches.
-          </p>
+              <h3>I showed the product through workflows and screenshots</h3>
+              <p>
+                Once a topic passed that first filter, I made the product useful inside the article. Not visible. Useful.
+              </p>
+              <p>In most articles, that meant the same pattern.</p>
+              <ul>
+                <li>Explain the workflow, not only the feature</li>
+                <li>Show the product where a screenshot helps the reader understand the step</li>
+                <li>Use customer examples where proof matters more than marketing copy</li>
+              </ul>
+              <p>You can see that pattern in the work.</p>
 
-          <ul className="flex flex-col gap-3 mb-10">
-            {[
-              `${MANYREQUESTS_ARTICLE_COUNT} published articles across comparison and agency operations topics`,
-              'Strong concentration around high-intent searches where ManyRequests had real product fit',
-              'Page one visibility for "Workfront alternatives" and "design annotation tools" during review',
-              'Ongoing retainer, which tells you as much as any vanity metric',
-            ].map((r, i) => (
-              <li key={i} className="flex items-start gap-3 text-[15px] leading-[1.75] text-muted-foreground">
-                <span className="mt-1 flex-shrink-0 w-1.5 h-1.5 rounded-full" style={{ background: 'var(--accent)' }} />
-                {r}
-              </li>
-            ))}
-          </ul>
-
-          <figure className="mb-10 rounded-xl border border-border p-7" style={{ background: 'var(--muted)' }}>
-            <blockquote
-              className="text-base sm:text-lg leading-relaxed text-foreground mb-4"
-              style={{ fontFamily: 'var(--font-serif)' }}
-            >
-              &ldquo;Peace specializes in product-led blog content, and it really shows in his work. He doesn&rsquo;t chase keywords. He takes time to deeply understand the product, the user journeys, and how content can actually drive adoption and conversions. <strong className="font-semibold">His top-performing posts are product-led ones, which has led to more traffic and demo requests for ManyRequests.</strong>&rdquo;
-            </blockquote>
-            <figcaption className="flex items-center gap-3">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src="/images/clients/regine-garcia.png"
-                alt="Regine Garcia"
-                width={40}
-                height={40}
-                className="flex-shrink-0 w-10 h-10 rounded-full object-cover"
-              />
-              <div>
-                <p className="text-sm font-bold text-foreground">Regine Garcia</p>
-                <p className="text-xs text-muted-foreground">Operations, Content &amp; Systems &middot; ManyRequests</p>
+              <div className="mr-callout">
+                <Ext href="https://www.manyrequests.com/blog/wrike-vs-clickup">Wrike vs ClickUp</Ext>
+                <p>
+                  The reader is comparing more than task management tools. Many of them are trying to figure out what works for an agency that has to manage client approvals and billing in one place.
+                </p>
+                <p>
+                  That gave me room to explain why a client portal and white-label delivery matter in the first place. It also let me show where ManyRequests fits better than another internal PM tool.
+                </p>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="/images/case-studies/manyrequests/wrike-vs-clickup-product.png"
+                  alt="ManyRequests product shown inside the Wrike vs ClickUp article"
+                  loading="lazy"
+                />
               </div>
-            </figcaption>
-          </figure>
 
-        </div>
-      </section>
+              <div className="mr-callout">
+                <Ext href="https://www.manyrequests.com/blog/agency-retainer-model">Agency Retainer Model</Ext>
+                <p>
+                  The product fit is less obvious at first, which is why I like it as proof. The article is teaching the reader how to structure and run a retainer. That gave me a practical place to show add-on services and intake forms inside ManyRequests. The product was not tacked on. It was part of the operational advice.
+                </p>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="/images/case-studies/manyrequests/agency-retainer-model-product.png"
+                  alt="ManyRequests product shown inside the Agency Retainer Model article"
+                  loading="lazy"
+                />
+              </div>
 
-      {/* ── Close ────────────────────────────────────────── */}
-      <section className="bg-background border-b border-border">
-        <div className="max-w-3xl mx-auto px-6 py-14 sm:py-16">
-          <p className="text-base leading-[1.85] text-foreground mb-5">
-            What worked here was more than volume. It was product judgment.
-          </p>
-          <p className="text-base leading-[1.85] text-muted-foreground">
-            The articles did not treat ManyRequests like a logo to attach at the end of a post. They used the product to help explain the workflow and the decision the reader was already trying to make. That is what made the content more useful and more commercial at the same time.
-          </p>
-        </div>
-      </section>
+              <div className="mr-callout">
+                <Ext href="https://www.manyrequests.com/blog/design-annotation-software">Design Annotation Tools</Ext>
+                <p>
+                  The fit is direct. The feature is the topic. That article let me explain the markup flow and video feedback with screenshots and concrete use cases instead of generic feature copy.
+                </p>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="/images/case-studies/manyrequests/design-annotation-tools-product.png"
+                  alt="ManyRequests product shown inside the Design Annotation Tools article"
+                  loading="lazy"
+                />
+              </div>
 
-      {/* ── CTA ──────────────────────────────────────────── */}
-      <section className="bg-background">
-        <div className="max-w-3xl mx-auto px-6 py-16 sm:py-20">
-          <h2 className="text-2xl sm:text-3xl font-extrabold mb-4 text-foreground" style={{ letterSpacing: '-0.02em' }}>
-            Want articles like these for your product?
-          </h2>
-          <p className="text-base leading-relaxed text-muted-foreground mb-10 max-w-xl">
-            If your blog publishes on a schedule but the product never shows up in the work, that&rsquo;s where I start.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-3">
-            <Link
-              href="/services"
-              className="inline-block px-7 py-3 text-xs font-bold uppercase tracking-[0.08em] rounded-md transition-all hover:opacity-90 text-center"
-              style={{ background: 'var(--accent)', color: 'var(--accent-foreground)' }}
-            >
-              See my prices
-            </Link>
-            <a
-              href="https://calendly.com/akindayopeaceakinwale/30min"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-block px-7 py-3 text-xs font-bold uppercase tracking-[0.08em] rounded-md border border-border text-foreground transition-all hover:bg-muted text-center"
-            >
-              Book a 30-minute call
-            </a>
+              <h3>I wrote each article to answer the next question a buyer would ask</h3>
+              <p>Search intent gets someone into the article. It does not finish the job.</p>
+              <p>
+                A reader searching &ldquo;Workfront alternatives&rdquo; also has other questions. Does the alternative work for agencies? Is there a clean way for clients to submit requests? Can the team manage billing in the same place? Does the whole thing still work once the agency grows?
+              </p>
+              <p>
+                So I wrote the body to answer those follow-up questions inside the piece. That is part of what made the work feel product-led without turning it into a sales page. The product showed up where the reader needed an answer, not where the brand wanted one more mention.
+              </p>
+            </div>
           </div>
-        </div>
-      </section>
-    </div>
+        </section>
+
+        <section id="the-articles" className="cs-chapter" aria-labelledby="the-articles-h">
+          <div>
+            <h2 id="the-articles-h">{CHAPTERS[2].title}</h2>
+            <div className="prose">
+              <p>
+                <strong>Wrike vs ClickUp.</strong> Shows how I handle hard comparison content. The article meets the search intent. It also reframes the decision around what agencies need, not only what a general PM buyer might want.
+              </p>
+              <p>
+                <strong>Agency Retainer Model.</strong> Shows how I handle broader educational queries. The topic is not an alternatives page. The product has to earn its place through the workflow.
+              </p>
+              <p>
+                <strong>Design Annotation Tools.</strong> Shows the clearest version of the method. The product belongs in the article from the start, and the screenshots make that obvious.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <section id="the-results" className="cs-chapter" aria-labelledby="the-results-h">
+          <div>
+            <h2 id="the-results-h">{CHAPTERS[3].title}</h2>
+            <div className="prose">
+              <p>
+                This work produced a large body of published content for ManyRequests and helped strengthen the bottom of their funnel around commercial and product-adjacent searches.
+              </p>
+              <ul>
+                <li>{MANYREQUESTS_ARTICLE_COUNT} published articles across comparison and agency operations topics</li>
+                <li>22 high-fit topics where the product could be explained and shown in the body</li>
+                <li>Strong concentration around high-intent searches where ManyRequests had real product fit</li>
+                <li>Page one visibility for &ldquo;Workfront alternatives&rdquo; and &ldquo;design annotation tools&rdquo; during review</li>
+                <li>Ongoing retainer, which tells you as much as any vanity metric</li>
+              </ul>
+            </div>
+
+            {/* Outside .prose so the template's figure rules and the lightbox leave the photo alone. */}
+            <figure className="mr-quote">
+                <blockquote>
+                  &ldquo;Peace specializes in product-led blog content, and it really shows in his work. He doesn&rsquo;t chase keywords. He takes time to deeply understand the product, the user journeys, and how content can actually drive adoption and conversions. <strong>His top-performing posts are product-led ones, which has led to more traffic and demo requests for ManyRequests.</strong>&rdquo;
+                </blockquote>
+                <figcaption>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src="/images/clients/regine-garcia.png" alt="Regine Garcia" width={44} height={44} />
+                  <span><b>Regine Garcia</b>Operations, Content &amp; Systems at ManyRequests</span>
+                </figcaption>
+              </figure>
+
+            <div className="prose">
+              <p>What worked here was more than volume. It was product judgment.</p>
+              <p>
+                The articles did not treat ManyRequests like a logo to attach at the end of a post. They used the product to help explain the workflow and the decision the reader was already trying to make. That is what made the content more useful and more commercial at the same time.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <WorkWithMe
+          heading="Want articles like these for your product?"
+          body="If your blog publishes on a schedule but the product never shows up in the work, that’s where I start."
+          secondary={{ label: 'See my prices', href: '/services' }}
+        />
+      </div>
+    </>
   );
 }

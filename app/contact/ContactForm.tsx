@@ -22,11 +22,20 @@ const BUDGETS = [
   '$5,000+',
 ];
 
-const STAGES = [
-  'Where are you in the process?',
+const BUILDING_TYPE = 'AI Systems / Workflow Automation';
+
+// The stage options follow the service picked: a building client was being asked
+// about content strategy (review, 29 Oct 2026).
+const WRITING_STAGES = [
   'We have a content strategy and clear topics. All we need is someone to write.',
   'We have a content strategy but aren\'t confident about the keywords and topics to prioritize.',
   'We don\'t have a content strategy yet and need help building one.',
+];
+
+const BUILDING_STAGES = [
+  'We know the task we want a tool for.',
+  'We repeat a process every week and want to know whether a tool would help.',
+  'We have a tool that doesn\'t work the way the team needs.',
 ];
 
 const inputClass = 'w-full rounded-md border border-border bg-background px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-accent transition';
@@ -41,7 +50,10 @@ export default function ContactForm() {
   const [status, setStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle');
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+    // A stage picked for writing doesn't apply to building, so a change of service clears it.
+    const next = { ...form, [e.target.name]: e.target.value };
+    if (e.target.name === 'projectType' && e.target.value !== form.projectType) next.stage = '';
+    setForm(next);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -106,6 +118,10 @@ export default function ContactForm() {
           title="Book a 30-minute call with Peace on Calendly"
           className="w-full"
         />
+        <p className="px-4 py-3 text-[14px] text-muted-foreground">
+          If the calendar doesn’t load,{' '}
+          <a href="https://calendly.com/akindayopeaceakinwale/30min" target="_blank" rel="noopener noreferrer" className="underline underline-offset-4">open it on Calendly</a>.
+        </p>
       </div>
 
       {/* ── Divider ────────────────────────────────── */}
@@ -170,8 +186,9 @@ export default function ContactForm() {
           <div>
             <label htmlFor="contact-stage" className={labelClass}>Where are you in the process? <span style={{ color: 'var(--accent)' }}>*</span></label>
             <select id="contact-stage" name="stage" required value={form.stage} onChange={handleChange} className={inputClass}>
-              {STAGES.map((s) => (
-                <option key={s} value={s === 'Where are you in the process?' ? '' : s}>{s}</option>
+              <option value="">Select a stage</option>
+              {(form.projectType === BUILDING_TYPE ? BUILDING_STAGES : WRITING_STAGES).map((s) => (
+                <option key={s} value={s}>{s}</option>
               ))}
             </select>
           </div>

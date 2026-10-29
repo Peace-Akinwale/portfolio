@@ -98,7 +98,7 @@ export default async function PortfolioPage() {
         <section className="border-t border-border pt-12" aria-label="More">
           <p className="go">
             <Link href="/case-studies">All the things I built</Link>
-            <Link href="/projects">The older tools too</Link>
+            <Link href="/projects">The older projects</Link>
           </p>
         </section>
         <WorkWithMe

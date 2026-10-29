@@ -29,8 +29,8 @@ export function Header() {
   return (
     <header className="site-header sticky top-0 z-40 border-b border-border bg-background/95 backdrop-blur-sm">
       <a href="#main" className="skip-link">Skip to content</a>
-      <div className="gutter flex min-h-[56px] items-center justify-between gap-6">
-        <Link href="/" className="display text-[20px] font-[560] tracking-[-0.01em] text-foreground no-underline">
+      <div className="gutter flex min-h-[56px] items-center justify-between gap-3 md:gap-6">
+        <Link href="/" className="display shrink-0 whitespace-nowrap text-[18px] font-[560] tracking-[-0.01em] text-foreground no-underline md:text-[20px]">
           Peace Akinwale
         </Link>
 
@@ -52,6 +52,9 @@ export function Header() {
         </nav>
 
         <div className="flex items-center gap-1 md:hidden">
+        <Link href="/contact" className="button button-ink min-h-9 shrink-0 whitespace-nowrap px-3 py-1.5 text-[12.5px]">
+          Book a call
+        </Link>
         <ThemeToggle />
         <button
           type="button"

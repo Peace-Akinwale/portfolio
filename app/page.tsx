@@ -12,7 +12,7 @@ import {
 export const metadata: Metadata = withOg({
   title: 'Peace Akinwale. Articles for B2B SaaS companies and agencies, and AI tools for content teams',
   description:
-    'I build AI products and I write. Most of what I do is deciding what’s worth making and checking that it’s true. Three questions, answered with the writing and the tools.',
+    'I write, and I build AI products. Most of what I do is deciding what’s worth making and checking that it’s true. Three questions, answered with the writing and the tools.',
   alternates: { canonical: SITE_URL },
 }, { key: 'home', path: '/', alt: 'Good work starts with good questions. Peace Akinwale' });
 
@@ -108,6 +108,14 @@ export default function HomePage() {
             <p>{FANOUT.p1}</p>
             <p>{FANOUT.p2}</p>
           </div>
+          <dl className="kv">
+            {FANOUT.kv.map((row) => (
+              <div key={row.k} className="contents">
+                <dt>{row.k}</dt>
+                <dd>{row.v}</dd>
+              </div>
+            ))}
+          </dl>
           <p className="go"><Link href={FANOUT.caseStudy}>How it came about</Link></p>
         </div>
       </section>
@@ -140,6 +148,10 @@ export default function HomePage() {
             ))}
           </dl>
           <div className="body"><p>{ALOUD.p2}</p></div>
+          <figure className="shot narrow">
+            <Image src={ALOUD.shot} width={390} height={740} loading="lazy" sizes="330px" alt={ALOUD.shotAlt} />
+            <figcaption>{ALOUD.shotCaption}</figcaption>
+          </figure>
           <p className="go">
             <Link href={ALOUD.caseStudy}>The whole Aloud story</Link>
             <Ext href={ALOUD.log}>Read the Aloud log</Ext>

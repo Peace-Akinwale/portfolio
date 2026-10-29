@@ -82,6 +82,17 @@ export function listCaseStudies(): CaseStudy[] {
     .sort((a, b) => (a.date < b.date ? 1 : a.date > b.date ? -1 : a.slug.localeCompare(b.slug)));
 }
 
+// The first screenshot in a case study's rendered HTML, for an index thumbnail.
+// Null when the study has no image, so the index leaves the slot out.
+export function firstImage(cs: Pick<CaseStudy, 'html'>): { src: string; alt: string } | null {
+  const tag = cs.html.match(/<img\b[^>]*>/i)?.[0];
+  if (!tag) return null;
+  const src = tag.match(/\bsrc="([^"]+)"/i)?.[1];
+  if (!src) return null;
+  const alt = tag.match(/\balt="([^"]*)"/i)?.[1] ?? '';
+  return { src, alt };
+}
+
 export function getCaseStudy(slug: string): CaseStudy | null {
   const file = path.join(CASE_STUDY_DIR, `${slug}.md`);
   if (!/^[a-z0-9-]+$/.test(slug) || !fs.existsSync(file)) return null;

@@ -25,7 +25,7 @@ export async function loadAllPosts(): Promise<{ posts: HashnodePost[]; wordpress
   const local = listLocalArticles();
   try {
     const wp = await loadWordPressPosts();
-    return { posts: mergePosts(wp, local), wordpressDown: false };
+    return { posts: mergePosts(wp, local).filter((p) => !HIDDEN_FROM_LIST.has(p.slug)), wordpressDown: false };
   } catch {
     return { posts: mergePosts([], local), wordpressDown: true };
   }
@@ -41,8 +41,10 @@ export function isLocalArticle(post: HashnodePost | LocalArticle): post is Local
   return (post as LocalArticle).local === true;
 }
 
-// Related posts: tag overlap first, then recency; never the job-hunting post.
-export const HIDDEN_FROM_RELATED = new Set(['content-manager-roles']);
+// The 2025 job-hunting post stays reachable at its URL but is off the blog list and
+// out of related posts: it contradicts the services page (review, 29 Oct 2026).
+export const HIDDEN_FROM_LIST = new Set(['content-manager-roles']);
+export const HIDDEN_FROM_RELATED = HIDDEN_FROM_LIST;
 
 export function relatedTo(post: HashnodePost, all: HashnodePost[], n = 3): HashnodePost[] {
   const tags = new Set(post.tags?.map((t) => t.slug.toLowerCase()) ?? []);

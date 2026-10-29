@@ -4,7 +4,8 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import '@/components/case-study/case-study.css';
-import { getCaseStudy, listCaseStudies } from '@/lib/content/case-studies';
+import Image from 'next/image';
+import { firstImage, getCaseStudy, listCaseStudies } from '@/lib/content/case-studies';
 import { splitChapters } from '@/lib/content/markdown';
 import { SITE_URL } from '@/lib/site';
 
@@ -47,6 +48,16 @@ export default async function CaseStudyPage({ params }: { params: Promise<{ slug
   const related = cs.related.map((r) => all.find((c) => c.slug === r)).filter((c): c is NonNullable<typeof c> => !!c);
   const next = related.length ? related : all.filter((c) => c.slug !== cs.slug).slice(0, 2);
   const { intro, chapters } = splitChapters(cs.html);
+  const shot = firstImage(cs);
+  // The cover preview links to the first screenshot in the study.
+  let previewSet = false;
+  const withPreviewId = (html: string) => {
+    if (previewSet || !html.includes('<figure>')) return html;
+    previewSet = true;
+    return html.replace('<figure>', '<figure id="preview">');
+  };
+  const introHtml = intro ? withPreviewId(intro) : intro;
+  const chapterHtml = chapters.map((c) => ({ ...c, html: withPreviewId(c.html) }));
 
   return (
     <>
@@ -57,17 +68,26 @@ export default async function CaseStudyPage({ params }: { params: Promise<{ slug
             <span aria-hidden="true"> / </span>
             <Link href="/case-studies">Things I built</Link>
           </p>
-          <h1>{cs.name}</h1>
-          <p className="cs-point">{cs.blurb}</p>
-          <dl className="cs-strip">
-            <div><dt>Who can use it</dt><dd>{cs.status}</dd></div>
-            <div><dt>Reading time</dt><dd>about {cs.readingMinutes} min</dd></div>
-          </dl>
-          {cs.links.length > 0 && (
-            <p className="cs-links">
-              {cs.links.map((l) => <Href key={l.href} href={l.href} className="button cs-button">{l.label}</Href>)}
-            </p>
-          )}
+          <div className={shot ? 'cs-cover-grid' : undefined}>
+            <div>
+              <h1>{cs.name}</h1>
+              <p className="cs-point">{cs.blurb}</p>
+              <dl className="cs-strip">
+                <div><dt>Who can use it</dt><dd>{cs.status}</dd></div>
+                <div><dt>Reading time</dt><dd>about {cs.readingMinutes} min</dd></div>
+              </dl>
+              {cs.links.length > 0 && (
+                <p className="cs-links">
+                  {cs.links.map((l) => <Href key={l.href} href={l.href} className="button cs-button">{l.label}</Href>)}
+                </p>
+              )}
+            </div>
+            {shot && (
+              <a href="#preview" className="cs-cover-shot" aria-label="Jump to the first screenshot">
+                <Image src={shot.src} alt={shot.alt} fill sizes="(max-width: 900px) 100vw, 480px" />
+              </a>
+            )}
+          </div>
           {chapters.length > 1 && (
             <nav className="cs-index-nav" aria-label="In this case study">
               <p>What’s in here</p>
@@ -87,9 +107,9 @@ export default async function CaseStudyPage({ params }: { params: Promise<{ slug
           <p className="cs-short-text">{cs.summary}</p>
         </section>
 
-        {intro && <div className="cs-chapter"><div className="prose" dangerouslySetInnerHTML={{ __html: intro }} /></div>}
+        {introHtml && <div className="cs-chapter"><div className="prose" dangerouslySetInnerHTML={{ __html: introHtml }} /></div>}
 
-        {chapters.map((c) => (
+        {chapterHtml.map((c) => (
           <section key={c.id} id={c.id} className="cs-chapter" aria-labelledby={`${c.id}-h`}>
             <div>
               <h2 id={`${c.id}-h`}>{c.title}</h2>

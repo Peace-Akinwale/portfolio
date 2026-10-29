@@ -17,35 +17,39 @@ const PRICES = OFFER.prices;
 
 const WHATS_INCLUDED = [
   '2,000 to 3,000 words per article',
-  '1 round of revisions (zero for most clients by month 2)',
+  'One round of revisions, which most clients stop needing by month two',
   'Original research from Reddit and review sites like G2 and Capterra',
   'Internal linking and product-led framing',
   'Meta title and meta description',
   'Alt text and CTAs',
   'Product screenshots and GIFs where relevant',
-  'Long-tail semantic keyword optimisation for LLM search',
+  'Phrasing an AI search tool can quote when it answers a buyer',
+];
+
+const EXTRAS = [
+  'Publishing to your CMS, $20 per post',
+  'Rush delivery under 2 business days, $700 per article',
 ];
 
 const WHATS_NOT = [
   'Design or video production',
-  'Publishing to your CMS (+$20 per post)',
   'Link building or outreach',
   'Ghostwriting for founders’ LinkedIn',
   'Whitepapers and case studies (ask me to scope them as their own project)',
-  'Rush delivery under 2 business days ($700 per article)',
   'Keyword stuffing or AI-generated drafts',
 ];
 
 const FAQS = [
   { q: 'Do you use AI to write your drafts?', a: 'No. The opinions and the writing are mine. I use AI as a research assistant and to automate steps in my process, like sorting research and gut-checking structure.' },
   { q: 'How long does it take to get a finished article?', a: '3 to 5 business days from brief to first draft for most articles. For retainer clients we agree on a fixed delivery cadence upfront that matches your publishing schedule.' },
-  { q: 'What if the first draft misses the mark?', a: 'One round of revisions is included on every article. If it still doesn’t land, we work on it together until it does. I don’t ship drafts I’m not proud of, and I don’t leave clients stuck.' },
+  { q: 'What if the first draft misses the mark?', a: 'One round of revisions is included on every article. It covers anything the brief asked for that the draft missed, and the wording changes your editor wants. A new angle or a new topic after the draft is a new piece, and I’ll tell you before I start it.' },
   { q: 'Can I cancel mid-bundle? What’s the notice period?', a: '14 days written notice to cancel or pause. No long contracts. Month-to-month, always.' },
   { q: 'How do you invoice?', a: 'Per article, 50% upfront and 50% on delivery. For a bundle, 50% upfront and 50% on completion. Stripe or wire transfer. Net-15 terms after the first invoice.' },
   { q: 'What if you’re full when I want to start?', a: 'I cap at 4 active clients at a time. If I’m full, I’ll say so and give you a realistic timeline for the next opening. I won’t take a client I don’t have the time to serve.' },
   { q: 'Do you sign NDAs?', a: 'Yes. Mutual NDA available before the discovery call if you need to share sensitive product or roadmap context.' },
   { q: 'What do you need from me to get started?', a: 'Access to your product and a brief or topic with a target keyword. I also need to know your ICP. If you can’t give me product access, I need access to someone on your team who knows the product.' },
   { q: 'Do you write for early-stage startups?', a: 'Yes, with a caveat. Early-stage works best when you have a clear ICP and at least one thing you know works for your product. If positioning is unclear, I’ll flag that before we start. Content can’t fix a messaging problem.' },
+  { q: 'What happens after you hand over a tool?', a: 'You own the code and the accounts it runs on, and the hosting bill is yours. I size it before we start and tell you the monthly cost. I stay on for the first month to fix anything that breaks. After that, ongoing support is a separate arrangement we agree on.' },
   { q: 'What about building a tool?', a: 'Tell me about the task first. Some tasks don’t need software, and I’ll say so. If a tool would help, we scope it together around how the team already works. I make the build decisions and log them in a decisions file, and nothing is called done until it passes a live check.' },
 ];
 
@@ -69,7 +73,7 @@ export default function ServicesPage() {
           <ul>
             {PRICES.map((p) => <li key={p}>{p}</li>)}
           </ul>
-          <p className="note">Five articles a month saves 10% against the per-article price. Three or more new articles at once also get 10% off.</p>
+          <p className="note">Prices in US dollars. Five articles a month saves 10% against the per-article price. Three or more new articles at once also get 10% off.</p>
           <a className="button button-ink" href={`mailto:${EMAIL}?subject=An%20article`}>Email about an article</a>
           <a className="button button-line" href={CALENDLY_URL} rel="noopener" target="_blank">Book a 30-minute call</a>
         </div>
@@ -91,7 +95,11 @@ export default function ServicesPage() {
           </ul>
         </div>
         <div>
-          <h2 className="text-[1.5rem]">What’s not included</h2>
+          <h2 className="text-[1.5rem]">Optional extras</h2>
+          <ul className="mt-4 list-disc pl-5 text-[16px] leading-relaxed">
+            {EXTRAS.map((i) => <li key={i} className="mb-1.5">{i}</li>)}
+          </ul>
+          <h2 className="mt-10 text-[1.5rem]">What’s not included</h2>
           <ul className="mt-4 list-disc pl-5 text-[16px] leading-relaxed text-muted-foreground">
             {WHATS_NOT.map((i) => <li key={i} className="mb-1.5">{i}</li>)}
           </ul>

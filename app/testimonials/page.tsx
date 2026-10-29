@@ -31,7 +31,8 @@ type ScreenshotTestimonial = {
   alt: string;
 };
 
-const LINKEDIN_URL = 'https://www.linkedin.com/in/peaceakinwale/';
+// The recommendations section of the profile, not the profile itself.
+const RECOMMENDATIONS_URL = 'https://www.linkedin.com/in/peaceakinwale/details/recommendations/';
 
 const linkedInTestimonials: LinkedInTestimonial[] = [
   {
@@ -205,16 +206,21 @@ export const metadata: Metadata = withOg({
   },
 }, { key: 'testimonials', path: '/testimonials', alt: 'What clients say about Peace Akinwale' });
 
+/** The person's own words for the lead line: the bold passage they marked out, or the first sentence. Never a paraphrase. */
+function excerptOf(paragraphs: TextSegment[][]): string {
+  const strong = paragraphs.flat().find((segment) => segment.strong);
+  if (strong) return strong.text.trim().replace(/[,;]$/, '');
+  const first = (paragraphs[0] ?? []).map((segment) => segment.text).join('');
+  const sentence = first.match(/^[^.!?]*[.!?]/);
+  return (sentence ? sentence[0] : first).trim();
+}
+
 function renderParagraph(paragraph: TextSegment[], paragraphIndex: number) {
   return (
-    <p
-      key={paragraphIndex}
-      className="text-[15px] leading-[1.9] text-muted-foreground italic"
-      style={{ fontFamily: 'var(--font-serif)' }}
-    >
+    <p key={paragraphIndex} className="text-[15px] leading-[1.75] text-muted-foreground">
       {paragraph.map((segment, segmentIndex) => (
         segment.strong ? (
-          <strong key={segmentIndex} className="font-semibold not-italic text-foreground">
+          <strong key={segmentIndex} className="font-semibold text-foreground">
             {segment.text}
           </strong>
         ) : (
@@ -237,10 +243,10 @@ export default function TestimonialsPage() {
   return (
     <>
       <section className="border-b border-border bg-background">
-        <div className="mx-auto max-w-7xl px-6 pb-16 pt-16 sm:pb-20 sm:pt-24">
+        <div className="mx-auto max-w-7xl px-6 pb-10 pt-12 sm:pb-12 sm:pt-16">
           <div className="max-w-3xl">
             <h1
-              className="mb-6 text-3xl font-extrabold leading-[1.1] text-foreground sm:text-4xl md:text-5xl"
+              className="mb-4 text-3xl font-extrabold leading-[1.1] text-foreground sm:text-4xl md:text-5xl"
               style={{ letterSpacing: '-0.03em' }}
             >
               Nice things clients said
@@ -254,65 +260,67 @@ export default function TestimonialsPage() {
       </section>
 
       <section style={{ background: 'var(--muted)' }}>
-        <div className="mx-auto max-w-7xl px-6 py-20 sm:py-24">
-          <div className="max-w-5xl">
+        <div className="mx-auto max-w-7xl px-6 py-10 sm:py-14">
+          <div className="max-w-3xl">
             <div className="flex flex-col gap-6">
               {linkedInTestimonials.map((testimonial) => (
                 <article
                   key={testimonial.name}
                   className="rounded-[1.5rem] border border-border bg-background px-6 py-6 shadow-[0_12px_30px_rgba(21,24,58,0.05)] sm:px-8 sm:py-8"
                 >
-                  <div className="flex flex-col gap-8">
-                    <blockquote className="space-y-5">
-                      {testimonial.paragraphs.map((paragraph, index) => renderParagraph(paragraph, index))}
-                    </blockquote>
+                  <p
+                    className="text-[1.35rem] leading-[1.35] text-foreground"
+                    style={{ fontFamily: 'var(--font-serif)', fontOpticalSizing: 'auto', textWrap: 'pretty' }}
+                  >
+                    &ldquo;{excerptOf(testimonial.paragraphs)}&rdquo;
+                  </p>
 
-                    <div className="border-t border-border pt-5">
-                      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                        <div className="flex items-center gap-4">
-                          {testimonial.photo ? (
-                            <Image
-                              src={testimonial.photo}
-                              alt={testimonial.name}
-                              width={56}
-                              height={56}
-                              className="h-14 w-14 rounded-full object-cover"
-                              loading="lazy"
-                              sizes="56px"
-                            />
-                          ) : (
-                            <span className="flex h-14 w-14 items-center justify-center rounded-full bg-muted text-sm font-bold text-muted-foreground">
-                              {testimonial.initials}
-                            </span>
-                          )}
-                          <div>
-                            <p className="text-base font-bold text-foreground">{testimonial.name}</p>
-                            <p className="text-sm text-muted-foreground">{testimonial.role} · {testimonial.company}</p>
-                            <p className="text-xs uppercase tracking-[0.12em] text-muted-foreground">
-                              {testimonial.date}
-                            </p>
-                          </div>
-                        </div>
-                        <a
-                          href={LINKEDIN_URL}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.12em] text-accent-foreground transition-opacity hover:opacity-90"
-                          style={{ background: 'var(--accent)' }}
-                        >
-                          <LinkedInIcon />
-                          View on LinkedIn
-                        </a>
-                      </div>
+                  <div className="mt-5 flex items-center gap-4">
+                    {testimonial.photo ? (
+                      <Image
+                        src={testimonial.photo}
+                        alt={testimonial.name}
+                        width={48}
+                        height={48}
+                        className="h-12 w-12 rounded-full object-cover"
+                        loading="lazy"
+                        sizes="48px"
+                      />
+                    ) : (
+                      <span className="flex h-12 w-12 items-center justify-center rounded-full bg-muted text-sm font-bold text-muted-foreground">
+                        {testimonial.initials}
+                      </span>
+                    )}
+                    <div>
+                      <p className="text-base font-bold text-foreground">{testimonial.name}</p>
+                      <p className="text-sm text-muted-foreground">{testimonial.role} · {testimonial.company}</p>
+                      <p className="text-xs uppercase tracking-[0.12em] text-muted-foreground">
+                        {testimonial.date}
+                      </p>
                     </div>
                   </div>
+
+                  <blockquote className="mt-6 max-w-[68ch] space-y-4 border-t border-border pt-5">
+                    {testimonial.paragraphs.map((paragraph, index) => renderParagraph(paragraph, index))}
+                  </blockquote>
+
+                  <a
+                    href={RECOMMENDATIONS_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mt-6 inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.12em] text-accent-foreground transition-opacity hover:opacity-90"
+                    style={{ background: 'var(--accent)' }}
+                  >
+                    <LinkedInIcon />
+                    See it on LinkedIn
+                  </a>
                 </article>
               ))}
             </div>
           </div>
 
-          <div className="mt-20">
-            <p className="mb-10 text-[10px] font-bold uppercase tracking-[0.18em] text-muted-foreground">
+          <div className="mt-16">
+            <p className="mb-8 text-[10px] font-bold uppercase tracking-[0.18em] text-muted-foreground">
               Direct feedback
             </p>
             <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">

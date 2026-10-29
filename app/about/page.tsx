@@ -2,6 +2,7 @@ import { withOg } from '@/lib/og';
 import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
+import { WorkWithMe } from '@/components/WorkWithMe';
 import '@/components/article/article.css';
 import { SITE_URL } from '@/lib/site';
 
@@ -15,10 +16,15 @@ export default function AboutPage() {
 
   return (
     <div className="article gutter">
-      <header className="article-head">
-        <p className="kicker">Hi there</p>
-        <h1>About</h1>
-        <p className="standfirst">{"I'm Peace Akinwale. I write BOFU content for B2B SaaS companies and agencies, and I build AI-assisted tools for content teams."}</p>
+      <header className="article-head flex max-w-[78ch] items-start gap-6 sm:gap-10">
+        <div className="min-w-0 flex-1">
+          <p className="kicker">Hi there</p>
+          <h1>About</h1>
+          <p className="standfirst">{"I'm Peace Akinwale. I write the articles buyers read when they're choosing a product, and I build AI-assisted tools for the work content teams repeat."}</p>
+        </div>
+        <figure className="m-0 w-[104px] shrink-0 sm:w-[168px]">
+          <Image src="/images/peace-akinwale-about-wedding.jpg" alt="Peace Akinwale" width={900} height={1200} sizes="(max-width: 640px) 104px, 168px" className="rounded-[2px] border border-border" priority />
+        </figure>
       </header>
       <div className="article-layout">
         <div>
@@ -45,43 +51,34 @@ export default function AboutPage() {
             <h3>{"Draft, then edit"}</h3>
             <p>{"I get the whole draft down before I polish any sentence. Then I work through the argument. I cut what doesn't belong and check what the evidence supports."}</p>
             <p>{"I fact-check claims and statistics, and I add internal links and source links where they help. Grammarly catches smaller errors, and I edit for meaning and flow myself. I add image alt text and give the piece some time before another read, because a gap is easier to spot when I come back to it."}</p>
-            <h2>{"I also build tools for the work around the article"}</h2>
-            <p>{"Working on content means spending plenty of time finding material and moving it between tools. Some of my projects grew out of those tasks."}</p>
+            <h2>{"From writing to building"}</h2>
+            <p>{"The tools came out of the writing. Every article meant finding old research and moving quotes between documents, and that was the first work I automated for myself. ContentDB started in March 2026 as my own research library."}</p>
+            <p>{"I'd built an app before that. Garde turned recipe videos into text. It went live in November 2025, and I shut it down four months later. I wrote about what that taught me, and one habit stuck: a decisions file for every project, and nothing called done until the person it's for has used it on the live app."}</p>
+            <p>{"By June 2026 a client had asked for a reading app, and since then the work has been tools for content teams. A monitor for AI platform docs, a recorder for the searches behind AI answers, and a knowledge base a team can ask."}</p>
             <p>{"ContentDB helps writers use the expertise already sitting in a company's articles and research. It connects that material to an AI tool through MCP, so a writer can ask for relevant information instead of searching old studies and ebooks by hand."}</p>
             <p>{"AI Docs Watch checks API documentation for product changes across AI platforms. It keeps the before-and-after versions and a brief explaining each change, so readers can inspect the original material instead of relying on a summary alone."}</p>
             <p>{"Alongside my writing, I work with Steve Toth and Notebook Agency on content operations and AI-search projects. That work includes the fanout query analysis tool I built for running prompts at scale and examining the searches behind recorded AI answers."}</p>
             <p>{"Building these tools has changed how I think about the work around an article, from finding useful material to making it easier for someone else to use. I test what happens when a tool fails, not only whether it works in a demo."}</p>
-            <p><Link href="/projects">{"Explore the tools I've built"}</Link></p>
+            <p><Link href="/case-studies">{"See the tools I've built"}</Link></p>
             <h2>{"How I use AI"}</h2>
             <p>{"I decide what an article or a tool needs to do, and I direct AI through the research and the build. Then I check the result myself. For an article, that means reading the sources and checking that they support the claims."}</p>
             <p>{"For a tool, it means trying the tasks someone will use it for and checking what happens when a step fails. The person using it should know what went wrong and what to do next."}</p>
             <h2>{"What clients say"}</h2>
-            <p>{"“I APPRECIATE the depth and quality of research you put into these articles. I love the level of specificity and how you research these tools down to the exact functions we want to cover.”"}</p>
-            <p>{"Lateef Maleek, Exceed SEO"}</p>
-            <p>{"“Peace was an absolute delight to work with. Always on time, super dependable, and consistently went above and beyond on every task. He took feedback really fast and always came back stronger, the kind of person who makes your work easier just by being on the team.”"}</p>
-            <p>{"Lily Ugbaja, Fractional Content Marketing, Spicy Margarita"}</p>
-            <p>{"“you had me hooked from start to finish! It was a really well researched, well structured, helpful piece of content with appropriate product placements. And that makes my heart happy.”"}</p>
-            <p>{"Melissa Malec, Content Lead, Jabra (via Spicy Margarita)"}</p>
-            <h2>{"Work with me"}</h2>
-            <p>{"Need an article that explains your product to the people choosing it? I can write it or refresh a piece you already have. I also work with teams on a monthly retainer."}</p>
-            <p>{"If your team repeats the same work every week, I can tell you whether a tool would take it off their plate. Then I build it around how the team works."}</p>
-            <p>See my <Link href="/services">services and prices</Link> or <Link href="/portfolio">explore my work</Link>. You can also <a href="mailto:akindayopeaceakinwale@gmail.com">email me</a> to discuss what you need.</p>
-            <p><Link href="https://calendly.com/akindayopeaceakinwale/30min">{"Book a 30-minute call"}</Link></p>
-            <p><Link href="https://forms.gle/TatjQSbivWXY1B1m9">{"Send a content brief"}</Link></p>
+            <blockquote className="pull">{"“I love the level of specificity and how you research these tools down to the exact functions we want to cover.”"}</blockquote>
+            <p className="pull-by">{"Lateef Maleek, Exceed SEO"}</p>
+            <blockquote className="pull">{"“He took feedback really fast and always came back stronger, the kind of person who makes your work easier just by being on the team.”"}</blockquote>
+            <p className="pull-by">{"Lily Ugbaja, Fractional Content Marketing, Spicy Margarita"}</p>
+            <p><Link href="/testimonials">{"More nice things clients said"}</Link></p>
             <h2>{"A short introduction you can pass along"}</h2>
             <p>{"Peace Akinwale is a B2B SaaS writer and content operator. He writes bottom-of-funnel content for software companies and agencies, combining product research with clear explanations of what buyers can do with the software. He also builds AI-assisted tools for content research and production. He works with Steve Toth and Notebook Agency on content operations and AI-search projects."}</p>
-            <p><Link href="https://www.linkedin.com/in/peaceakinwale/">{"LinkedIn"}</Link></p>
-            <p><Link href="mailto:akindayopeaceakinwale@gmail.com">{"Email"}</Link></p>
+            <p className="go"><a href="https://www.linkedin.com/in/peaceakinwale/" rel="noopener" target="_blank">LinkedIn</a> <a href="mailto:akindayopeaceakinwale@gmail.com">Email</a></p>
           </div>
-          <p className="go mt-8">
-            <Link href="/portfolio">The work</Link>
-            <Link href="/services">Services and prices</Link>
-            <Link href="/contact">Contact</Link>
-          </p>
+          <WorkWithMe
+            heading="Work with me"
+            body="Need an article that explains your product to the people choosing it, or a tool for the work your team repeats every week? Tell me about it on a 30-minute call, and I’ll say whether I’m the right person for it."
+            secondary={{ label: 'See my prices', href: '/services' }}
+          />
         </div>
-        <figure className="m-0 max-w-[360px]">
-          <Image src="/images/peace-akinwale-about-wedding.jpg" alt="Peace Akinwale" width={900} height={1200} sizes="(max-width: 760px) 100vw, 360px" className="rounded-[2px] border border-border" priority />
-        </figure>
       </div>
     </div>
   );

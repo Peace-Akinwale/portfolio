@@ -1,15 +1,16 @@
 import { withOg } from '@/lib/og';
 import Link from 'next/link';
+import { WorkWithMe } from '@/components/WorkWithMe';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = withOg({
-  title: "Things I've built | Peace Akinwale",
+  title: 'Projects | Peace Akinwale',
   description:
     'I decide which content marketing processes are worth automating and build the tools that do it. Each project came out of my own work as a B2B SaaS writer.',
   alternates: {
     canonical: 'https://peaceakinwale.com/projects',
   },
-}, { key: 'projects', path: '/projects', alt: 'Things I’ve built' });
+}, { key: 'projects', path: '/projects', alt: 'Projects' });
 
 const projects = [
   {
@@ -72,7 +73,7 @@ export default function ProjectsPage() {
       <div className="max-w-5xl">
       <header className="mb-16">
         <h1 className="mb-6 text-5xl font-bold leading-tight md:text-6xl lg:text-7xl">
-          Things I&apos;ve built
+          Projects
         </h1>
         <p className="max-w-2xl text-lg leading-relaxed text-muted-foreground">
           I decide which content marketing processes are worth automating and build the tools
@@ -80,12 +81,12 @@ export default function ProjectsPage() {
           and agencies.
         </p>
         <p className="mt-4 max-w-2xl text-base text-muted-foreground">
-          The newer tools each have a{' '}
+          The newer projects each have a{' '}
           <Link href="/case-studies" className="underline underline-offset-4">case study</Link>. They include AI Docs Watch, the fanout query analysis tool, Quality Rater, an OKF, Aloud and Reach.
         </p>
       </header>
 
-      <div className="mb-24">
+      <div className="mb-16">
         {projects.map((project) => (
           <Link
             key={project.slug}
@@ -105,16 +106,14 @@ export default function ProjectsPage() {
         ))}
       </div>
 
-      <section className="border-t border-border pt-16">
+      <section className="pt-4">
         <h2 className="mb-6 text-3xl font-bold">A note on how I work</h2>
         <div className="prose prose-lg max-w-none">
           <p>Every project on this page started with a clear problem I wanted to solve for myself.</p>
           <p>
-            I hold two AWS certifications, and I write code in a few programming languages.
-          </p>
-          <p>
-            I designed and built everything here, and I treat content work as a system to engineer.
-            That&apos;s the perspective I bring to a team.
+            I designed and built everything here. I hold two AWS certifications and write code in a
+            few languages, and I treat content work as a system to engineer. That&apos;s the
+            perspective I bring to a team.
           </p>
           <p>
             When I join a team, I find out what slows people down and build the tool that takes it
@@ -125,19 +124,13 @@ export default function ProjectsPage() {
             If you lead content at a company or an agency, that is what you get with me. A writer
             with editorial judgement who also builds the systems around the writing.
           </p>
-          <p>
-            <a href="mailto:akindayopeaceakinwale@gmail.com">Send an email</a> or{' '}
-            <a href="https://calendly.com/akindayopeaceakinwale/30min" target="_blank" rel="noopener noreferrer">
-              book a call
-            </a>
-            . You can also connect on{' '}
-            <a href="https://www.linkedin.com/in/peaceakinwale/" target="_blank" rel="noopener noreferrer">
-              LinkedIn
-            </a>
-            .
-          </p>
         </div>
       </section>
+      <WorkWithMe
+        heading="Want a tool like one of these?"
+        body="Tell me about the work your team repeats every week. On a 30-minute call I’ll tell you whether a tool would take it off their plate, and what building it would involve."
+        secondary={{ label: 'See the newer tools', href: '/case-studies' }}
+      />
       </div>
     </div>
   );

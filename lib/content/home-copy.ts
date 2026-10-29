@@ -6,7 +6,7 @@
 
 export const HERO = {
   heading: 'Good work starts with good questions.',
-  line: 'I build AI products and I write. Most of what I do is deciding what’s worth making and checking that it’s true.',
+  line: 'I write, and I build AI products. Most of what I do is deciding what’s worth making and checking that it’s true.',
   who: 'Peace Akinwale, Lagos. I write BOFU content for B2B SaaS companies and agencies, and I build AI-assisted tools for content teams.',
 };
 
@@ -63,6 +63,10 @@ export const FANOUT = {
   // brief
   p1: 'Capturing searches alone wasn’t enough to justify building the tool. The team also needed to inspect the results and turn them into clear takeaways about what was happening in a client’s AI search activity.',
   p2: 'A strategist can run multiple prompts at scale and export the results as JSON for further analysis in Claude. They can also use that material to build a dashboard showing a client’s visibility across those recorded AI answers.',
+  kv: [
+    { k: '3', v: 'AI tools it records in: ChatGPT, Claude and Perplexity' },
+    { k: '6 of 10', v: 'citations the first parser found on one capture. I checked the raw stream and fixed it before the client saw the number' },
+  ],
   caseStudy: '/case-studies/fanout-query-analysis-tool',
 };
 
@@ -89,6 +93,9 @@ export const ALOUD = {
     { k: '18 to 32.2 min', v: 'how far a 33-minute article now narrates' },
   ],
   p2: 'I don’t call a build done until a real person has walked it on the live app. The log of every change to Aloud is public, mistakes left in.',
+  shot: '/images/home/aloud-player.png',
+  shotAlt: 'The Aloud player on a phone: a Listen and Read switch, the cover, the waveform, speed and skip controls, and a Highlight this passage button.',
+  shotCaption: 'The player, in Listen mode. Read mode shows the words as they are spoken.',
   caseStudy: '/case-studies/aloud',
   log: 'https://github.com/Peace-Akinwale/portfolio/blob/master/case-studies/aloud/index.md',
 };

@@ -7,7 +7,7 @@ describe('homepage copy', () => {
   it('keeps the approved opening and drops the sentence Peace removed', () => {
     expect(copy.HERO.heading).toBe('Good work starts with good questions.');
     expect(copy.HERO.line).toBe(
-      'I build AI products and I write. Most of what I do is deciding what’s worth making and checking that it’s true.',
+      'I write, and I build AI products. Most of what I do is deciding what’s worth making and checking that it’s true.',
     );
     expect(all).not.toContain('The same three questions run through both');
     expect(all).not.toContain('under my own byline and ghostwritten');

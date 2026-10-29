@@ -104,7 +104,7 @@ export function MonthRail({ months }: { months: string[] }) {
         const n = counts.get(li.dataset.month!) ?? 0;
         li.hidden = n === 0;
         const small = li.querySelector('small');
-        if (small) small.textContent = n > 1 ? `${n} entries` : '';
+        if (small) small.textContent = n > 1 ? `${n} entries` : n === 1 ? '1 entry' : '';
       });
     }
     window.addEventListener('record:filtered', recount);
