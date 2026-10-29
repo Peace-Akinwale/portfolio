@@ -1,5 +1,5 @@
 ---
-title: "The success message was the bug: five lessons from building an AI-assisted reading tool"
+title: "The success message was a bug: five lessons from building an AI-assisted reading tool"
 date: 2026-10-25
 standfirst: "A notification said the post was in the feed and the roundup. It wasn’t. Five lessons from building an AI-assisted reading tool, starting with that message."
 notion_url: https://app.notion.com/p/404992da7a5781ce8b6cd42fb274dc33

@@ -104,7 +104,7 @@ export const READING_APP = {
   // brief
   p1: 'People can listen to a digest or star a useful post to return to later. Those saved posts give the team material to discuss and draw on when creating new content. The app handles the recurring collection and preparation, while people decide what is worth using.',
   article: '/the-success-message-was-the-bug',
-  articleTitle: 'The success message was the bug: five lessons from building an AI-assisted reading tool',
+  articleTitle: 'The success message was a bug: five lessons from building an AI-assisted reading tool',
 };
 
 export const HOW_I_WORK = {

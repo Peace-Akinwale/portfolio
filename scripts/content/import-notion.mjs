@@ -27,7 +27,7 @@ const PAGES = {
   'a-reading-app-for-reviewing-posts-and-preparing-newsletter-notes': { slug: 'reading-app', name: 'A reading app for a content team', blurb: 'Pulls the posts worth reading into one feed you can listen to, and starred posts turn into newsletter notes.', type: 'case-study', kind: 'built', date: '2026-06-10', status: 'private to the client’s team', links: ['Five lessons from building it, an article | /the-success-message-was-the-bug'], tags: ['reading', 'newsletter'], related: ['aloud', 'ai-docs-watch'] },
   'reach-hands-on-my-mac-for-ai-agents-that-cant-reach-it': { slug: 'reach', name: 'Reach', blurb: 'When an AI coding session needs my Mac’s screen, it hands the job to Reach and gets the result back.', type: 'case-study', kind: 'built', date: '2026-09-27', status: 'personal tool, two Macs', links: [], tags: ['agents', 'automation'], related: ['aloud', 'contentdb'] },
   'build-a-course-portal-around-the-instructors-workflow': { slug: 'build-a-course-portal-around-the-instructors-workflow', type: 'article', date: '2026-10-25', standfirst: 'Building a members’ portal for an eight-week course taught me which parts of the instructor’s process the software should leave alone.', tags: ['Building', 'Tools'] },
-  'the-success-message-was-the-bug-five-lessons-from-building-an-ai-assisted-reading-tool': { slug: 'the-success-message-was-the-bug', type: 'article', date: '2026-10-25', standfirst: 'A notification said the post was in the feed and the roundup. It wasn’t. Five lessons from building an AI-assisted reading tool, starting with that message.', tags: ['Building', 'AI'], review: 'Review before launch: “for about two weeks” in lesson 4 conflicts with the checked commit interval of roughly 8½ hours. Peace to confirm the wording.' },
+  'the-success-message-was-the-bug-five-lessons-from-building-an-ai-assisted-reading-tool': { slug: 'the-success-message-was-the-bug', title: 'The success message was a bug: five lessons from building an AI-assisted reading tool', type: 'article', date: '2026-10-25', standfirst: 'A notification said the post was in the feed and the roundup. It wasn’t. Five lessons from building an AI-assisted reading tool, starting with that message.', tags: ['Building', 'AI'], review: 'Review before launch: “for about two weeks” in lesson 4 conflicts with the checked commit interval of roughly 8½ hours. Peace to confirm the wording.' },
 };
 
 // Export image file → a sanitized screenshot already in the repo (same screen).
@@ -157,7 +157,7 @@ for (const [name, meta] of Object.entries(PAGES)) {
     const placed = fs.existsSync(edited)
       ? fs.readFileSync(edited, 'utf8')
       : placeImages(body, name, meta.slug, publicDir).replace(/^\*Peace Akinwale\*\s*\n+/, '');
-    const fm = `---\ntitle: ${q(head.title)}\ndate: ${meta.date}\nstandfirst: ${q(meta.standfirst)}\nnotion_url: ${head.notion_url}\nnotion_last_edited: ${head.notion_last_edited}\n${yamlList('tags', meta.tags)}${meta.review ? `review: ${q(meta.review)}\n` : ''}---\n`;
+    const fm = `---\ntitle: ${q(meta.title ?? head.title)}\ndate: ${meta.date}\nstandfirst: ${q(meta.standfirst)}\nnotion_url: ${head.notion_url}\nnotion_last_edited: ${head.notion_last_edited}\n${yamlList('tags', meta.tags)}${meta.review ? `review: ${q(meta.review)}\n` : ''}---\n`;
     const file = path.join(ROOT, 'content', 'articles', `${meta.slug}.md`);
     fs.mkdirSync(path.dirname(file), { recursive: true });
     fs.writeFileSync(file, fm + '\n' + placed.trimEnd() + '\n');
