@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { GateNotInstalled, decideListed } from './route';
+import { GateNotInstalled, decideListed } from './allowlist';
 
 describe('decideListed', () => {
   it('is false for an empty email without asking the database', async () => {
