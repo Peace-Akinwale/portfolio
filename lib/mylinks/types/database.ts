@@ -460,6 +460,10 @@ export type Database = {
     };
     Views: Record<never, never>;
     Functions: {
+      mylinks_signup_allowed: {
+        Args: { p_email: string };
+        Returns: boolean;
+      };
       match_pages: {
         Args: {
           p_project_id: string;
