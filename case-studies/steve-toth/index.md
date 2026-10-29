@@ -5177,3 +5177,33 @@ The client asked what the docs monitor now costs to run at 506 pages. Answering 
 - **Upgrades are proven on the client's own data before they ship.** The same prompts, old against new, with the cost of every call recorded, turned "newer is better" into evidence, including the part that was not true.
 
 ---
+
+## 2026-10-28 to 2026-10-29, a Slack-to-GitHub request bot researched and priced, and a teammate's pull request caught before it broke the build
+
+On the weekly engineering call the head of engineering asked for research: a way for anyone in the company's Slack to tag a request and have it land as a GitHub issue for the four engineers, so work stops getting assigned in scattered threads. The same days, a pull request of his was assigned to me for review.
+
+### What shipped
+
+- **A two-page recommendation, posted to the engineering channel behind a password.** Build our own small bot: one shared Slack app, the Claude API with a single "create issue" tool, and a GitHub App allowed to write issues in one new intake repo. Running cost shown three ways by host: about $4 a month on an existing server, $6 on Railway, $10 on a new server. One engineer replied "Looks good". Nothing was built, by design: the head of engineering asked for research first and no rollout until all four agree.
+- **A verified pull request review.** On a clean copy of the branch the web build failed: the page the change was named for was imported but never committed, even though the live site already ran it from the author's machine. A test against a disposable database showed the "at least one admin" guard counted a seeded demo account, so the last real admin could be demoted, and two simultaneous demotions left zero admins in 199 of 200 runs. The review listed what already worked too (analysts refused, cross-team changes refused). The author confirmed on the next call he would push the missing file.
+
+### Decisions worth recording
+
+- **Our own bot over the Claude app already installed in Slack.** That app works in more places, and its GitHub App on our organization can write issues, but filing GitHub issues is not a documented use, and the team wanted an agent it controls. It stays in the plan as the fallback.
+- **Borrowing a design, not buying a product.** Every, the media company, published how it replaced personal agents with one shared company agent. Five of its lessons shaped the design (one shared agent, its own logins, quiet unless tagged, approval for risky actions, hosting the agent loop is real work). Every sells that agent at $24 to $30 a user a month; we took the lessons and skipped the subscription.
+- **Hosting framed by who can fix it, not just by price.** The existing server is cheapest, but only one person can deploy to it or read its logs. Railway costs about $2 more and any of the four can. Both are on the page with the facts; the head of engineering decides.
+- **Rejected:** GitHub's own Slack app (every requester would need a GitHub account), Zapier (its mention trigger covers public channels only), and Slack's Workflow Builder (paid plan plus custom code).
+
+### Frictions and course corrections
+
+- **I read "check out Every" as "buy Every's agent".** The first draft priced their product; the client meant learn from their write-ups. The plan was rewritten around building our own.
+- **The first deliverable was a five-slide deck; the client found plain text easier to read.** Rebuilt as one branded page, then checked by printing it to PDF: two pages, as asked.
+- **A sloppy cost line was caught before it went out.** A requested phrasing would have shown a new server as "$6" when it is $6 on top of $4. The totals were spelled out instead ($4, $10, $6), so the cheaper-looking option was not understated.
+- **"The bot was deactivated" turned out to be wrong.** The Claude app had been active in Slack the whole time; checking the channels before planning around the assumption changed the comparison.
+
+### Why this matters for the portfolio
+
+- **Research arrives priced, sourced and decision-ready**, with the cheapest option stated honestly even when I argue for another.
+- **Reviews are proven, not asserted.** A failing build and a race condition were reproduced on a clean copy before anything was said to a teammate.
+
+---
