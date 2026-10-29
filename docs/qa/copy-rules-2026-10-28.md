@@ -46,3 +46,23 @@ Peace: "keep an eye out for every adverb and remove them. I don't think we need 
 - Words that set time, place or logic stay when they're doing work and go when they're filler: not, never, now, then, still, also, only, already, here, there, before, after, first, once, daily. Read each one. "I also added search" usually survives. "It still works fine" loses "still" and "fine".
 - Adjectives ending in -ly are not adverbs (daily digest, early September, friendly, likely). Nouns aren't either (family, reply, assembly).
 - Check with: node scripts/qa/triplets.mjs --adverbs
+
+## 7. Writing goals and principles (Peace, 29 Oct 2026, verbatim)
+Every rule above serves these. When a rule and a goal pull apart, the goal wins.
+
+With every piece of content we publish, we aim to:
+
+* Empower. Help people understand my work by using language that informs them and encourages them to make the most of what I do/offer.
+* Respect. Treat readers with the respect they deserve. Put yourself in their shoes, and don’t patronize them. Remember that they have other things to do. Be considerate and inclusive. Don’t market at people; communicate with them.
+* Educate. Tell readers what they need to know, not just what we want to say. Give them the exact information they need, along with opportunities to learn more. Remember that you’re the expert, and readers don’t have access to everything you know.
+* Guide. Think of yourself as a tour guide for our readers. Whether you’re leading them through our educational materials or a task in our app, communicate in a friendly and helpful way.
+* Speak truth. Understand my place in my potential client's lives. Avoid dramatic storytelling and grandiose claims. Focus on our real strengths.
+
+In order to achieve those goals, we make sure our content is:
+
+* Clear. Understand the topic or what you’re writing about. Use simple words and sentences.
+* Useful. Before you start writing, ask yourself: What purpose does this serve? Who is going to read it? What do they need to know?
+* Friendly. Write like a human. Don’t be afraid to break a few rules if it makes your writing more relatable (so important, which is why a little bracket, huh, wanna, etc. is good). All of our content, from splashy homepage copy to case studies to thought leadership, should be warm and human.
+* Appropriate. Write in a way that suits the situation. Just like you do in face-to-face conversations, adapt your tone depending on who you’re writing to and what you’re writing about.
+
+In practice: write to the reader ("you", "your team"), say what they get, and let a bracket or a casual word in where it makes a line sound like a person talking.
