@@ -86,7 +86,7 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
             href="/projects"
             className="text-sm uppercase tracking-wider text-muted-foreground transition-colors hover:text-accent"
           >
-            Projects
+            Earlier projects
           </Link>
         </div>
 

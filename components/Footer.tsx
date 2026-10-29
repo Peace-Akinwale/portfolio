@@ -3,7 +3,7 @@ import { NAV_LINKS, EMAIL, LINKEDIN_URL, GITHUB_URL, X_URL } from '@/lib/site';
 
 const WORK_LINKS = [
   { href: '/portfolio#writing', label: 'Writing samples' },
-  { href: '/projects', label: 'Projects' },
+  { href: '/projects', label: 'Earlier projects' },
   { href: '/testimonials', label: 'Nice things clients said' },
   { href: '/rss.xml', label: 'RSS' },
 ];

@@ -11,7 +11,7 @@ import { MANYREQUESTS_ARTICLE_COUNT, MANYREQUESTS_SINCE } from '@/lib/portfolio/
 import { SITE_URL } from '@/lib/site';
 
 export const metadata: Metadata = withOg({
-  title: 'Things I built',
+  title: 'Projects',
   description:
     'The decisions that mattered in each project, and what someone can do with the result. Tools for content teams, and one long writing engagement.',
   alternates: { canonical: `${SITE_URL}/case-studies` },

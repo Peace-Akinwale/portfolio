@@ -64,9 +64,9 @@ export default async function CaseStudyPage({ params }: { params: Promise<{ slug
       <header className="cs-cover cs-page">
         <div className="gutter mx-auto max-w-[1180px]">
           <p className="cs-crumbs">
-            <Link href="/portfolio">My work</Link>
+            <Link href="/portfolio">Writing &amp; work</Link>
             <span aria-hidden="true"> / </span>
-            <Link href="/case-studies">Things I built</Link>
+            <Link href="/case-studies">Projects</Link>
           </p>
           <div className={shot ? 'cs-cover-grid' : undefined}>
             <div>

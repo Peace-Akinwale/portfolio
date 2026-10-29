@@ -8,7 +8,7 @@ import { ThemeToggle } from '@/components/ThemeToggle';
 
 // One top bar for every page: the name on the left, the six sections on the
 // right, "Book a call" last. Sticky, on the page's own ground, with a hairline.
-// Under 760px the sections sit behind a disclosure button.
+// Under 1024px the sections sit behind a disclosure button, so a label never wraps.
 export function Header() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
@@ -29,29 +29,29 @@ export function Header() {
   return (
     <header className="site-header sticky top-0 z-40 border-b border-border bg-background/95 backdrop-blur-sm">
       <a href="#main" className="skip-link">Skip to content</a>
-      <div className="gutter flex min-h-[56px] items-center justify-between gap-3 md:gap-6">
-        <Link href="/" className="display shrink-0 whitespace-nowrap text-[18px] font-[560] tracking-[-0.01em] text-foreground no-underline md:text-[20px]">
+      <div className="gutter flex min-h-[56px] items-center justify-between gap-3 lg:gap-6">
+        <Link href="/" className="display shrink-0 whitespace-nowrap text-[18px] font-[560] tracking-[-0.01em] text-foreground no-underline lg:text-[20px]">
           Peace Akinwale
         </Link>
 
-        <nav aria-label="Site" className="hidden items-center gap-5 md:flex lg:gap-7">
+        <nav aria-label="Site" className="hidden items-center gap-6 lg:flex xl:gap-7">
           {NAV_LINKS.map((item) => (
             <Link
               key={item.href}
               href={item.href}
               aria-current={isCurrent(item.href) ? 'page' : undefined}
-              className="nav-link text-[15px] font-medium text-muted-foreground hover:text-foreground"
+              className="nav-link whitespace-nowrap text-[15px] font-medium text-muted-foreground hover:text-foreground"
             >
               {item.label}
             </Link>
           ))}
           <ThemeToggle />
-          <Link href="/contact" className="button button-ink text-[14px]">
+          <Link href="/contact" className="button button-ink whitespace-nowrap text-[14px]">
             Book a call
           </Link>
         </nav>
 
-        <div className="flex items-center gap-1 md:hidden">
+        <div className="flex items-center gap-1 lg:hidden">
         <Link href="/contact" className="button button-ink min-h-9 shrink-0 whitespace-nowrap px-3 py-1.5 text-[12.5px]">
           Book a call
         </Link>
@@ -78,7 +78,7 @@ export function Header() {
       </div>
 
       {open && (
-        <nav id={menuId} aria-label="Site" className="gutter border-t border-border pb-4 pt-2 md:hidden">
+        <nav id={menuId} aria-label="Site" className="gutter border-t border-border pb-4 pt-2 lg:hidden">
           <ul className="flex flex-col">
             {NAV_LINKS.map((item) => (
               <li key={item.href}>

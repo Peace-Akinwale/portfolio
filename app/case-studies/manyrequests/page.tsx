@@ -54,9 +54,9 @@ export default function ManyRequestsCaseStudyPage() {
       <header className="cs-cover cs-page">
         <div className="gutter mx-auto max-w-[1180px]">
           <p className="cs-crumbs">
-            <Link href="/portfolio">My work</Link>
+            <Link href="/portfolio">Writing &amp; work</Link>
             <span aria-hidden="true"> / </span>
-            <Link href="/case-studies">Things I built</Link>
+            <Link href="/case-studies">Projects</Link>
           </p>
           <h1>{MANYREQUESTS_ARTICLE_COUNT} product-led articles for ManyRequests</h1>
           <p className="cs-point">Articles where the product shows up inside the piece, and what they did in search.</p>

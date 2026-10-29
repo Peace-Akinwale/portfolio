@@ -215,7 +215,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
                   href="/projects"
                   className="text-sm uppercase tracking-wider text-muted-foreground hover:text-accent transition-colors"
                 >
-                  Projects
+                  Earlier projects
                 </Link>
               </div>
 

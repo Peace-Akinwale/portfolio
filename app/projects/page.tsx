@@ -4,13 +4,13 @@ import { WorkWithMe } from '@/components/WorkWithMe';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = withOg({
-  title: 'Projects | Peace Akinwale',
+  title: 'Earlier projects | Peace Akinwale',
   description:
     'I decide which content marketing processes are worth automating and build the tools that do it. Each project came out of my own work as a B2B SaaS writer.',
   alternates: {
     canonical: 'https://peaceakinwale.com/projects',
   },
-}, { key: 'projects', path: '/projects', alt: 'Projects' });
+}, { key: 'projects', path: '/projects', alt: 'Earlier projects' });
 
 const projects = [
   {
@@ -73,7 +73,7 @@ export default function ProjectsPage() {
       <div className="max-w-5xl">
       <header className="mb-16">
         <h1 className="mb-6 text-5xl font-bold leading-tight md:text-6xl lg:text-7xl">
-          Projects
+          Earlier projects
         </h1>
         <p className="max-w-2xl text-lg leading-relaxed text-muted-foreground">
           I decide which content marketing processes are worth automating and build the tools
