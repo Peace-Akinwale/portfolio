@@ -29,8 +29,7 @@ export default function AboutPage() {
       <div className="article-layout">
         <div>
           <div className="prose">
-            <p>{"I get to know what I’m working on before I write or build anything. If I'm writing about software, I want to know what someone can do with it and where it falls short. If I'm building a tool, I want to understand the task people keep doing and whether the tool would make it easier."}</p>
-            <p>{"That means spending time with the product and checking the work before someone else has to rely on it."}</p>
+            <p>{"Before I write, I research the topic and explore the product so I can explain how someone would actually use it. When I build a tool, I use it on real tasks and keep fixing the parts that feel confusing or take more effort than they should."}</p>
             <h2>{"Writing that helps people understand your product"}</h2>
             <p>{"I write bottom-of-funnel content, such as product comparisons and buying guides. These are the pages someone reads when they already know they have a problem and are deciding which product to use."}</p>
             <p>{"An article should help them make that decision. What does the product do? How would they use it for their particular task? What does it cost, and what are its limitations? When would another option be the better choice?"}</p>
