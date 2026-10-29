@@ -1,11 +1,11 @@
 ---
-title: "A reading app for reviewing posts and preparing newsletter notes"
-name: "A reading app for a content team"
+title: "An app an agency uses to follow SEO and AEO trends"
+name: "An app an agency uses to follow SEO and AEO trends"
 blurb: "Pulls the posts worth reading into one feed you can listen to, and starred posts turn into newsletter notes."
 kind: built
 status: "private to the client’s team"
 date: 2026-06-10
-summary: "I built a private reading app for an agency founder who kept checking LinkedIn and saving posts across task lists. The app gathered public posts into one feed to review, with audio digests for listening instead of reading. Starred posts fed newsletter notes that the founder could edit before sending them to the publishing system."
+summary: "I built a private app an agency uses to follow SEO and AEO trends. Its founder kept checking LinkedIn and saving posts across task lists. The app gathered public posts into one feed to review, with audio digests for listening instead of reading. Starred posts fed newsletter notes that the founder could edit before sending them to the publishing system."
 voice: informal
 notion_url: https://app.notion.com/p/403992da7a578154a913e2c0f47463f7
 notion_last_edited: 2026-10-25T14:24:03.685Z
@@ -29,7 +29,7 @@ They wanted "a way to totally replace" that process. It had to follow the people
 
 I'd been building a different tool until June 10, 2026. It was an engine that drafted LinkedIn posts. On a call that day, the founder said drafting wasn't the problem. The checking and saving was.
 
-I wrote up the new requirements from the call and shipped the first version of the reading app that same night. The post engine's infrastructure stayed and went to work for the new app.
+I wrote up the new requirements from the call and shipped its first version that same night. The post engine's infrastructure stayed and went to work for the new app.
 
 ### Review collected posts in one feed
 

@@ -54,7 +54,7 @@ export default function CaseStudiesPage() {
   const wrote = studies.filter((s) => s.kind === 'wrote');
   const articleDate = (slug: string) => getLocalArticle(slug)?.publishedAt.slice(0, 10);
   const articles = [
-    { slug: 'the-success-message-was-the-bug', name: 'The success message was a bug', line: 'Five lessons from building an AI-assisted reading tool.' },
+    { slug: 'the-success-message-was-the-bug', name: 'The success message was a bug', line: 'Five lessons from building an app an agency uses to follow SEO and AEO trends.' },
     { slug: 'build-a-course-portal-around-the-instructors-workflow', name: 'Build a course portal around the instructor’s workflow', line: 'Which parts of an existing process the software should leave alone.' },
   ].map((a) => ({ ...a, date: articleDate(a.slug) }));
 
