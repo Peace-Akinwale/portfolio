@@ -18,7 +18,7 @@ export const QUESTIONS = [
 
 // Draft one-line answers under each question, for Peace to approve (26 Oct 2026).
 export const ANSWERS = {
-  Q1: 'Before I write, I dig into the topic and spend time with the product so I can explain what it does, beyond what’s on your product pages. When I build a tool, I use it myself and keep working on the parts that feel confusing or make the task harder than it needs to be.',
+  Q1: 'I learn all I can about your product, and I use it too, so your editor doesn’t have to correct me. When I build a tool, I check every screen and action so it works as it should.',
   Q2: 'Before I write or build anything, I look at what’s already out there and make the bit that’s missing.',
   Q3: 'It’s done when the person it’s for can use it without me. The editor has nothing left to fix, and the app finishes the job and tells you what happened.',
 };
