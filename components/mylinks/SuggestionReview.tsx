@@ -42,6 +42,7 @@ export default function SuggestionReview({
   const [showLinkDoc, setShowLinkDoc] = useState(false);
   const [docUrl, setDocUrl] = useState(article.google_doc_id ?? "");
   const [error, setError] = useState<string | null>(null);
+  const [engineNotice, setEngineNotice] = useState<string | null>(null);
   const [reconnectRequired, setReconnectRequired] = useState(false);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [lastClickedId, setLastClickedId] = useState<string | null>(null);
@@ -128,13 +129,19 @@ export default function SuggestionReview({
     setGenerationProgress(6);
     setGenerationPhase("Preparing article and destination inventory...");
     setError(null);
+    setEngineNotice(null);
     setActiveSuggestionId(null);
 
     try {
       const response = await fetch(`/api/mylinks/articles/${article.id}/suggest`, {
         method: "POST",
       });
-      const payload = (await response.json()) as { error?: string; suggestions?: Suggestion[] };
+      const payload = (await response.json()) as {
+        error?: string;
+        suggestions?: Suggestion[];
+        engine?: "jev" | "gpt-4o";
+        notice?: string | null;
+      };
 
       if (!response.ok) {
         setError(payload.error ?? "Failed to generate suggestions.");
@@ -145,7 +152,13 @@ export default function SuggestionReview({
       setGenerationPhase("Suggestions ready.");
       setSuggestions(payload.suggestions ?? []);
       setHasGenerated(true);
-      showToast(`${payload.suggestions?.length ?? 0} link suggestions generated.`);
+      setEngineNotice(payload.notice ?? null);
+      const count = payload.suggestions?.length ?? 0;
+      showToast(
+        payload.engine === "jev"
+          ? `${count} link suggestions, scored by Jev.`
+          : `${count} link suggestions generated.`
+      );
     } catch {
       setError("Request failed while generating suggestions.");
     } finally {
@@ -841,6 +854,15 @@ export default function SuggestionReview({
       {error ? (
         <div className="border-b border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 sm:px-6">
           {error}
+        </div>
+      ) : null}
+
+      {engineNotice ? (
+        <div
+          role="status"
+          className="border-b border-border bg-[var(--muted)]/40 px-4 py-3 text-sm text-foreground sm:px-6"
+        >
+          {engineNotice}
         </div>
       ) : null}
 

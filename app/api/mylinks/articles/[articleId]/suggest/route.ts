@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server';
-import { embedText, formatVector, getSuggestions, type InventoryPage } from '@/lib/mylinks/ai';
+import { batchEmbedTexts, embedText, formatVector, getSuggestions, type InventoryPage } from '@/lib/mylinks/ai';
+import { isJevConfigured, jevConfig } from '@/lib/mylinks/jev';
+import { getJevSuggestions, jevFallbackNotice } from '@/lib/mylinks/jev-suggest';
 import {
   extractExistingLinkRanges,
   extractHeadingRanges,
@@ -15,6 +17,8 @@ type InventoryPageRow = {
   page_type: import('@/lib/mylinks/types/database').PageType;
   priority: number;
   published_at: string | null;
+  meta_description?: string | null;
+  h2s?: string[] | null;
 };
 
 export const maxDuration = 120;
@@ -73,6 +77,8 @@ export async function POST(
       page_type: row.page_type,
       priority: row.priority,
       published_at: row.published_at,
+      meta_description: row.meta_description,
+      h2s: row.h2s,
     }));
   } catch (rankingError) {
     console.error(
@@ -85,7 +91,7 @@ export async function POST(
   if (!pages || pages.length === 0) {
     const { data: fallback } = await serviceClient
       .from('pages')
-      .select('id, url, title, h1, page_type, priority, published_at')
+      .select('id, url, title, h1, page_type, priority, published_at, meta_description, h2s')
       .eq('project_id', article.project_id)
       .or(`published_at.gte.${fourYearsAgo.toISOString()},published_at.is.null`)
       .order('priority', { ascending: false })
@@ -107,6 +113,8 @@ export async function POST(
       page_type: pageRow.page_type,
       priority: pageRow.priority,
       source: 'inventory' as const,
+      meta_description: pageRow.meta_description ?? null,
+      h2s: pageRow.h2s ?? null,
     })),
     ...(clientTargets ?? []).map((target) => ({
       url: target.url,
@@ -134,12 +142,38 @@ export async function POST(
     ...headingRanges,
   ];
 
+  // Jev scores (sentence, page) pairs when a key is present. Anything that
+  // stops it (no key, a Jev error, a timeout) falls back to the gpt-4o path and
+  // tells the user which path produced the list.
   let suggestionResult;
-  try {
-    suggestionResult = await getSuggestions(article.content_text, inventory, excludedRanges);
-  } catch (error) {
-    const message = error instanceof Error ? error.message : 'Suggestion generation failed';
-    return NextResponse.json({ error: message }, { status: 500 });
+  let engine: 'jev' | 'gpt-4o' = 'gpt-4o';
+  let notice: string | null = null;
+  let usageLog: { provider: string; model: string };
+
+  if (isJevConfigured()) {
+    try {
+      const jevResult = await getJevSuggestions(article.content_text, inventory, excludedRanges, {
+        embed: batchEmbedTexts,
+      });
+      suggestionResult = jevResult;
+      engine = 'jev';
+      usageLog = { provider: 'openrouter', model: jevResult.model ?? jevConfig().model };
+    } catch (error) {
+      console.error('[jev] suggestion scoring failed, using gpt-4o:', error instanceof Error ? error.message : error);
+      notice = jevFallbackNotice('error');
+    }
+  } else {
+    notice = jevFallbackNotice('missing_key');
+  }
+
+  if (!suggestionResult) {
+    try {
+      suggestionResult = await getSuggestions(article.content_text, inventory, excludedRanges);
+      usageLog = { provider: 'openai', model: 'gpt-4o' };
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Suggestion generation failed';
+      return NextResponse.json({ error: message }, { status: 500 });
+    }
   }
 
   const pageByUrl = new Map((pages ?? []).map((pageRow) => [pageRow.url, pageRow]));
@@ -183,13 +217,13 @@ export async function POST(
     project_id: article.project_id,
     article_id: articleId,
     operation: 'generate_internal_suggestions',
-    provider: 'openai',
-    model: 'gpt-4o',
+    provider: usageLog!.provider,
+    model: usageLog!.model,
     prompt_tokens: suggestionResult.usage.promptTokens,
     completion_tokens: suggestionResult.usage.completionTokens,
     total_tokens: suggestionResult.usage.totalTokens,
     estimated_cost_usd: suggestionResult.usage.estimatedCostUsd,
   });
 
-  return NextResponse.json({ suggestions: inserted }, { status: 201 });
+  return NextResponse.json({ suggestions: inserted, engine, notice }, { status: 201 });
 }

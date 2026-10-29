@@ -8,6 +8,11 @@ const envSchema = z.object({
   GOOGLE_CLIENT_ID: z.string().min(1),
   GOOGLE_CLIENT_SECRET: z.string().min(1),
   OPENAI_API_KEY: z.string().min(1),
+  // Jev (TypeSafe's decision model) through OpenRouter. Optional: without the
+  // key, suggestions fall back to the gpt-4o path.
+  OPENROUTER_API_KEY: z.string().optional(),
+  JEV_BASE_URL: z.string().optional(),
+  JEV_MODEL: z.string().optional(),
 });
 
 export const env = envSchema.parse(process.env);
