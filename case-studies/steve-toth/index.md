@@ -5329,3 +5329,28 @@ Lens is the team's tool for recording how AI platforms answer customer questions
 - **Every claim to the team points to a run:** the exact commit checked in a clean copy, each new test failing before its fix.
 
 ---
+
+## 2026-10-30, the same customer journey run through both AI-answer trackers: the tools agreed, ChatGPT's account and mode did not
+
+Follow-up to the same day's Lens fix. The client asked whether a strategist would have hit the same "0 brands" problem with the team's other tracker, Fanout Notebook. I ran the strategist's six-question Puffco journey for real, with Fanout left exactly as installed.
+
+### What shipped
+
+- **A per-turn answer from real runs, not from reading code.** Fanout recorded Puffco as named on all 6 turns of the journey, because it looks for the client's name in the answer text instead of waiting for ChatGPT to tag it. Fanout's Puffco client went from 98 to 107 captured runs during the test.
+- **The finding that mattered more:** on the strategist's account ChatGPT refused to recommend and named brands only from turn 4. On the team's analytics workspace it searched the web on 5 of 6 turns, recommended models and listed stores and prices from the first answer. On the client's own account, in a temporary chat, it refused again.
+
+### Decisions worth recording
+
+- **Ran the opener too.** A single-question test came back clean, but the client asked for the full journey including the first question, because the first answer shapes everything after it. It did: the opener ended in an interactive form, and the follow-ups built on it.
+- **Kept the test out of the client's history.** The everyday browser was signed into the founder's own ChatGPT, so that run used a temporary chat, which saves no history or memory.
+
+### Frictions and course corrections
+
+- **I tried the wrong browser profile first.** The team's runs use a dedicated, signed-in automation browser, and I had launched a different one without the tracker installed. The client pointed out that every past run used it. The tracker is now loaded the documented way, and where it lives is recorded so it isn't missed again.
+- **ChatGPT's page changed under the script:** the message box lost the id the script waited for, and the page text no longer shows the conversation. Both were fixed mid-run, and completion was confirmed against screenshots and the tracker's own run count instead of page text.
+
+### Why this matters for the portfolio
+
+- **Before blaming a tool, hold the inputs constant.** The difference the strategist saw came from which ChatGPT account and mode answered, not from the tool recording it. Comparisons between runs now have to state the account, mode and chat type.
+
+---
