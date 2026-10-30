@@ -5256,3 +5256,45 @@ The company's knowledge-brain app held the founder's notes as a searchable brain
 - **Shipping waits on a hunt, not a feeling.** The release went out after the security hole and the login loop were found and fixed, with the client clearing test data from the live database first.
 
 ---
+
+## 2026-10-30, a docs-change monitor audited after one bad page: 18 false changes withdrawn, their causes fixed, and every compare view made readable
+
+The founder's docs monitor watches about 500 pages of AI companies' documentation and publishes each change to a public site, a coaching portal and the team's internal app. The client asked for one thing: the "compare side by side" view should show both versions on one page, as the public site already did. The page he linked showed a vendor's bot-check screen as the "before" version. That one page turned into an audit of every change the monitor had ever published.
+
+### What shipped
+
+- **Side-by-side compare on all three surfaces.** The internal app and the coaching portal both showed one version at a time behind a toggle; both now show the two versions together, stacked on a phone.
+- **18 of 192 published changes found false and withdrawn**, with the client's approval, from the public site, the portal and the app's main list. Four had been published as news, for example a claim that a search feature "now runs automatically", when the page had not changed at all. The public site was rebuilt and checked: none of the 18 headlines remain, and their pages return 404.
+- **The causes, fixed at the mechanism:**
+  - The bot-check filter ran on one of three ways of reading a page. A 208-character bot-check screen, just over the 200-character minimum, was saved as the real page. The filter is now one shared function on every reading path.
+  - A free second source for one vendor's help pages, added two days earlier to cut costs, had been meant for 2 pages but matched all of them. The vendor had moved its help center, so that source served an old copy; pages alternated between old and new, and each switch was published as a change. The source was removed.
+  - A page the monitor could only read as an empty shell "changed" daily on an internal code. It was taken off the watch list.
+- **A headless-browser sweep of all 378 saved before and after pages**, then fixes for what it found:
+  - Pages from one documentation platform could not scroll inside the viewer: one is now 35,764 pixels tall instead of 760.
+  - Code-sample tabs stayed shut: a page went from 292 to 530 visible highlights.
+  - The jump to the first change landed in a hidden search box or a sidebar list on some pages; it now lands in the article.
+  - A one-word edit ("are" to "is") had no highlight at all; short words now highlight when the surrounding text pins them.
+- **The portal now refreshes its copies.** It had copied each saved page once and never again, so 285 copies kept the old layout. It now records which version of the page renderer produced each copy and replaces older ones, 10 every half hour.
+- **The public site now rebuilds daily at 12:25 PM Lagos time**, after the monitor's daily check, which has finished by 11:46 AM Lagos on its slowest day so far.
+- Checks run after the last change: 1,780 tests in the internal app, 1,821 in the portal, 103 on the site, and production builds for both apps. Each fix was confirmed live in the browser, not only in tests.
+
+### Decisions worth recording
+
+- **Withdraw, don't delete.** The false changes stay in the internal app under a folded "Withdrawn" row with a banner on each, so the record survives but nobody reads them as news.
+- **Fix the layout bug narrowly.** A rule that would have fixed scrolling everywhere also contradicted a design rule the team had already logged, so only the one fixed-position wrapper is changed.
+- **Remove the stale free source entirely** rather than narrow it to the 2 pages it was meant for: a second address is only safe while the vendor still writes to it.
+- **The client chose one daily rebuild** over rebuilding on every change.
+- **A hold-for-review check was designed and priced at $0 a month** (plain rules, no AI): hold a change when a page returns to an older version, swings in size, is nearly empty, or the monitor's own summary says nothing changed. It is next, at the client's word.
+
+### Frictions and course corrections
+
+- **My first sweep reported three pages "stuck" that scrolled fine.** Those pages scroll inside the page body, and the sweep only measured the document. A real mouse-wheel test caught it before anything was changed, and the real bug on one of them was elsewhere.
+- **A time-zone mix-up nearly scheduled the rebuild before the monitor finished.** The client asked for 11:25 AM Lagos; the monitor's times were in UTC, an hour behind. A side-by-side table made it plain, and the build moved to 12:25 PM Lagos.
+- **A follow-up review of my own day's work found four more problems,** including the portal's frozen copies and withdrawn changes still reading as news inside the app. All four were fixed and shipped the same day.
+
+### Why this matters for the portfolio
+
+- **One wrong page became a full audit, not a one-off fix.** Every false change was traced to the mechanism that produced it, and each mechanism was closed on every surface that shared it.
+- **Cost-saving changes get checked against what they cost in accuracy.** The free source that saved money was the same thing that published nine false changes, and it was removed the day it was found.
+
+---
