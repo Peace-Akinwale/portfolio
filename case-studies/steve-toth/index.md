@@ -5207,3 +5207,52 @@ On the weekly engineering call the head of engineering asked for research: a way
 - **Reviews are proven, not asserted.** A failing build and a race condition were reproduced on a clean copy before anything was said to a teammate.
 
 ---
+
+## 2026-10-28 to 2026-10-30, the knowledge-brain app rebuilt as one product for the team and its clients, then hunted and shipped
+
+The company's knowledge-brain app held the founder's notes as a searchable brain, and on the side it could build a "client OKF" (a client's own knowledge base, handed over as a zip). The ask was to turn it into a real product, from the admin page down to every client page, so a client uses their OKF through their own AI instead of forgetting a download. It was not to be built for the first client alone.
+
+### What shipped
+
+- **Live at okf.notebookers.com on 2026-10-30.** The release is commit `92bd038` on `main`, and its deploy succeeded. All 3,135 automated tests and the production build passed on the merged code before the push. The health check answered 200 after it.
+- **One frame for the whole app.** Every signed-in screen sits in the same sidebar, with three roles:
+  - **Admin:** the inbox, the clients and the founder's brain.
+  - **Reader:** only the founder's Graph, Browse and Ask; nothing that writes.
+  - **Client:** only their own OKF.
+- **A team inbox ("Needs you") and a client page that leads with what is waiting.** Material a client sent and notes they flagged come first. Facts sit in a side column, and rare actions sit behind a "⋯" menu.
+- **A live connector link per client.** A client adds one link to their own AI and it can search and read their notes. Every read is logged, so the team can see whether a client actually uses it. The link's secret is stored encrypted.
+- **A real dark mode in the app and in the client's download.** The brand defines no dark theme. The old one was the six brand colors swapped around, which read as navy, so it was replaced with neutral greys.
+- **The weekly ingest moved to newer, cheaper models.**
+
+### Decisions worth recording
+
+- **The team builds, the client receives.** The hand-over is the live link plus the zip, and clients send new material instead of building it themselves. Rejected: client self-serve builds.
+- **Reversed one of my own scope calls.** I had kept the founder's pages on their old top bar. The client said the admin felt "like a walled garden", so the whole app moved into one sidebar.
+  - The approval came from an interactive before-and-after page with switches for each role and for desktop and phone.
+  - That page replaced a design canvas he found stressful to use.
+- **On a phone, the Menu button moved to the left,** the side the menu slides in from. It had been copied from the old layout to the right. The client asked whether it was "the best design decision", and it was not. His standing rule since: challenge design decisions, copied ones included.
+- **The page's one red button goes to the work that is waiting, not to "View as client".**
+- **The newer model could not be dropped in by changing its name.** A live test showed it rejects the "thinking off" setting the old one used, so one small rule now gives each model the setting it accepts. Without that, every weekly page would have failed.
+
+### Frictions and course corrections
+
+- **Many design passes driven by the client's eye:**
+  - A pop-out client panel became a full page.
+  - A card grid ("boxy") became flat sections.
+  - The long admin landing page was split into four screens.
+  - Text first got larger in a brand pass and then went back to the denser size he preferred.
+  - The red header button was taller than the bar it sat in.
+  - The client page "looks too consistent", so it was rebuilt around the work waiting.
+- **Two bug hunts before shipping.** The first, before the client's review, made 17 fixes. The final one, run by four parallel reviewers plus my own walk on desktop and phone, made 23. The serious ones:
+  - **Settings open to members:** any member of a client's OKF could change its settings, including the AI key that pays for builds, and could get the file holding that key served back to them.
+  - **A login loop:** every client account looped between the login page and the home page forever, because client accounts stay "pending" by design.
+  - **False authorship:** new notes would have named the old model as their author.
+- **A styling rule bit three times in one release.** A shared style string's width or visibility setting beat a page's own override. A search box filled its bar, and a desktop-only button showed on phones. The fix is a rule, not a patch: shared styles carry no width or display.
+- **Not verified, and said so:** moving keyboard focus into the phone menu could not be tested in the automated browser. It is listed for a real phone.
+
+### Why this matters for the portfolio
+
+- **A product decision gets reversed out loud when the client's eye catches it,** and the reason is recorded with it.
+- **Shipping waits on a hunt, not a feeling.** The release went out after the security hole and the login loop were found and fixed, with the client clearing test data from the live database first.
+
+---
