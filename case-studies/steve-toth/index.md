@@ -5298,3 +5298,34 @@ The founder's docs monitor watches about 500 pages of AI companies' documentatio
 - **Cost-saving changes get checked against what they cost in accuracy.** The free source that saved money was the same thing that published nine false changes, and it was removed the day it was found.
 
 ---
+
+## 2026-10-30, two strategists' Lens reports traced to their causes, one fixed across all six AI platforms, one admin bug closed
+
+Lens is the team's tool for recording how AI platforms answer customer questions. Two strategists reported problems the same day, and a teammate's pull request had been merged with two bugs from my review still in it.
+
+### What shipped
+
+- **Admin fixes pushed to `main`** (`cc01c17`, `eddefde` in `notebookagency/Lens`). The last real admin can no longer be demoted, two admins demoting each other at once can no longer leave zero admins, and Google account ids no longer reach the browser. Each was proved by a test that failed first: demoting the only admin returned 200, and the concurrent case left 0 admins on the first of 25 rounds.
+- **Pull request #18, open for review** (head `5fe1f47`). When a platform tags no brands in an answer, Claude Haiku 5.5 reads the brand and product names from the answer text, labelled "read from text" in the app. Only names the answer actually contains are kept, so the model cannot add one.
+- **Checked on all 17 real recordings in the repo, across all six platforms,** through the full storage path: one model call per untagged turn, tagged turns untouched. Gemini and Claude had shown 0 brands on every turn before this.
+- **AI Mode's new follow-up buttons root-caused, not yet fixed.** Google sends the clicked choices ("Online booking", "No, this covers it") in a new encoded field that Lens blanks, so the turn's question read "2 text snippets".
+
+### Decisions worth recording
+
+- **A model pass, not a list of names per client.** Matching the client's name would have needed product names typed in by hand for every client. The client's rule is that everything is automatic, so a small model reads the names instead. Cost: about $1.60 per 4,000 turns.
+- **The admin fixes went straight to `main`, the brand feature went to review.** The admin fixes were the ones the teammate had agreed to make; the brand feature added the first model call to parsing, so it waited for his yes.
+- **Read the strategist's own recording instead of forcing a new one.** Google put up a CAPTCHA for automated browsers. Rather than work around it, the cause was found in the recording the strategist had already made.
+
+### Frictions and course corrections
+
+- **I narrowed the fix to one platform and was called on it.** A bug hunt flagged the cost of running the pass on every platform, and I limited it to ChatGPT. That left Gemini and Claude with no brands at all. The client: "so i have to manually tell you to cover all others?" It now covers all six, and the cost is stated instead of avoided.
+- **A review of my own work found five real problems before anyone else did,** including a cached first read that would have paid for the model twice, and an unchanged-role request that still leaked the Google id. A final audit added retries, because one failed call would have left a turn at 0 brands until a manual re-run.
+- **A wrong deploy instruction.** I told the teammate to set the AI key on the background worker. He pointed out it was already passed to both services, and the compose file confirmed it.
+- **Not verified, and said so:** the live model call has not run yet; the strategist's three sessions after the deploy are the first real test.
+
+### Why this matters for the portfolio
+
+- **Fixes cover the whole product, not the one platform where the bug was reported.** When I fell short of that, the correction and its reason are on record.
+- **Every claim to the team points to a run:** the exact commit checked in a clean copy, each new test failing before its fix.
+
+---
