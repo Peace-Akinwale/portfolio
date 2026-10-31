@@ -6,6 +6,7 @@ import {
 } from '@/lib/mylinks/server/link-ranges';
 import { requireAuthenticatedUser } from '@/lib/mylinks/auth';
 import { createServiceClient } from '@/lib/mylinks/supabase/server';
+import { budgetBlock } from '@/lib/mylinks/budget';
 
 type InventoryPageRow = {
   id: string;
@@ -26,6 +27,9 @@ export async function POST(
   const user = await requireAuthenticatedUser();
   const { articleId } = await params;
   const serviceClient = await createServiceClient();
+
+  const overBudget = await budgetBlock(serviceClient, user);
+  if (overBudget) return overBudget;
 
   const { data: article } = await serviceClient
     .from('articles')

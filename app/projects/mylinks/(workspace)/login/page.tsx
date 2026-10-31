@@ -11,10 +11,13 @@ export default function LoginPage() {
   const [sent, setSent] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // requireAuthenticatedUser sends a signed-in account that is not on the list here.
+  // requireAuthenticatedUser sends an account it could not set up here with
+  // ?denied=1. Read after mount: the page is prerendered, so reading the URL
+  // during render would not match the server HTML.
   useEffect(() => {
     if (new URLSearchParams(window.location.search).get('denied') === '1') {
-      setError('That account is not on the MyLinks list. Ask Peace to add you.');
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setError('That account could not be set up for MyLinks. Ask Peace for access.');
     }
   }, []);
 
@@ -30,24 +33,6 @@ export default function LoginPage() {
       setError('Supabase is not configured correctly for this deployment yet.');
       setLoading(false);
       return;
-    }
-
-    // Ask the list first, so an unknown email gets a plain answer instead of a
-    // database error from the sign-up gate.
-    try {
-      const probe = await fetch('/api/mylinks/auth/check-allowlist', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email }),
-      });
-      const { listed } = (await probe.json()) as { listed?: boolean };
-      if (!listed) {
-        setError('This email is not on the MyLinks list. Ask Peace to add you.');
-        setLoading(false);
-        return;
-      }
-    } catch {
-      // If the probe itself fails, let Supabase answer.
     }
 
     const { error: authError } = await supabase.auth.signInWithOtp({
@@ -75,7 +60,7 @@ export default function LoginPage() {
           </p>
           <h1 className="mt-3 text-3xl font-bold text-foreground">Enter the workspace</h1>
           <p className="mt-3 text-sm leading-7 text-muted-foreground">
-            Sign in with the Google account on the list, or get a magic link by email.
+            Sign in with Google, or get a magic link by email. New accounts come with $2 of AI usage.
           </p>
         </div>
 

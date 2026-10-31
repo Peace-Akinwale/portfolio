@@ -382,6 +382,30 @@ export type Database = {
         };
         Relationships: [];
       };
+      mylinks_allowlist: {
+        Row: {
+          email: string;
+          role: 'admin' | 'member';
+          added_at: string;
+          note: string | null;
+          budget_usd: number | null;
+        };
+        Insert: {
+          email: string;
+          role?: 'admin' | 'member';
+          added_at?: string;
+          note?: string | null;
+          budget_usd?: number | null;
+        };
+        Update: {
+          email?: string;
+          role?: 'admin' | 'member';
+          added_at?: string;
+          note?: string | null;
+          budget_usd?: number | null;
+        };
+        Relationships: [];
+      };
       llm_usage_logs: {
         Row: {
           id: string;

@@ -2,6 +2,7 @@ import { cache } from 'react';
 import { redirect } from 'next/navigation';
 import { createClient, createServiceClient } from '@/lib/mylinks/supabase/server';
 import { askAllowlist, decideListed } from '@/lib/mylinks/allowlist';
+import { SELF_SIGNUP_BUDGET_USD } from '@/lib/mylinks/budget';
 import type { Database } from '@/lib/mylinks/types/database';
 
 type Profile = Database['public']['Tables']['profiles']['Row'];
@@ -15,16 +16,35 @@ export async function getAuthenticatedUser() {
   return user;
 }
 
-/** Cached per request: one database call however many helpers ask. */
+/**
+ * Cached per request. Anyone not on the list yet is added with the
+ * self-sign-up budget (Peace, 2026-10-31). If the add fails, the answer is
+ * "not listed": fail closed.
+ */
 const isListed = cache(async (email: string) => {
   const serviceClient = await createServiceClient();
-  return decideListed(email, (e) => askAllowlist(e, (fn, args) => serviceClient.rpc(fn, args)));
+  const listed = await decideListed(email, (e) => askAllowlist(e, (fn, args) => serviceClient.rpc(fn, args)));
+  if (listed) return true;
+  const normalized = email.trim().toLowerCase();
+  if (!normalized) return false;
+  const { error } = await serviceClient
+    .from('mylinks_allowlist')
+    .upsert(
+      { email: normalized, role: 'member', note: 'self sign-up', budget_usd: SELF_SIGNUP_BUDGET_USD },
+      { onConflict: 'email', ignoreDuplicates: true }
+    );
+  if (error) {
+    console.error('[mylinks allowlist] self sign-up add failed:', error.message);
+    return false;
+  }
+  return true;
 });
 
 /**
  * The MyLinks gate. A session alone is not enough: the Supabase project is
- * shared with Aloud, so the account must also be on the MyLinks list. Anyone
- * else is signed out of this browser and sent to the login page.
+ * shared with Aloud, so the account must also be on the MyLinks list. New
+ * accounts are added on their first visit with a $2 lifetime AI budget; if
+ * that fails they are signed out of this browser and sent to the login page.
  */
 export async function requireAuthenticatedUser() {
   const user = await getAuthenticatedUser();
