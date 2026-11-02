@@ -5354,3 +5354,35 @@ Follow-up to the same day's Lens fix. The client asked whether a strategist woul
 - **Before blaming a tool, hold the inputs constant.** The difference the strategist saw came from which ChatGPT account and mode answered, not from the tool recording it. Comparisons between runs now have to state the account, mode and chat type.
 
 ---
+## 2026-11-02, a docs-change monitor learns to hold suspicious changes for a human, and the day's audit finds the public site had been silently frozen for three days
+
+The 2026-10-30 entry withdrew 18 false changes by hand. The client's next ask was a check that stops that class before it goes public, with "an easy way for me to approve or disapprove and verify everything". The same day he asked for hosting cost cuts without lowering service quality, and, after the build, for a full audit: "I don't want any fuckups to affect prod."
+
+### What shipped
+
+- **A hold step in the monitor** (`radar/lib/docwatch/hold.ts`, seven rules: a login or bot-check screen, a page that went back to a copy seen before, under 500 characters, under 70% of the text kept, over 60% rewritten, edits that are 70% formatting, the same words reordered). Replayed on every change since 2026-10-01 with no model calls: it would have held 16 of the 19 known false changes, and 23 of 154 published ones, most of them noise themselves.
+- **A review surface for the client:** a "Held for review" row at the top of the list, the reason in a banner on the change page, and Publish or Discard buttons. A held change is not written up by the model until Publish is tapped, which cuts about a fifth of the monitor's model spend (estimated from the replay, not yet measured). A Slack ping per high-impact hold and a daily noon summary.
+- **The founder's Slack message now links the public site**, so it is sent after the site's daily rebuild reports which pages went live, with a once-only stamp per change and a 10 PM fallback that uses the internal link and tells the operator. Migrations 084 and 085; 1,804 tests and the build pass; 112 tests pass on the site repo.
+- **Cost cuts:** the coaching portal's database moved to its own free Supabase org (sign-in, password-reset email and the write probe re-verified; saves about $10 a month and isolates it from the main app's quota), an unused Railway service paused, an unused Vercel project deleted. Two model downgrades for the monitor were tested blind and rejected because the cheaper writers got facts wrong.
+
+### Decisions worth recording
+
+- **Hold, don't filter.** A rule that silently drops a change hides a real one; a rule that holds it costs one tap. The client set the bar: he must be able to approve, disapprove and verify. Every hold shows its reason and the before/after side by side.
+- **Deciding what work a change still needs from what it lacks, not from a status flag.** The first version keyed the write-up on the "held" marker; Discard clears that marker, so Discard then Publish would have published a hollow page. Caught by the audit the same evening.
+- **A new "already handled" column defaults to "handled".** The old crawler, still running during the deploy, would otherwise have left rows that read as "send this", and the founder would have been messaged twice. The deploy order stopped mattering.
+- **Pings stay in the team channel the founder already reads**, by the client's choice, rather than a private channel that would need an admin to create a webhook.
+
+### Frictions and course corrections
+
+- **The public site had been frozen since 2026-10-30 and nobody knew.** The audit read the deploy logs: three rebuilds in a row failed their own validation on five vendor changes and shipped the previous pages, with the job green. The mechanism: a paragraph that only grew was labelled "changed", the renderer correctly highlighted nothing on the old side, and the site's check demanded a highlight on both sides of every "changed" edit. Fixed with a per-side word diff; the day's late rebuild passed with all 208 changes.
+- **Withdrawn captures were still public.** The deploy protects capture folders from deletion so an empty run cannot wipe live evidence, which also kept the captures of withdrawn changes reachable at their old URLs. A post-deploy sweep now removes any pair whose page is gone: 85 folders on the first run, and the two spot-checked URLs went from 200 to 404.
+- **A fallback window that fired too early.** The first version of the 10 PM safety net covered anything older than eight hours, which would have sent a change the client published at 1:30 PM with the wrong link and a false "the rebuild did not report" alarm. The cutoff is now the rebuild's own hour.
+- **A retried check would have held a real edit.** A run that failed after storing its copy left a twin of the new text; the next day's "seen before" rule matched the twin. The rule now looks only at copies older than the baseline.
+- **Two audit claims were refuted before anyone acted on them**, including "a failed insert loses the change silently" (the retry diffs against the stored baseline, not the twin).
+
+### Why this matters for the portfolio
+
+- **A build is not done when the tests pass; it is done when an independent read of the live system agrees.** Three parallel reviewers, each claim re-traced by hand, found two pre-existing production faults the build had nothing to do with, and would have gone on hiding behind a green job.
+- **Give the human the decision and the evidence, not a filter.** The hold step is cheap to run, costs one tap when it is wrong, and every tap shows why it fired.
+
+---
