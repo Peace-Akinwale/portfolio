@@ -126,7 +126,7 @@ export default function ContentDbPage() {
         </div>
         <div className="flex flex-wrap gap-3">
           <a
-            href="https://contentdb.vercel.app"
+            href="https://contentdb.peaceakinwale.com"
             target="_blank"
             rel="noopener noreferrer"
             className="rounded-md px-5 py-3 text-sm font-bold uppercase tracking-[0.08em] text-white"
@@ -134,7 +134,7 @@ export default function ContentDbPage() {
           >
             Open the live app
           </a>
-          <span className="self-center text-sm text-muted-foreground">Private beta, free for now.</span>
+          <span className="self-center text-sm text-muted-foreground">Free. Ask me for an invite to sign up.</span>
         </div>
       </header>
 
@@ -225,7 +225,7 @@ export default function ContentDbPage() {
 
                       <div className="flex justify-start">
                         <a
-                          href="https://contentdb.vercel.app"
+                          href="https://contentdb.peaceakinwale.com"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="inline-flex rounded-md px-5 py-3 text-sm font-bold uppercase tracking-[0.08em] text-white"
@@ -344,11 +344,11 @@ export default function ContentDbPage() {
           <div className="flex flex-col gap-3">
             <h2 className="text-2xl font-bold">Use contentDB</h2>
             <p className="max-w-2xl leading-relaxed text-muted-foreground">
-              contentDB is live in private beta and currently free to use. The product works as a standalone web app and as an MCP-connected system for AI-assisted research and writing.
+              contentDB is live and free. Sign-up needs an invite from me. The product works as a standalone web app and as an MCP-connected system for AI-assisted research and writing.
             </p>
             <div>
               <a
-                href="https://contentdb.vercel.app"
+                href="https://contentdb.peaceakinwale.com"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex rounded-md px-5 py-3 text-sm font-bold uppercase tracking-[0.08em] text-white"
