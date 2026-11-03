@@ -1,4 +1,6 @@
 import { ogImagePath, DEFAULT_OG } from '@/lib/og';
+import { JsonLdScript } from '@/components/JsonLdScript';
+import { articleJsonLd, breadcrumbList } from '@/lib/seo/jsonld';
 import { getAllPostSlugs, getStaticPage, getAllStaticPageSlugs } from '@/lib/hashnode/client';
 import '@/components/article/article.css';
 import { loadPost, loadAllPosts, isLocalArticle, relatedTo } from '@/lib/content/posts';
@@ -333,8 +335,18 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
       : stripLeadingDuplicateCoverImage(post.content.html, post.coverImage?.url);
   const showReview = local && post.review && process.env.NODE_ENV !== 'production';
 
+  const articleLd = articleJsonLd({
+    title: post.title,
+    description: post.brief || post.title,
+    url: `/${post.slug}`,
+    datePublished: post.publishedAt,
+    dateModified: post.updatedAt || post.publishedAt,
+    image: post.coverImage?.url,
+  });
+
   return (
     <div className="reading-light">
+      <JsonLdScript data={[articleLd, breadcrumbList([{ name: 'Blog', url: '/blog' }, { name: post.title, url: `/${post.slug}` }])]} />
       <ReadingProgress />
       <TableOfContents />
       <ImageLightbox />

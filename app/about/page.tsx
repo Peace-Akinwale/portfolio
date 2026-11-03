@@ -7,7 +7,7 @@ import '@/components/article/article.css';
 import { SITE_URL } from '@/lib/site';
 
 export const metadata: Metadata = withOg({
-  title: 'About Peace Akinwale, B2B SaaS writer and builder of AI tools for content teams',
+  title: 'About me, B2B SaaS writer and AI tool builder',
   description: 'Peace Akinwale. I write bottom-of-funnel content for B2B SaaS companies and agencies, and I build AI-assisted tools for content teams.',
   alternates: { canonical: `${SITE_URL}/about` },
 }, { key: 'about', path: '/about', alt: 'About Peace Akinwale' });

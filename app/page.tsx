@@ -10,7 +10,7 @@ import {
 } from '@/lib/content/home-copy';
 
 export const metadata: Metadata = withOg({
-  title: 'B2B SaaS content writer, and AI tools for content and SEO teams',
+  title: 'Peace Akinwale, B2B SaaS content writer and AI tools for content teams',
   description:
     'Articles B2B SaaS buyers read before they choose a product, and AI tools content and SEO teams use every week. 51 articles for ManyRequests, AI Docs Watch, a search recorder for AI answers.',
   alternates: { canonical: SITE_URL },

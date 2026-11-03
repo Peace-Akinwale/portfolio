@@ -7,7 +7,7 @@ import '@/components/case-study/case-study.css';
 import './manyrequests.css';
 
 export const metadata: Metadata = {
-  title: '51 product-led articles for ManyRequests, a B2B SaaS writing case study',
+  title: 'ManyRequests case study, 51 B2B SaaS articles',
   description:
     `How I wrote ${MANYREQUESTS_ARTICLE_COUNT} product-led articles for ManyRequests and made the product useful inside the piece.`,
   alternates: {

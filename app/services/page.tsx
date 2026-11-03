@@ -1,11 +1,13 @@
 import { withOg } from '@/lib/og';
+import { JsonLdScript } from '@/components/JsonLdScript';
+import { serviceJsonLd } from '@/lib/seo/jsonld';
 import Link from 'next/link';
 import type { Metadata } from 'next';
 import { CALENDLY_URL, EMAIL, SITE_URL } from '@/lib/site';
 import { OFFER } from '@/lib/content/home-copy';
 
 export const metadata: Metadata = withOg({
-  title: 'B2B SaaS content writing and AI tools for content teams. Services and prices',
+  title: 'Writing and AI tool services for B2B SaaS teams',
   description:
     'Bottom-of-funnel articles for B2B SaaS companies and agencies, priced per article or per month. Tool building for content teams, scoped around the work your team repeats every week.',
   alternates: { canonical: `${SITE_URL}/services` },
@@ -55,9 +57,26 @@ const FAQS = [
 
 const CLIENTS = ['ManyRequests', 'Exceed SEO', 'Jabra', 'Marker.io', 'HigherVisibility', 'Pangea.ai', 'Spicy Margarita'];
 
+// Structured data built from the same price lines the page shows, so the two
+// cannot drift. FAQPage is left out: Google retired the FAQ rich result in May 2026.
+function priceOf(line: string): number | null {
+  const m = line.match(/\$([\d,]+)/);
+  return m ? Number(m[1].replace(/,/g, '')) : null;
+}
+const SERVICE_LD = serviceJsonLd({
+  name: 'B2B SaaS content writing',
+  description: SERVICE_COPY,
+  url: '/services',
+  offers: PRICES.flatMap((line) => {
+    const price = priceOf(line);
+    return price === null ? [] : [{ name: line.split(',')[0], price, currency: 'USD' }];
+  }),
+});
+
 export default function ServicesPage() {
   return (
     <>
+      <JsonLdScript data={SERVICE_LD} />
       <section className="gutter mx-auto max-w-[1180px] py-12 md:py-16">
         <h1 className="max-w-[18ch]">Writing with me, and building with me.</h1>
         <p className="serif mt-5 max-w-[60ch] text-[1.2rem] leading-[1.45]">{SERVICE_COPY}</p>

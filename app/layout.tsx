@@ -54,8 +54,11 @@ const structuredData = {
       knowsAbout: [
         "B2B SaaS content writing",
         "Bottom-of-funnel content",
+        "SEO",
+        "Answer engine optimization (AEO)",
+        "Content strategy",
         "AI search",
-        "AI-assisted tool building",
+        "AI tools for content teams",
       ],
       sameAs: [LINKEDIN_URL, X_URL],
     },

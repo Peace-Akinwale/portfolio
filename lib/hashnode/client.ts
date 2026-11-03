@@ -135,6 +135,17 @@ function mapWordPressAuthor(author?: WordPressAuthor): HashnodePost['author'] {
   };
 }
 
+// WordPress bodies link to the site by its absolute URL, some over http and some
+// through www (e.g. http://peaceakinwale.com/services, https://www.peaceakinwale.com/portfolio/).
+// Rewrite those hrefs to root-relative paths so every internal link resolves on
+// the current origin over https and points at the one canonical URL.
+export function relativizeSiteLinks(html: string): string {
+  return html.replace(
+    /(\bhref=)(["'])https?:\/\/(?:www\.)?peaceakinwale\.com(\/[^"']*)?\2/gi,
+    (_m, attr: string, quote: string, rest: string | undefined) => `${attr}${quote}${rest || '/'}${quote}`,
+  );
+}
+
 function buildPostFromWordPress(raw: WordPressPublicPost): HashnodePost {
   const excerptSource = raw.excerpt?.trim() ? raw.excerpt : raw.content;
   const summary = normalizePlainText(stripHtml(excerptSource)).slice(0, 240).trim();
@@ -151,7 +162,7 @@ function buildPostFromWordPress(raw: WordPressPublicPost): HashnodePost {
     slug: raw.slug,
     content: {
       markdown: '',
-      html: raw.content,
+      html: relativizeSiteLinks(raw.content),
     },
     coverImage: coverUrl ? { url: coverUrl } : undefined,
     publishedAt: raw.date,
@@ -174,7 +185,7 @@ function buildPageFromWordPress(raw: WordPressPublicPage): HashnodeStaticPage {
     slug: raw.slug,
     content: {
       markdown: '',
-      html: raw.content,
+      html: relativizeSiteLinks(raw.content),
     },
   };
 }

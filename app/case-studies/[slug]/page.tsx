@@ -8,6 +8,14 @@ import Image from 'next/image';
 import { firstImage, getCaseStudy, listCaseStudies } from '@/lib/content/case-studies';
 import { splitChapters } from '@/lib/content/markdown';
 import { SITE_URL } from '@/lib/site';
+import { JsonLdScript } from '@/components/JsonLdScript';
+import { breadcrumbList, softwareApplicationJsonLd } from '@/lib/seo/jsonld';
+
+// The tools a reader can open. Only these get SoftwareApplication markup; a private
+// team tool is not something a searcher can use, so it gets the breadcrumb only.
+const PUBLIC_TOOLS: Record<string, { url: string; category: string }> = {
+  'ai-docs-watch': { url: 'https://docswatch.stevetoth.ai', category: 'BusinessApplication' },
+};
 
 export const dynamicParams = false;
 
@@ -49,18 +57,26 @@ export default async function CaseStudyPage({ params }: { params: Promise<{ slug
   const next = related.length ? related : all.filter((c) => c.slug !== cs.slug).slice(0, 2);
   const { intro, chapters } = splitChapters(cs.html);
   const shot = firstImage(cs);
-  // The cover preview links to the first screenshot in the study.
-  let previewSet = false;
-  const withPreviewId = (html: string) => {
-    if (previewSet || !html.includes('<figure>')) return html;
-    previewSet = true;
-    return html.replace('<figure>', '<figure id="preview">');
-  };
-  const introHtml = intro ? withPreviewId(intro) : intro;
-  const chapterHtml = chapters.map((c) => ({ ...c, html: withPreviewId(c.html) }));
+  // The cover preview links to the first screenshot in the study: the first
+  // block (intro, then each chapter in order) that holds a figure gets the id.
+  const blocks = [intro ?? '', ...chapters.map((c) => c.html)];
+  const firstWithFigure = blocks.findIndex((html) => html.includes('<figure>'));
+  const tagPreview = (html: string, i: number) => (i === firstWithFigure ? html.replace('<figure>', '<figure id="preview">') : html);
+  const introHtml = intro ? tagPreview(intro, 0) : intro;
+  const chapterHtml = chapters.map((c, i) => ({ ...c, html: tagPreview(c.html, i + 1) }));
+
+  const publicTool = PUBLIC_TOOLS[cs.slug];
+  const jsonLd = [
+    breadcrumbList([
+      { name: 'Case studies', url: '/case-studies' },
+      { name: cs.name, url: `/case-studies/${cs.slug}` },
+    ]),
+    ...(publicTool ? [softwareApplicationJsonLd({ name: cs.name, description: cs.blurb, url: publicTool.url, applicationCategory: publicTool.category })] : []),
+  ];
 
   return (
     <>
+      <JsonLdScript data={jsonLd} />
       <header className="cs-cover cs-page">
         <div className="gutter mx-auto max-w-[1180px]">
           <p className="cs-crumbs">

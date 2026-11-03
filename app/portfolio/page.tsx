@@ -16,7 +16,7 @@ import { SITE_URL } from '@/lib/site';
 export const revalidate = 300;
 
 export const metadata: Metadata = withOg({
-  title: 'Writing samples by client, and a dated record of the work',
+  title: 'Writing samples by client',
   description:
     'A dated record of the tools I built and the articles I wrote, newest first. Each one has its evidence beside it, and every writing sample is listed by client.',
   alternates: { canonical: `${SITE_URL}/portfolio` },
