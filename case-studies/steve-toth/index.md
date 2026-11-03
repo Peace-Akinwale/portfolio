@@ -5442,3 +5442,33 @@ The team's capture tool (strategists record AI-search sessions per client) made 
 - **Wording carries weight.** "Unconfirmed" and "gone" have to read differently, because the reader acts on the label.
 
 ---
+## 2026-11-03, reviewing a colleague's email sign-up before launch: the form worked, but nothing would ever be sent
+
+A colleague built the email sign-up the founder asked for on the public docs-change site (pick daily, weekly or monthly, a separate list from his newsletter) and asked Peace and the CTO to review and merge it. Peace asked what needed fixing before it went live.
+
+### What shipped
+
+- **A review of the pull request at high effort**: the code read hunk by hunk, its 128 tests run, the pages built and served locally, and the sign-up walked in a browser on desktop and phone, light and dark. The email provider's own form script (47 KB) was read to confirm the success and error handling matched it. Eight findings went to the PR.
+- **The one gap Peace asked to close, closed in the same PR**: the side-by-side comparison pages, the ones built to be shared on LinkedIn, had no sign-up. They do not scroll and do not load the site's stylesheet, so the banner now appears after 8 seconds, and those pages inline the sign-up's styles from the one stylesheet that defines them. Tests went from 128 to 132, and passed again on a clean checkout of the commit.
+- **Live the same evening**: the CTO merged it, the deploy passed its page checks, and every placement was confirmed on the public site (pop-up on the home page only, banner on every inner page including the comparison pages, none on the 404, the provider's script not loaded until someone uses the form).
+- **A real end-to-end test with Peace's own address**: two sign-ups, both accepted by the provider. No email arrived, and neither codebase contains anything that sends one.
+
+### Decisions worth recording
+
+- **One source for the sign-up's styles.** The comparison pages could have linked the whole site stylesheet (its general rules would restyle a page built differently) or carried a second copy of the rules (two places to keep in step). The rules stay in one file, marked, and the comparison pages inline that marked block plus the few site styles it borrows, scoped so nothing else on those pages changes.
+- **The fix went onto the colleague's branch, not a second PR**, at Peace's call, so one feature merged once.
+- **Only the requested gap was changed in the colleague's code.** The other findings were questions for the colleague or the founder (unsubscribe behaviour, the sender address, how often a dismissed pop-up returns), not edits to make on someone else's work unasked.
+
+### Frictions and course corrections
+
+- **The first review was done from the code alone.** Peace asked whether the team's engineering channel had been read; it had not. The thread changed the review: the colleague had warned weeks earlier that unsubscribing would also drop readers from the founder's newsletter unless the provider was set up otherwise, and the founder had answered "complete separate" and "test, then auto". That turned two findings from possible to known gaps, and surfaced the biggest one, which the code review had missed: nothing sends the emails.
+- **A false alarm from the test browser.** The banner looked broken in the built-in browser pane. Measured before reporting: the pane was running at 2 frames a second and its scroll observers never fired. The same checks passed at once in a real browser tab.
+- **The deploy happened mid-review.** The CTO merged while the review was still being read; the re-sync of the main branch is what revealed it, and the live checks followed.
+- **One live sign-up attempt did nothing and showed nothing**: the browser had autofilled the first name before it was typed, and network logging was not on, so the cause is unknown. It is recorded as open rather than guessed.
+
+### Why this matters for the portfolio
+
+- **Review against the brief, not just the diff.** The code was sound; the gap was between what the founder asked for and what the code could do, and only the brief showed it.
+- **"It works" was tested as a subscriber would test it.** A form that confirms a sign-up is not a mailing list; sending a real address through it is what showed the second half was missing, before readers noticed.
+
+---
