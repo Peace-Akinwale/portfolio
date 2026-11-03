@@ -5386,3 +5386,33 @@ The 2026-10-30 entry withdrew 18 false changes by hand. The client's next ask wa
 - **Give the human the decision and the evidence, not a filter.** The hold step is cheap to run, costs one tap when it is wrong, and every tap shows why it fired.
 
 ---
+## 2026-11-03, the docs-change monitor's first day on its own: one failing page traced to a vendor migration, and the public site no longer waits hours for GitHub
+
+Day two of the hold step from the previous entry. The client read the first daily summary and asked two things: links to everything he reviews, and why a page was failing.
+
+### What shipped
+
+- **Every item in the daily summary now carries a link**: each published change to its review page (real impact first), each failing page to the vendor's own page, and a link to the full list.
+- **The failing page was a vendor migration, not a fault on our side.** Google had moved all twelve Gemini pages the monitor watches to a new JavaScript site. One page failed outright; the other eleven only worked through a paid headless browser. Google publishes a plain-text copy of every page on the new site, so the monitor now reads that: 12 of 12 pages read cleanly in a live test (the failing one from 45 characters to 43,175), and eleven come off the paid service, about $6.60 a month.
+- **The public site now updates minutes after the daily check, not hours.** The site rebuilt on GitHub's scheduled trigger, which GitHub's own documentation calls best-effort; it had started 4.75, 5.75 and 9.4 hours late on the three previous days. The monitor now asks GitHub to run the rebuild ten minutes after its check. First real request: queued in 7 seconds, site live 9 minutes later, the founder's three Slack messages linking the public pages a minute after that.
+
+### Decisions worth recording
+
+- **Read the vendor's own text copy, and only after following the vendor's own redirect.** A third-party mirror of a help center had gone stale the week before and published nine false changes; a copy written by the same build as the page cannot drift that way.
+- **Switch sources silently, once.** Text from a new source never matches the old reading word for word, so diffing them would have announced twelve fabricated changes. The cost, accepted and written down: a genuine edit on exactly that day would be absorbed.
+- **Keep the old schedule as a backup that skips itself.** Removing it would let an expired token freeze the site silently again; running both would double the build minutes. The backup now checks whether the requested rebuild already succeeded and stands down.
+- **The access token is scoped to one repository and one permission**, so a leak cannot touch anything else.
+
+### Frictions and course corrections
+
+- **"Is my network slow, why is everything failing?"** Measured before answering: every service answered in 1 to 2 seconds with no packet loss; "everything" was one page.
+- **The token arrived from a shared document with its prefix cut off** (a double-click stops at the underscore). It was never read into the conversation: it went from the clipboard to the host, was checked by length and a test call (401), repaired host to host, and checked again (200 on the one repository, refused on another).
+- **A date was nearly misstated.** The client was told the fix runs "tomorrow" while his clock already read the next day; he pushed back, the clock and run history were checked, and the answer was restated with calendar dates: today's check had already run, the fix's first run is the following morning.
+- **A test pinned a cost rule the new path would have broken** (pages known to need the paid browser must not spend a daily plain request). The extra request is now limited to the vendor's two documentation hosts.
+
+### Why this matters for the portfolio
+
+- **Ask why the platform is late before working around it.** The vendor's documentation named the cause in one sentence, and the fix was to stop depending on a best-effort trigger rather than to retry it.
+- **Credentials stay out of the conversation, even when the client hands them over in a document.**
+
+---
