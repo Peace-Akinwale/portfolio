@@ -5428,13 +5428,13 @@ The team's capture tool (strategists record AI-search sessions per client) made 
 ### Decisions worth recording
 
 - **The client database was not trusted as the active list.** Its "Active" view held 29 clients, and four of them had already left, each confirmed from the primary record: a founder's all-hands note, an offboarding task, a strategist's "paused as of September", a final debrief. A research agent searched three tools, and every departure it reported was re-read by hand before it shaped the list.
-- **Activity, not status, decided membership**, by the client's rule: no post by a person for two weeks or more meant the client was removed. The weekly rank-report bot was excluded from the count, because it keeps posting after a client leaves and would make a lost account look alive.
+- **Activity, not status, decided membership**, by Peace's rule: no post by a person for two weeks or more meant the client was removed. The weekly rank-report bot was excluded from the count, because it keeps posting after a client leaves and would make a lost account look alive.
 - **A delete was checked against what it destroys.** Reading the tool's code showed a client delete shreds every capture that client holds, so each target was confirmed to have zero sessions first, with a client known to have one capture as a control to prove the check worked.
 
 ### Frictions and course corrections
 
-- **Wrong browser first.** The work started in a separate, signed-out browser pane, and the client was asked to sign in there, although his own Chrome was already signed in and he had asked for it. He corrected this bluntly; everything after ran in his browser.
-- **A risk label changed a decision.** A meeting agenda about "budget reallocation" was reported as a possible budget cut. The client read that as high risk and removed the account. The activity check showed it active, with a client meeting the next day, and it was re-added. A related quote was also corrected: "nothing is working" was a strategist naming a perception to answer, not the client's own words.
+- **Wrong browser first.** The work started in a separate, signed-out browser pane, and Peace was asked to sign in there, although his own Chrome was already signed in and he had asked for it. He corrected this bluntly; everything after ran in his browser.
+- **A risk label changed a decision.** A meeting agenda about "budget reallocation" was reported as a possible budget cut. Peace read that as high risk and removed the account. The activity check showed it active, with a client meeting the next day, and it was re-added. A related quote was also corrected: "nothing is working" was a strategist naming a perception to answer, not the client's own words.
 
 ### Why this matters for the portfolio
 
