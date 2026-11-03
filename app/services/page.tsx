@@ -44,14 +44,16 @@ const WHATS_NOT = [
 const FAQS = [
   { q: 'Do you use AI to write your drafts?', a: 'No. The opinions and the writing are mine. I use AI as a research assistant and to automate steps in my process, like sorting research and gut-checking structure.' },
   { q: 'How long does it take to get a finished article?', a: '3 to 5 business days from brief to first draft for most articles. For retainer clients we agree on a fixed delivery cadence upfront that matches your publishing schedule.' },
+  { q: 'Do you work with agencies?', a: 'Yes. I write 4 to 6 articles a month for an agency’s clients, with a turnaround of 48 to 72 hours per article. I work from your brief and your client’s product, and I follow your editor’s house rules.' },
+  { q: 'Do you do AEO or content strategy work?', a: 'Yes, as consulting. I review your content for how AI search tools find and cite it, and help you decide which topics to write next and why. We scope it per engagement.' },
   { q: 'What if the first draft misses the mark?', a: 'One round of revisions is included on every article. It covers anything the brief asked for that the draft missed, and the wording changes your editor wants. A new angle or a new topic after the draft is a new piece, and I’ll tell you before I start it.' },
   { q: 'Can I cancel mid-bundle? What’s the notice period?', a: '14 days written notice to cancel or pause. No long contracts. Month-to-month, always.' },
   { q: 'How do you invoice?', a: 'Per article, 50% upfront and 50% on delivery. For a bundle, 50% upfront and 50% on completion. Stripe or wire transfer. Net-15 terms after the first invoice.' },
-  { q: 'What if you’re full when I want to start?', a: 'I cap at 4 active clients at a time. If I’m full, I’ll say so and give you a realistic timeline for the next opening. I won’t take a client I don’t have the time to serve.' },
+  { q: 'What if you’re full when I want to start?', a: 'I’ll say so and give you a realistic timeline for the next opening. I won’t take a client I don’t have the time to serve.' },
   { q: 'Do you sign NDAs?', a: 'Yes. Mutual NDA available before the discovery call if you need to share sensitive product or roadmap context.' },
   { q: 'What do you need from me to get started?', a: 'Access to your product and a brief or topic with a target keyword. I also need to know your ICP. If you can’t give me product access, I need access to someone on your team who knows the product.' },
   { q: 'Do you write for early-stage startups?', a: 'Yes, with a caveat. Early-stage works best when you have a clear ICP and at least one thing you know works for your product. If positioning is unclear, I’ll flag that before we start. Content can’t fix a messaging problem.' },
-  { q: 'What happens after you hand over a tool?', a: 'You own the code and the accounts it runs on, and the hosting bill is yours. I size it before we start and tell you the monthly cost. I stay on for the first month to fix anything that breaks. After that, ongoing support is a separate arrangement we agree on.' },
+  { q: 'What happens after you hand over a tool?', a: 'You own the code and the accounts it runs on, and the hosting bill is yours. I size it before we start and tell you the monthly cost. After launch I stay on a retainer for a few weeks to fix the edge cases real use turns up. After that, ongoing support is a separate arrangement we agree on.' },
   { q: 'What about building a tool?', a: 'Tell me about the task first. Some tasks don’t need software, and I’ll say so. If a tool would help, we scope it together around how the team already works. I make the build decisions and log them in a decisions file, and nothing is called done until it passes a live check.' },
 ];
 
@@ -97,9 +99,10 @@ export default function ServicesPage() {
           <a className="button button-line" href={CALENDLY_URL} rel="noopener" target="_blank">Book a 30-minute call</a>
         </div>
         <div className="border-t border-border bg-[var(--accent-wash)]" id="building">
-          <h2 id="building">Building</h2>
+          <h2>Building</h2>
           <p>{TOOL_CTA}</p>
-          <p className="note">Scoped per project after we’ve talked about the task. I write the requirements and decide the architecture. Then I build the tool and set its security rules, directing coding agents through the work.</p>
+          <p className="note">Custom pricing, set once we’ve talked about the task. A tool like the Fanout query analysis tool takes up to six weeks to build and settle. After launch I stay on a retainer for a few weeks, because real use turns up edge cases no test does.</p>
+          <p className="note">I write the requirements and decide the architecture. Then I build the tool and set its security rules, directing coding agents through the work.</p>
           <p className="note">Every tool I build keeps a decisions file, and nothing is called done until a real person has used it on the live app. The case studies show what that looks like.</p>
           <Link className="button button-accent" href="/contact">Tell me about the task</Link>
           <Link className="button button-line" href="/case-studies">See what I’ve built</Link>

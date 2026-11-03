@@ -33,6 +33,8 @@ describe('the dated record', () => {
     expect(byId.get('contentdb')?.body).toEqual([CONTENTDB.p1, CONTENTDB.p2]);
     expect(byId.get('reading-app')?.body).toEqual([READING_APP.p1]);
     expect(byId.get('reading-app')?.links.map((l) => l.href)).toContain('/the-success-message-was-the-bug');
-    expect(byId.get('garde')?.body.join(' ')).toContain(GARDE.p1);
+    // Garde lives on About and in its own essay, not in the writing record (Peace, 3 Nov 2026).
+    expect(byId.has('garde')).toBe(false);
+    expect(GARDE.essay).toBe('/what-i-learned-vibe-coding-my-first-app-shutting-it-down');
   });
 });

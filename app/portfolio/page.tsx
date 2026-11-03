@@ -9,7 +9,7 @@ import { parsePortfolioHtml } from '@/lib/hashnode/parsePortfolio';
 import { FEATURED_MANYREQUESTS_ARTICLES, withCurrentManyRequestsSamples } from '@/lib/portfolio/manyrequests';
 import { buildRecord, months } from '@/lib/content/record';
 import { Entries } from '@/components/record/Record';
-import { RecordFilters, RecordNow, MonthRail, OpenDetailsFromHash } from '@/components/record/RecordControls';
+import { RecordNow, MonthRail, OpenDetailsFromHash } from '@/components/record/RecordControls';
 import { WritingSamples } from '@/components/record/WritingSamples';
 import { SITE_URL } from '@/lib/site';
 
@@ -57,7 +57,9 @@ async function loadSamples() {
 }
 
 export default async function PortfolioPage() {
-  const entries = buildRecord();
+  // The writing record: articles and what clients said. Tools and build
+  // decisions live on /case-studies (decisions.md, 3 Nov 2026).
+  const entries = buildRecord().filter((e) => e.kind === 'wrote' || e.kind === 'said');
   const monthList = months(entries);
   const samples = (await loadSamples()) ?? { sections: [MARKERIO_SECTION, JABRA_SECTION] };
 
@@ -66,9 +68,9 @@ export default async function PortfolioPage() {
       <div className="gutter mx-auto max-w-[1180px]">
         <section className="record-open" aria-labelledby="record-h">
           <div>
-            <h1 id="record-h">Everything I’ve built and written, newest first.</h1>
+            <h1 id="record-h">The writing, and what clients said about it.</h1>
             <p className="who">
-              <strong>Two kinds of work, one list.</strong> The ones tagged <em>Built</em> are tools, and each has its own write-up. The ones tagged <em>Wrote</em> are articles, with whatever proof I have next to them. If it’s public, there’s a link. Looking for writing samples by client? They’re <a href="#writing">further down</a>.
+              Articles for B2B SaaS companies and agencies, newest first, with whatever proof I have beside each. Every sample I’m allowed to link to is <a href="#writing">listed by client further down</a>. The tools I build are under <Link href="/case-studies">case studies</Link>.
             </p>
           </div>
           <figure>
@@ -80,7 +82,6 @@ export default async function PortfolioPage() {
       <div className="record-bar" id="record">
         <div className="gutter mx-auto max-w-[1180px]">
           <div className="inner">
-            <RecordFilters />
             <p className="record-now"><RecordNow initialMonth={monthList[0] ?? '2026-10'} /></p>
           </div>
         </div>

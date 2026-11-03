@@ -57,25 +57,6 @@ export const STATIC_ENTRIES: RecordEntry[] = [
     links: [{ label: 'Read the article', href: '/how-to-optimize-for-aeo' }],
   },
   {
-    id: 'garde',
-    kind: 'wrote',
-    date: '2026-03-30',
-    dateLabel: '30 Mar 2026',
-    month: '2026-03',
-    title: 'I shut my first app down, and wrote down why.',
-    href: '/what-i-learned-vibe-coding-my-first-app-shutting-it-down',
-    context: 'on my blog',
-    quote: {
-      text: 'At some point, I knew I may have to throw the baby out with the bath water.',
-      by: 'What I told my wife on the night I decided to shut Garde down',
-    },
-    body: [
-      'Garde turned recipe videos into text so you could cook without rewinding.',
-      'A few friends liked it, but I couldn\'t find a way to go viral and reach more people. I also found that there were many free, faster alternatives. After four months of building and spending out of pocket, I stopped paying for cloud resources and shut it down. I wrote about that decision.',
-    ],
-    links: [{ label: 'Read the essay', href: '/what-i-learned-vibe-coding-my-first-app-shutting-it-down' }],
-  },
-  {
     id: 'regine',
     kind: 'said',
     date: '2026-02-09',

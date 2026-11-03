@@ -184,7 +184,7 @@ export default function HomePage() {
         <div className="ground-night">
           <h2>Building with me</h2>
           <p>{OFFER.building}</p>
-          <p className="note">No price list for this one. We talk about the task first, then I scope it.</p>
+          <p className="note">Custom pricing, set once we’ve talked about the task. A tool like Fanout takes up to six weeks to build and settle.</p>
           <Ext href={CALENDLY_URL}><span className="button button-accent">Book a 30-minute call</span></Ext>
           <Link className="button button-line" href="/contact">Or write to me</Link>
         </div>
