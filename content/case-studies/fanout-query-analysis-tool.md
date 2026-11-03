@@ -3,7 +3,7 @@ title: "Fanout query analysis tool"
 name: "Fanout query analysis tool"
 blurb: "Records the searches behind AI answers, and tells the pages that came back apart from the ones that got cited."
 kind: built
-status: "in team use, private"
+status: "an SEO agency’s content strategists"
 date: 2026-10-01
 summary: "I built a fanout query analysis tool for an agency's content strategists. It turned a teammate's bookmarklet into a Chrome extension and a shared dashboard. It records the searches behind AI answers and tells apart the pages that came back from the pages that got cited. Strategists can check a client's visibility and send the recorded material to Claude for analysis."
 voice: informal

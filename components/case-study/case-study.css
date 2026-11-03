@@ -32,7 +32,7 @@
 .cs-cover-shot.is-portrait { aspect-ratio: 4 / 5; width: 100%; max-width: 360px; justify-self: end; }
 .cs-shot.is-portrait { aspect-ratio: 4 / 5; }
 .cs-shot.is-portrait img { object-position: top center; }
-@media (max-width: 900px) { .cs-cover-grid { grid-template-columns: 1fr; gap: 24px; } .cs-cover-shot { max-width: 520px; } }
+@media (max-width: 900px) { .cs-cover-grid { grid-template-columns: 1fr; gap: 24px; } .cs-cover-shot { max-width: 520px; } .cs-cover-shot.is-portrait { max-width: 220px; justify-self: start; } }
 
 /* in short */
 .cs-short { max-width: 900px; margin: 40px 0 8px; padding: 28px 32px; border-radius: 24px; background: var(--card); }

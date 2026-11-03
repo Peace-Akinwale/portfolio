@@ -3,14 +3,14 @@ title: "ContentDB: collect research and question your sources"
 name: "ContentDB"
 blurb: "Your articles and transcripts in one library you can search from a chat or from your AI assistant."
 kind: built
-status: "my own app, private beta"
+status: "me, and anyone who signs up"
 date: 2026-04-15
 summary: "I built ContentDB to keep articles and video transcripts in one searchable library. It organises sources by client and adds a chat where you can bring a particular source into your question. It also gives a connected AI assistant tools to search the library and open a complete source."
 voice: informal
 notion_url: https://app.notion.com/p/403992da7a5781cfaff1de30c9c49f2f
 notion_last_edited: 2026-10-31T09:35:09.780Z
 links:
-  - "The ContentDB project page | /projects/contentdb"
+  - "Try ContentDB | https://contentdb.peaceakinwale.com"
 tags:
   - "research"
   - "MCP"

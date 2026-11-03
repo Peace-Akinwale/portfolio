@@ -3,13 +3,14 @@ title: "Aloud: listen to saved articles and return to useful passages"
 name: "Aloud"
 blurb: "My audio library for the articles I keep meaning to read, with a reading view and saved passages."
 kind: built
-status: "my own app, invite-only"
+status: "me, and anyone who signs up"
 date: 2026-09-28
 summary: "I built Aloud because I had articles I wanted to read and kept leaving unread. It turns links and documents into a personal audio library, with a reading view and saved passages. In September I changed narration so it keeps the author's wording and finishes preparing a whole item after I've left the player."
 voice: informal
 notion_url: https://app.notion.com/p/403992da7a578174ba0dea8a39cb42fc
 notion_last_edited: 2026-10-30T23:39:10.582Z
 links:
+  - "Try Aloud | https://aloud.peaceakinwale.com"
 tags:
   - "audio"
   - "reading"

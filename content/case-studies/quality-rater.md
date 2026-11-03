@@ -3,7 +3,7 @@ title: "Quality Rater: reviewing pages using Google’s quality guidelines"
 name: "Quality Rater"
 blurb: "Checks every page against Google’s quality guidelines and points at the exact passage behind each flag."
 kind: built
-status: "in team use, first version"
+status: "an SEO agency’s team, first version"
 date: 2026-10-13
 summary: "Google employs human quality raters who judge pages against its guidelines. Quality Rater uses the same guidelines to flag pages for a person to review. It gives provisional ratings and links each finding to a passage, so a writer can decide what needs attention. It's live for the agency's team as a work in progress. Measuring its accuracy is the next step."
 voice: informal

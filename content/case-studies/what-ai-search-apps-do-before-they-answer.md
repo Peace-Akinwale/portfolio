@@ -3,7 +3,7 @@ title: "What AI search apps do before they answer: a public reference"
 name: "A public reference to AI search traffic"
 blurb: "What AI search apps send and receive while they answer you, explained field by field. Each explanation comes with the recording behind it."
 kind: built
-status: "published, public"
+status: "anyone, it’s a public reference"
 date: 2026-10-02
 summary: "An AI search app sends and receives data in the background before it answers. That includes the searches it writes and the sources it cites. I recorded hundreds of real conversations and built the pipeline that turned that traffic into a labelled reference. It's a public article with eight platform pages and narrated audio. Each field is labelled as seen or inferred."
 voice: informal

@@ -3,7 +3,7 @@ title: "An app an agency uses to follow SEO and AEO trends"
 name: "An app an agency uses to follow SEO and AEO trends"
 blurb: "Pulls the posts worth reading into one feed you can listen to, and starred posts turn into newsletter notes."
 kind: built
-status: "private to the client’s team"
+status: "an agency founder and their team"
 date: 2026-06-10
 summary: "I built a private app an agency uses to follow SEO and AEO trends. Its founder kept checking LinkedIn and saving posts across task lists. The app gathered public posts into one feed to review, with audio digests for listening instead of reading. Starred posts fed newsletter notes that the founder could edit before sending them to the publishing system."
 voice: informal
