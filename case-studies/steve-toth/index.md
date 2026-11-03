@@ -5354,3 +5354,91 @@ Follow-up to the same day's Lens fix. The client asked whether a strategist woul
 - **Before blaming a tool, hold the inputs constant.** The difference the strategist saw came from which ChatGPT account and mode answered, not from the tool recording it. Comparisons between runs now have to state the account, mode and chat type.
 
 ---
+## 2026-11-02, a docs-change monitor learns to hold suspicious changes for a human, and the day's audit finds the public site had been silently frozen for three days
+
+The 2026-10-30 entry withdrew 18 false changes by hand. The client's next ask was a check that stops that class before it goes public, with "an easy way for me to approve or disapprove and verify everything". The same day he asked for hosting cost cuts without lowering service quality, and, after the build, for a full audit: "I don't want any fuckups to affect prod."
+
+### What shipped
+
+- **A hold step in the monitor** (`radar/lib/docwatch/hold.ts`, seven rules: a login or bot-check screen, a page that went back to a copy seen before, under 500 characters, under 70% of the text kept, over 60% rewritten, edits that are 70% formatting, the same words reordered). Replayed on every change since 2026-10-01 with no model calls: it would have held 16 of the 19 known false changes, and 23 of 154 published ones, most of them noise themselves.
+- **A review surface for the client:** a "Held for review" row at the top of the list, the reason in a banner on the change page, and Publish or Discard buttons. A held change is not written up by the model until Publish is tapped, which cuts about a fifth of the monitor's model spend (estimated from the replay, not yet measured). A Slack ping per high-impact hold and a daily noon summary.
+- **The founder's Slack message now links the public site**, so it is sent after the site's daily rebuild reports which pages went live, with a once-only stamp per change and a 10 PM fallback that uses the internal link and tells the operator. Migrations 084 and 085; 1,804 tests and the build pass; 112 tests pass on the site repo.
+- **Cost cuts:** the coaching portal's database moved to its own free Supabase org (sign-in, password-reset email and the write probe re-verified; saves about $10 a month and isolates it from the main app's quota), an unused Railway service paused, an unused Vercel project deleted. Two model downgrades for the monitor were tested blind and rejected because the cheaper writers got facts wrong.
+
+### Decisions worth recording
+
+- **Hold, don't filter.** A rule that silently drops a change hides a real one; a rule that holds it costs one tap. The client set the bar: he must be able to approve, disapprove and verify. Every hold shows its reason and the before/after side by side.
+- **Deciding what work a change still needs from what it lacks, not from a status flag.** The first version keyed the write-up on the "held" marker; Discard clears that marker, so Discard then Publish would have published a hollow page. Caught by the audit the same evening.
+- **A new "already handled" column defaults to "handled".** The old crawler, still running during the deploy, would otherwise have left rows that read as "send this", and the founder would have been messaged twice. The deploy order stopped mattering.
+- **Pings stay in the team channel the founder already reads**, by the client's choice, rather than a private channel that would need an admin to create a webhook.
+
+### Frictions and course corrections
+
+- **The public site had been frozen since 2026-10-30 and nobody knew.** The audit read the deploy logs: three rebuilds in a row failed their own validation on five vendor changes and shipped the previous pages, with the job green. The mechanism: a paragraph that only grew was labelled "changed", the renderer correctly highlighted nothing on the old side, and the site's check demanded a highlight on both sides of every "changed" edit. Fixed with a per-side word diff; the day's late rebuild passed with all 208 changes.
+- **Withdrawn captures were still public.** The deploy protects capture folders from deletion so an empty run cannot wipe live evidence, which also kept the captures of withdrawn changes reachable at their old URLs. A post-deploy sweep now removes any pair whose page is gone: 85 folders on the first run, and the two spot-checked URLs went from 200 to 404.
+- **A fallback window that fired too early.** The first version of the 10 PM safety net covered anything older than eight hours, which would have sent a change the client published at 1:30 PM with the wrong link and a false "the rebuild did not report" alarm. The cutoff is now the rebuild's own hour.
+- **A retried check would have held a real edit.** A run that failed after storing its copy left a twin of the new text; the next day's "seen before" rule matched the twin. The rule now looks only at copies older than the baseline.
+- **Two audit claims were refuted before anyone acted on them**, including "a failed insert loses the change silently" (the retry diffs against the stored baseline, not the twin).
+
+### Why this matters for the portfolio
+
+- **A build is not done when the tests pass; it is done when an independent read of the live system agrees.** Three parallel reviewers, each claim re-traced by hand, found two pre-existing production faults the build had nothing to do with, and would have gone on hiding behind a green job.
+- **Give the human the decision and the evidence, not a filter.** The hold step is cheap to run, costs one tap when it is wrong, and every tap shows why it fired.
+
+---
+## 2026-11-03, the docs-change monitor's first day on its own: one failing page traced to a vendor migration, and the public site no longer waits hours for GitHub
+
+Day two of the hold step from the previous entry. The client read the first daily summary and asked two things: links to everything he reviews, and why a page was failing.
+
+### What shipped
+
+- **Every item in the daily summary now carries a link**: each published change to its review page (real impact first), each failing page to the vendor's own page, and a link to the full list.
+- **The failing page was a vendor migration, not a fault on our side.** Google had moved all twelve Gemini pages the monitor watches to a new JavaScript site. One page failed outright; the other eleven only worked through a paid headless browser. Google publishes a plain-text copy of every page on the new site, so the monitor now reads that: 12 of 12 pages read cleanly in a live test (the failing one from 45 characters to 43,175), and eleven come off the paid service, about $6.60 a month.
+- **The public site now updates minutes after the daily check, not hours.** The site rebuilt on GitHub's scheduled trigger, which GitHub's own documentation calls best-effort; it had started 4.75, 5.75 and 9.4 hours late on the three previous days. The monitor now asks GitHub to run the rebuild ten minutes after its check. First real request: queued in 7 seconds, site live 9 minutes later, the founder's three Slack messages linking the public pages a minute after that.
+
+### Decisions worth recording
+
+- **Read the vendor's own text copy, and only after following the vendor's own redirect.** A third-party mirror of a help center had gone stale the week before and published nine false changes; a copy written by the same build as the page cannot drift that way.
+- **Switch sources silently, once.** Text from a new source never matches the old reading word for word, so diffing them would have announced twelve fabricated changes. The cost, accepted and written down: a genuine edit on exactly that day would be absorbed.
+- **Keep the old schedule as a backup that skips itself.** Removing it would let an expired token freeze the site silently again; running both would double the build minutes. The backup now checks whether the requested rebuild already succeeded and stands down.
+- **The access token is scoped to one repository and one permission**, so a leak cannot touch anything else.
+
+### Frictions and course corrections
+
+- **"Is my network slow, why is everything failing?"** Measured before answering: every service answered in 1 to 2 seconds with no packet loss; "everything" was one page.
+- **The token arrived from a shared document with its prefix cut off** (a double-click stops at the underscore). It was never read into the conversation: it went from the clipboard to the host, was checked by length and a test call (401), repaired host to host, and checked again (200 on the one repository, refused on another).
+- **A date was nearly misstated.** The client was told the fix runs "tomorrow" while his clock already read the next day; he pushed back, the clock and run history were checked, and the answer was restated with calendar dates: today's check had already run, the fix's first run is the following morning.
+- **A test pinned a cost rule the new path would have broken** (pages known to need the paid browser must not spend a daily plain request). The extra request is now limited to the vendor's two documentation hosts.
+
+### Why this matters for the portfolio
+
+- **Ask why the platform is late before working around it.** The vendor's documentation named the cause in one sentence, and the fix was to stop depending on a best-effort trigger rather than to retry it.
+- **Credentials stay out of the conversation, even when the client hands them over in a document.**
+
+---
+## 2026-11-03, seeding the team's AI-search capture tool with the agency's real client list, after the client database turned out to be stale
+
+The team's capture tool (strategists record AI-search sessions per client) made every strategist ask an admin to create a client before their first query. Peace asked for every current client to be there already.
+
+### What shipped
+
+- **The tool now lists 18 current clients**, A to Z, visible to every team member: 4 already present, 17 created, 3 later removed, and 1 re-created after the client wrongly removed it. Every create returned 201 and every delete 200, and the sidebar was checked after each change.
+- **A per-client activity table from Slack**: the latest post by a person (not a bot) in each client's internal and shared channels, used to decide who stays.
+
+### Decisions worth recording
+
+- **The client database was not trusted as the active list.** Its "Active" view held 29 clients, and four of them had already left, each confirmed from the primary record: a founder's all-hands note, an offboarding task, a strategist's "paused as of September", a final debrief. A research agent searched three tools, and every departure it reported was re-read by hand before it shaped the list.
+- **Activity, not status, decided membership**, by Peace's rule: no post by a person for two weeks or more meant the client was removed. The weekly rank-report bot was excluded from the count, because it keeps posting after a client leaves and would make a lost account look alive.
+- **A delete was checked against what it destroys.** Reading the tool's code showed a client delete shreds every capture that client holds, so each target was confirmed to have zero sessions first, with a client known to have one capture as a control to prove the check worked.
+
+### Frictions and course corrections
+
+- **Wrong browser first.** The work started in a separate, signed-out browser pane, and Peace was asked to sign in there, although his own Chrome was already signed in and he had asked for it. He corrected this bluntly; everything after ran in his browser.
+- **A risk label changed a decision.** A meeting agenda about "budget reallocation" was reported as a possible budget cut. Peace read that as high risk and removed the account. The activity check showed it active, with a client meeting the next day, and it was re-added. A related quote was also corrected: "nothing is working" was a strategist naming a perception to answer, not the client's own words.
+
+### Why this matters for the portfolio
+
+- **A CRM status is a claim; the conversation record is the evidence.** Checking each "active" account against what people were actually doing removed four lost clients and flagged five quiet ones that a status field would have kept.
+- **Wording carries weight.** "Unconfirmed" and "gone" have to read differently, because the reader acts on the label.
+
+---
