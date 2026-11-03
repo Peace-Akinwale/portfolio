@@ -3884,3 +3884,1535 @@ Day three of the HAR express parsers, 07:49 to 23:10, one session with a mid-day
 - **Working inside someone else's product:** pull requests, a bug hunt before review, and a note to the owner that says what changed without lecturing.
 
 ---
+
+## 2026-09-28, the coaching portal redesign shipped live, and the testing that followed it found two database functions that had never once worked
+
+Peace asked for the coaching portal to go from "vibe-coded" to "an Apple-level SaaS portal", one approved design reference per page, under one rule of hers: the look changes, the function never does. After the build she asked for a bug hunt, then told us to deploy to production before the QA run, then to fix whatever the QA found. All of it shipped the same day.
+
+### What shipped
+
+- The whole redesign on `main` (`notebookagency/coaching-portal`, final `98ef8e0`), deployed by CI with the test and deploy jobs both green: calmer sidebars, filled form fields everywhere, a new student dashboard and week page, a tree-and-pane week editor, tables for the admin lists. The new design tokens were confirmed by fetching the live stylesheet.
+- Cohort settings split into three screens (Settings, Schedule, a side-by-side "Copy content from…"), because Peace found the one long page "not even clear what it is from a UI standpoint".
+- Four migrations applied to the live database: 039 and 042 fixed functions that had failed on every call, 040 made copying carry four fields it had been dropping, 041 rebuilt how the copy screen decides that an item was "edited here".
+- Ten bug-hunt findings fixed, two of them serious: a schedule shift that Save quietly undid, and the four dropped fields.
+- From the QA walk: a signed-in student opening an admin link now lands on their cohort instead of the sign-in form (one helper, 14 entry points); staff no longer see a meaningless "0% progress" ring; "View as Student" can now open any live cohort (Peace chose this over re-adding herself to one).
+- Tests: 1,802 unit tests passing; the browser suite went from 6 failures to 0 (30 passing), every failure traced to a test that expected behaviour changed on purpose.
+
+### Decisions worth recording
+
+- **Deploy first, then test the live code.** Peace's call. The QA ran on localhost against the same code and the same database, because signing in to the live site needs her password and the agent does not type it.
+- **Decide "edited" from the copy's own history, and err toward saying edited.** The old check compared against the source's history, whose rows store the state before each change, so 10 of 15 untouched items read "edited". The new rule reports exactly the one item that really was. The error it now leans toward (a false "edited") costs a confirm click; the opposite would have let a copy overwrite a real edit.
+- **Widening the preview meant closing its writes in the same change.** Giving "View as Student" access to every cohort exposed a progress endpoint that had never checked for preview and was safe only by accident. It now refuses, and so does the name prompt, so a preview cannot leave records on the staff account.
+- **The template cohort is a source, never a target.** Its copy and settings buttons were removed rather than explained, after Peace said she did not understand what copying into it meant.
+
+### Frictions and course corrections
+
+- **The copy screen had never worked.** Its database function threw an ambiguity error on every call since July; the redesign exposed it only because the new screen called it on load.
+- **The nightly trash cleanup had never worked either.** It failed at 03:00 UTC every night with the same class of error, and the Worker's log said only "failed". The real message was found in the database's own log. The fix went live tonight; its first real run is 03:00 UTC on 2026-09-29, so that result is not yet verified.
+- **A local test looked like a data bug.** Copying a file on localhost reported "file did not transfer" because the local file store is an empty simulation. The one row it touched was restored and the real file confirmed in live storage; the live file-copy path is still unproven.
+- **The automated security test writes to production.** One run lost its cleanup to a network blip and left a test link visible on a real week; it was found by checking the database after the run and removed.
+- **Four agent actions were refused by the safety layer** (a migration apply, a push, two probes) and went through only after Peace authorized them in chat.
+
+### Why this matters for the portfolio
+
+- **A redesign under a no-function-change rule, audited like a release.** The bug hunt and the walk after it found defects that predated the redesign by months, including two that had silently never run.
+- **Each lesson became a reusable check.** The bug-hunt skill gained four detectors from this day (function-output names that shadow table columns, divergence read against pre-change snapshots, refusals sent to sign-in, previews widened without auditing writes), so the next project gets them for free.
+
+---
+
+## 2026-09-29, the coaching portal's scheduled jobs found broken in a way no test could see, the site fitted to a free hosting plan by cutting requests, and the live walk passed
+
+The day after the redesign launch. The first night's trash cleanup was the check that entry left open; it half worked. Peace then asked for the QA to be redone slowly on the live site ("I wanted the best in prod too"), and when that tripped the hosting plan's CPU limit she ruled out paying before January: "Do what we can do."
+
+### What shipped
+
+- **The scheduled jobs fixed** (`b9ef222`). The cleanup had deleted its database rows and then crashed before deleting any file, and the Docs Watch job had copied zero page archives on every run for a week. Both now get the file store handed to them directly. The next Docs Watch run copied 10; 0 of 60 changes now lack their before and after pages.
+- **Requests per page view cut** (`1235deb`): link preloading turned off app-wide through one shared link component, with a test that fails the build if any file bypasses it; the copy screen now loads in one request instead of eight. Measured on the live site: about 70 preload requests over six page views before, 0 after; 9 requests killed by the CPU limit before, 0 errors in 25 requests after.
+- **Leftover storage cleared**: a full comparison of the file store against the database found 5 files and one 31.6 MB video that nothing referenced, all left behind by the half-run cleanup. Peace ran a script that deleted exactly those six; the store re-listed at 115 files, none orphaned.
+- **The live QA walk passed**, including the first real file copy on production (the copied file matched the source's size and checksum). This closes the "live file-copy path is still unproven" note in the 2026-09-28 entry.
+- **Steve's photo on the sign-in page** (`2f56c45`), chosen by Peace from his 2022 photo shoot on Drive, with her line under his quote: "I'll teach you how to make your clients more competitive." It is a static file, so it costs the hosting plan nothing; it serves live (HTTP 200).
+- Unit tests: 1,805 passing (re-run after the last change). All four deploys green.
+
+### Decisions worth recording
+
+- **Fit the free plan by making fewer requests, not by paying or by shaving CPU.** Successful pages already use 25 to 70 ms of CPU against a 10 ms per-request cap, and pass only in short bursts, so the one lever that works is how many requests a page view triggers. Paying ($5 a month) was Peace's to decline, and she did, until January.
+- **Preloading off everywhere, enforced by a test, not page by page.** A per-page fix from August had not held, because new pages linked the default way. One component plus a build-failing test means the next page cannot regress.
+- **Hand the jobs their dependencies instead of faking a web request around them.** The framework's request-context wrapper is an internal API that can change on any upgrade; passing the file store in is plain and testable.
+- **Permanent deletions stay Peace's hand.** The orphan cleanup was written as a script that names exactly what it deletes, and she ran it.
+
+### Frictions and course corrections
+
+- **Why no test caught the job failure.** The framework only sets up its context for web requests; scheduled jobs never get it. The unit tests faked that context as always available, so they certified the broken path. The new test makes the fake fail the way production does.
+- **A bug found while fixing the performance issue.** When the copy screen's "what has already been copied" check failed, it returned an empty list, and the bulk copy read empty as "nothing copied yet" and would have duplicated every item. It now refuses.
+- **The first careful walk still broke the site.** Even at 10 to 15 seconds between pages, the copy screen's parallel requests plus background preloading exceeded the CPU cap. The fix came from reading the browser's network log, not from guessing at CPU.
+- **Finding the photo took two routes.** The browser pane was not signed in to Drive, and Peace was frustrated at the stall ("you found some images yesterday"). The Drive connector worked once its oversized downloads were decoded from disk into contact sheets for her to choose from.
+- **Still not proven**: a real student account signing in end to end (the walk used View as Student), and the new sign-in page looked at by eye on the live site.
+
+### Why this matters for the portfolio
+
+- **Constraint-driven engineering.** A hard budget rule ("no spend until January") became a measurable design target (requests per page view) with a guard that keeps it true.
+- **Closing the loop on yesterday's open items.** Both unverified claims in the 2026-09-28 entry were checked on production today; one failed and was root-caused, the other passed with a checksum.
+- **The lessons became reusable checks.** The bug-hunt skill gained a detector for jobs that call request-only helpers, and an amplifier for "an empty result on error drives a write".
+
+---
+## 2026-09-29, a real student account walked the coaching portal end to end on the live site, driven through a debug port on Peace's own Chrome, and everything worked; three bugs and a UX list were logged for the next session
+
+The afternoon after the free-plan fixes. The one thing the launch checklist still had not proven was a real student, not an admin previewing as one. Peace wanted "the whole flow of the students, including the onboarding process", and widened it mid-walk: "issues to improve can also include upgrading any part of the UI and UX... from both the student and admin pov."
+
+### What shipped
+
+- **Runbook step 04 passed on production** with Peace's own Gmail allow-listed as a student in the upcoming cohort: sign-up email (sent 1 second after the click), confirmation, name capture, locked weeks with their dates, an admin "Open now" reaching the student on the next load, the session page (HTTP 200, 181,765 bytes), a download served as an attachment (1,539 bytes), the recording playing from Cloudflare Stream and auto-completing the week at 90 percent, marking and un-marking a week with the admin progress table matching (13 percent, then 25 percent), Docs Watch pages, sign out, sign back in by email link, a password set through Forgot password, sign in with that password, revoke, and both opened weeks put back on schedule. Every write is in the audit log.
+- **A phone-width check (390 px)** of five student pages with a held emulation session: four clean, one overflowing.
+- **A written record**: `docs/qa/2026-09-29-student-and-admin-walk.md` in the coaching repo (evidence table, bugs, UX lists, what is still unwalked), a decisions entry, and a handoff. No code changed.
+
+### Decisions worth recording
+
+- **Log, do not fix.** Peace's call ("keep testing the flow, then keep logging the problems"). A walk that stops to fix the first thing it finds never finishes the walk.
+- **Drive the browser Peace was already signed into, over its debugging port, instead of the hosted browser tool.** The hosted tool turned out to be connected to her other laptop. The debug port on this Mac gave a real pointer, a private window for the student and the admin window side by side, and Google sign-in without a password.
+- **Peace pressed every gate the automation is not allowed to**: the allow-list add, both password entries, the permanent delete. The student's password is hers; nobody typed it for her.
+- **Leave the test account revoked, not deleted.** The revoke dialog promises Restore brings everything back; the next session needs a revoked account to verify one of the bugs.
+
+### Frictions and course corrections
+
+- **Three bugs, each traced to a mechanism.** The Docs Watch change page is 413 px wide on a 390 px phone because an off-screen helper textarea keeps the input primitive's full-width class over the screen-reader-only width. A revoked student is not signed out and reads "Your cohort hasn't started yet", the wrong story. A brand-new email-link account never sees the set-a-password step because the auth provider stores a password hash at sign-up, so the "has a password" check is always true; Peace judged that one "not a problem" for now, and it is logged anyway.
+- **Two collisions from sharing one browser.** Peace clicked the confirmation email and typed her name before the automation reached the link, so the automation's later submit failed on a spent token; and her "Open now" turned the button under the automation's next click into "Revert to schedule", closing the week for three seconds. Both were caught in the database and the audit log within minutes.
+- **A false alarm answered from the data.** Peace reported the admin page not showing week 1 as done; the database showed it had been un-marked ten minutes earlier as part of the undo test. Re-marking it moved the admin table to 25 percent.
+- **Fourteen UX notes**, led by two of Peace's own: the reset-password form has no "Show" toggle ("users should be able to see what they are typing"), and the syllabus still says "Unlocks 5 Oct" on a week that is open and done.
+
+### Why this matters for the portfolio
+
+- **Proof means the real path.** "View as student" had passed the day before; the real account found three defects it could not.
+- **Automation with a human on the gates.** The walk ran hands-off for reads and reversible clicks, and handed every credential, permanent delete and refused action to Peace, on the record.
+- **Findings are written where the next person works**: in the product repo, with the measurement that found each one, not in a chat.
+
+---
+## 2026-09-29 (evening), two of the walk's three bugs fixed with guard tests, and a notification layer proposed and declined for launch
+
+Same day, after the student walk above. Peace asked for the fixes ("fix"), then asked whether students would be notified when weeks open, and answered her own question once the facts were on the table.
+
+### What shipped
+
+- **Two fixes in one commit** (`9e649b7`, on the release branch pending Peace's push to production): the Docs Watch change page no longer widens a 390 px phone to 413 px (the off-screen copy helper now lives inside a screen-reader-only wrapper instead of carrying the class itself), and a student whose access was revoked now reads "Your access to this cohort was removed" with a sign-out pointer instead of "Your cohort hasn't started yet".
+- **Seven new tests**, including a source-scan guard that fails the build if the hidden textarea ever carries the class directly again. Suite at 1,812 passing, type-check and production build clean.
+
+### Decisions worth recording
+
+- **No notification layer before the 2026-10-05 start.** A repo-wide search established that the portal sends only sign-in and reset emails plus an opt-in Docs Watch push; nothing announces a week opening. Peace weighed a two to three day build (invite email, week-open email and push, a daily content batch) against the launch date and declined: "no need actually." Steve had also ruled out per-completion emails as "quite overwhelming". The proposed shape is recorded in the decisions log for when it is revisited.
+- **The third bug stays logged, not fixed**, at Peace's call: a new email-link account never sees the set-a-password step because the auth provider stores a hash at sign-up.
+
+### Frictions and course corrections
+
+- **A house-rule slip caught by the check, not the eye.** The new test's "no em dash" assertion contained a literal em dash; the added-lines scan printed 1, the character became an escape, and the commit was amended before anyone else saw it.
+- **The fix could not be verified live in the session.** The automation is not allowed to push to production, so the two fixes wait on Peace's push, with the exact 390 px measurement and the revoked-window reload written down as the acceptance check.
+
+### Why this matters for the portfolio
+
+- **Facts before features.** The notification question was answered by searching the code for every outbound sender, not from memory, and the answer changed the plan.
+- **A fix ships with the test that would have caught it**, and with the measurement that will prove it in production.
+
+---
+## 2026-09-29 (night), every test setup removed from the live coaching portal, including the cohort the launch plan had meant to keep
+
+Closing the day. Peace asked for all test setups gone, not only the day's: "even the clone for the working portal ... cohort 6 ... remove everything."
+
+### What shipped
+
+- **A full inventory before any delete**: every cohort, account, allow-list row, Power 25 page, file key and Stream video in the production database, with the cascade rules read from the schema so the delete list named exactly what would go and what would stay (the shared week 2 recording that Cohort five uses was kept).
+- **Deleted by Peace's hand**: two test cohorts, six test accounts, one Power 25 test page, two revoked allow-list rows, 21 files. Left: the template, the live cohort, four staff accounts. Four storage leftovers are named for her next session.
+
+### Decisions worth recording
+
+- **Delete the launch-walk clone too.** The 09-21 runbook had meant to rename that clone into the real October cohort; Peace chose a clean slate, so the October cohort will be a fresh duplicate of the live one. Recorded so nobody hunts for a cohort that no longer exists.
+- **Permanent deletes stay a human act.** The tooling refused to run or even write the bulk delete; the commands went to the clipboard and Peace ran them, which is the standing rule anyway.
+
+### Frictions and course corrections
+
+- **A shell reserved word ate the last step.** `UID` is a read-only variable in zsh, so a loop over Stream ids failed with "bad math expression" after all 21 file deletes had succeeded; the retry then hit a transient fork error in the session runner. Both are written down with the leftover ids.
+- **A mislabelled expectation.** The verification query promised 5 remaining accounts; the true count after removing six of ten was 4. Caught by listing the emails, not by trusting the label.
+
+### Why this matters for the portfolio
+
+- **Cleanup is scoped like a change**: inventory, cascade rules, keep-list, then the smallest script that does only that.
+
+---
+## 2026-09-29, a 19,000-word course draft that was never sent became a 3,800-word beginner playbook, and a richer second version was built, compared and set aside
+
+Steve said on the 09-29 core team call that AEO "doesn't have a playbook." The 09-22 beginner course draft existed but had never reached him. Peace diagnosed why and asked for the book he could actually put his name on.
+
+### What shipped
+
+- **"The Beginner's AEO Playbook"** as a Google Doc for Steve's review: 7 plays, first person as Steve, 3,786 words, free tools only, 7 images from his own public notes embedded in the Doc, 8 links to his YouTube interviews, coaching named as the advanced version with no price.
+- **A second version in Tab 2**, kept as reference: 5,246 words, a worked example on a real public brand (Elderella, from Steve's own notes), run live in ChatGPT, Perplexity, Google and his Dealbreaker Detector GPT, plus "you're done when" lines, a scorecard and a glossary.
+- **Granola connected live** to the working sessions, so Steve's calls are read from the source rather than a frozen export.
+
+### Decisions worth recording
+
+- **Playbook, not course.** The old draft measured 19,004 words with 469 inline citation tags and 3,015 words of bibliographies, written in the third person: a reviewer's audit, not something a beginner reads. The rebuild keeps the sourcing discipline (every play from Steve's published notes) and drops the apparatus.
+- **One tactic deliberately left out.** Steve's Search Console pronoun-query method is his strongest move, but it takes too much time for a beginner and it belongs to his conference talk. Peace cut it.
+- **v1 over v2.** The second version added real work and real screenshots, and Peace still chose the shorter first version for its directness. v2 stays in the Doc as reference rather than being deleted, so Steve can take pieces of it.
+- **Fewer links, more explanation.** The first draft carried 24 YouTube anchors; Peace called them overwhelming, and anything simple enough to explain in a sentence is now explained on the page. 8 remain, each as a "Watch" line.
+
+### Frictions and course corrections
+
+- **Google's HTML import renumbers lists.** Numbered steps restarted at 1 after every nested bullet, so the first Doc was rebuilt with text-numbered steps and the broken one trashed.
+- **The Docs API cannot create tabs.** The second version went in through the browser (served locally, copied, pasted into a new tab), and a keyboard shortcut sent to the wrong browser tab once replaced Tab 1 with a single line of clipboard text. It was undone at once and verified by reading the Doc back.
+- **Two dead ends found while fact-checking links:** DealbreakerDetector.com does not resolve (the GPT URL is linked instead), and ChatGPT retires custom GPTs on 2026-12-11 unless they are migrated, which puts six of Steve's linked GPTs at risk. Both are flagged to him instead of being papered over.
+
+### Why this matters for the portfolio
+
+- **Diagnosis before rewriting.** The fix came from measuring why the old draft failed (length, citation density, voice), not from polishing it.
+- **Building the alternative and letting the client choose** is cheaper than arguing about it; the unchosen version is kept, not thrown away.
+
+---
+## 2026-09-29 (late), the fourteen UX notes from the walk fixed in one pass and verified live
+
+Peace: "start UX now, fix them." Same evening, after the cleanup.
+
+### What shipped
+
+- **Twelve fixes in one commit** (`028dcbe`, live on production): a Show toggle on the password form; "Opened early" on a week opened ahead of its date (the label logic moved into a pure module with 8 tests); an "up to date" home card instead of "your cohort has not started"; phone syllabus rows that no longer break words; a tab strip that wraps instead of scrolling off-screen; a completed-week button that still looks pressable; 44 px tap targets on the Docs Watch page; a Password entry in the student menu; the install banner hidden on desktop; two admin tables that fit a laptop; the link catalog opening the newest cohort.
+- **Verified on production after deploy**, not assumed: 44 px links and a two-row tab strip measured at 390 px; the banner absent at 956 px; the toggle present on the live form. Suite 1,820 passing, type-check and build clean.
+
+### Decisions worth recording
+
+- **"Opened early" keys on the real force-unlock flag, not on the lock state.** Staff see every week open by role, so a lock-state rule would have lied on their rows. The fix carried the flag through the view model instead.
+- **Hide the row-level "Mark done" control on phones rather than shrink the title.** The week page keeps the full control one tap away; the title stops breaking mid-word.
+
+### Frictions and course corrections
+
+- **Two of the fourteen were left alone on purpose**: the notify switch label (the switch itself is the target) and the Final 1:1 copy (waits for a real booking link).
+- **One residual**: the admin cohort table still scrolls 46 px at laptop width; the actions are now visible, so it was recorded rather than chased.
+
+### Why this matters for the portfolio
+
+- **A QA list is only worth its closure rate.** Fourteen notes in the afternoon, twelve closed and measured live by night, two consciously deferred with the reason written down.
+
+---
+
+## 2026-09-30, Lens taught to run AI-search sessions by itself for strategists, after the first build was thrown out for being unclear
+
+Written the same evening from the day's handoffs (`HANDOFF_lens-runs-in-lens_2026-09-30.md`, `HANDOFF_lens-runs-ready-popup-parser-depth_2026-09-30.md`), `decisions.md` and the local branch's git log. On the 09-29 core team call Steve said running the team's questions on the AI platforms would "probably be a manual task". Peace's answer is that Lens, Gregory's network-capture tool, runs those chats itself from each strategist's own Chrome and hands back one file.
+
+### What shipped (locally, by design)
+
+- **20 commits on a local branch of Gregory's repo** (`spike/run-journey`, 30 ahead of his `main` counting the 09-29 spike), nothing pushed: Peace's rule is to build, watch it work, demo it to Gregory, and merge only after his yes.
+- **A runs system inside Lens:** a runs API with a claim/heartbeat/finish queue and self-pause after 2 blocked or 3 failed sessions in a row; the extension's worker mode, which opens each platform, types every turn, records, strips logins and uploads; a Runs page in Lens's own web app; new analyzers for Perplexity, Gemini and Claude next to Gregory's ChatGPT one.
+- **First real unattended run:** 4 of 4 sessions on ChatGPT and Gemini (logged out), recorded, uploaded and analyzed from the page in 3 min 8 s.
+- **One downloadable file per run, at the depth of the HAR parsers Steve used for his SEO IRL talk:** the answer, every source marked primary or supporting with its publish date, pages read but not cited, the platform's search queries, and every sponsored unit. It even caught an ad slot rotating: on one real session an Asana ad was replaced mid-answer ("Manage tasks across projects", then "Organize your to-do list"), both kept with the platform's own result codes. Go test suite: 8 packages passing.
+- **A strategist's view that explains itself:** the extension popup opens on one line ("Ready." / "Running: ..." / what is missing), and Start on the Runs page is greyed out behind a checklist whose unticked lines each name their fix.
+
+### Decisions worth recording
+
+- **It lives in Gregory's tool, in his languages, not in a new app.** Rejected: routing it through Fanout Notebook or a separate server. One product, one owner.
+- **Logged-out sessions run in an incognito window on the strategist's own Chrome.** Their logins stay out of the picture, and no cookie of theirs reaches Lens: the extension strips them before upload (proven at 0 on a real session).
+- **Peace pushed back on her own request when it carried real risk.** She asked to test on her normal Chrome profile; the test ran first on a fresh profile built to behave the same, because a wrong fix would have signed her out of every site she uses. Her real profile is the next step, not the first.
+
+### Frictions and course corrections
+
+- **The 09-29 build was stopped by Peace: "even the UI itself isn't clear."** The day started with a rethink, a feasibility study and a seven-reviewer audit that corrected the study in 8 verified places (among them: Lens kept every raw upload, logins included, for 90 days; it analyzed ChatGPT only).
+- **Four holes in Gregory's redactor**, each one a regex cutting through an escape (`\"`, `&`, `%22`, `&quot;`), had been stripping citation hosts on every platform and breaking every Gemini frame on the copy Lens analyzes. Fixed as their own commit for Gregory to review first.
+- **The first run file was "what Fanout can already do"**, in Peace's words. Rebuilt twice the same afternoon until it carried the network detail only Lens has.
+- **A live step-by-step demo logged the Runs page out mid-run.** Root cause: the test browser's "clean slate" step wiped every cookie in the profile, Lens's own sign-in included. Reading the fix turned up a worse gap: the flag that sends logged-out runs to incognito was never passed down, so a strategist's everyday Chrome would have been wiped too. Both fixed, then proven on a normal profile: 4 of 4 cookies kept.
+
+### Why this matters for the portfolio
+
+- **The safety claims are tested with canaries, not asserted.** "Your logins are never touched" was proven by planting cookies and reading them back after a real run, and that is how the second, silent bug was found.
+
+---
+
+## 2026-10-01, an AI telemetry reference for stevetoth.ai built in a day, then rewritten until a cold reader could follow it, and fact checked until its "nothing to see here" claims fell apart
+
+Written the same night from the session handoff (`HANDOFF_ai-telemetry-reference_2026-10-01.md`), root `decisions.md` and the branch's git log. Steve asked overnight for a public reference at `stevetoth.ai/ai-telemetry/`: every internal name the AI search engines' apps use in the background while they answer, read from the 284 sessions Peace's team recorded, one folder per platform, plus a page on how the names work together and one prompt readers can take to any AI.
+
+### What shipped (on a branch, not yet merged)
+
+- **16 commits on `feat/ai-telemetry` in the site repo**: a Python pipeline that extracts every label from the recordings, searches the leaked system prompts collection for each one, and generates 21 pages in the site's own shell. One folder per platform for ChatGPT, deep research, Gemini, Google AI Mode, Google Search, Claude, Perplexity and Brave. The build gate passes on all 21 pages.
+- **A self contained prompt of 20,999 words** that opens by crediting Steve Toth and Notebook Agency, carries every label with what it does, and tells the AI to separate what was observed from what is inferred.
+- **Every label name in a sentence links to its own entry.** A cross-page jump lands on the entry and highlights it; the highlight holds about 2 seconds and is gone by 3.5 s. That timing comes from the classic "yellow fade" references (1 to 3 s), with reduced motion respected. Both were measured in a headless browser.
+- **Nine draft narration tracks, about 2 h 36 min,** rendered locally with an open-source voice model so Peace could judge the content by ear before any paid narration.
+
+### Decisions worth recording
+
+- **Model work moved off the company API key mid-day.** The first detector and curation runs cost about $37 to $40. Peace stopped it ("stop spending money right now and use sub agents"). Every later pass ran as subagents on the plan, and the pipeline gained merge-only modes so nothing already paid for was thrown away.
+- **Leaked-prompt material was removed, questioned, then restored with context.** I removed it on my reading of Peace's review. She asked the real question: can readers follow it, and is there a case to keep it? As built, readers could not: it was a bare filename with no link. But Steve had asked for it twice, and a vendor's own leaked instructions are the only outside confirmation of an inference. It came back with an explanation of what a system prompt is, a link to every file, and the vendor's words marked as the vendor's. A strict matching rule was added after the first rebuild attached an iCal field to the wrong label.
+- **No advice on the page.** A "What you can do with it" box was built and then removed at Peace's call: "we can be wrong about what you can do with it." Each platform ends on what the labels mean, nothing more.
+- **No session counts, no "our data", no recording-account details anywhere.** Readers have none of our tools, so every line says what is true about the platform.
+
+### Frictions and course corrections
+
+- **The site said "not visible" in places where the recordings showed plenty.** A dedicated fact-check pass, re-verified by hand in the raw recordings before anything was published, overturned five claims. Google AI Mode places Sponsored ads inside 20 of 30 answers. AI Mode marks which sentence each source supports and quietly rewrites follow-up questions. Gemini lists the pages its search returned, ties each passage to its page with links tagged `utm_source=gemini`, and on reload shows the searches it ran. The cause: Google sends this data as unnamed lists, which a name-based extractor cannot see.
+- **The numbers moved too.** Claude searched in every conversation, but on only 57 of 90 answers. Perplexity leaves about 7 in 10 pages it reads uncited, not 3 in 4. Deep research briefs are about 10 times the question, not 7.
+- **Of 65 lines that said a label's purpose could not be seen,** 59 turned out to have answers in the recordings, including a Google page script that decodes to a browser check. Six were genuinely unanswerable and say so.
+- **A numbered-list redesign was built without asking and rejected.** It set a standing rule: after a review, send the fix plan per point and wait for a yes.
+- **Two silent pipeline bugs.** A correction layer ignored corrections whose key did not match, and deep research lines borrowing ChatGPT's text kept the version from before every fix. Both now fail or inherit correctly.
+- **The first draft voice was "super terrible"** (the Mac's built-in one). ElevenLabs was checked read-only and ruled out because the account is pay as you go. A free local model replaced it.
+
+### Why this matters for the portfolio
+
+- **"We could not see it" is a claim that needs the same proof as "we saw it."** Five absence claims would have shipped to a public reference under Steve's name. They were caught because the review treated every "no" as something to search for exhaustively, not something to assume.
+
+---
+
+## 2026-10-02, Steve reviewed the AI telemetry reference on a private preview, all fifteen of his notes were built, and it shipped to engineering as one five-commit PR with Docs Watch
+
+Written the same night from the session handoff (`HANDOFF_ai-telemetry-steve-review-pr75_2026-10-02.md`), root `decisions.md`, the PR's git log and its CI run. Steve asked that morning whether he had been asked to review what would go live. He had not, so a private, noindexed preview of the site went up, and over two hours he sent fifteen notes, several in threads and screenshots.
+
+### What shipped
+
+- **The second page became the main article,** at `/research/how-ai-telemetry-labels-work-together`, under Steve's own title. It opens by explaining what telemetry labels are, walks each platform's labels in the order they arrive, links all eight platform folders, compares the engines, and ends with the copyable prompt. Article and breadcrumb structured data and share tags were added in the same pass.
+- **"Jump to the first mention" links into the leaked system prompts on GitHub, 3,708 of 3,708 verified.** The first build matched GitHub's text for only 3,029 of 3,930, because it read the Markdown source while browsers match the rendered page. Rebuilt from GitHub's rendered HTML, one block at a time, whole words only.
+- **Labels styled like Steve's slide deck,** the leaked-instruction notes open and highlighted, a disclaimer in Peace's words on every platform page, a collapsed "how these labels work together" box at the top of each, and a "Back to top" button on every width.
+- **Narration updated in Steve's cloned voice for 26,162 characters:** 11,637 to splice the walkthroughs into six platform tracks while reusing every chunk already paid for (placing them exactly would have cost 21,733), and 14,525 to re-record the article in full.
+- **Docs Watch got the same review:** orange buttons, Steve's platform order, no "pages watched" count, and a feature card on `/research` as large as the AI telemetry one.
+- **PR #75 rebuilt on the current main as 5 commits** from 26, the tree proven identical before a force-push with lease. All five CI checks pass. A new issue assigned to the reviewing engineer replaces the old one.
+
+### Decisions worth recording
+
+- **One PR for both sections.** One review and one deploy for an engineer who already had the first PR waiting, at the cost of the newer section waiting on the older one's review.
+- **The old second page stays alive on the preview only,** because Steve is using it for slides. Production redirects it to the article, so nothing public depends on a throwaway host.
+- **No indexing tooling.** Google's "Request indexing" is a dashboard button with no API for articles, and Peace's call was to let the sitemap do it.
+
+### Frictions and course corrections
+
+- **"The labels look like they're floating."** Peace's eye caught it. The new label class shared a name with the homepage's animated hero badges, which the generated page inherits, and that rule won. It was renamed, and every other generated class was checked against the site's stylesheet.
+- **The audio estimate was wrong by half.** I said about 11,000 characters for the exact placement. The dry run showed 21,733. I said so before spending anything and offered a placement that cost what was first quoted.
+- **Automated browsers could not prove the GitHub links.** GitHub served a rate-limit page to the headless browser, and a scripted real Chrome failed Steve's own known-good link the same way, because browsers only scroll to text after a real click. Peace clicked two, and both landed.
+- **A phone overflow survived the first fix.** No element was wider than the screen. Two long unbroken addresses in a paragraph were, found only by measuring text, not boxes.
+
+### Why this matters for the portfolio
+
+- **A reviewer's note is fixed everywhere the same problem lives, not just where they saw it.** One flagged example of the wrong client became four corrected samples and a rewritten example on another platform, and one "remove this stat" became three removals. Each fix was checked live on a phone and a desktop before the work went to engineering.
+
+---
+
+## 2026-10-02 to 2026-10-04, the AI telemetry pages shipped on hold, the client took over the writing, and the build tooling was retired in favour of his edits
+
+Written on 2026-10-04 from the session handoff (`HANDOFF_ai-telemetry-steve-hand-edits-audio_2026-10-04.md`), root `decisions.md`, the site's git log and live checks. The engineering lead merged the AI telemetry and Docs Watch work on the evening of Oct 2. Steve then wanted the pages live at final URLs for his talk deck but invisible until launch. Over the next two days he rewrote all 19 pages himself.
+
+### What shipped
+
+- **A held launch:** every new page is live and serves `X-Robots-Tag: noindex`, nothing on `/research` links to it, and the sitemap generator now drops noindexed and held routes on its own. That took three small commits straight to main, each verified on the live site after deploy.
+- **Narration re-recorded from his pages, not from our data:** a new script reads the committed HTML in page order, so all 9 tracks say what the pages now say. Cost was dry-run first: 190,128 characters, of which 158,027 were billed and the rest reused from the cache.
+- **Cache-safe publishing:** Cloudflare kept MP3s for 4 hours, so a plain file swap would have played the old audio. Each player got a version tag, and every page was checked against the bytes actually served.
+- **The generator was retired:** it now stops with an error. Its data lacked his edits, and a rebuild would have deleted his work.
+
+### Decisions worth recording
+
+- **His HTML became the single source.** Folding his changes back into the generator was the alternative. It was rejected because one source edited in place, guarded by his own check script, beats two that drift.
+- **His edits were studied, not copied.** He replaced our one-line "these meanings are inferred" disclaimer with an explanation of how the inference was made, plus a methodology table per page with conversations, topics and the model the traffic reported. Titles became search questions, and every label got a count. Peace's rule: learn the principles and judge each project on its own.
+
+### Frictions and course corrections
+
+- **Two wrong claims in one evening, both caught by Peace.** I called Claude's single page fetch an "opened page" without reading its result, which was a refusal. I also leaned on another product's data for a page that says it is based on 277 recordings. Both answers were redone from the recordings alone.
+- **I checked Steve's own published numbers against the parser reports.** Most matched exactly. Two did not: the ChatGPT cited count, and an AI Mode figure that turned out to count domains rather than pages. He chose to drop that section.
+- **A "clean" merge broke the preview's config.** Both sides had added the same nginx blocks in different places, and git kept both copies. The preview now takes production's file verbatim.
+- **The live check had been fooling itself.** It added a random query to every URL, which skips the cache visitors actually hit.
+
+### Why this matters for the portfolio
+
+- **When a client starts editing the product himself, the job changes from building it to protecting what he built.** That meant retiring my own tooling, making the audio read his words, and checking his numbers before they went on a slide.
+
+---
+
+## 2026-10-05, a Core Web Vitals pass on 20 pages the client was indexing that night, and a performance claim I had to take back
+
+Written the same day from the session handoff (`HANDOFF_docswatch-subdomain-telemetry-cwv_2026-10-05.md`), the site's git log and Lighthouse runs. Steve asked the engineering channel for "CWV/Lighthouse improvements keeping everything else intact" on the AI telemetry cluster before Google indexed it. Nobody had started, so I took it. Earlier the same night, the narration for all nine pages was re-recorded to follow his latest layout, including the methodology sections he asked for.
+
+### What shipped
+
+- **Two invisible fixes across 19 pages,** commit `f6f40e6`.
+  - The Google Fonts stylesheet had been pulled in by an `@import` inside the first style block, which blocks rendering and is found late. It now loads from `<head>` with preconnect, a non-blocking preload, and a fallback for no-JavaScript visitors.
+  - The script that moves the reference sidebar under "Before you read" on phones sat at the end of pages up to 1 MB long. Phones painted the sidebar above the headline, then jumped it down (layout shift 0.66). The same script now runs before the first paint.
+- **Measured:**
+  - The worst page went from 63 to 90 on mobile in local Lighthouse against the live site.
+  - In PageSpeed Insights, first paint dropped from 3.2 s to 2.1 s.
+  - Page height is identical to the pixel before and after, and the client's own guard script passes.
+
+### Decisions worth recording
+
+- **Only invisible changes.** Deferring the analytics scripts and hiding off-screen sections from rendering would score higher. Both change behavior, analytics timing and deep-link jumps, so they went back to the client as options, not edits.
+
+### Frictions and course corrections
+
+- **The first font fix did nothing, and a weak check said it worked.** The links were inserted before the first `<style>` text, which turned out to be inside an HTML comment. The browser's font check answered "true" for fonts it never needed to load. A before/after page-height diff exposed it: 4,867 px taller, because the text was in a fallback font. That was before anything went live.
+- **I recommended edge caching with a number I hadn't measured.** I said it would save 0.8 to 1.3 s. When Peace asked how I knew, I split connection time from server time: caching would save 0.05 to 0.1 s, so I withdrew the recommendation.
+- **The work ran headless after Peace asked to watch it in her own browser.** She said so bluntly. The rest ran in her Chrome, so she had before-and-after screenshots for the client.
+
+### Why this matters for the portfolio
+
+- **A performance fix is only as good as the check that proves it and the number behind the advice.** Both of my mistakes that day were caught by measuring instead of trusting a green signal.
+
+---
+
+## 2026-10-05, moving Docs Watch to its own subdomain: mapping who owns the hosting before asking anyone, and declining a shortcut around the site's engineer
+
+Written the same day from the session handoff (`HANDOFF_docswatch-subdomain-branch-built_2026-10-05.md`), root `decisions.md` 2026-10-05, the site repo's branch and a local nginx run. Steve asked for Docs Watch to leave `stevetoth.ai/research/docs-watch/` for `docswatch.stevetoth.ai` so it can grow without crowding the main site, and for the platform filters to change the URL. Before building, Peace asked whether the hosting was anywhere she controls, and how to avoid bothering Gregory, the engineer who runs the server, with anything she could do herself.
+
+### What shipped
+
+- **Nothing to production, deliberately.** One commit (`42e7a8f`) on a local branch of the site repo, not pushed, because merging before the subdomain is routed would turn every old Docs Watch link into a redirect to a "Not Found" page.
+- **On that branch:**
+  - The generator now addresses every page on the subdomain root, and nav and footer links point back to stevetoth.ai.
+  - A second nginx server block on its own port carries the archive rules, its own robots.txt and sitemap, and the client's existing indexing hold.
+  - Every old `/research/docs-watch/` address 301s to the same page on the subdomain.
+  - The filters write `?platform=openai` into the address bar, so a filtered view can be shared.
+- **Checked:**
+  - 27 tests pass, 16 of them new.
+  - Every route was exercised on a local copy of the real nginx config: subdomain pages, archived captures, assets, robots in both modes, and all five kinds of old address.
+  - The filters were tested in a browser at desktop and phone width.
+
+### Decisions worth recording
+
+- **One ask, and only the one nobody else can do.** The site sits behind Cloudflare in the client's account and a reverse proxy on Gregory's server that is not in the repo. Our API token could read the zone list but not its DNS or rules. The nginx config, redirects, sitemap and robots all ship through the normal deploy, so they stayed ours. What went to Gregory was a single routing request, written plainly at Peace's direction: purpose, the ask, one reason, what we handle.
+- **The subdomain gets its own port, not a second host name.** The config itself recorded, from a robots.txt incident the client fixed the day before, that requests reach nginx under a Host other than the visitor's. Name-based routing on the shared port would have quietly served the main site on the subdomain.
+- **A workable shortcut was declined.** The same token had attached a Worker custom domain for another product in August, so a Cloudflare Worker could probably have served the subdomain without Gregory. Peace refused: "it must not be done by a back channel of sort." It was never attempted.
+- **Filters keep the page, change the address.** Linking the chips to the existing per-platform pages would have changed what a click shows. A query parameter keeps the filter behaving exactly as before. Whether the client meant real paths is still an open question to him.
+
+### Frictions and course corrections
+
+- **The first draft of the ask was wrong.** It named the shared port, until the config header and the client's own commit showed nginx cannot tell the two names apart there. The draft was rewritten before it was sent.
+- **Peace rewrote the tone.** My version explained too much to a very technical engineer. Hers is shorter and leads with what she wants.
+- **Four defects were caught before anything left the laptop, each by a check:**
+  - The first page rebuild used a Python without the imaging library, so it would have replaced all 37 share images with SVGs. Git showed 37 deletions.
+  - A scripted edit flipped every line ending in a Windows-format compose file. A dash check lit up on lines nobody had touched.
+  - The branch had been cut from a stale local main and needed a rebase.
+  - After the rebase, the newer nav loaded an image from a folder my new server block blocked. A request for every asset on the page showed the 404, and a test now covers it.
+- **Peace asked why a rebuild was needed at all.** The files do not move. What changes is the address written inside every page (canonical, breadcrumbs, feed, share tags), and the daily deploy regenerates the pages anyway.
+
+### Why this matters for the portfolio
+
+- **Before asking a teammate for anything, prove which parts are yours.** Then ask for exactly the rest, plainly, and do not route around them even when a tool would let you. The build waited on one message instead of on a side door into the client's account.
+
+---
+
+## 2026-10-05 (evening), removing a Docs Watch screen instead of polishing it, and fixing summaries that were stored cut off
+
+Written the next day from the session handoff (`HANDOFF_docswatch-table-dek-fix-subdomain-wait_2026-10-06.md`), root `decisions.md`, both repos' git logs and live checks. Steve asked on Slack whether Docs Watch had caught Google's new rule on fact-checking AI content. It had, on Friday Oct 2, before the LinkedIn posts about it. Showing him the page exposed two problems a reader sees at once.
+
+### What shipped
+
+- **The "wording, side by side" table is gone from every change page** (stevetoth.ai `fb8082d`). The button that opens the archived page, highlighted at the change, moved up to sit under the headline.
+- **Summaries are no longer cut off mid-word.** Radar's article writer now keeps the whole summary and only ever shortens text at a whole word (`53451215`). The 8 summaries already stored cut off were trimmed by hand to their last complete phrase, with no AI rewrite and no words added.
+- **Checked:**
+  - All 63 live change pages: 0 cut-off summaries and no table.
+  - Radar's full suite: 1,596 tests pass.
+  - The feed and the database: 0 truncated fields.
+
+### Decisions worth recording
+
+- **Remove, don't redesign.** My first proposal rebuilt the table as readable prose. Peace's call was that it repeats what the before and after views already show, so it went. The page's "What changed" section already quotes the new wording in full sentences.
+- **Fix the truncation at the source.** The summary had been cut to 160 characters because it doubled as the search snippet. Both sites that display it already shorten their own snippet at a word, so the cut was removed rather than softened.
+- **Ship one change without the other.** A larger change was waiting on an engineer's review on its own branch. The table removal was rebuilt on the live code and shipped alone, so his review stayed exactly what he was sent.
+
+### Frictions and course corrections
+
+- **Peace saw the UI problem before I did.** She also asked for a screenshot of the truncation bug before approving the fix.
+- **A GitHub outage cancelled three runs.** The jobs never got a machine. A teammate's push got one, and its deploy carried the fix. A background retry watcher I'd set up was then stopped.
+
+### Why this matters for the portfolio
+
+- **The cheapest screen is the one you delete.** Judging a page as its reader would, rather than as a builder, got the change shipped the same evening, and the truncation was fixed where it started instead of where it showed.
+
+---
+
+## 2026-10-05 to 2026-10-06, the Notebook Quality Rater: from a working build to one guided experience, after the client side threw out the first design
+
+Written at the end of 2026-10-06 from the session handoffs (`HANDOFF_quality-rater-build-paused_2026-10-06.md`, `HANDOFF_quality-rater-experience_2026-10-06.md`), the app repo's git log and `decisions.md`, and checks run that night. The Quality Rater is an internal Notebook app modeled on Dan Hinckley's Quality Rater Jev. It rates every page of a client site against Google's search quality rater guidelines, using TypeSafe's Jev decision model, and has a Grammarly-style draft checker. Peace acted as product owner and reviewed. The app is local only by her rule: never pushed, never deployed.
+
+### What shipped
+
+- **Seven local commits on 2026-10-06** (`8af7b53` to `f709825`) on top of four from the day before:
+  - polish;
+  - a bug hunt and security review: 21 confirmed bugs, each fixed with a regression test;
+  - a final paid test;
+  - a redesign;
+  - a "guided experience" pass;
+  - a noise pass on the checker.
+- **Jev now points, it does not just judge.** For each problem on a page, Jev picks the exact paragraphs, sentences and table rows from the page's own numbered text. The report quotes them in a "Show where" dropdown with "Open on the page" (a text-fragment link that scrolls the live page to the sentence) and "Copy". On a Botpress article about GPT-5 it pointed at the price table's gpt-5-mini and gpt-5-nano rows. Checked against OpenAI's model docs, those two prices really are swapped.
+- **A Grammarly-style checker.** It has underlines on the exact words, every suggestion in document order in a side panel, and a card that shows the rewritten sentence with removals struck through. "Fix this page" opens it already checked, with the report's places marked.
+- **Google Docs in and out.** Paste keeps formatting and images. "Send to Google Docs" and import-by-link run through Google's Picker with the non-sensitive `drive.file` scope, so the app needed no new Google verification.
+- **Measured:**
+  - A full re-run of a client site went from 224 s to 2 min 3 s for $0.199.
+  - The final paid test (one site, one draft check, one rewrite) cost $0.24.
+  - All app model spend on 2026-10-06 came to $0.82.
+  - Checker rows on one long article went from 356 to 187.
+  - The test suite: 1,838 tests pass, and the type check and production build are clean, run after the last change.
+
+### Decisions worth recording
+
+- **The topic map was thrown out.** The first build copied the reference tool's bubble map. Peace: "the bubbles ... don't make a damn sense to me". A search of Dribbble for references turned up only generic SaaS dashboards. Every screen was then redesigned from first principles instead (Krug's Don't Make Me Think: one question per screen, the next click obvious) on the agency's six-color brand. The redesign also exposed that the app had been using green, teal and blue the brand guidelines forbid.
+- **Jev both judges and points; Claude only writes.** Peace: "i don't want to have to use claude model for this if we can use Jev". Locating problems costs a fraction of a cent per page. A rewrite is written only when someone opens its card, about 2 cents, instead of about 90 cents per check to write them all up front.
+- **Doubtful claims are quoted, never asserted.** Jev cannot check the web, so its accuracy doubts read "Claims to check" with the sentence quoted. My first instinct was to switch the accuracy check off for recent topics. Peace overruled it: "we won't ignore. we will make it point."
+- **Spend discipline was a product constraint:** no paid page fetching, one paid test site at a time ("choose one, not the two"), and work paused at the AI session limit rather than spending overage credits.
+
+### Frictions and course corrections
+
+- **I misdescribed Grammarly twice:** that it shows only a few flags, and that its card opens over the sentence. Peace's screenshots showed it underlines everything thinly and keeps cards in the side panel. The checker was rebuilt to match.
+- **I blamed the wrong thing on the GPT-5 article.** I guessed Jev was misled because its knowledge predates GPT-5. Checking OpenAI's docs showed the article really was wrong. I said so and withdrew the guess. Peace's question "which training?" also exposed that I had no source for Jev's training data at all.
+- **"Fix this page" looked broken to Peace.** The check had failed silently: an 87-paragraph article hit an 80-paragraph cap, reported as a small grey line. The cap went to 300 and failures now show as a banner.
+- **Problems caught before Peace saw them:**
+  - **Comparison pages flagged as near copies.** "Botpress vs Ada" and "Botpress vs Intercom" were wrongly called near copies; Jev now asks whether two pages target the same search first.
+  - **A seed-dependent flaky test.**
+  - **A link that looked broken.** It only looked broken because my own hand-built test link left the dashes unencoded.
+- **One client site could not be tested from this machine.** Puffco (Shopify behind Cloudflare) rate-limits the Mac's IP address, so the final test ran on Botpress instead, at Peace's call.
+
+### Why this matters for the portfolio
+
+- **A tool is only useful if it says where.** "Factual errors" on a page is noise until the sentence is quoted and one click away. The pass that made the model point, rather than just score, is what turned a report into something an editor can act on.
+
+---
+
+## 2026-10-07 to 2026-10-08, the Quality Rater: removing a screen in whole, a clickable prototype instead of static mockups, and the run screen the client side picked
+
+Written on 2026-10-08 from the session handoff (`HANDOFF_quality-rater-d-run-screen_2026-10-08.md`), the app repo's git log and `decisions.md` (nine entries dated 2026-10-07), and checks run that day. Same internal app as the entry above: local only, never pushed or deployed. Peace reviewed every screen herself; I planned each fix and waited for her yes.
+
+### What shipped
+
+- **Four local commits** (`556fab3`, `a2b6869`, `887d319`, `6c100e1`); the suite went from 1,838 to 1,921 tests, with the type check, lint and production build clean after the last change.
+- **The Calibration screen was removed in whole**: the screen, its nav item, routes, code, tests and the summary fields that fed it. A one-click "This rating is wrong" on the page report took over its job, with a list of reports in Settings.
+- **A clarity pass from Peace's own review**:
+  - "Check a site" everywhere instead of "Rate a site";
+  - a five-stage progress stepper with counts and time left;
+  - a short page report: the top three fixes with the quoted sentence, everything else under one "More detail". All four test pages now fit one laptop screen; the longest had been 2,483 px tall.
+  - draft checker fixes: no scroll jump after accepting a rewrite (root cause: the caret stayed at the top of the draft, and focus returned there); links that read as links, with an Open/Edit/Remove chip and keyboard keys; the suggestions panel beside the article instead of over it.
+- **A clickable prototype** of the whole journey (sites, progress, four run-screen directions, page report, checker) on a Design canvas, so Peace could compare directions by using them.
+- **Run screen direction D**, her pick: the verdict sentence, one bar across all 400 pages whose legend filters the page list, a "By topic" list with a need-work bar per topic, then the full page list. Clicking "136 can wait" lands on exactly those 136 pages.
+
+### Decisions worth recording
+
+- **Remove in whole, build in whole.** I removed an "Uncalibrated" tag at Peace's request and left the Calibration screen it pointed to. She asked what that screen was for, then set the rule: "when you remove stuff, you should remove in whole, not in part ... when you build stuff, you should build in whole not in part." It is now a standing rule in every project.
+- **Calibration went because it cost people time.** Peace: "every app we build should help people do their job more easily, not take more time away from their hands." A one-click report replaced a whole labeling screen.
+- **The full page list stayed under D.** The chosen sketch had no place for 400 pages. I asked rather than drop it; the bar and topics became ways into the list, not a second report.
+- **I would not build D while a background build was still editing the same file.** It waited until the build finished and was verified.
+
+### Frictions and course corrections
+
+- **The first mockups were too thin.** Four static sketches drew "i can't understand your ideas from it ... i need to click around". The prototype replaced them.
+- **"I can't see anything" was a layout bug, not a broken file.** I rendered the prototype with the canvas's own runtime and found the checker's suggestions 2,400 px down a phone screen, under a toolbar that covered the text. A bottom sheet fixed it.
+- **Delegated work left gaps that the builders' own reports disclosed.** The background build reported its tests green, but one error it called intermittent reproduced on my first full run, and three design-doc sentences plus two focus fixes sat only in a builder's "requests to other owners" until the handoff audit. All were fixed and committed before the session closed.
+- **A test caught a screen-reader bug in my own code**: the new legend read "136can wait". One space fixed it.
+
+### Why this matters for the portfolio
+
+- **Let the reviewer use the options, not read them.** One clickable prototype settled a run-screen choice that four static mockups could not, and the choice went into the real app the same day.
+- **Verification belongs to the person who ships.** Green reports from delegated builds were a starting point; running the checks myself found what they missed.
+
+---
+
+## 2026-10-08, a one-hour request from a teammate that turned up a privacy gap and a broken recorder
+
+Written on 2026-10-08, the same day, from the session's own run logs, the HAR tools' checklist and the root `decisions.md` entry for that date. Simon, a strategist on the team, asked for a few example HAR files to check against Steve's published telemetry pages: ChatGPT signed in, one question per chat, no follow-ups. Before starting, Peace asked me to explain how she had done the original HAR work so she could check that I understood it.
+
+### What shipped
+
+- **Three signed-in ChatGPT sessions**, one question each, each with one source click, all passing the recording checks (every question sent and answered, one chat each). About 104 MB per file after cleaning.
+- **Delivered as full cleaned files plus the ChatGPT parser**, through the same delivery gate as Steve's 284 sessions in September (gate pass, manifest written, folder frozen).
+- **Tool changes**, each recorded as a numbered rule in the project checklist (rules 42 to 46): one-question sessions allowed end to end, a scrub-only mode for when Lens is down, and a new masking step with a matching gate check.
+
+### Decisions worth recording
+
+- **Full files, not only the Lens selection.** Simon was checking the files against pages that describe the app's own logging, feature switches and account labels. The Lens selection drops most requests and our cleaning empties the logging bodies, so a Lens file alone would have made correct parts of Steve's pages look wrong. Peace chose to send both; the note to Simon says exactly what was emptied.
+- **Mask other chats' titles in ChatGPT files.** The shared agency ChatGPT account's sidebar and pages carry the titles of every other chat, and those titles name client work (payroll, incorporation, a practice-software comparison). The masking step had only ever covered Claude and Gemini. I applied Peace's September rule for Claude to ChatGPT: in the first file, 125 occurrences masked, the session's own titles kept, and the gate now fails any ChatGPT file with one left.
+- **One question was a duplicate.** Two of Simon's three questions were identical word for word. I flagged it instead of recording it twice; he sent a new third question.
+
+### Frictions and course corrections
+
+- **ChatGPT changed its page layout, and the recorder stopped a good session.** The first question was sent and answered, but the script reported "not in thread", because the page now has two `main` regions and no longer carries the markers it looked for. I stopped the batch before it sent the other two, moved the failed file to the Trash, rewrote both page checks against the live page, and re-recorded.
+- **My own masking step caused a false failure.** Shortening a body without updating its recorded size made the checker read four bodies as cut off. I fixed the size field and re-cleaned.
+- **The gate flagged "redaction marks" in files that never went near Lens.** They were inside ChatGPT's and Intercom's public JavaScript, which only full files keep. I traced every hit before adding those script paths to the reviewed allow-list.
+- **Still open:** Lens was offline all afternoon (`503 agent is offline`), so the Lens files are owed; Peace told its owner. And the ChatGPT parser now reads 0 cited sources on the October answer format, against 11 on a September file. The files are complete; the parser needs an update, and the note to Simon says so.
+
+### Why this matters for the portfolio
+
+- **Small requests get the full process.** A one-hour favor ran through the same leak checks and delivery gate as the main study, and that is how a client-naming gap that had never been covered got found.
+- **Bad news goes out with the files.** Simon learns from the delivery note that the parser undercounts citations, rather than finding out from a wrong conclusion.
+
+---
+
+## 2026-10-08 (correction), the Simon HAR entry above
+
+Added the same day. Two lines in the entry above stopped being true after it was written:
+
+- **"Still open: the Lens files are owed."** Peace closed the work without Lens versions: "No need to add the Lens version ... Everything is done." The full cleaned files and the parser were the whole delivery.
+- **"The note to Simon says so"** (about the parser reading 0 cited sources on the October format). Peace sent the files with her own note, and it did not mention the parser caveat. The finding stands; it is recorded in the project's `decisions.md`, and whether to tell Simon is her call.
+
+---
+
+## 2026-10-08 (evening), ChatGPT changed under us: every reader we own was checked the same day, two were wrong, one fix was held back on purpose
+
+Written the same evening from the Fanout repo's git log and `decisions.md`, the main repo's `decisions.md`, and runs made that day. Follows the Simon HAR entry above. Simon noticed the model bump first ("ChatGPT has updated to 6.0") and sent his own improved parser with a changelog; Peace then asked that every tool we built be checked, not just the one a teammate had flagged.
+
+### What shipped
+
+- **A verdict on Simon's parser.** His V2 reads 6, 7 and 6 cited pages on the three new captures (mine read 6, 6, 6: I missed the single-page citation form), renders the answer without leaked code, and fixes three bugs in the September original, one of which left 514 of 758 September citation rows (68%) without the sentence they support. Checked here for safety (no network calls), on all 38 captures (opens every one; September key numbers unchanged on 35 of 35), and through the delivery gate.
+- **Fanout Notebook parser 1.7.0**, commit `b6aa90c` on `feat/machine-runs`, local only. Frames are routed to the message their index names; the merged answer is the answer; citation tags become the marker form every downstream reader already understands; brand and link tags become prose; an answer with pages but no readable citation is marked as an unrecognised shape instead of 0. The extension's ChatGPT page watcher follows the new page markup.
+- **Proof:** the 7 committed ChatGPT fixtures parse byte-for-byte as before; the two new GPT-6 fixtures read 6 and 7 cited pages with 3 cited sentences each; the suite went from 2,517 to 2,524 tests, typecheck clean in every workspace.
+
+### Decisions worth recording
+
+- **Hold the release.** Peace: "we need more research first." Three one-question chats on one topic are not enough to call a parser accurate on a new model. The runner, dashboard and download zip stay on 1.6.0; only her own extension runs the new build, for the research itself. The order when it comes is runner first, because the runner re-derives rows with whatever parser it has.
+- **Adopt the teammate's parser over my own.** Measured, not assumed: his was better on the file where they differed.
+- **Tell Steve first.** His published telemetry page describes a citation format ChatGPT no longer sends, and his Drive parsers are the September build. Peace texts him rather than waiting to be asked.
+
+### Frictions and course corrections
+
+- **I saw the zero and left it "open".** The afternoon's parser showed 0 citations on every new file; I labelled it as needing an update instead of fixing it, and Simon reported it with a table two hours later. Peace's rule, now a standing one: when a platform we read changes, sweep every reader we own in the same session, and a count that drops to 0 on a fresh capture is a bug until proven otherwise.
+- **The Fanout bug was not where I expected.** Its citation counting survived the new format by luck; the real fault was a stream replay that ignored which message each frame belonged to. Old captures never interleaved frames, so it had never mattered.
+- **My first guard did nothing.** The classifier marked any parse with pages as clean before it looked at the warning I added. It took a second pass, and a test that renames the citation refs, to prove the guard fires.
+- **Nothing live was wrong, by timing.** The pool's last ChatGPT capture was 2026-09-28; the first capture on the new model would have been the first wrong number.
+
+### Why this matters for the portfolio
+
+- **A platform change is a team-wide event, not a ticket on one tool.** The same change broke two parsers, one page and one safety net; checking them together is the only way to know the blast radius.
+- **Holding a tested fix is a decision too.** The code was proven and the client side still said wait. The log records why, so the release later is a choice with a reason, not a forgotten branch.
+
+---
+
+## 2026-10-08, the Quality Rater: a first-day audit, a bug hunt on the fixes, and a bar built from the apps people actually use
+
+Written the same night from the session handoff (`HANDOFF_quality-rater-publishable-bar_2026-10-08.md`), the app repo's git log and `decisions.md` (five entries dated 2026-10-08), the local usage table, and checks re-run at 22:04. Same internal app as the entries above: local only, never pushed or deployed. Peace started the session reviewing screens herself, then said she was tired of finding problems by hand and wanted the app judged against the bar her past apps had reached.
+
+### What shipped
+
+- **Six local commits** (`86a9d22`, `a5986a7`, `2210a04`, `5253099`, `618ce98`, `57f2dfe`). The suite went from 1,921 to 2,221 tests; type check, lint and production build clean after the last change; a new browser test of the whole loop passes on desktop and phone with every paid route blocked.
+- **A first-day audit:** every screen and free action at three widths in light and dark, 68 findings with a concrete fix each (2 blockers, 27 major, 39 minor). The blockers: the same page read "Low" on its report and "Lowest+" in the checker, and the site's first page to fix was rated Lowest on a model answer nobody could see. All 68 were built.
+- **A bug hunt on those fixes:** four finders, every candidate verified before a fix, about 40 real bugs fixed with tests that failed on the old code. The worst: a filter that treated any line under five words as a button, which hid 5,025 of 31,038 lines on the test site from the sentence pointer, including "Plus - $150/month", so a wrong price could never be pointed at.
+- **A publishable bar from her own history:** a research pass over Fanout Notebook, Radar, the Coaching Portal, OKF and the AEO Site Auditor (decisions logs, handoffs, saved feedback and 3,389 of her chat messages) produced 18 checkable rules. The app scored 5 pass, 12 partial, 1 fail; after the build, 16 pass and 2 partial, both of which need a person.
+- **What that build added:** one draft per page (Fix this page reopens it), Mark as fixed with Undo across every surface, delete with Undo for drafts and checks, a stated price before any paid click, error pages with a way back, an in-app notice when a check finishes, a "How it works" page built from the same word sources as the screens, and "Fix later" that only holds pages with something to fix (136 pages became 100 on the test site; no rating moved).
+- **Spend:** $0.13 all day on the local usage table, $0.02 of it from an automatic check that a page action started on its own and that is now gone.
+
+### Decisions worth recording
+
+- **One word for one thing.** The same group of pages had four names across the bar, the list, the report and onboarding. Now Fix first, Fix next, Fix later, Fine and Not rated, from one source file. Rejected: renaming screen by screen.
+- **The worst rating needs a stated error.** A page is rated Lowest on accuracy only when a located sentence says what is wrong; otherwise it caps at Low and says "Some claims may be out of date or wrong." Rejected: re-locating every stored page (a paid call per page); stored pages settle free the next time they are opened.
+- **Peace's open calls were settled by evidence, then her word.** The phone report got a pinned button; suggestions became a tint so they never read as links; the checker opens on the report's own places; she then dropped Steve's 75-word paragraph rule from the checker, which removed 87 underlines from one draft.
+- **A measured price, not a guess.** The plan said a rewrite costs about 1 cent; 31 usage rows said 2 to 5 cents depending on length, so the screen states the measured cost.
+
+### Frictions and course corrections
+
+- **I put a human gate inside an automated goal.** The audit prompt ended "then wait for my yes, then build", and the goal checker re-asked about 12 times until Peace stopped it: "Why do I have to type goal clear for you to stop when the goal is already achieved?" The prompt skill now refuses that shape.
+- **She wanted to see the walk, not read about it.** "I thought you will use computer use/browser use so you can see screenshots. real life stuff." I moved to the browser she could watch, and used a scripted browser only for exact widths.
+- **Two fix agents stashed the shared working tree** while others were mid-run. Nothing was lost because the others had not edited yet; the rule is now that agents in one tree never stash.
+- **I told her nothing was running when three of my wait loops had been stuck for hours.** Each looked for a script by name and kept finding its own command line. She noticed; I stopped them and changed how I wait.
+- **The final double-check found what the gates had passed.** Three lint errors came from a fix of my own, and about 10 cents of rewrites at 21:58 that no script of mine made. The lint is fixed; the spend went to Peace to confirm.
+
+### Why this matters for the portfolio
+
+- **Make the bar out of what already worked.** Instead of another opinion pass, the app was scored against rules drawn from the apps her team actually uses, and every rule names the incident it came from.
+- **Verify the verification.** A green suite, a clean build and agents' reports were each wrong somewhere today; reproducing in a real browser and reading the usage table caught each one.
+
+---
+
+## 2026-10-09 to 2026-10-12, SEO IRL 2026 VIP recordings: a gated page live on stevetoth.ai in four days, no new monthly cost
+
+Written on 2026-10-12 from the session handoff (`HANDOFF_seoirl2026-recordings-live_2026-10-12.md`), the site branch `feat/seoirl2026` git log, root `decisions.md` (2026-10-09, 2026-10-10, 2026-10-12) and checks re-run before writing. Steve had promised VIP pass holders the talk recordings; Karla raised it after the event, when an event app Peace had offered earlier was no longer an option.
+
+### What shipped
+
+- **`stevetoth.ai/seoirl2026`, live:** all 14 talks (about 9 hours) on Cloudflare Stream with speed, captions, full screen and MP4 download, behind a sign-in. Signed out, the page and every file return 401 (re-checked before writing).
+- **The gate is a small Cloudflare Worker:** an email on the buyer list plus one shared password, a signed 30-day cookie, and the page and slide files served from the Worker itself so nothing private sits on the site's server. 27 gate tests and 13 tooling tests pass.
+- **53 people on the list** from Karla's sheet plus three team test accounts; adding someone takes effect at once with no redeploy.
+- **A sign-in rate limit:** 5 tries per 10 seconds per connection. Live test: five wrong passwords refused, the next four blocked, a correct sign-in 25 seconds later worked.
+- **Slides for 13 of 14 talks**, beside the Download button. Google converted most decks to PDF; one deck that was a web page was printed to PDF; Lily Ray's 343 MB PowerPoint was too big for Google, so it was converted locally with LibreOffice and her own fonts, then cut to 23.3 MB to fit the hosting limit.
+- **Corrected captions:** speaker names fixed through a glossary (the captions had "Lely Rae" for Lily Ray) and re-uploaded to Stream for all 14 talks.
+- **Monitoring:** the three-day usage report that posts to Peace's Slack now covers Cloudflare (daily Worker requests against the free plan's 100,000, which the coaching portal shares) and Stream storage (541 of 1,000 minutes used).
+
+### Decisions worth recording
+
+- **A Worker, not Cloudflare Access.** Access was planned and approved on 2026-10-09, then reversed a day later: its free plan stops at 50 people. Rejected along the way: an event app, Pixieset, Vimeo.
+- **The page lives on the Worker, not the site's server,** so no other address can reach the files around the sign-in, and a failure shows nothing private.
+- **Remove what duplicates the platform.** A transcript panel was built from the captions, then removed in whole when Peace pointed out the player already shows them.
+- **Order by evidence.** The talks were first ordered by when the videographer saved them, at Peace's call; the captions showed that was not the speaking order, and the numbered slides folder later gave the real one. One talk's slot was inferred from what the speaker wore each day and is flagged as unconfirmed.
+- **Deploy without the site owner's sign-off** was Peace's decision, with her telling him; the change touches one path only, and the rest of the site was checked after each deploy.
+
+### Frictions and course corrections
+
+- **My first comparison of a hosting vendor was wrong** on pricing; Peace caught it and I re-checked the live pricing page.
+- **Uploading 18 GB from the laptop would have taken hours,** so the videos were pulled straight from the videographer's share into Stream instead (about 6 minutes for the largest).
+- **I offered two watch layouts without explaining them clearly** ("I don't understand the thing with A or B"); a plain description fixed it and the unused layout was removed in whole.
+- **A sign-in failure on Peace's own Mac** came from her password manager filling the wrong password; the page now has a Show password button.
+- **Adding Cloudflare to the report exposed an older gap:** the Railway cost line added in September had never reached Slack, because the posted line was rebuilt from part of the stored data. It now stores the whole line.
+
+### Why this matters for the portfolio
+
+- **A promise to paying customers, delivered on existing paid tools** with no new monthly cost, and gated without per-seat pricing.
+- **Every claim was checked on the live site**, including the security limit, rather than trusted from a deploy log.
+
+---
+
+## 2026-10-13, SEO IRL recordings: slides inside the talk, the shared password replaced by emailed sign-in, and a bug hunt that measured the live limits
+
+Written on 2026-10-13 from the session handoff (`HANDOFF_seoirl2026-email-signin-live_2026-10-13.md`), the site branch `feat/seoirl2026` (`20db007`, `f5f894d`, `d47722e`), root `decisions.md` 2026-10-13, and live probes run during the session. Follows the 2026-10-09 to 2026-10-12 entry above.
+
+### What shipped
+
+- **Slides inside the talk view:** every page of the 12 PDF decks rendered as images (695 files, 51 MB) and shown under the video, behind the sign-in. On a laptop the video floats in the corner once the viewer scrolls past it; on a phone it sticks under the header. Playback never restarts, because the player is restyled, never moved.
+- **Emailed sign-in replaced the shared password:** a listed buyer types their email and gets a 6-digit code plus a one-click link from `SEO IRL <hello@seoirl.com>`; either works for 15 minutes and signs them in for 30 days. The password was deleted from Cloudflare and from the env file.
+- **A new sending domain:** seoirl.com verified in the company's existing email account with four DNS records, leaving the domain's own mail settings untouched.
+- **Four bug-hunt fixes, live:** an honest message and a Slack ping when the free email allowance runs out; an attempt limit that holds under parallel requests; the emailed link returns a viewer to the talk they had open; one misleading line of copy corrected. 37 gate tests pass.
+
+### Decisions worth recording
+
+- **Sign-in by email, not two-factor and not a second password.** Karla asked about 2FA; for about 50 conference buyers, a code sent to the ticket email gives per-person access with nothing to install.
+- **The sender is the event's own domain** (`hello@seoirl.com`), at Karla's request, because buyers know SEO IRL and not the agency's domain. A `recordings@notebookers.com` sender was proposed and declined.
+- **No database for codes.** The code is never stored; the browser holds a signed fingerprint of it, so there is nothing to leak and nothing to brute-force offline.
+- **Slides belong inside the talk, not beside it.** An interactive mockup of a call-to-action on the slides went through four options before Peace reframed the goal: viewers should see the slides while the video plays.
+- **The upgrade stays a decision, not a default.** The email account turned out to be on the free plan (100 a day). Instead of paying $20 a month on assumption, the page now tells viewers when sending resumes and pings Peace at 80 sent, so the spend can be decided with real numbers.
+
+### Frictions and course corrections
+
+- **The first limit was not a limit under load.** "Five tries per code" passed every sequential test and every one of 32 unit tests, but five guesses sent at once on the live site got eight checked. The count was read and then written in a cache that lets parallel requests read the same value. It moved to a store that handles one request at a time; the same live test then checked exactly five.
+- **The email plan was found by a real send, not by reading docs.** A failed request returned no quota information; one real email to Peace's inbox returned the free-plan header, which changed the launch-day risk.
+- **A test scare that was not a bug:** editing the last character of a sign-in link still worked. The last character carries two padding bits, so both versions decode to the same signature; editing a middle character was rejected.
+- **Local testing pointed links at production,** because the local server reports the real host over plain http. The link is now always https on a real host.
+- **The slide column first used half the screen,** and Peace rejected it; it now uses the full width.
+
+### Why this matters for the portfolio
+
+- **Access control was upgraded on a live product in one day without locking out anyone** already signed in, and the old password was removed everywhere it lived.
+- **Limits were proven on the live system, not assumed from tests**, and the one that failed under parallel load was measured before and after the fix.
+
+---
+
+## 2026-10-13, the Quality Rater goes live: a judgment model told who the publisher is, severity in place of traffic, and a link finder that gave nothing on the night of a demo
+
+Written on 2026-10-13 from the session handoff (`HANDOFF_quality-rater-live-links-hosting_2026-10-13.md`), the `quality-rater` repo commits `df42417` to `d88b8e5`, its `decisions.md` entries for 2026-10-13, Peace's live-walk log (`docs/qa/2026-10-13-peace-live-walk.md`), and checks run while writing (2,548 tests pass; `qr.notebookers.com/api/health` answers 200). Follows the 2026-10-08 Quality Rater entry above.
+
+### What shipped
+
+- **Live at qr.notebookers.com** for the team: one Railway service runs the web app and the background worker together; the data lives in its own locked-down schema inside a database the agency already pays for. 12 site checks, 2,136 pages, 4 clients and 9 drafts were copied across, with counts checked on both sides.
+- **The model is told who publishes the page.** A company recommending its own product on its own site is no longer flagged as hiding a commercial interest. On the test page the "hidden stake" reading fell from 0.87 to 0.08 and the page moved from Lowest to Medium+.
+- **Verdicts are read against the whole page.** A "show first-hand proof here" card is no longer put on a sentence whose reasoning the page gives elsewhere; the model scored those three sentences 0.86 to 0.94 on "the basis is given elsewhere" and 0.05 on "the writer tested it".
+- **Pages grouped by severity:** High, Medium and Low priority follow the rating alone. Search Console and everything that existed only for it (a pipeline stage, a removal review, a settings section, every "traffic" sentence, five database columns) were removed in one pass. The whole Spellbook site was re-rated under the new rules for $0.31: 18 high, 41 possible overlaps, 201 medium, 288 low.
+- **Internal links got their own section:** pick the client, paste the draft (its links stay links), press Find; the draft opens with the suggestions already found.
+- **A sign-in screen that says what the app does,** drawn as three steps from the product itself.
+
+### Decisions worth recording
+
+- **Tell the model the publisher; do not veto the finding in code.** A code rule ("skip the stake when the site's brand is the product") was rejected because an affiliate site that names itself would lose a real finding. A $0.001 probe showed the publisher's domain alone changed nothing; the domain plus a reworded question did.
+- **Severity, not traffic, decides what to open first.** The old groups mixed the rating with search traffic, which produced lines like "its traffic is unknown without Search Console". Peace asked for Search Console to be removed entirely; the groups now mean only how serious the problems are, and their names always say "priority" so they are never read as Google's rating.
+- **Cheapest paid hosting that fits the team's existing setup.** Peace believed Railway was free; it is not ($5 a month with $5 of usage, then about $10 per GB of memory). A free tunnel from her laptop and a free cloud server were offered and declined; the app copied the shape of an existing product (one service, data in a shared database) rather than adding a second database.
+- **A busy database is protected on purpose.** The background worker checks for work every 10 seconds, not 2, because empty polling caused an organisation-wide database outage on 2026-09-04.
+
+### Frictions and course corrections
+
+- **The link finder returned "0 suggestions" on the live site, the night of the demo.** It had been tuned on one long article. A stage-by-stage diagnosis on the real draft showed three rules each cut everything on a clause library: a similarity floor just above every candidate (0.49 to 0.54 against 0.55), an anchor rule needing two specific title words when clause pages have one, and source-citation lines counted as prose. After the fix the clause draft got 2 suggestions and the original article kept its 6. A looser first attempt produced anchors like "otherwise in compliance" and was tightened before shipping.
+- **A rewrite read well and changed the meaning.** On a page of quoted SEC clauses, a cut-off sentence was rewritten with an invented cause ("these provisions"); the filing says the cause is concentrated share ownership. Checked against the live page and the filing itself. Nothing in the app checks meaning today, so this is the top item for the next session, logged rather than patched in a hurry.
+- **"Fix highest first" was first answered by reordering the old groups,** which Peace rightly said was not what she asked; the real problem was that the groups did not mean severity.
+- **Hosting hit three platform gotchas in order:** a production-only build setting that would have skipped the build tools, a schema that could not be created under the database's newer permission rules, and a queue library that needs a database-level right even when its schema exists. Each was fixed and verified before moving on.
+- **Peace's live walk produced eleven items,** from unclear finding wording to links shown as raw text. Ten are logged with the checked cause and the fix shape; one (the empty link finder) was fixed the same evening.
+
+### Why this matters for the portfolio
+
+- **AI judgment was steered with measured probes, not guesses:** every change to what the model is asked was tried on the real page first, with the before and after numbers kept.
+- **Removal done whole:** a data source the owner rejected was taken out with everything that existed only for it, rather than hidden.
+- **A live failure was diagnosed to its mechanism in one sitting** and fixed for the whole class of content, with the original case re-checked so the fix did not trade one failure for another.
+
+---
+
+## 2026-10-13, AI Docs Watch: a client's 29-point review built across three products in one evening, and a dependency bump that took a live site down
+
+Written on 2026-10-13 from the session's own records: the client's Slack thread (read in full), the handoff `HANDOFF_docswatch-qa-shipped-pr168_2026-10-13.md`, root `decisions.md` entries for 2026-10-13, the `stevetoth.ai` PR #168 and the commits `5c48c804`, `458a2205`, `f6ec3d8e` (the Radar monitoring app), `1744c6f` to `12e9bef` (the coaching portal) and `72948826` (the website). The portal outage duration is estimated from deploy and rollback times, not measured by a monitor.
+
+### What shipped
+
+- **Every point in the client's review was inventoried word for word, marked done, partly done or not done with proof, then built:** 29 points, from "all terms of service should be in the list" to "add a preferred-sources button". Two could not be built from our side and are marked as such: an email signup (the account belongs to a teammate) and one platform's acceptable-use page, which could not be read on either fetch method.
+- **One rating replaces two confusing labels.** The old pair ("real change" and "major") became High, Medium or Low impact, with a one-sentence meaning printed next to every badge. The same three words and sentences now appear in three separate products (the public site, the internal monitoring app, the coaching portal), and a unit test pins them in the monitoring app.
+- **Platform pages are real pages** (6 platforms) instead of filter links; Gemini was split from Google, including the database rows and the old addresses, which redirect.
+- **A side-by-side before and after view** for each of 66 changes, with one highlight switch at the top, plus a "Take action" link, a LinkedIn share link, the Google preferred-sources button and related research links on every page.
+- **The watchlist grew by 18 pages in code (31 to 49 once the next daily pass syncs them; the database shows 32 tonight):** 17 terms and usage-policy pages across six platforms, each read live before being added, plus one webmaster-guidelines page, and a weekly scan that lists newly linked pages for a person to add or dismiss. Anthropic's Usage Policy, which changed on 2026-10-08 and was missed, was seeded from its 2026-10-07 archive copy so the change gets reported.
+- **Checks:** 44 tests on the site generator, 1,820 on the portal, a full build from the live feed, a local server walked with screenshots, and a two-agent bug hunt that returned 26 numbered findings; every confirmed one was fixed.
+
+### Decisions worth recording
+
+- **The rating is derived from calls the system already makes, not a new paid model.** The client asked whether the team's judgment model could rate changes; the cost-free version was chosen and the model can replace the derivation later. Peace picked it after the options were put in plain words.
+- **The home-page card is switched off until the client has seen the fixes,** because he asked for exactly that in the thread; the button text no longer carries a count, also at his request.
+- **Advice was taken off the list pages entirely,** not just softened: "straight facts" on the index, a "Take action" section only on the change page, in the client's final wording.
+- **One pull request for everything,** with a colleague as reviewer and the CTO assigned, because that is how the team works; the work went live in the order the data requires (database change, monitoring app, crawler, portal), and the website last.
+
+### Frictions and course corrections
+
+- **A dependency bump took the coaching portal down for about ten minutes (estimated), and it was my change.** A security gate in the build pipeline blocked a deploy on two new advisories; I upgraded the web framework to the patched version. Type checking, 1,820 tests and the production build all passed, then every request failed on the live site. I rolled back by hand to the last good version, reproduced the failure locally (the hosting adapter cannot run that framework version, and no patched earlier version exists), pinned back, and exempted that one package by name from the gate with a dated comment. The lesson is saved: run the production runtime locally before any framework bump, because the pipeline only probes after it deploys.
+- **The bug hunt found real defects in work that had already passed its tests.** The weekly page scan would have re-read the same 40 links forever on a hub that links 158 (a cap applied before the "already seen" filter, found by fetching the live pages); a pill said "New" on changes weeks old; a list bucket headed "low impact" held medium-impact changes; text-fragment links pointed at "Updated: 5 days ago". All fixed, with tests.
+- **A feature was shown to the client's reviewer before it was right,** and Peace caught two things I had not: a "Pages we watch" grid nobody asked for (removed), and a preview whose links pointed at the live site, so a click landed on a 404 (the preview copy now rewrites its origins).
+- **A claim of mine was wrong and was corrected:** the hunt's total was reported as 22 and is 26 numbered findings.
+
+### Why this matters for the portfolio
+
+- **A long feedback thread was treated as a checklist with proof, not a mood:** each point was quoted, marked, built and shown, and the two that could not be built are named rather than dropped.
+- **One concept (a rating) was kept identical across three products** with a test on one side and a written rule on the others, instead of being re-invented in each.
+- **A self-caused outage was handled in the open:** rolled back, reproduced, explained, prevented in the pipeline, and written down, with the estimate labelled as an estimate.
+
+---
+
+**Correction, same evening (2026-10-13):** the entry above says one platform's acceptable-use page could not be read and that the watchlist grew by 18 pages. A re-check of every vendor's own legal hub, prompted by Peace asking whether everything Steve asked for was covered, found 15 more terms and usage-policy pages missing and added them (32 terms pages in all, 64 pages in the code list, 40 of them legal). The acceptable-use page that failed in the morning read fine on a second try and is watched. Source: Radar commit `6ba266fd`.
+
+---
+
+## 2026-10-13 to 2026-10-14, Quality Rater: a site audit that says where to start, a rewrite guard that refuses to change a quote's meaning, and the code opened to the team
+
+Written on 2026-10-14 from the session handoff (`HANDOFF_quality-rater-site-audit-github_2026-10-14.md`), the `quality-rater` commits `b47903f` to `cb6199b` (68 commits), its `decisions.md` entries from the night of 2026-10-13 to midday 2026-10-14, and checks run while writing: 2,683 tests pass across 216 files, type check and lint clean, `qr.notebookers.com/api/health` answers 200, and the two production audits read `complete` in the database with their costs. Follows the 2026-10-13 Quality Rater entry above.
+
+### What shipped
+
+- **Site audit, a second feature beside the rating:** a strategist enters a domain and gets a work list, not a score: where to start (quick wins ranking 4 to 20 with few links first), links to add (the sentence and anchor quoted word for word from the source page, nothing invented), pages that overlap (the judgment model decides keep, merge or differentiate and picks the survivor; a landing copy is pointed at its main page rather than merged), each page's Search Console rankings, and the basics. Two new migrations, five new tables, its own queue in the same worker, 16 commits from design to first run in 25 minutes, then 20 more from reading the output. No writing model is used anywhere in it.
+- **Run on the real sites, judged as a strategist, run again on production:** Spellbook (640 pages, $0.058) and Botpress (2,000 pages, $0.160). Of the first fifteen fixes on each site every one was a page worth acting on; of ten sampled links per site, nine read well. Every required check held: no translation pair offered as overlap, no link across languages, no merge between two partners' pages, a site's eight ad landing copies as one fix rather than eight rows, no menu-linked page called an orphan.
+- **The rewrite that changed a quote's meaning (last entry's open item) is closed.** A passage under a Source line, inside a quotation, or cut off mid-sentence is never rewritten; the card says what to do instead and the server refuses before any spend. Every other rewrite option now passes a meaning check by the judgment model: 15 of 15 measured judgments right, the bad SEC rewrite scored 0.68 and dropped, faithful rewrites 0.09 to 0.25, at $0.00007 a card.
+- **A company's own landing page is no longer told it lacks a byline.** Peace found the flag on a Spellbook landing page; the trigger now stands down on home, landing, product and similar pages when the site shows its owner. Re-rated from stored answers for $0: five of 548 Spellbook pages moved from Low to Medium.
+- **The three jobs rebuilt from a study of the best products** (eight changes, all live): the run screen opens on the problems its pages share, each a filter; each problem's instruction and evidence in one place; a breadcrumb back; editable link text; the page dims around the open card; insert every strong link at once with one undo.
+- **The code is on GitHub for the team:** a private repo under the agency's organisation, two colleagues with write access, a README that says what the tool is, the five rules it keeps, how to run it in three commands, how to contribute and who deploys. A full-history scan for nine secret patterns found code references only.
+
+### Decisions worth recording
+
+- **The audit is a new feature; the rating does not change.** The rating raised 384 issues on Spellbook and 73% were three rules on pages they do not fit. Rather than soften the rating, Peace asked for a work list beside it and kept the rating as it is so the team can see the difference. Any behaviour the audit needed from a shared module was copied into the audit's own folder.
+- **Only the judgment model decides; text-only overlap groups are pairs.** Groups of four on text similarity alone mixed subjects (healthcare with retail: templated pages read 98% alike), so text groups are pairs, exact copies group to four, and a shared search query may make four. Measured on stored embeddings for $0 before any paid run.
+- **A redirect is not a page.** The rating had counted two redirecting addresses as a duplicate pair at 100%; the audit follows redirects and never lists one as an orphan or an overlap partner.
+- **Search Console through a separate desktop OAuth client,** so the shared sign-in client keeps its empty redirect list; rankings are optional and the screen says so until the credential works.
+- **Deploys stay manual after the move to GitHub.** Railway is deliberately not connected to the repo: a merge changes nothing live until Peace runs the deploy. One person decides what goes live while the team learns the code.
+
+### Frictions and course corrections
+
+- **The first screen was wrong on both sites even though the machinery held** (15 of 16 link sentences found word for word on the live pages). Translations were offered as merges, ad landing copies as merges, generic anchors ("legal professionals") as links, menu-only pages as orphans, and Cloudflare's email-protection links as broken. Five fixes, each with a test that failed first; then six more found while judging the re-runs, including a partner pair that still merged because its text wrote the name in lowercase, and the one pair that had to survive crowded out by looser neighbours until the evidence was tiered.
+- **A Google Cloud secret was printed once.** While reading the console's button labels to find a new client secret, a second secret appeared in the session output. It was deleted on Google's side the same morning with each confirmation dialog checked by name, and a clean secret was read from one known control and never printed. The rule is now written down: read one control, never list.
+- **The cut-off-sentence rule flagged 384 real lines on its first version** (captions, "Recommended reading" lines) across about 31,500 local paragraphs; it was tuned on that data before it shipped.
+- **Peace could not find the sidebar's expand button and thought her audits had vanished.** The button was at the very bottom under Sign out; it moved to the top with a test on the order. The audits had only ever existed in the local sandbox, which was said plainly rather than patched.
+- **A code-quality self-check before handing the repo over:** no `any`, 4 TODOs, the two largest editor files at 809 and 633 lines, no CI yet. Told to Peace as is, with what a reviewer would ask for first.
+
+### Why this matters for the portfolio
+
+- **Output was judged on real sites, not on tests passing:** the first screen of each audit was read as the person who would act on it, and every fix came from a specific wrong row.
+- **A model's judgment was bounded in code where code is certain** (a quote is a quote) **and measured where it is not** (meaning), with the numbers kept.
+- **Handing code to colleagues was treated as a deliverable:** a README written for a first-time reader, secrets scanned out of history, access granted, and the deploy path kept under one person's hand on purpose.
+
+---
+
+## 2026-10-14, SEO IRL recordings: Steve's two asks shipped by morning, every talk with its slides and a transcript to copy
+
+Written on 2026-10-14 from the session handoff (`HANDOFF_seoirl2026-slides-transcripts-title_2026-10-14.md`), the site branch `feat/seoirl2026` (`849f1236`, `1a214805`, `bbddfca7`) and live checks run during the session. Follows the 2026-10-13 recordings entry above. The Quality Rater work of the same day is in the entry before this one.
+
+### What shipped
+
+- **Steve's two requests from a 2am Slack message, live the same morning:** a "View slides" button beside Download on every talk, and a "Copy transcript" button that puts the whole talk on the clipboard as plain text (all 14 transcripts built from the name-corrected captions).
+- **Speaker names corrected before anything went live:** reading the new transcripts surfaced four caption errors (two company names, a speaker's employer, a musician), fixed in the captions on the video platform and in every transcript, each spelling checked against the person's own site.
+- **Steve's own deck, matched to everyone else's:** his talk was the only one without slides on the page. His deck is a live web presentation, so it was captured slide by slide in a headless browser at presentation size (61 slides, the presenter's on-screen controls hidden, each slide checked by eye), then shown under his video with a PDF like the other twelve.
+- **The page renamed "SEO IRL 2026 Slides and Recordings"** at a teammate's request, and four more attendees added to the list.
+
+### Decisions worth recording
+
+- **A copy button, not a transcript panel.** A panel had been removed two days earlier because the player already shows captions; the request was to copy, so that is all that was added.
+- **The transcript is fetched when a talk opens, not when the button is pressed,** so the copy happens inside the click; browsers can refuse a clipboard write that comes after a network wait.
+- **"Match the others" beat "good enough":** the first version linked out to Steve's deck; Peace asked for it to look like every other speaker's, and the capture made it so.
+- **No test email to new attendees:** the only live test of a new address sends that person a sign-in email before the official announcement, so the evidence was the list count instead.
+
+### Frictions and course corrections
+
+- **A live check signed in as Peace sent her a sign-in email she had not expected;** after that, live checks ran in her already signed-in browser.
+- **Two "bugs" in testing were the harness:** a click measured while the page was still scrolling, and a background browser tab that never scrolls. Both were proven before being dismissed.
+
+### Why this matters for the portfolio
+
+- **A client's request was turned around within hours, verified on the live site,** and the work surfaced and fixed errors nobody had asked about (the misspelled names) before they became copyable.
+
+---
+
+## 2026-10-14 to 2026-10-15, SEO IRL recordings go on sale: a paid page on seoirl.com that lets buyers in automatically, after the first build landed in the wrong repo
+
+Written on 2026-10-15 from the session handoff (`HANDOFF_seoirl2026-recordings-sales-stripe_2026-10-15.md`), the commit history of `stevetoth/site-seoirl-com` (`26a26d0`, `80dca69`, `93c29aa`) and the portal branch `feat/seoirl2026` (`f38a0732` to `8ffb2392`), and live checks re-run while writing (both pages 200, the Stripe link 200, a forged webhook call refused with 400, 59 portal tests passing). Follows the 2026-10-14 recordings entry above.
+
+### What shipped
+
+- **A sales page and terms page on seoirl.com** (`/recordings/`, `/recordings/terms/`), a "Get the Recordings" button on every page and a call-out at the top of the homepage, built in the live site's own styles. Price 177 USD with tax added for Canadian buyers, as Steve asked.
+- **The Stripe side, set up by Peace herself** with a Developer login: product, payment link with automatic tax and a required terms-of-service checkbox, a thank-you screen with the next steps, and a webhook into the recordings portal.
+- **No human step between paying and watching:** the portal checks Stripe's signature (HMAC over the raw body, five-minute window, constant-time compare), admits only a paid checkout from that one payment link, stores the buyer's email in one atomic write with the event id, emails them the sign-in steps once, and pings Peace. 21 new tests; 59 in the suite.
+- **Three people Steve named are refused everywhere,** even if they pay. Stripe could not block them without a paid add-on, so a blocked payer is let in by nobody and refunded by hand.
+- **Steve's ask that every video still show its speaker:** four of 14 stills fixed (a wide room shot, the person introducing the speaker, a speaker at the frame edge, a head in front), chosen from eight frames per talk.
+
+### Decisions worth recording
+
+- **Ask for the narrowest Stripe role that does the job.** The developer on the account offered admin access; the platform's roles page showed the Developer role can build links and webhooks but cannot touch bank details, payouts or members. That is what was requested.
+- **An empty "which payment link" setting was made a hard stop, not a convenience.** Left blank, the webhook would have admitted the buyer of any product on Steve's Stripe account. Found in a pre-ship bug hunt along with a lost-buyer race and bank-debit payments that complete as unpaid.
+- **The portal address came off the public page** at Peace's call, so buyers learn it from the thank-you screen and the welcome email instead.
+- **A test purchase was skipped deliberately:** the signature path is proven by tests in the real runtime and by a live refusal, and Stripe retries a failed delivery for three days, so the first real sale is the check, with the place to look written down.
+
+### Frictions and course corrections
+
+- **The whole first build went to the wrong repo.** The brief named a Next.js rebuild; it was built, tested, merged in two pull requests, and changed nothing on seoirl.com, which is served by a scraped static site on Cloudflare Pages. Peace caught it on her phone. The page was rebuilt in the serving repo the same night, and "fingerprint the live domain before building" is now a rule in the bug-hunt library.
+- **Peace saw the new page unstyled on her phone and doubted it was a cache issue; it was.** The stylesheet was cached for four hours under one name while pages were never cached, and her phone had loaded the site 26 minutes before the deploy. Proven with a cache-free browser before fixing; every page now asks for a versioned stylesheet.
+- **The nav button was placed three times:** it overflowed at 1100 and 1240 pixels, and a text link for mid widths overflowed at 768 to 900, so it shows from 1280 up and the homepage call-out covers narrower screens. The phone menu also cut off its new last link until its height cap was raised.
+
+### Why this matters for the portfolio
+
+- **A payments flow was built with the platform owner's money in mind:** least-privilege access, signature checks, one-product scoping and no silent failure, each verified against the provider's own documentation.
+- **The mistakes are in the record with their fixes:** a build in the wrong place and a cache diagnosis the client doubted were both proven, corrected and turned into rules that stop them recurring.
+
+---
+
+## 2026-10-15 to 2026-10-16, Fanout Notebook reads seven AI engines, then loses every ChatGPT run to its own guard on the afternoon of a recording
+
+Written on 2026-10-16 from the session handoff (`HANDOFF_capture-routes-live-reentrancy-outage_2026-10-16.md` in the `fanout-notebook` repo), that repo's git log (`fd0d8ec` to `5fee2a3` on `feat/machine-runs`), its `decisions.md`, and live checks re-run while writing (suite, dashboard and download answers). The product is the team's own extension and dashboard for seeing how AI platforms search for and cite a client.
+
+### What shipped
+
+- **From one engine to seven.** Signed-out ChatGPT, Google AI Mode, Gemini, Brave Search and Google Search became readable, each parser ported from a hand-built HAR analyzer and pinned by fixtures (17 capture envelopes, five parser releases 1.8.0 to 1.9.2 in two days). The full suite now holds 2,711 passing tests.
+- **A capture route for sites with no single stream to read.** A page-side recorder and a relay assemble one envelope per question; the readers then work offline from it, so a parser fix can re-read saved runs without asking the AI again.
+- **Real results for a client.** For C.A. Short, ChatGPT and Claude shortlisted competitors and never the client on any category question in 14 real browser runs, while the dashboard's blended figure (about 30 percent cited) came from September's 98 API runs. The 50-question visibility set, a memory-free run prompt and a team SOP were written the same day.
+- **A "Download extension" button on every dashboard page** and a "Reload tab" badge that now reloads the tab, both live (`e2642dd`, `cd2d345`).
+
+### Decisions worth recording
+
+- **Brave was set aside and a Perplexity fix was handed to its own session** when the client priority list (ChatGPT, Claude, AI Mode, Perplexity) was stated, instead of finishing every engine.
+- **The release waited for the recording.** An extension update orphans every open tab, so the fix was built into a local folder first and released to the team only after the owner confirmed it worked.
+- **A proposed change was withdrawn when the owner asked why.** I suggested splitting real and simulated runs on a dashboard page; the existing time filter already gave that view, so it was dropped.
+- **A usage cap was treated as a stop condition.** The bug hunt ran inline with no sub-agents and a hard stop at 95 percent of the plan window.
+
+### Frictions and course corrections
+
+- **Every ChatGPT run stopped saving at 16:13 UTC, an hour before a video for the client.** A second extension hooking the same request was found first and removed; nothing changed. The real cause was in our own code: the fetch wrapper's re-entrancy guard was one boolean held for the whole downstream call, so any request sent while another was pending bypassed the wrapper. ChatGPT had begun sending its `prepare` request and the answer request in the same instant. Proven by reading the live page's `fetch` source against the build, then by a test that fails on the old guard; verified live with five runs in a row.
+- **The first live runs found five more faults** the unit suite could not: ChatGPT cancels its own stream after the end marker and the hook read it as a broken stream, a human-check page was filed as a question, Google's error page read as an unrecognised shape, a slow answer saved twice, and a signed-out Perplexity thread cannot be read back at all. Two were repaired from raw by a re-parse, with identical pages.
+- **I wrote the build's per-engine tests against synthetic input** and called the readers proven only on that; the first real page showed the gap, and the release notes say so.
+
+### Why this matters for the portfolio
+
+- **The cause was found by eliminating the plausible outsider first, then reading our own guard.** The lesson is a pattern now in the bug-hunt library: a shared "I am inside my own call" flag that spans an await turns every concurrent caller into the recursion.
+- **An outage under a deadline was fixed without breaking the thing that worked:** a local build, a live check on the owner's own browser, then a release in the documented order.
+
+---
+
+## 2026-10-21, Lens review: a teammate's capture fix tested on a real ChatGPT session, and four bugs closed before it merged
+
+Written on 2026-10-21 from the session handoff (`HANDOFF_lens-pr3-review-real-recording_2026-10-21.md`), the commits on `review/pr3-redaction-fixes` in `notebookagency/Lens` (`23b5fd8`, `b546b15`, `6283e66`), and checks re-run while writing (Go suite 0 failures, PR #4 open). Lens is Gregory's platform for recording how AI search answers and cites; Pushkar's PR #3 made it save the ChatGPT answers it had been losing, and Gregory asked for a second pair of eyes before merging.
+
+### What shipped
+
+- **A review of a 32-file, 3,807-line change**, with eight findings ranked by severity and the three serious ones fixed with tests written to fail first.
+- **Pull request #4 against the author's branch**, three commits, 6 files, +242 / -25: credential fields redacted by name, every line of a streamed response redacted, a stream path kept that the answer rebuild needs, the extension's browser test made to start on a Mac, and every logged-in answer stored once instead of twice.
+- **A real signed-in recording, not a fixture.** The extension was installed into a signed-in Chrome, Simon's clinic question asked in a temporary chat, the checklist ChatGPT offered filled in (psychology, 1 to 5 practitioners, United States) and submitted. Lens captured both turns in full, recovered all three choices, and showed the client brand dropping out of the shortlist after the picks.
+- **A local Lens stack stood up for the test** with no Docker: Homebrew Postgres, all 15 migrations, the API and worker built from the branch.
+
+### Decisions worth recording
+
+- **Redact credentials by field name, and keep the change that exposed the gap.** The PR stopped blanking request bodies so prompts could be read; that also kept sign-in bodies, and the redactor only recognised secrets by shape, so a probe showed a password stored verbatim. Re-blanking the bodies would have undone the fix the team needed, so the redactor learned names instead.
+- **The answer is the message ChatGPT stores, the link is the message the next request names.** Three independent checks agreed (the stored conversation, the rendered page, the next request's parent id). Two simpler rules were tried and rejected because each broke a different real case.
+- **The fixes went up as a separate pull request against the author's branch,** so he decides what lands in his work, rather than pushing onto it.
+- **The outgoing message to the team was cut to observations and checked line by line.** Three claims were corrected before sending: a garbled character, "exactly what Simon saw" (the numbers differed, the shape matched), and "on his branch" (they were in a separate PR).
+
+### Frictions and course corrections
+
+- **The fourth bug was invisible until the real recording.** Every logged-in answer rendered twice: ChatGPT streams the full answer into one message and the visible pieces into others, and the parser joined both (12,755 characters where ChatGPT stores 6,715). The committed test expected the doubled length, because its number had come from the code it was testing; it was corrected against ChatGPT's own stored copy.
+- **The first fix to the redactor broke an unrelated report test** by overwriting a more specific placeholder; a bug hunt on my own commit caught it and also trimmed the matcher and four names outside its scope.
+- **Reaching the result took several harness detours,** each now written down: the repo ships the Firefox manifest, the extension's worker sleeps between steps, ChatGPT keeps a hidden second editor, the submit button ignores scripted clicks, and the web app is hard-wired to production.
+- **My first Slack draft was too technical;** Peace asked what three sentences meant, and the version sent says what was observed in plain words.
+
+### Why this matters for the portfolio
+
+- **A review that tests the change the way users will meet it,** on a real signed-in session, found the bug a fixture had locked in, and named the mechanism instead of the symptom.
+- **Security found by probing, not by reading:** one request through the filter showed the password, which no amount of reviewing the diff for the feature it was meant to deliver would have surfaced. Both lessons are now patterns in the bug-hunt library.
+
+---
+
+## 2026-10-21, Quality Rater: a teammate's review answered with evidence, and five days of local fixes put where he can build on them
+
+Written on 2026-10-21 from the session handoff (`HANDOFF_quality-rater-pushkar-review-branch-on-main_2026-10-21.md`), the `quality-rater` commits `e9c0c15` to `9a87a63` now on `main`, read-only production queries and checks run during the session (3,007 tests pass across 253 files, build clean). Follows the 2026-10-13 to 2026-10-14 Quality Rater entry above. Pushkar reviewed the app end to end and asked four questions before taking work; his review was of `main`, while the fixes for most of what he found sat uncommitted in a separate local copy.
+
+### What shipped
+
+- **Answers to all four questions, each tied to a record.** Which of his 22 named files the local work touched (12). Whether the Oct 14 owner-page fix was live: deployed three seconds after its commit, but production was never re-rated, so the five pages he saw as High still carried Oct 13 ratings. That paid evidence fetching is barred by the repo's own rule 3. And which of his offers could start now (accuracy measurement) and which had to wait (making Reject re-grade a page, which shares code with the local work).
+- **A finding-by-finding map** of his twelve findings against the local work: six fixed or mostly fixed, one partly, five not done.
+- **The local work on GitHub `main`:** 207 files in five commits by area (rating rules, reports, drafts and links, site audit, navigation), copied byte for byte from the working copy, scanned for keys first, with the private data in that copy (a 72 MB database dump, captures, screenshots) left behind. Pull request #1 carries the findings table for review.
+
+### Decisions worth recording
+
+- **Measure accuracy before buying evidence.** Paid fetching would cost about $1 to $6 per 548-page run at the vendors' published prices, two to nine times the run's model cost, multiplied across clients. Production held only 2 Reject decisions, so the "labels already exist" premise of the accuracy plan was checked and found thin. The recommendation became "not yet, measure first", replacing my own first draft's "yes, capped".
+- **Evidence and judgment are different jobs.** DataForSEO's site audit checks status codes, links, speed and duplicates on the site itself; it does not judge authorship, experience or originality against other sites. The tool's value is the judgment, so where it duplicates a vendor check (broken links, internal duplicates) that part could be bought instead of built.
+- **"Deployed" was answered from the deploy log and the stored rows,** not inferred from what the live page showed.
+
+### Frictions and course corrections
+
+- **The first answer was rushed.** It missed that his questions lived in the attached document, never explained "paid fetching" in plain words, and leaned yes on cost. Peace said so directly, and the second pass answered every question with its evidence.
+- **I opened a pull request she had not asked for.** She had proposed pushing to main; I recommended a pull request, and took her "continue with it" as a yes. A reviewer request notifies a teammate, so it needed a clear yes. She kept the pull request and had the work pushed to main; the rule "an ambiguous go-ahead is not a yes to an outward action" is now a standing note.
+- **The first test run reported 54 failures,** all one cause: the local test database was not running. With it up, all 3,007 passed.
+
+### Why this matters for the portfolio
+
+- **A reviewer's findings were treated as hypotheses and checked against production,** which turned "was it deployed?" into a precise answer: the code was, the data was not.
+- **A cost question got a business answer,** what it buys and what it multiplies by, rather than a yes to a clever idea.
+
+---
+
+## 2026-10-21, AI Docs Watch: six notes from Steve built in a day, and a confident answer of mine corrected before he acted on it
+
+Written on 2026-10-21 from the session: Steve's Slack DM of 2026-10-20, the analysis folder `docs/plans/2026-10-21-001-docswatch-steve-oct20-asks-analysis/`, the handoff `HANDOFF_docswatch-steve-oct20-asks-built_2026-10-21.md`, the stevetoth.ai commit `1625f773` on `main`, and live checks run that day (every page named below returned 200; the site suite ran 102 tests OK). Follows the 2026-10-13 Docs Watch QA entry. Steve sent six notes on the public Docs Watch site: page titles, whether a competitor-covered Anthropic policy change was tracked, that policy's tabs, light mode on the side by side page, a way back to the site and a share control there, and a calmer top of the change page with a tighter headline, drawn in his own mock.
+
+### What shipped
+
+- **The site, live on `main`:** the change page top follows his mock (the short article title as the headline, one meta row, the main button above the fold on a phone, where it had sat at the bottom edge), title tags in his "official docs and policy changelog" shape and never cut, a side by side page with the logo, a back link, Share, a fold-away bar, its own share card, and light and dark on both panes.
+- **The Anthropic change, rewritten in production.** It was tracked on Oct 14, but the write-up covered a different part of the rewrite. Regenerated with two model calls, it now reports the "Deceptive Campaigns or Artificial Activity" section and the Nov 12 effective date.
+- **The Radar half built and tested, not yet deployed:** the writers see whole rewrites, a list of new sections and the effective date; archived pages open every tab and accordion with a label; one database migration applied. Railway paused builds in every region that day, so the deploy waits.
+
+### Decisions worth recording
+
+- **Use what the data already holds before changing a prompt.** Every one of the 52 published changes already carried a short title (about 49 characters) while the page headline averaged 167. Making the title the headline needed no model calls and no regeneration.
+- **Push back on one element of Steve's mock.** His before/now card could not be fed from the existing quotes: on the showcase page the "before" text is still on the page (the change was an insertion), so striking it through would have been false. It became an optional new field the writer fills, with the card hidden when it is absent.
+- **Ship the way the owner ships.** Peace merges this site himself; a pull request I opened was closed at his word, and the work went straight to `main`.
+
+### Frictions and course corrections
+
+- **My own answer to Steve was wrong.** I had told him the "after" side of a compare page could not be switched to light. Tested instead of assumed, both panes are our own copies and can be switched; pages with no dark design of their own now get an inverted view. The correction went into the reply before he acted on it.
+- **The missed policy section had a mechanical cause:** the writers were shown the first 12 and 24 of 152 changed passages, and the section that mattered started at passage 51. Raising the cap was not enough on its own; the prompt now lists every new heading first.
+- **Two pre-ship bug hunts found ten real bugs** in work that had already passed review, among them a failed build that shipped its own broken pages, cut titles on 21 of 27 low impact cards, and the new dark view inverting Google's logos three times.
+- **Peace asked mid-way whether the time was well spent.** I answered with what had committed and what was still running, and started nothing new until the hunt reported.
+
+### Why this matters for the portfolio
+
+- **Steve's notes were answered with evidence,** including the uncomfortable one: "did we track this?" got "yes, and here is exactly why the write-up missed what you cared about".
+- **A wrong claim was caught by testing it, not by being challenged.** That is the habit a client should expect: the specific, checkable answer over the confident one.
+
+---
+
+## 2026-10-21, Lens: Fanout's seven engines ported into the team's recorder in Go, then a bug hunt and a walk that found what every green test missed
+
+Written on 2026-10-21 night from the session, the two handoffs (`HANDOFF_lens-fanout-engines-port_2026-10-21.md`, `HANDOFF_lens-fanout-engines-fix-pass-walk_2026-10-21.md`), the bug-hunt report and `git log` of `feat/fanout-engines`. Steve prefers Lens, Gregory's Go recorder, over Fanout Notebook, the Chrome extension Peace built; the Oct 16 engineering call asked for Fanout's logic inside Lens. Peace's framing: one new branch off Pushkar's open PR so nothing of the team's is touched, Fanout's parser numbers as the floor, platforms and modes told apart on screen.
+
+### What shipped
+
+- **Seven engines in Go, each proven on a real recording made through the real add-on:** ChatGPT signed in, signed out and Deep Research; Google AI Mode; Gemini; Claude; Perplexity (fixtures only, Cloudflare blocks automated browsers); Brave Search including its October page shape that Fanout reports as unrecognised. Migrations 016 to 019.
+- **The add-on scrubs before upload, unconditionally.** Measured before: 43 Cookie and 34 Authorization headers of the signed-in account inside the raw blob of a hand recording. After: 0 and 0 on a live signed-in recording, and asset bodies dropped, 99 MB to 6.5 MB across three recordings.
+- **A stored capture per session and a client export by date range** (JSON or CSV, a Library control): the five-chat session that took 57 s to read now answers in 0.015 s. Backfill job for sessions captured before the change.
+- **84 commits, nothing pushed:** 27 of port, then 53 from a deep bug hunt of those commits fixed in the report's order, one commit each, tests first, then 4 from a strategist walk of the merged app. Gates at the close: Go suite 11 packages, vet, six strict redaction seam tests, extension 34 of 34 on Chrome and Firefox 158, web 11 probe files.
+
+### Decisions worth recording
+
+- **One branch off the teammate's open PR, not a rewrite of their work.** Pushkar's PR #3 and the review fixes in PR #4 stay as they are; the port merges after them. Rejected: building on `main` and asking them to rebase.
+- **The transport's end is not the answer's end.** ChatGPT holds its stream open with keepalive pings after the answer; a recording stopped seconds after the answer appears carried a whole answer, the platform's own end markers, no close event, and the recorder's "failed" flag, and read as truncated. Completion now comes from the content's own markers or the close; the recorder flag stays on the record and in the reason. A flag before the content's end still reads truncated.
+- **"Pending" means ready without a stored capture, and nothing else.** A session stuck mid-upload was counted as pending and offered a backfill the job could never take, so "Backfill 1 pending" would have sat in the Library forever. Not-ready sessions are now named with their status so the totals still add up. Rejected: hiding them from the count.
+- **No push, no PR, no message to the repo owner, no extra session credits without Peace's word.** When his session limit hit mid-step, work paused and resumed on his word; each finished piece was committed so a cut mid-turn loses nothing.
+
+### Frictions and course corrections
+
+- **Green suites, blank pages.** Four engines' Turns pages threw `Failed to construct 'URL'` because those dissectors fill the request endpoint with a path template while ChatGPT fills it with a URL, and the page built a URL from it. 219 probe checks passed; the walk found it in a minute. One helper, one probe that renders every engine.
+- **A commit nearly shipped the local login shim.** The dev-login hunks had sat staged all evening and `git commit` of three named web files took them along. Caught on `git show --stat HEAD`, undone, recommitted with the three files. New rule in Peace's memory: local-only hunks stay unstaged, and the stat is read after every commit, not only the staged set before it.
+- **The add-on reinstalled twice as "installed but dead."** The repo's committed `manifest.json` is the Firefox variant (the owner's state since 0.1.2), so an unpacked Chrome load has no service worker. The README's prepare step is the answer; recorded, not patched over.
+- **Stale 0.1.2 zips kept coming back** to the Install page because the pack step copied every versioned zip left in `dist/`. Fixed at the script, and the HAR now names the add-on build from the manifest instead of a literal 0.1.0.
+- **A suspicion was tested before it was fixed.** The first guess for the truncated turn was the new per-navigation gate; a 25 s stop on the same flow read clean, which cleared the gate and pointed at the raw stream, where the pings were.
+
+### Why this matters for the portfolio
+
+- **The port was judged on live recordings, not on fixtures.** Every engine was proven through the real add-on against the real worker, and the scrub was measured on the account's own cookies before it was called done.
+- **A pre-ship hunt and a first-time-user walk each found what the other could not:** the hunt found six ship blockers in code that tests passed, and the walk found four more in an app the hunt had passed. Both are now part of how work reaches a PR.
+- **Three of tonight's mechanisms became reusable detectors** in the bug-hunt library (content end versus transport end, a remedy offered for a count it cannot act on, a URL constructor on a field only some producers fill with a URL), so the next project pays for them once.
+
+---
+
+## 2026-10-22, Lens port: the polish pass, a gate that had never run, and a production regression traced to the right commit
+
+Follow-up to the 2026-10-21 entry. The eight polish items from the bug hunt landed one commit each (92 commits on the branch), and the day ended with a read-only triage of a regression the repo owner reported on production.
+
+### What shipped
+
+- **Eight polish commits** (`34aad25` to `157c0f3`): big integers survive the report walk, the Claude dissector reads the filter's gzip markers, the add-on's drop-whole logic moved into its own 102-line module, a CI check that the committed Install-page zips match the tree byte for byte, ClickHouse rows deleted with the session, filter profiles read per org.
+- **A regression triage written for the thread, not acted on:** the owner's "uploading JavaScript, CSS and images again, tokens in the clear" traced to his own earlier commit that hardcoded the add-on to the `full` capture profile, plus a web fallback to the raw blob on a freshly provisioned box. The teammate's merged PR he suspected had touched only the Library page.
+
+### Decisions worth recording
+
+- **A test that skips on a missing environment variable was not run.** The Go suite's Postgres-gated tests had skipped silently through every "all green" report the night before; run with the database URL, two failed and exposed that a captured session at a status other than ready vanished from the export. Fixed, and the Quick Start now carries the URL. Rejected: leaving the skip in place and trusting the fixtures.
+- **A teammate's regression stays his.** When the owner handed the production regression to the original author, the findings were written down for the thread and no fix went on our branch. Rejected: patching it in our PR to look helpful, which would have put two people on one bug.
+
+### Frictions and course corrections
+
+- The previous evening's "every gate green" was wrong by two tests. The correction is recorded in the handoff, the decisions log and memory rather than quietly folded into the next run.
+- The repo's `main` moved under the branch during the day (three merges and a production deploy), so the PR now needs a rebase first; the expected conflict is named in the handoff before anyone hits it.
+
+### Why this matters for the portfolio
+
+- **Reading the git graph answers "who broke it" faster than opinions.** Branch points, per-merge file lists and the history of one file settled a three-person question in twenty minutes and cleared a colleague's PR.
+- **A silent skip is the most expensive kind of green.** The habit now is to treat a skipped test as a missing test and to say so when a prior claim was wrong.
+
+---
+
+## 2026-10-22, Lido OKF: a teammate caught what my own checks passed for a month, and the fix was checked against the source word by word
+
+Follow-up to the 2026-09-18 Lido entry. Patricia had sent v0.3 of the Lido Advisors knowledge bundle, and on 2026-10-21 I told Peace it was good to go after checking every filing quote and the verifier. The next day her own pre-send check found 15 page titles reading as the literal characters `\>-`. The cause was my 09-18 rebuild of her pages from a readable Markdown export, not her work. Written the same day from the session, the bundle and the fix log.
+
+### What shipped
+
+- **Every piece of conversion damage found and fixed** in one corrected zip: 15 titles that were a stray YAML symbol, 6 titles with a stray backslash, the next page's heading glued to the end of 21 pages, one of our cross-link sentences sitting inside a quoted source (Lido's head of content), and double spaces in 22 descriptions.
+- **Proof the fix touched nothing else.** Every page body was word-diffed against the v0.1 export; the only differences left are the cross-reference edits logged on 09-18. The bundle verifier passes on the unzipped copy of the file being sent, and a separate reviewer read all 34 files cold.
+- **The lesson put where the next run will meet it:** a "conversion damage" section and a new gate in the okf-skill lint guide, a standing memory rule, and the three checking scripts kept with the project.
+
+### Decisions worth recording
+
+- **A sign-off covers the whole artifact, not the diff.** The 10-21 "yes" checked what had changed and the verifier, never the titles or the index a reader opens first. The decision log marks that approval superseded rather than quietly replacing it.
+- **Fix our damage, list hers.** Everything the rebuild caused was fixed; a factual slip ("a third of the pairs" for 16 of 77), a typo and a few internal-sounding lines in Patricia's own text went back to her as a list for v0.4. Rejected: rewriting her pages to look thorough.
+
+### Frictions and course corrections
+
+- **The validator was blind to the whole class.** It accepts any non-empty title and never reads a page's last line, so every PASS since 09-18 meant nothing for this damage. The cause was mechanical: the export put each page's title as a heading just above the next page's marker, and the rebuild split on the marker.
+- **The first fix was not the last.** Fixing the titles was asked for; a wider sweep then found the stray headings, and a cold reviewer found the quote and the double spaces. The zip was rebuilt and re-verified each time instead of shipped after the first green run.
+- Peace's reaction ("we introduced a bug again?") was earned. The record names the cause as my rebuild, not the teammate's work.
+
+### Why this matters for the portfolio
+
+- **A conversion is a migration and needs a source diff.** Rebuilding content from an export is checked by diffing every body against the source and reading what the reader sees, not by a schema check.
+- **Owning a wrong sign-off quickly is part of the work.** The correction is in the decisions log, the handoff and the skill, so the next bundle is checked the way this one should have been.
+
+---
+
+## 2026-10-22, Radar's database outage traced to a mis-sized server, fixed at no extra cost, and the watch that missed it repaired
+
+Steve forwarded Supabase's warning that Radar's database was "running out of Disk IO Budget" and asked whether to worry. It had already taken the database down for about an hour overnight. Written the same day from the session, the database logs, the host metrics and the billing page.
+
+### What shipped
+
+- **The cause, measured rather than guessed.** The database's host metrics showed 426 MB of memory, about 860 MB of its 1 GB swap in use, 3.5 million major page faults and 99 GB read from the system disk against 7 GB from the data disk. Query load was light (10 connections, about 99.7% of reads served from memory), so the disk allowance was spent on swapping, not on queries. Postgres logged "database system was interrupted" and every request timed out from about 03:00 to 04:00 UTC, taking down Radar, Fanout, OKF and Quality Rater, which share the database.
+- **The fix, at $0.00.** The project ran on Supabase's free-tier size (Nano) inside a paid organization that was already billed for the next size up (Micro). Moved to Micro (1 GB) from the dashboard; the confirm screen showed $9.68 to $9.68 a month, the restart took about 30 seconds, and the host then read 904 MB of memory with no pages swapped out. All four apps answered 200 afterwards.
+- **The bill read, not estimated.** October's invoice was $38.36 and the cycle projects to $39.48, which corrected my first figure of about $35.
+- **The scheduled usage watch updated** so it reports a database restart as a restart instead of as a drop in traffic, names any data source it could not read, links the Disk IO page for a hand check, and no longer talks about a downgrade that was shelved.
+- **A second silent failure fixed.** Railway invalidated every API token made before its 2026-10-21 security incident, so the usage report's Railway costs had stopped. A new token was created, verified on the report's own query and set in the three places that hold it; the env registry was updated (`b2468546`).
+
+### Decisions worth recording
+
+- **Stay on Supabase rather than move to Cloudflare.** Cloudflare's database (D1) is SQLite and it has no Postgres of its own; moving would save about $20 to $30 a month and mean rebuilding sign-in, 61 row-level security rules, vector search and a job queue across five apps. Rejected as a response to an outage that a settings change fixed.
+- **Fix memory, not queries.** The evidence pointed at swap; tuning queries would have spent days on a load that was not the problem.
+- **Trimming the largest column was dropped.** The 74 MB of raw scraped data on feed posts looked like dead weight; eight code paths still read it (comment summaries, YouTube transcripts, article text), so it stays.
+
+### Frictions and course corrections
+
+- **The watch had reported good news during the outage.** The restart wiped the database's query counters, so the next usage report counted only the coaching portal and the watch posted "first reading under the limit". A counter reset is now treated as a restart signal.
+- **I recommended waiting out Supabase's own incident before resizing; Peace chose to go ahead.** It went through in 30 seconds.
+- **A status-code filter I wrote counted every log row as an error.** Reading the raw rows showed all 200s; the false alarm was caught before it reached anyone.
+- **The dashboard's 7-day "lowest" Disk IO figure read 99% across a night that exhausted the budget.** That widget is too coarse to prove recovery, so the remaining check is the warning banner clearing.
+
+### Why this matters for the portfolio
+
+- **A platform warning is a symptom; the host's own numbers name the cause.** Memory and swap on the database server explained in minutes what query statistics could not.
+- **Cheapest fix first, checked against the real bill.** The answer to "should we move platforms" was a free setting the account was already paying for.
+- **Monitoring that hides its own blind spots gets fixed in the same pass.** Both the misleading usage reading and the dead Railway token were found while answering a different question.
+
+---
+
+## 2026-10-22, Lens: the Fanout engines PR opened for review after live recordings in two browsers and a fresh-eyes reverification that found what every green gate had missed
+
+Same-day follow-up to the morning's polish entry. The evening finished the bug hunt, built the export Peace asked for, recorded every engine Lens can reach in Chrome and Firefox, re-checked the whole branch as a reviewer would, and opened the pull request for Gregory, the repo's owner. Written the same night from the session, the gate logs, the recordings and the PR.
+
+### What shipped
+
+- **PR #7 on `notebookagency/Lens`**, 155 commits, opened from Steve's GitHub account with Gregory requested. Five AI search engines (Google AI Mode, Gemini, Claude, Perplexity, Brave Search) now parse in Lens the way ChatGPT does.
+- **The export Peace specified.** One filter bar on the Library (a date range that starts on "All time", plus a platform) that narrows both the session list and the download, and a second download, "Full turns", with every answer, citation, page and query for analysis in Claude. One server-side builder makes both the per-session file and the bulk one, so they cannot drift.
+- **Live proof.** Ten two-turn recordings, five in Chrome and five in Firefox, parsed and walked page by page. Perplexity was skipped (its sign-in rejects an automated browser) and Gemini failed on Google's side in Firefox; both are named as not covered.
+- **Final gates on a clean copy of the branch:** 305 Go tests pass in parallel and in serial against a real database, every one of the 155 commits builds on its own, 45 of 45 add-on tests on Chrome and Firefox, 15 of 15 web checks.
+
+### Decisions worth recording
+
+- **Fixing the race instead of retrying it.** A database test failed intermittently in parallel runs and was twice put down to the upstream code. Reproducing it (6 of 6 parallel rounds failed; a loop of one migration statement alone printed the same error 34 times) showed it was ours: one test helper ran migrations outside the lock every other helper held. With the lock, 0 of 6 failed. A retry would have hidden it.
+- **Repairing history rather than adding a follow-up commit.** One earlier commit had saved a file that did not compile; since nothing was public yet, the commit itself was corrected and every commit rebuilt alone, so a reviewer bisecting the PR never lands on a broken step.
+- **A recording with no evidence has no platform.** An empty recording would otherwise have listed under ChatGPT (the parser's old fallback) once the platform filter existed. Rejected for now: rewriting stored rows, which the PR names as a follow-up.
+- **The PR comes from Steve's account.** It was first opened from Peace's; he asked for Steve's, and it was closed and reopened so Gregory sees one PR.
+
+### Frictions and course corrections
+
+- **Live recordings found three bugs no test had.** Claude's second message is gzip-compressed and large; the add-on kept the data and dropped the flag saying it was base64, so the prompt was stored as "[redacted]" (and Firefox corrupted such bodies outright). Brave's follow-up question now travels in the request body, not the address, so it was lost. Both fixed in the add-on and the server, then proven on fresh recordings.
+- **"Every gate green" had been measured in the wrong place.** The working copy carried local-only test code that made a broken committed file compile. Only a gate run on a clean copy caught it.
+- **The reverification found 15 more defects**, including one regression from earlier the same day (ChatGPT answers rendering as code blocks in 13 of 14 sample answers) and a privacy gap my own fix had opened (an encoded form body could pass the redactor whole). All fixed before the PR.
+- **My own verification damaged its data once.** A check that replayed old commits ran old tests that deleted rows from the shared local database (24 stored results down to 4), which read like a product bug for a round. Restored with a backfill; the rule went into the bug-hunt skill and the standing memory.
+- **A suspected UI regression was not one.** Peace could not scroll the turns sideways; the 14 turns were stacked as six chat rows, and the one wide row scrolled the same on yesterday's build as today's.
+
+### Why this matters for the portfolio
+
+- **Real recordings are the test suite that matters for a parser.** Each engine's live traffic contradicted an assumption every fixture shared.
+- **A second review with fresh eyes pays for itself.** Fifteen findings, including a regression and a privacy gap, came from re-checking a branch that already read green.
+- **Rules learned the hard way are written into the tools.** The working-tree trap, the unlocked migration and the dropped encoding flag are now detectors in the bug-hunt skill, not just notes.
+
+---
+
+## 2026-10-26, Five keys rotated, a leaked key's silent outage made loud, ChatGPT's signed-out format change read in two parsers, and a 27-finding audit with 13 fixes live
+
+A full day across three products. It started as a status check, turned into a key rotation done through the browser, and surfaced an outage nobody had been told about. Written the same evening from the session, the commits in content-ops, Lens and fanout-notebook, the deploy logs and the email thread.
+
+### What shipped
+
+- **Five keys rotated and the old ones deleted:** three Cloudflare tokens (the account token cut to read-only), the company Resend key and the Supabase management token. Every consumer was updated and tested, including a Worker secret, GitHub secrets, two Supabase SMTP configs and four Railway services, and the record went into `docs/runbooks/key-rotation-2026-10-26.md` with names only, never values.
+- **ChatGPT's signed-out format change, read again.** Since 2026-10-23 ChatGPT sends a signed-out answer only as a text rendering of its whole widget, with the old answer field empty. Lens (PR #13, merged) and Fanout (parser 1.9.4) now read it, cut the interactive form off the end, and take citations and brands from the widget's own components.
+- **Lens sign-in limited to the team**, at the repo owner's request: PR #15 merged three minutes after it opened, then two follow-ups pushed straight to main with Peace's go-ahead (the token refresh path checks the same list, so an outside session ends within 30 minutes; the one outside guest is admitted at both of his email addresses). 13 of 13 Go test packages pass.
+- **Fanout deep bug hunt: 27 findings, 13 fixed and deployed** (runner, dashboard and a new extension build). Gate from the repo root after the last change: 163 test files, 2,724 tests, typecheck and lint.
+
+### Decisions worth recording
+
+- **Make the outage loud before fixing its cause.** The shared OpenAI key had been disabled by OpenAI as leaked on 2026-10-24, and Fanout's runner had logged "key rejected" every five minutes since 2026-10-21 to nobody. The replacement key is Steve's to mint, so the fix that could ship now was the alarm: a rejected key now emails the person who started the batch and pings Slack once per process. It fired on its first sweep after deploy.
+- **Keys move through the password manager, not chat.** Peace asked Steve for the new OpenAI key through Dashlane, and the rotation kept new values out of the session entirely.
+- **Direct to main only for work the owner asked for.** Lens is Gregory's repo; the follow-ups to his own request went straight to main, anything else stays a PR.
+
+### Frictions and course corrections
+
+- **A key value reached the session once**, read from an old credentials file. That token was rotated first and the file trashed.
+- **Railway's Restart does not reload changed variables.** Services kept the old Resend key until they were redeployed.
+- **Green builder runs hid a red suite.** Three package-scoped runs passed while the root suite failed 4 tests: the truncation fix stored a whole reason string where a reason word belonged. Rewritten as one shared helper both write paths use.
+- **The last stale copy was in the build, not the source.** After every three-engine list was replaced with the seven-engine one, the stamp script still rewrote the shipped extension description to three. Found by reading the built manifest, not the code.
+- **The guest's address was wrong by a domain.** The allow-list held the address given in the request; his email that afternoon came from a second domain. Both domains receive mail, so both were admitted.
+
+### Why this matters for the portfolio
+
+- **A silent failure is the expensive kind.** Five days of failed runs cost nothing visible; the durable fix was making the next failure announce itself.
+- **Upstream changes get read, not guessed.** The new ChatGPT shape was recorded live, fixed in both parsers the same day, and checked against the recording.
+- **Verification is measured where it ships**: the root suite, the clean worktree, the built artifact.
+
+---
+
+## 2026-10-26, a refused note video traced to a wrong denominator, and why the docs monitor missed a Google change
+
+Two evening threads after the day's key and audit work: a weekly newsletter note's video was refused by the pipeline's own quality gate, and the client asked why the documentation monitor had not caught a Google guidance update the trade press covered that afternoon.
+
+### What shipped
+
+- **The note video is live** (2 minutes 30 seconds, 1080p) after a fix to how the narration is prepared (commit `64131456`). The full Radar suite passed after the change: 160 files, 1,743 tests.
+- **The day's work logged** as six outcome-titled tasks and a daily note in the team's task dashboard.
+- **A diagnosis of the docs monitor miss**, with the database and log evidence, a proposed fix and a drafted reply to the client. Nothing changed yet; the fix waits for Peace's yes.
+
+### Decisions worth recording
+
+- **Fix the denominator, keep the floor.** The pipeline refuses a narration script that covers less than 85% of the source, a guard that once caught a real truncation. This note was refused at 83% because about 120 words of newsletter extras (a subject line, a banner, repeated "chat about this post" links, tool links, a signup line) counted as source. The extras are now removed before measuring. Prose alone puts the same script at 103%. Lowering the floor was rejected.
+- **The extras filter anchors on the greeting only when a note has one,** and matches the signup line only at the start of a paragraph, so the same words inside real prose are still read aloud. Checked against the ten newest notes before shipping.
+- **A missing API key was not the cause,** though it was the obvious suspect that evening. The narration runs on a different provider; the dead key only blocks an optional transcript check.
+
+### Frictions and course corrections
+
+- **The docs monitor failed twice over.** The changed Google page was never on its list (it watches 6 of about 160 pages in that section). And the weekly scan built two weeks earlier to suggest new pages had crashed on every run with "permission denied", because the migration that created its table never granted the service role access. Its table held zero rows, and no alert reached anyone.
+- **Today's credential rotation briefly cut the database connector.** The running session kept the old token, so the evidence was gathered through the API with the new one, without printing it.
+
+### Why this matters for the portfolio
+
+- **A quality gate that fires is information, not an obstacle.** The answer was to correct what it measured, not to weaken it.
+- **"Why didn't it catch this?" got a root cause, not a shrug.** Two defects, both proven from the database and the logs, with a fix scoped and held for the owner's approval.
+
+---
+
+## 2026-10-27, the docs monitor widened from 64 to 508 pages in one night, after the miss the client caught
+
+Follow-on to the previous entry's diagnosis. The client's question ("why didn't Docs Watch catch this?") got a same-night answer, a link showing the exact change, and a monitor sized to the job.
+
+### What shipped
+
+- **The missed change, shown properly.** Google's page was added with a baseline taken from an Internet Archive copy dated eleven days before the change, so Radar reported the real before-and-after rather than treating today's page as the starting point. The link went to the client the same night.
+- **444 more pages watched across six platforms** (Google 253, OpenAI 108, Anthropic 53, Perplexity 36, Bing 28, Gemini 26), each read through the monitor's own fetcher before it was added, from lists kept in the repository so the reason for every page survives the database.
+- **The broken weekly scan fixed** with a one-line permission migration, then run by hand.
+- **Two defects found on the way and fixed:** scraped LinkedIn posts carrying an invisible NUL character made the database reject whole batches (4 or 5 a day were being dropped), and the monitor's run lock lasted 20 minutes while the widened run took 54.
+
+### Decisions worth recording
+
+- **Add pages as live database rows, not only code.** Rows are picked up by the running crawler at once; a code list needs a deploy. The table defaulted new rows to the "code" type that the crawler switches off when missing from its list, so the import script sets the other type explicitly and refuses page names that would collide on the public site.
+- **Spend stated, not assumed.** Most pages are free to check. 29 only render in a browser at a measured two cents a run, about $17 a month, and the per-change write-up cost was given as an estimate with its assumption.
+- **Measure before trusting a constant.** The 20-minute lock was fine for 64 pages; timing the first real run is what showed it was not for 508.
+
+### Frictions and course corrections
+
+- **The archive was unreachable from the work machine all night**, its DNS pointing at an address that drops connections. The first copy came through the owner's own browser with his approval; four other changed pages could not get a before-copy and were watched from now instead.
+- **An early cost figure was wrong by four times** (half a cent a run guessed, two cents measured). Corrected before the owner acted on it.
+- **One research agent's "publishers FAQ" URL now serves a retirement notice**: the vendor had folded several articles into one. Caught by comparing extracted content, not titles.
+
+### Why this matters for the portfolio
+
+- **A miss becomes a system change, not an apology.** The client got the answer, the evidence, and a monitor eight times wider by morning.
+- **Scale exposes old assumptions.** Growing the workload overnight surfaced a lock and a data-cleaning bug that small inputs had hidden; both were measured and fixed before the next scheduled run.
+
+---
+
+## 2026-10-27, a before-copy fetched from the server when the laptop could not reach the archive, one nav for the whole site, and a leaked key replaced everywhere it lived
+
+The day after the docs-monitor widening. Four pages Google and OpenAI had changed before we watched them still had no "before" to compare against, the replacement for a leaked API key arrived, and the client asked for his site's navigation to match on every page.
+
+### What shipped
+
+- **Three of the four missed changes now show real diffs.** The work machine could not reach the Internet Archive at all (its DNS sends the host to an address that drops connections), so an admin-only endpoint on the hosted app now does the lookup and seeds a page's first version from the newest archived copy before a given date. Called from the owner's signed-in tab, it worked first time on three pages. The fourth has never been archived by anyone, so it is watched from today. One of the three is a real behavior change worth a post: Search Console's control for AI Overviews and AI Mode.
+- **The new API key went into every place that uses it**: five hosted services and four local configuration files, set through standard input so the value never touched a command line, each checked by its last four characters, with a live call proving it works. The copies of the dead key left in old archive folders were overwritten with the word REVOKED.
+- **A retired service deleted** after its cold archive verified 80 of 80 checksums.
+- **One global navigation for the client's site.** Every page used to carry its own hand-copied header; ten had an outdated one, and the other 24 came in six slightly different variants. Now one source file is written into all 34 pages by a small script, and the deploy runs that script in check mode first. Compared on every page at two widths in both themes (136 views), each nav item matched the reference page within one pixel.
+- **A teammate's pull request rebased** onto the morning's merges, version bumped, every gate run against a scratch database, and merged by the lead engineer the same afternoon.
+
+### Decisions worth recording
+
+- **Move the fetch to where the network works, instead of working around this machine's DNS.** A local DNS override was refused by the permission layer and was not ours to route around. The server endpoint is a standing feature now, and it refuses to touch a page that already has history.
+- **Static, committed navigation over a runtime include.** A script tag or server-side include would have been less code, but it would cost search visibility or break the site's own performance rules (no render-blocking resources). The generated block carries a marker so the next edit goes to the source, and a check fails the build when a page drifts.
+- **Small site changes go straight to main.** The owner's call: a pull request for a nav change would only wait on the lead engineer's eyes for no gain.
+- **Explain the bill before paying it.** The organization had spent its 2,000 free build minutes (2,032 used, mostly one repository's test runs), and GitHub worded that as a failed payment. A $10 monthly cap on the existing budget was the fix, set by the account owner with exact clicks, after a change the week before had already trimmed about 314 minutes a month of unneeded runs.
+
+### Frictions and course corrections
+
+- **Most of the morning went on routes to the archive that all failed the same way**: two browsers, the in-app browser, curl, a second archive and a Memento aggregator. The answer was to stop treating it as a fetch problem and run the fetch elsewhere.
+- **The first nav preview was visibly wrong** (a logo at 14 pixels instead of 19.7) because only part of the nav's styles had been extracted. Extracting all of them fixed that, but then pulled in a dead rule pointing at a 107 KB image, which raised the performance warnings from 2 to 5. Removing the rule brought them back to 2. Both were caught before anything shipped.
+- **The saved test script pointed at the live development database.** A copy aimed at the scratch database ran instead, and the script's own fix is logged.
+
+### Why this matters for the portfolio
+
+- **When a tool cannot reach something, move the work, not the rules.** The fix that worked was architectural (run the fetch on the server), not a clever bypass of a guardrail.
+- **Consistency as a system, not a checklist.** The client asked about one page; the answer made every page share one source and made drift fail loudly.
+
+---
+
+## 2026-10-27 to 2026-10-28, what the docs monitor costs, a third of its browser bill removed, and a model upgrade measured before it shipped
+
+The client asked what the docs monitor now costs to run at 506 pages. Answering it turned into three pieces of work: finding which pages really needed a paid headless browser, moving the monitor's AI calls to newer models, and proving each change on real data before it reached production.
+
+### What shipped
+
+- **A cost answer from measured numbers.** Per detected change on the new models: about $0.066 for the internal brief, $0.081 for the public article, and $0.0003 for the check that decides whether a change matters. All in, about $35 to $70 a month, with the wide range stated plainly because only one full day existed at the new size.
+- **16 of 29 browser-only pages moved to free official sources.** One vendor's help pages are a JavaScript shell, but its own help API returns each article; another vendor's help center sits behind a bot check, but it publishes the same articles on its support platform. The watched address never changes, and any failure falls back to the paid browser. The browser bill dropped from about $17 to about $8 a month.
+- **The monitor moved to newer AI models, tested first.** A read-only script ran stored changes through the old and new models with identical prompts and printed what each said and cost. Six changes end to end, then the classifier alone on 30: same verdict on 28 of 30, the old classifier's one malformed reply gone, and write-ups as good or better. On a page the monitor had misreported the day before, the new model said the page "restates its existing rules", which was true; the old one had called it new.
+- **A bug hunt before shipping** checked every other caller of the shared AI client, the backup models the provider falls back to on a refusal (both accept the same request, probed live), the regenerate button's time budget, and stored prompt overrides. Then the deploy went in its required order, and the next morning's real run produced 31 changes with every brief and article written.
+
+### Decisions worth recording
+
+- **Change only this feature's models.** The brand-voice writer stayed on the old model; the monitor got its own model settings, so neither can move the other by accident.
+- **Treat a refusal as an error everywhere.** Newer models can decline with a normal success response and empty or partial text. Every caller already handled a thrown error, so the shared client now throws instead of passing half an answer on.
+- **Keep the classifier at its lowest effort setting.** A higher setting looked like a quality lever but flipped 6 of 30 verdicts instead of 2.
+- **Declined: a spending cap and a typography filter.** Both were designed (the filter would ignore curly versus straight quotes in the change fingerprint only, because the public site's source links match the stored text exactly). The owner judged them not worth the added complexity at this cost, and they stay on file for a week that runs over budget.
+
+### Frictions and course corrections
+
+- **The price list promised a 20% saving that did not appear.** The newer writer thinks before it writes, and that thinking is billed as output: 2 to 3 times the output tokens, so the writer's cost came out flat ($0.581 to $0.587 on four changes). The earlier estimate was corrected in writing, and the case for the move rests on quality and reliability, not money.
+- **One self-inflicted false alert.** I set a page's fetch mode by hand before the run that should have detected the change of mode, so the monitor compared a full page against an old truncated copy and published a change that never happened. It was unpublished four minutes later; the rule now sits beside the code, and the bug-hunt library learned the pattern.
+- **The first push was refused by the owner's own push guard**, whose confirmation box had closed unseen on a phone. It read like a standing hold; it was explained in plain words, the worker was checked idle, and the push went out on the owner's click.
+
+### Why this matters for the portfolio
+
+- **Cost questions get measured answers, with the uncertainty shown.** A range from one day of data, labeled as such, beats a confident number the next week contradicts.
+- **Upgrades are proven on the client's own data before they ship.** The same prompts, old against new, with the cost of every call recorded, turned "newer is better" into evidence, including the part that was not true.
+
+---
+
+## 2026-10-28 to 2026-10-29, a Slack-to-GitHub request bot researched and priced, and a teammate's pull request caught before it broke the build
+
+On the weekly engineering call the head of engineering asked for research: a way for anyone in the company's Slack to tag a request and have it land as a GitHub issue for the four engineers, so work stops getting assigned in scattered threads. The same days, a pull request of his was assigned to me for review.
+
+### What shipped
+
+- **A two-page recommendation, posted to the engineering channel behind a password.** Build our own small bot: one shared Slack app, the Claude API with a single "create issue" tool, and a GitHub App allowed to write issues in one new intake repo. Running cost shown three ways by host: about $4 a month on an existing server, $6 on Railway, $10 on a new server. One engineer replied "Looks good". Nothing was built, by design: the head of engineering asked for research first and no rollout until all four agree.
+- **A verified pull request review.** On a clean copy of the branch the web build failed: the page the change was named for was imported but never committed, even though the live site already ran it from the author's machine. A test against a disposable database showed the "at least one admin" guard counted a seeded demo account, so the last real admin could be demoted, and two simultaneous demotions left zero admins in 199 of 200 runs. The review listed what already worked too (analysts refused, cross-team changes refused). The author confirmed on the next call he would push the missing file.
+
+### Decisions worth recording
+
+- **Our own bot over the Claude app already installed in Slack.** That app works in more places, and its GitHub App on our organization can write issues, but filing GitHub issues is not a documented use, and the team wanted an agent it controls. It stays in the plan as the fallback.
+- **Borrowing a design, not buying a product.** Every, the media company, published how it replaced personal agents with one shared company agent. Five of its lessons shaped the design (one shared agent, its own logins, quiet unless tagged, approval for risky actions, hosting the agent loop is real work). Every sells that agent at $24 to $30 a user a month; we took the lessons and skipped the subscription.
+- **Hosting framed by who can fix it, not just by price.** The existing server is cheapest, but only one person can deploy to it or read its logs. Railway costs about $2 more and any of the four can. Both are on the page with the facts; the head of engineering decides.
+- **Rejected:** GitHub's own Slack app (every requester would need a GitHub account), Zapier (its mention trigger covers public channels only), and Slack's Workflow Builder (paid plan plus custom code).
+
+### Frictions and course corrections
+
+- **I read "check out Every" as "buy Every's agent".** The first draft priced their product; the client meant learn from their write-ups. The plan was rewritten around building our own.
+- **The first deliverable was a five-slide deck; the client found plain text easier to read.** Rebuilt as one branded page, then checked by printing it to PDF: two pages, as asked.
+- **A sloppy cost line was caught before it went out.** A requested phrasing would have shown a new server as "$6" when it is $6 on top of $4. The totals were spelled out instead ($4, $10, $6), so the cheaper-looking option was not understated.
+- **"The bot was deactivated" turned out to be wrong.** The Claude app had been active in Slack the whole time; checking the channels before planning around the assumption changed the comparison.
+
+### Why this matters for the portfolio
+
+- **Research arrives priced, sourced and decision-ready**, with the cheapest option stated honestly even when I argue for another.
+- **Reviews are proven, not asserted.** A failing build and a race condition were reproduced on a clean copy before anything was said to a teammate.
+
+---
+
+## 2026-10-28 to 2026-10-30, the knowledge-brain app rebuilt as one product for the team and its clients, then hunted and shipped
+
+The company's knowledge-brain app held the founder's notes as a searchable brain, and on the side it could build a "client OKF" (a client's own knowledge base, handed over as a zip). The ask was to turn it into a real product, from the admin page down to every client page, so a client uses their OKF through their own AI instead of forgetting a download. It was not to be built for the first client alone.
+
+### What shipped
+
+- **Live at okf.notebookers.com on 2026-10-30.** The release is commit `92bd038` on `main`, and its deploy succeeded. All 3,135 automated tests and the production build passed on the merged code before the push. The health check answered 200 after it.
+- **One frame for the whole app.** Every signed-in screen sits in the same sidebar, with three roles:
+  - **Admin:** the inbox, the clients and the founder's brain.
+  - **Reader:** only the founder's Graph, Browse and Ask; nothing that writes.
+  - **Client:** only their own OKF.
+- **A team inbox ("Needs you") and a client page that leads with what is waiting.** Material a client sent and notes they flagged come first. Facts sit in a side column, and rare actions sit behind a "⋯" menu.
+- **A live connector link per client.** A client adds one link to their own AI and it can search and read their notes. Every read is logged, so the team can see whether a client actually uses it. The link's secret is stored encrypted.
+- **A real dark mode in the app and in the client's download.** The brand defines no dark theme. The old one was the six brand colors swapped around, which read as navy, so it was replaced with neutral greys.
+- **The weekly ingest moved to newer, cheaper models.**
+
+### Decisions worth recording
+
+- **The team builds, the client receives.** The hand-over is the live link plus the zip, and clients send new material instead of building it themselves. Rejected: client self-serve builds.
+- **Reversed one of my own scope calls.** I had kept the founder's pages on their old top bar. The client said the admin felt "like a walled garden", so the whole app moved into one sidebar.
+  - The approval came from an interactive before-and-after page with switches for each role and for desktop and phone.
+  - That page replaced a design canvas he found stressful to use.
+- **On a phone, the Menu button moved to the left,** the side the menu slides in from. It had been copied from the old layout to the right. The client asked whether it was "the best design decision", and it was not. His standing rule since: challenge design decisions, copied ones included.
+- **The page's one red button goes to the work that is waiting, not to "View as client".**
+- **The newer model could not be dropped in by changing its name.** A live test showed it rejects the "thinking off" setting the old one used, so one small rule now gives each model the setting it accepts. Without that, every weekly page would have failed.
+
+### Frictions and course corrections
+
+- **Many design passes driven by the client's eye:**
+  - A pop-out client panel became a full page.
+  - A card grid ("boxy") became flat sections.
+  - The long admin landing page was split into four screens.
+  - Text first got larger in a brand pass and then went back to the denser size he preferred.
+  - The red header button was taller than the bar it sat in.
+  - The client page "looks too consistent", so it was rebuilt around the work waiting.
+- **Two bug hunts before shipping.** The first, before the client's review, made 17 fixes. The final one, run by four parallel reviewers plus my own walk on desktop and phone, made 23. The serious ones:
+  - **Settings open to members:** any member of a client's OKF could change its settings, including the AI key that pays for builds, and could get the file holding that key served back to them.
+  - **A login loop:** every client account looped between the login page and the home page forever, because client accounts stay "pending" by design.
+  - **False authorship:** new notes would have named the old model as their author.
+- **A styling rule bit three times in one release.** A shared style string's width or visibility setting beat a page's own override. A search box filled its bar, and a desktop-only button showed on phones. The fix is a rule, not a patch: shared styles carry no width or display.
+- **Not verified, and said so:** moving keyboard focus into the phone menu could not be tested in the automated browser. It is listed for a real phone.
+
+### Why this matters for the portfolio
+
+- **A product decision gets reversed out loud when the client's eye catches it,** and the reason is recorded with it.
+- **Shipping waits on a hunt, not a feeling.** The release went out after the security hole and the login loop were found and fixed, with the client clearing test data from the live database first.
+
+---
+
+## 2026-10-30, a docs-change monitor audited after one bad page: 18 false changes withdrawn, their causes fixed, and every compare view made readable
+
+The founder's docs monitor watches about 500 pages of AI companies' documentation and publishes each change to a public site, a coaching portal and the team's internal app. The client asked for one thing: the "compare side by side" view should show both versions on one page, as the public site already did. The page he linked showed a vendor's bot-check screen as the "before" version. That one page turned into an audit of every change the monitor had ever published.
+
+### What shipped
+
+- **Side-by-side compare on all three surfaces.** The internal app and the coaching portal both showed one version at a time behind a toggle; both now show the two versions together, stacked on a phone.
+- **18 of 192 published changes found false and withdrawn**, with the client's approval, from the public site, the portal and the app's main list. Four had been published as news, for example a claim that a search feature "now runs automatically", when the page had not changed at all. The public site was rebuilt and checked: none of the 18 headlines remain, and their pages return 404.
+- **The causes, fixed at the mechanism:**
+  - The bot-check filter ran on one of three ways of reading a page. A 208-character bot-check screen, just over the 200-character minimum, was saved as the real page. The filter is now one shared function on every reading path.
+  - A free second source for one vendor's help pages, added two days earlier to cut costs, had been meant for 2 pages but matched all of them. The vendor had moved its help center, so that source served an old copy; pages alternated between old and new, and each switch was published as a change. The source was removed.
+  - A page the monitor could only read as an empty shell "changed" daily on an internal code. It was taken off the watch list.
+- **A headless-browser sweep of all 378 saved before and after pages**, then fixes for what it found:
+  - Pages from one documentation platform could not scroll inside the viewer: one is now 35,764 pixels tall instead of 760.
+  - Code-sample tabs stayed shut: a page went from 292 to 530 visible highlights.
+  - The jump to the first change landed in a hidden search box or a sidebar list on some pages; it now lands in the article.
+  - A one-word edit ("are" to "is") had no highlight at all; short words now highlight when the surrounding text pins them.
+- **The portal now refreshes its copies.** It had copied each saved page once and never again, so 285 copies kept the old layout. It now records which version of the page renderer produced each copy and replaces older ones, 10 every half hour.
+- **The public site now rebuilds daily at 12:25 PM Lagos time**, after the monitor's daily check, which has finished by 11:46 AM Lagos on its slowest day so far.
+- Checks run after the last change: 1,780 tests in the internal app, 1,821 in the portal, 103 on the site, and production builds for both apps. Each fix was confirmed live in the browser, not only in tests.
+
+### Decisions worth recording
+
+- **Withdraw, don't delete.** The false changes stay in the internal app under a folded "Withdrawn" row with a banner on each, so the record survives but nobody reads them as news.
+- **Fix the layout bug narrowly.** A rule that would have fixed scrolling everywhere also contradicted a design rule the team had already logged, so only the one fixed-position wrapper is changed.
+- **Remove the stale free source entirely** rather than narrow it to the 2 pages it was meant for: a second address is only safe while the vendor still writes to it.
+- **The client chose one daily rebuild** over rebuilding on every change.
+- **A hold-for-review check was designed and priced at $0 a month** (plain rules, no AI): hold a change when a page returns to an older version, swings in size, is nearly empty, or the monitor's own summary says nothing changed. It is next, at the client's word.
+
+### Frictions and course corrections
+
+- **My first sweep reported three pages "stuck" that scrolled fine.** Those pages scroll inside the page body, and the sweep only measured the document. A real mouse-wheel test caught it before anything was changed, and the real bug on one of them was elsewhere.
+- **A time-zone mix-up nearly scheduled the rebuild before the monitor finished.** The client asked for 11:25 AM Lagos; the monitor's times were in UTC, an hour behind. A side-by-side table made it plain, and the build moved to 12:25 PM Lagos.
+- **A follow-up review of my own day's work found four more problems,** including the portal's frozen copies and withdrawn changes still reading as news inside the app. All four were fixed and shipped the same day.
+
+### Why this matters for the portfolio
+
+- **One wrong page became a full audit, not a one-off fix.** Every false change was traced to the mechanism that produced it, and each mechanism was closed on every surface that shared it.
+- **Cost-saving changes get checked against what they cost in accuracy.** The free source that saved money was the same thing that published nine false changes, and it was removed the day it was found.
+
+---
+
+## 2026-10-30, two strategists' Lens reports traced to their causes, one fixed across all six AI platforms, one admin bug closed
+
+Lens is the team's tool for recording how AI platforms answer customer questions. Two strategists reported problems the same day, and a teammate's pull request had been merged with two bugs from my review still in it.
+
+### What shipped
+
+- **Admin fixes pushed to `main`** (`cc01c17`, `eddefde` in `notebookagency/Lens`). The last real admin can no longer be demoted, two admins demoting each other at once can no longer leave zero admins, and Google account ids no longer reach the browser. Each was proved by a test that failed first: demoting the only admin returned 200, and the concurrent case left 0 admins on the first of 25 rounds.
+- **Pull request #18, open for review** (head `5fe1f47`). When a platform tags no brands in an answer, Claude Haiku 5.5 reads the brand and product names from the answer text, labelled "read from text" in the app. Only names the answer actually contains are kept, so the model cannot add one.
+- **Checked on all 17 real recordings in the repo, across all six platforms,** through the full storage path: one model call per untagged turn, tagged turns untouched. Gemini and Claude had shown 0 brands on every turn before this.
+- **AI Mode's new follow-up buttons root-caused, not yet fixed.** Google sends the clicked choices ("Online booking", "No, this covers it") in a new encoded field that Lens blanks, so the turn's question read "2 text snippets".
+
+### Decisions worth recording
+
+- **A model pass, not a list of names per client.** Matching the client's name would have needed product names typed in by hand for every client. The client's rule is that everything is automatic, so a small model reads the names instead. Cost: about $1.60 per 4,000 turns.
+- **The admin fixes went straight to `main`, the brand feature went to review.** The admin fixes were the ones the teammate had agreed to make; the brand feature added the first model call to parsing, so it waited for his yes.
+- **Read the strategist's own recording instead of forcing a new one.** Google put up a CAPTCHA for automated browsers. Rather than work around it, the cause was found in the recording the strategist had already made.
+
+### Frictions and course corrections
+
+- **I narrowed the fix to one platform and was called on it.** A bug hunt flagged the cost of running the pass on every platform, and I limited it to ChatGPT. That left Gemini and Claude with no brands at all. The client: "so i have to manually tell you to cover all others?" It now covers all six, and the cost is stated instead of avoided.
+- **A review of my own work found five real problems before anyone else did,** including a cached first read that would have paid for the model twice, and an unchanged-role request that still leaked the Google id. A final audit added retries, because one failed call would have left a turn at 0 brands until a manual re-run.
+- **A wrong deploy instruction.** I told the teammate to set the AI key on the background worker. He pointed out it was already passed to both services, and the compose file confirmed it.
+- **Not verified, and said so:** the live model call has not run yet; the strategist's three sessions after the deploy are the first real test.
+
+### Why this matters for the portfolio
+
+- **Fixes cover the whole product, not the one platform where the bug was reported.** When I fell short of that, the correction and its reason are on record.
+- **Every claim to the team points to a run:** the exact commit checked in a clean copy, each new test failing before its fix.
+
+---
+
+## 2026-10-30, the same customer journey run through both AI-answer trackers: the tools agreed, ChatGPT's account and mode did not
+
+Follow-up to the same day's Lens fix. The client asked whether a strategist would have hit the same "0 brands" problem with the team's other tracker, Fanout Notebook. I ran the strategist's six-question Puffco journey for real, with Fanout left exactly as installed.
+
+### What shipped
+
+- **A per-turn answer from real runs, not from reading code.** Fanout recorded Puffco as named on all 6 turns of the journey, because it looks for the client's name in the answer text instead of waiting for ChatGPT to tag it. Fanout's Puffco client went from 98 to 107 captured runs during the test.
+- **The finding that mattered more:** on the strategist's account ChatGPT refused to recommend and named brands only from turn 4. On the team's analytics workspace it searched the web on 5 of 6 turns, recommended models and listed stores and prices from the first answer. On the client's own account, in a temporary chat, it refused again.
+
+### Decisions worth recording
+
+- **Ran the opener too.** A single-question test came back clean, but the client asked for the full journey including the first question, because the first answer shapes everything after it. It did: the opener ended in an interactive form, and the follow-ups built on it.
+- **Kept the test out of the client's history.** The everyday browser was signed into the founder's own ChatGPT, so that run used a temporary chat, which saves no history or memory.
+
+### Frictions and course corrections
+
+- **I tried the wrong browser profile first.** The team's runs use a dedicated, signed-in automation browser, and I had launched a different one without the tracker installed. The client pointed out that every past run used it. The tracker is now loaded the documented way, and where it lives is recorded so it isn't missed again.
+- **ChatGPT's page changed under the script:** the message box lost the id the script waited for, and the page text no longer shows the conversation. Both were fixed mid-run, and completion was confirmed against screenshots and the tracker's own run count instead of page text.
+
+### Why this matters for the portfolio
+
+- **Before blaming a tool, hold the inputs constant.** The difference the strategist saw came from which ChatGPT account and mode answered, not from the tool recording it. Comparisons between runs now have to state the account, mode and chat type.
+
+---
+## 2026-11-02, a docs-change monitor learns to hold suspicious changes for a human, and the day's audit finds the public site had been silently frozen for three days
+
+The 2026-10-30 entry withdrew 18 false changes by hand. The client's next ask was a check that stops that class before it goes public, with "an easy way for me to approve or disapprove and verify everything". The same day he asked for hosting cost cuts without lowering service quality, and, after the build, for a full audit: "I don't want any fuckups to affect prod."
+
+### What shipped
+
+- **A hold step in the monitor** (`radar/lib/docwatch/hold.ts`, seven rules: a login or bot-check screen, a page that went back to a copy seen before, under 500 characters, under 70% of the text kept, over 60% rewritten, edits that are 70% formatting, the same words reordered). Replayed on every change since 2026-10-01 with no model calls: it would have held 16 of the 19 known false changes, and 23 of 154 published ones, most of them noise themselves.
+- **A review surface for the client:** a "Held for review" row at the top of the list, the reason in a banner on the change page, and Publish or Discard buttons. A held change is not written up by the model until Publish is tapped, which cuts about a fifth of the monitor's model spend (estimated from the replay, not yet measured). A Slack ping per high-impact hold and a daily noon summary.
+- **The founder's Slack message now links the public site**, so it is sent after the site's daily rebuild reports which pages went live, with a once-only stamp per change and a 10 PM fallback that uses the internal link and tells the operator. Migrations 084 and 085; 1,804 tests and the build pass; 112 tests pass on the site repo.
+- **Cost cuts:** the coaching portal's database moved to its own free Supabase org (sign-in, password-reset email and the write probe re-verified; saves about $10 a month and isolates it from the main app's quota), an unused Railway service paused, an unused Vercel project deleted. Two model downgrades for the monitor were tested blind and rejected because the cheaper writers got facts wrong.
+
+### Decisions worth recording
+
+- **Hold, don't filter.** A rule that silently drops a change hides a real one; a rule that holds it costs one tap. The client set the bar: he must be able to approve, disapprove and verify. Every hold shows its reason and the before/after side by side.
+- **Deciding what work a change still needs from what it lacks, not from a status flag.** The first version keyed the write-up on the "held" marker; Discard clears that marker, so Discard then Publish would have published a hollow page. Caught by the audit the same evening.
+- **A new "already handled" column defaults to "handled".** The old crawler, still running during the deploy, would otherwise have left rows that read as "send this", and the founder would have been messaged twice. The deploy order stopped mattering.
+- **Pings stay in the team channel the founder already reads**, by the client's choice, rather than a private channel that would need an admin to create a webhook.
+
+### Frictions and course corrections
+
+- **The public site had been frozen since 2026-10-30 and nobody knew.** The audit read the deploy logs: three rebuilds in a row failed their own validation on five vendor changes and shipped the previous pages, with the job green. The mechanism: a paragraph that only grew was labelled "changed", the renderer correctly highlighted nothing on the old side, and the site's check demanded a highlight on both sides of every "changed" edit. Fixed with a per-side word diff; the day's late rebuild passed with all 208 changes.
+- **Withdrawn captures were still public.** The deploy protects capture folders from deletion so an empty run cannot wipe live evidence, which also kept the captures of withdrawn changes reachable at their old URLs. A post-deploy sweep now removes any pair whose page is gone: 85 folders on the first run, and the two spot-checked URLs went from 200 to 404.
+- **A fallback window that fired too early.** The first version of the 10 PM safety net covered anything older than eight hours, which would have sent a change the client published at 1:30 PM with the wrong link and a false "the rebuild did not report" alarm. The cutoff is now the rebuild's own hour.
+- **A retried check would have held a real edit.** A run that failed after storing its copy left a twin of the new text; the next day's "seen before" rule matched the twin. The rule now looks only at copies older than the baseline.
+- **Two audit claims were refuted before anyone acted on them**, including "a failed insert loses the change silently" (the retry diffs against the stored baseline, not the twin).
+
+### Why this matters for the portfolio
+
+- **A build is not done when the tests pass; it is done when an independent read of the live system agrees.** Three parallel reviewers, each claim re-traced by hand, found two pre-existing production faults the build had nothing to do with, and would have gone on hiding behind a green job.
+- **Give the human the decision and the evidence, not a filter.** The hold step is cheap to run, costs one tap when it is wrong, and every tap shows why it fired.
+
+---
+## 2026-11-03, the docs-change monitor's first day on its own: one failing page traced to a vendor migration, and the public site no longer waits hours for GitHub
+
+Day two of the hold step from the previous entry. The client read the first daily summary and asked two things: links to everything he reviews, and why a page was failing.
+
+### What shipped
+
+- **Every item in the daily summary now carries a link**: each published change to its review page (real impact first), each failing page to the vendor's own page, and a link to the full list.
+- **The failing page was a vendor migration, not a fault on our side.** Google had moved all twelve Gemini pages the monitor watches to a new JavaScript site. One page failed outright; the other eleven only worked through a paid headless browser. Google publishes a plain-text copy of every page on the new site, so the monitor now reads that: 12 of 12 pages read cleanly in a live test (the failing one from 45 characters to 43,175), and eleven come off the paid service, about $6.60 a month.
+- **The public site now updates minutes after the daily check, not hours.** The site rebuilt on GitHub's scheduled trigger, which GitHub's own documentation calls best-effort; it had started 4.75, 5.75 and 9.4 hours late on the three previous days. The monitor now asks GitHub to run the rebuild ten minutes after its check. First real request: queued in 7 seconds, site live 9 minutes later, the founder's three Slack messages linking the public pages a minute after that.
+
+### Decisions worth recording
+
+- **Read the vendor's own text copy, and only after following the vendor's own redirect.** A third-party mirror of a help center had gone stale the week before and published nine false changes; a copy written by the same build as the page cannot drift that way.
+- **Switch sources silently, once.** Text from a new source never matches the old reading word for word, so diffing them would have announced twelve fabricated changes. The cost, accepted and written down: a genuine edit on exactly that day would be absorbed.
+- **Keep the old schedule as a backup that skips itself.** Removing it would let an expired token freeze the site silently again; running both would double the build minutes. The backup now checks whether the requested rebuild already succeeded and stands down.
+- **The access token is scoped to one repository and one permission**, so a leak cannot touch anything else.
+
+### Frictions and course corrections
+
+- **"Is my network slow, why is everything failing?"** Measured before answering: every service answered in 1 to 2 seconds with no packet loss; "everything" was one page.
+- **The token arrived from a shared document with its prefix cut off** (a double-click stops at the underscore). It was never read into the conversation: it went from the clipboard to the host, was checked by length and a test call (401), repaired host to host, and checked again (200 on the one repository, refused on another).
+- **A date was nearly misstated.** The client was told the fix runs "tomorrow" while his clock already read the next day; he pushed back, the clock and run history were checked, and the answer was restated with calendar dates: today's check had already run, the fix's first run is the following morning.
+- **A test pinned a cost rule the new path would have broken** (pages known to need the paid browser must not spend a daily plain request). The extra request is now limited to the vendor's two documentation hosts.
+
+### Why this matters for the portfolio
+
+- **Ask why the platform is late before working around it.** The vendor's documentation named the cause in one sentence, and the fix was to stop depending on a best-effort trigger rather than to retry it.
+- **Credentials stay out of the conversation, even when the client hands them over in a document.**
+
+---

@@ -83,11 +83,7 @@ export function GoogleSignInButton({ nextPath }: { nextPath: string }) {
           });
           if (error) {
             setState('failed');
-            setMessage(
-              /signup_not_allowed|not allowed|Database error/i.test(error.message)
-                ? 'This Google account is not on the MyLinks list. Ask Peace to add you.'
-                : error.message
-            );
+            setMessage(error.message);
             return;
           }
           // Full page load so the server sees the fresh session cookies on first paint.

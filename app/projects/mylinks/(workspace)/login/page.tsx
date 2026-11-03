@@ -1,7 +1,7 @@
 "use client";
 
 import Link from 'next/link';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { createClient } from '@/lib/mylinks/supabase/client';
 import { GoogleSignInButton } from '@/components/mylinks/GoogleSignInButton';
 
@@ -10,6 +10,13 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [sent, setSent] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // requireAuthenticatedUser sends a signed-in account that is not on the list here.
+  useEffect(() => {
+    if (new URLSearchParams(window.location.search).get('denied') === '1') {
+      setError('That account is not on the MyLinks list. Ask Peace to add you.');
+    }
+  }, []);
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
