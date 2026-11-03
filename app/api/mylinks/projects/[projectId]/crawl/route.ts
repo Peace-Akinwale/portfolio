@@ -1,4 +1,5 @@
 import { createServiceClient } from '@/lib/mylinks/supabase/server';
+import { budgetBlock, estimateEmbeddingCostUsd } from '@/lib/mylinks/budget';
 import { requireAuthenticatedUser } from '@/lib/mylinks/auth';
 import { discoverAndParseSitemap } from '@/lib/mylinks/sitemap';
 import { extractPage } from '@/lib/mylinks/extract';
@@ -15,6 +16,9 @@ export async function POST(
   const user = await requireAuthenticatedUser();
   const { projectId } = await params;
   const serviceClient = await createServiceClient();
+
+  const overBudget = await budgetBlock(serviceClient, user);
+  if (overBudget) return overBudget;
 
   const { data: project } = await serviceClient
     .from('projects')
@@ -99,6 +103,16 @@ export async function POST(
                 })
               );
               embeddings = await batchEmbedTexts(texts);
+              // Logged so crawls count toward the account's AI budget.
+              await serviceClient.from('llm_usage_logs').insert({
+                user_id: user.id,
+                project_id: projectId,
+                article_id: null,
+                operation: 'embed_crawled_pages',
+                provider: 'openai',
+                model: 'text-embedding-3-small',
+                estimated_cost_usd: estimateEmbeddingCostUsd(texts),
+              });
             } catch (embeddingError) {
               console.error(
                 'Embedding batch failed, upserting pages without embeddings:',
