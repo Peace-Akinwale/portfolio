@@ -5416,3 +5416,29 @@ Day two of the hold step from the previous entry. The client read the first dail
 - **Credentials stay out of the conversation, even when the client hands them over in a document.**
 
 ---
+## 2026-11-03, seeding the team's AI-search capture tool with the agency's real client list, after the client database turned out to be stale
+
+The team's capture tool (strategists record AI-search sessions per client) made every strategist ask an admin to create a client before their first query. Peace asked for every current client to be there already.
+
+### What shipped
+
+- **The tool now lists 18 current clients**, A to Z, visible to every team member: 4 already present, 17 created, 3 later removed, and 1 re-created after the client wrongly removed it. Every create returned 201 and every delete 200, and the sidebar was checked after each change.
+- **A per-client activity table from Slack**: the latest post by a person (not a bot) in each client's internal and shared channels, used to decide who stays.
+
+### Decisions worth recording
+
+- **The client database was not trusted as the active list.** Its "Active" view held 29 clients, and four of them had already left, each confirmed from the primary record: a founder's all-hands note, an offboarding task, a strategist's "paused as of September", a final debrief. A research agent searched three tools, and every departure it reported was re-read by hand before it shaped the list.
+- **Activity, not status, decided membership**, by the client's rule: no post by a person for two weeks or more meant the client was removed. The weekly rank-report bot was excluded from the count, because it keeps posting after a client leaves and would make a lost account look alive.
+- **A delete was checked against what it destroys.** Reading the tool's code showed a client delete shreds every capture that client holds, so each target was confirmed to have zero sessions first, with a client known to have one capture as a control to prove the check worked.
+
+### Frictions and course corrections
+
+- **Wrong browser first.** The work started in a separate, signed-out browser pane, and the client was asked to sign in there, although his own Chrome was already signed in and he had asked for it. He corrected this bluntly; everything after ran in his browser.
+- **A risk label changed a decision.** A meeting agenda about "budget reallocation" was reported as a possible budget cut. The client read that as high risk and removed the account. The activity check showed it active, with a client meeting the next day, and it was re-added. A related quote was also corrected: "nothing is working" was a strategist naming a perception to answer, not the client's own words.
+
+### Why this matters for the portfolio
+
+- **A CRM status is a claim; the conversation record is the evidence.** Checking each "active" account against what people were actually doing removed four lost clients and flagged five quiet ones that a status field would have kept.
+- **Wording carries weight.** "Unconfirmed" and "gone" have to read differently, because the reader acts on the label.
+
+---
