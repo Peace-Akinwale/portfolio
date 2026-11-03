@@ -12,6 +12,7 @@ import { Entries } from '@/components/record/Record';
 import { RecordNow, MonthRail, OpenDetailsFromHash } from '@/components/record/RecordControls';
 import { WritingSamples } from '@/components/record/WritingSamples';
 import { SITE_URL } from '@/lib/site';
+import { INVITEDESK_SECTION, LINEUPR_SECTION } from '@/lib/portfolio/exceed';
 
 export const revalidate = 300;
 
@@ -48,8 +49,8 @@ async function loadSamples() {
     if (!page?.content?.html) return null;
     const parsed = withCurrentManyRequestsSamples(parsePortfolioHtml(page.content.html), FEATURED_MANYREQUESTS_ARTICLES);
     if (parsed.sections.length === 0) return null;
-    parsed.sections.splice(1, 0, MARKERIO_SECTION);
-    parsed.sections.splice(2, 0, JABRA_SECTION);
+    // ManyRequests first (from WordPress), then the agency ghostwriting, then the rest.
+    parsed.sections.splice(1, 0, LINEUPR_SECTION, INVITEDESK_SECTION, MARKERIO_SECTION, JABRA_SECTION);
     return parsed;
   } catch {
     return null;
@@ -61,7 +62,7 @@ export default async function PortfolioPage() {
   // decisions live on /case-studies (decisions.md, 3 Nov 2026).
   const entries = buildRecord().filter((e) => e.kind === 'wrote' || e.kind === 'said');
   const monthList = months(entries);
-  const samples = (await loadSamples()) ?? { sections: [MARKERIO_SECTION, JABRA_SECTION] };
+  const samples = (await loadSamples()) ?? { sections: [LINEUPR_SECTION, INVITEDESK_SECTION, MARKERIO_SECTION, JABRA_SECTION] };
 
   return (
     <>
