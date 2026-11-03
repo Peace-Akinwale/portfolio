@@ -10,7 +10,7 @@ describe('homepage copy', () => {
     // and for whom comes first (three buyer readers could not tell from the
     // first screen). Peace approves or rewrites them; the heading is hers.
     expect(copy.HERO.line).toBe(
-      'I write the articles B2B SaaS buyers read before they choose a product, and I build the AI tools content and SEO teams use every week.',
+      'I write the articles B2B SaaS buyers read before they choose a product, and I build AI tools that content and SEO teams use every week.',
     );
     expect(all).not.toContain('The same three questions run through both');
     expect(all).not.toContain('under my own byline and ghostwritten');

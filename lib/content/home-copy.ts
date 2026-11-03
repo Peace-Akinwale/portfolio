@@ -9,8 +9,8 @@
 // anything else, because three buyer readers could not tell from the first screen.
 export const HERO = {
   heading: 'Good work starts with good questions.',
-  line: 'I write the articles B2B SaaS buyers read before they choose a product, and I build the AI tools content and SEO teams use every week.',
-  who: 'Peace Akinwale. 51 articles for ManyRequests since 2024. AI Docs Watch, public, checked every day. A search recorder and a page audit tool an SEO agency’s strategists use.',
+  line: 'I write the articles B2B SaaS buyers read before they choose a product, and I build AI tools that content and SEO teams use every week.',
+  who: 'Peace Akinwale. 51 articles for ManyRequests since 2024. AI Docs Watch, public, checked every day. Fanout and Quality Rater, two tools an SEO agency’s strategists use.',
 };
 
 // One plain line above each question, so a reader knows what the section is
