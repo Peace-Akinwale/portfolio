@@ -84,13 +84,43 @@ export function listCaseStudies(): CaseStudy[] {
 
 // The first screenshot in a case study's rendered HTML, for an index thumbnail.
 // Null when the study has no image, so the index leaves the slot out.
-export function firstImage(cs: Pick<CaseStudy, 'html'>): { src: string; alt: string } | null {
+export function firstImage(cs: Pick<CaseStudy, 'html'>): { src: string; alt: string; portrait: boolean } | null {
   const tag = cs.html.match(/<img\b[^>]*>/i)?.[0];
   if (!tag) return null;
   const src = tag.match(/\bsrc="([^"]+)"/i)?.[1];
   if (!src) return null;
   const alt = tag.match(/\balt="([^"]*)"/i)?.[1] ?? '';
-  return { src, alt };
+  const size = imageSize(path.join(process.cwd(), 'public', src.replace(/^\//, '')));
+  return { src, alt, portrait: !!size && size.height > size.width * 1.15 };
+}
+
+// Width and height from a PNG, JPEG or GIF header, without decoding the file.
+// A phone screenshot (tall) is shown differently from a desktop screenshot (wide).
+export function imageSize(file: string): { width: number; height: number } | null {
+  let fd: number | null = null;
+  try {
+    if (!fs.existsSync(file)) return null;
+    const buf = Buffer.alloc(64 * 1024);
+    fd = fs.openSync(file, 'r');
+    const n = fs.readSync(fd, buf, 0, buf.length, 0);
+    const b = buf.subarray(0, n);
+    if (b[0] === 0x89 && b[1] === 0x50 && n >= 24) return { width: b.readUInt32BE(16), height: b.readUInt32BE(20) };
+    if (b[0] === 0x47 && b[1] === 0x49 && n >= 10) return { width: b.readUInt16LE(6), height: b.readUInt16LE(8) };
+    if (b[0] === 0xff && b[1] === 0xd8) {
+      let i = 2;
+      while (i + 9 < n) {
+        if (b[i] !== 0xff) { i++; continue; }
+        const marker = b[i + 1];
+        if (marker >= 0xc0 && marker <= 0xcf && marker !== 0xc4 && marker !== 0xc8 && marker !== 0xcc) return { width: b.readUInt16BE(i + 7), height: b.readUInt16BE(i + 5) };
+        i += 2 + b.readUInt16BE(i + 2);
+      }
+    }
+    return null;
+  } catch {
+    return null;
+  } finally {
+    if (fd !== null) fs.closeSync(fd);
+  }
 }
 
 export function getCaseStudy(slug: string): CaseStudy | null {

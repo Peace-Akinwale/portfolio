@@ -154,7 +154,6 @@ export default function HomePage() {
           </figure>
           <p className="go">
             <Link href={ALOUD.caseStudy}>The whole Aloud story</Link>
-            <Ext href={ALOUD.log}>Read the Aloud log</Ext>
           </p>
         </div>
       </section>

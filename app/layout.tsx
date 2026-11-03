@@ -6,7 +6,7 @@ import "./informal.css";
 import { ThemeProvider } from "./providers";
 import { AppChrome } from "@/components/AppChrome";
 import { GoogleAnalytics } from "@/components/GoogleAnalytics";
-import { SITE_URL, LINKEDIN_URL, X_URL, GITHUB_URL } from "@/lib/site";
+import { SITE_URL, LINKEDIN_URL, X_URL } from "@/lib/site";
 
 // Display: Sprat (Ethan Nakache, OFL 1.1; licence beside the file). Weight axis
 // relabelled to 100–900, width axis 100–200 (see app/fonts/sprat/NOTE.md).
@@ -57,7 +57,7 @@ const structuredData = {
         "AI search",
         "AI-assisted tool building",
       ],
-      sameAs: [LINKEDIN_URL, X_URL, GITHUB_URL],
+      sameAs: [LINKEDIN_URL, X_URL],
     },
     {
       "@type": "WebSite",

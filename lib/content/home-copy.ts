@@ -92,12 +92,11 @@ export const ALOUD = {
     { k: '8 to 0', v: 'times a repeating page header was read out, on a ten-page test book' },
     { k: '18 to 32.2 min', v: 'how far a 33-minute article now narrates' },
   ],
-  p2: 'I don’t call a build done until a real person has walked it on the live app. The log of every change to Aloud is public, mistakes left in.',
+  p2: 'I don’t call a build done until a real person has walked it on the live app.',
   shot: '/images/home/aloud-player.png',
   shotAlt: 'The Aloud player on a phone: a Listen and Read switch, the cover, the waveform, speed and skip controls, and a Highlight this passage button.',
   shotCaption: 'The player, in Listen mode. Read mode shows the words as they are spoken.',
   caseStudy: '/case-studies/aloud',
-  log: 'https://github.com/Peace-Akinwale/portfolio/blob/master/case-studies/aloud/index.md',
 };
 
 export const READING_APP = {

@@ -26,7 +26,7 @@ function Row({ href, date, dateLabel, kind, context, name, line, shot }: {
   context?: string;
   name: string;
   line: string;
-  shot?: { src: string; alt: string } | null;
+  shot?: { src: string; alt: string; portrait?: boolean } | null;
 }) {
   return (
     <li className={shot ? 'cs-row has-shot' : 'cs-row'} data-kind={kind}>
@@ -40,7 +40,7 @@ function Row({ href, date, dateLabel, kind, context, name, line, shot }: {
         <p className="line">{line}</p>
       </div>
       {shot && (
-        <Link href={href} className="cs-shot" tabIndex={-1} aria-hidden="true">
+        <Link href={href} className={shot.portrait ? 'cs-shot is-portrait' : 'cs-shot'} tabIndex={-1} aria-hidden="true">
           <Image src={shot.src} alt={shot.alt} fill sizes="(max-width: 640px) 100vw, 220px" loading="lazy" />
         </Link>
       )}

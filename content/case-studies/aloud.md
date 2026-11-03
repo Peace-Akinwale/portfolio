@@ -10,7 +10,6 @@ voice: informal
 notion_url: https://app.notion.com/p/403992da7a578174ba0dea8a39cb42fc
 notion_last_edited: 2026-10-30T23:39:10.582Z
 links:
-  - "The public Aloud log on GitHub | https://github.com/Peace-Akinwale/portfolio/blob/master/case-studies/aloud/index.md"
 tags:
   - "audio"
   - "reading"

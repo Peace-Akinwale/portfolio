@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { NAV_LINKS, EMAIL, LINKEDIN_URL, GITHUB_URL, X_URL } from '@/lib/site';
+import { NAV_LINKS, EMAIL, LINKEDIN_URL, X_URL } from '@/lib/site';
 
 const WORK_LINKS = [
   { href: '/portfolio#writing', label: 'Writing samples' },
@@ -48,7 +48,6 @@ export function Footer({ night = false }: { night?: boolean }) {
           <ul className="mt-3 flex flex-col gap-2">
             <li><a href={`mailto:${EMAIL}`} className="footer-link">Email</a></li>
             <li><a href={LINKEDIN_URL} target="_blank" rel="noopener noreferrer" className="footer-link">LinkedIn</a></li>
-            <li><a href={GITHUB_URL} target="_blank" rel="noopener noreferrer" className="footer-link">GitHub</a></li>
             <li><a href={X_URL} target="_blank" rel="noopener noreferrer" className="footer-link">X</a></li>
           </ul>
         </nav>

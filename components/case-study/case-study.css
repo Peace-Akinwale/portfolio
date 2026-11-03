@@ -28,7 +28,10 @@
    title so the product shows before the walkthrough. */
 .cs-cover-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(300px, 480px); gap: 40px; align-items: start; }
 .cs-cover-shot { position: relative; display: block; aspect-ratio: 16 / 10; border: 1px solid var(--border); border-radius: 2px; background: var(--background); overflow: hidden; margin-top: 8px; }
-.cs-cover-shot img { object-fit: cover; object-position: top left; }
+.cs-cover-shot img { object-fit: cover; object-position: top center; }
+.cs-cover-shot.is-portrait { aspect-ratio: 4 / 5; max-width: 360px; justify-self: end; }
+.cs-shot.is-portrait { aspect-ratio: 4 / 5; }
+.cs-shot.is-portrait img { object-position: top center; }
 @media (max-width: 900px) { .cs-cover-grid { grid-template-columns: 1fr; gap: 24px; } .cs-cover-shot { max-width: 520px; } }
 
 /* in short */

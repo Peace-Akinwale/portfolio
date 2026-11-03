@@ -83,7 +83,7 @@ export default async function CaseStudyPage({ params }: { params: Promise<{ slug
               )}
             </div>
             {shot && (
-              <a href="#preview" className="cs-cover-shot" aria-label="Jump to the first screenshot">
+              <a href="#preview" className={shot.portrait ? 'cs-cover-shot is-portrait' : 'cs-cover-shot'} aria-label="Jump to the first screenshot">
                 <Image src={shot.src} alt={shot.alt} fill sizes="(max-width: 900px) 100vw, 480px" />
               </a>
             )}
