@@ -162,7 +162,10 @@ export default function HomePage() {
           <div>
             <p>{HOW_I_WORK.p1}</p>
             <p>{HOW_I_WORK.p2}</p>
-            <p className="go"><Link href="/portfolio">See everything I’ve worked on</Link></p>
+            <p className="go">
+              <Link href="/case-studies">The case studies</Link>
+              <Link href="/portfolio#writing">Writing samples by client</Link>
+            </p>
           </div>
         </div>
       </section>
