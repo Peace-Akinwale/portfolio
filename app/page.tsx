@@ -177,7 +177,8 @@ export default function HomePage() {
           <ul>
             {OFFER.prices.map((p) => <li key={p}>{p}</li>)}
           </ul>
-          <a className="button button-ink" href={`mailto:${EMAIL}?subject=An%20article`}>Email about an article</a>
+          <Ext href={CALENDLY_URL}><span className="button button-ink">Book a 30-minute call</span></Ext>
+          <a className="button button-line" href={`mailto:${EMAIL}?subject=An%20article`}>Email about an article</a>
           <Link className="button button-line" href="/services">What you get</Link>
         </div>
         <div className="ground-night">

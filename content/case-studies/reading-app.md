@@ -35,7 +35,7 @@ I wrote up the new requirements from the call and shipped its first version that
 
 The app crawls about 190 people's public posts every day. It also follows selected YouTube and X accounts and industry news feeds. The top of the feed says what the crawl did, so the founder knows how much is waiting before they start.
 
-![reader 01 feed](images/reading-app/reader-01-feed.png)
+![The feed groups unread and starred posts and shows collection status. The reader chooses when to refresh. Identifying information is anonymized.](images/reading-app/reader-01-feed.png)
 
 *The feed groups unread and starred posts and shows collection status. The reader chooses when to refresh. Identifying information is anonymized.*
 

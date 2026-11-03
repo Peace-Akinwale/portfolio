@@ -35,7 +35,7 @@ The agency's founder had years of thinking spread across two Notion archives and
 
 I turned about 1.23 million words from more than 500 pages into focused notes that include concepts and playbooks. Related notes link to each other, so a teammate can move from an explanation to the procedure it supports. The reviewed snapshot had 683 notes with 2,939 links.
 
-![okf 06 graph dark](images/okf/okf-06-graph-dark.gif)
+![The knowledge map shows connections between notes in different layouts. This is a historical screen; the on-screen totals belong to that capture.](images/okf/okf-06-graph-dark.gif)
 
 *The knowledge map shows connections between notes in different layouts. This is a historical screen; the on-screen totals belong to that capture.*
 
@@ -43,13 +43,13 @@ I turned about 1.23 million words from more than 500 pages into focused notes th
 
 A teammate can ask how the agency handles a particular piece of work instead of searching the archives or waiting for the founder. The tool uses an index to pick up to eight relevant notes, then reads them in full to put together an answer grounded in that material.
 
-![okf 02 note trust](images/okf/okf-02-note-trust.png)
+![Source and human-review information on an individual note.](images/okf/okf-02-note-trust.png)
 
 *Source and human-review information on an individual note.*
 
 I made source citations a requirement, along with a clear marker for outside material. A teammate can open a cited note and check the instructions before using them. Its review status shows whether someone has checked the note, or whether it still needs a person to look it over.
 
-![okf 05 build kit](images/okf/okf-05-build-kit.png)
+![The client-kit input screen, where a build starts with the client’s own source files.](images/okf/okf-05-build-kit.png)
 
 *The client-kit input screen, where a build starts with the client’s own source files.*
 

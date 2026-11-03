@@ -20,7 +20,7 @@ related:
 
 Google's human quality raters review pages using the Search Quality Rater Guidelines. Does the page show first-hand experience? Is it clear who's responsible for it? Are its claims accurate? Does it earn trust for what it's trying to do? Agencies already ask these questions by hand during content audits, one page at a time. Quality Rater asks them across a whole site.
 
-![qr 02 run](images/quality-rater/qr-02-run.png)
+![The run screen groups suggested review priorities and shows how much of the site was assessed. Identifying information is anonymized.](images/quality-rater/qr-02-run.png)
 
 *The run screen groups suggested review priorities and shows how much of the site was assessed. Identifying information is anonymized.*
 
@@ -28,7 +28,7 @@ Google's human quality raters review pages using the Search Quality Rater Guidel
 
 Once a site has been checked, the run screen groups the high-priority pages and the findings that keep coming up. So a strategist can start with a problem that shows up across several pages, instead of opening every report in turn. These are suggestions for where a person should look, not proof that the pages are bad.
 
-![qr 03 page report](images/quality-rater/qr-03-page-report.png)
+![A report points to the passage behind a concern so the reviewer can accept or reject it. They can defer it when more investigation is needed.](images/quality-rater/qr-03-page-report.png)
 
 *A report points to the passage behind a concern so the reviewer can accept or reject it. They can defer it when more investigation is needed.*
 

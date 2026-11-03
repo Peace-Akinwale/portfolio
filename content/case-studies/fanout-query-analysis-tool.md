@@ -1,5 +1,5 @@
 ---
-title: "Fanout query analysis tool"
+title: "Fanout query analysis tool, the searches behind AI answers recorded for an SEO agency"
 name: "Fanout query analysis tool"
 blurb: "Records the searches behind AI answers, and tells the pages that came back apart from the ones that got cited."
 kind: built
@@ -31,17 +31,17 @@ The agency asked me to turn it into a Chrome extension. I added a shared workflo
 
 A strategist picks a client and then uses the AI tool the way they would without the extension. It works in ChatGPT, Claude and Perplexity. Each finished answer becomes a run, with whatever search records are available plus the response. That keeps the investigation organised as the strategist works through the client's questions.
 
-![fanout 01 one run](images/fanout-query-analysis-tool/fanout-01-one-run.png)
+![A captured answer, with its recorded citations and brand mentions. Client details are masked.](images/fanout-query-analysis-tool/fanout-01-one-run.png)
 
 *A captured answer, with its recorded citations and brand mentions. Client details are masked.*
 
 There's a private switch for each site, so you can stop recording whenever you need to. The raw recording stays in your browser. Only the extracted records go to the team's shared database. Account and session identifiers come out first.
 
-![fanout 03 brands](images/fanout-query-analysis-tool/fanout-03-brands.png)
+![The Brands view keeps brand mentions separate from website citations. Client and competitor identities are masked.](images/fanout-query-analysis-tool/fanout-03-brands.png)
 
 *The Brands view keeps brand mentions separate from website citations. Client and competitor identities are masked.*
 
-![fanout 05 review](images/fanout-query-analysis-tool/fanout-05-review.png)
+![The review queue identifies captured and simulated runs. Incomplete captures have a separate count; research questions are masked.](images/fanout-query-analysis-tool/fanout-05-review.png)
 
 *The review queue identifies captured and simulated runs. Incomplete captures have a separate count; research questions are masked.*
 

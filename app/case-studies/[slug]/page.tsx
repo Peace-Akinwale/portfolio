@@ -29,7 +29,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   if (!cs) return {};
   return {
     title: cs.title,
-    description: cs.summary,
+    description: cs.blurb,
     alternates: { canonical: `${SITE_URL}/case-studies/${cs.slug}` },
     openGraph: {
       title: cs.title, description: cs.blurb, url: `${SITE_URL}/case-studies/${cs.slug}`, siteName: 'Peace Akinwale', type: 'article',

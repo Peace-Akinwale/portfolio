@@ -1,5 +1,5 @@
 ---
-title: "AI Docs Watch"
+title: "AI Docs Watch, a daily monitor of six AI platforms’ docs for SEO and content teams"
 name: "AI Docs Watch"
 blurb: "Shows you an AI platform’s docs as they were before and after each change, with the changed words marked."
 kind: built
@@ -37,7 +37,7 @@ Each of these got its own change page on the day it was caught, showing the old 
 
 When the tool catches a change, the site publishes a change page with a rating and a button that shows you the change side by side.
 
-![docswatch adsbot explanation actions 2026 10 30](images/ai-docs-watch/docswatch-adsbot-explanation-actions-2026-10-30.jpg)
+![Docs Watch connects an addition to OpenAI’s crawler documentation with questions marketers can ask about their advertising landing pages.](images/ai-docs-watch/docswatch-adsbot-explanation-actions-2026-10-30.jpg)
 
 *Docs Watch connects an addition to OpenAI’s crawler documentation with questions marketers can ask about their advertising landing pages.*
 
@@ -53,13 +53,13 @@ A documentation change has more than one date. It's easy to mix them up and end 
 - **The date we caught the change** shows up in the page's version history, down to the minute.
 - **The publisher's own date**, like "Last updated" or "Effective", stays inside the archived page and gets quoted in the write-up. It's never used as the change date.
 
-![Screenshot 2026 10 31 at 09.44.29](images/ai-docs-watch/Screenshot_2026-10-31_at_09.44.29.png)
+![Readers can narrow the updates by platform or search for a relevant topic. The impact definitions explain how the changes are classified.](images/ai-docs-watch/Screenshot_2026-10-31_at_09.44.29.png)
 
 *Readers can narrow the updates by platform or search for a relevant topic. The impact definitions explain how the changes are classified.*
 
 Anthropic's usage policy shows why this matters. We captured it on October 7 and caught the change on October 14, but the new policy itself doesn't take effect until November 12, 2026.
 
-![docswatch 03 google before after](images/ai-docs-watch/docswatch-03-google-before-after.png)
+![Readers can compare the original wording behind an update, rather than relying only on the write-up.](images/ai-docs-watch/docswatch-03-google-before-after.png)
 
 *Readers can compare the original wording behind an update, rather than relying only on the write-up.*
 

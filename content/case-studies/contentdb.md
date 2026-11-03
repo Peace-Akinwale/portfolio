@@ -61,6 +61,6 @@ I added an MCP connection, which lets a compatible AI assistant use tools inside
 
 I also changed the connection so a server restart doesn't break an assistant's session. You don't have to reconnect before carrying on with your research, and the older connection still works for assistants already using it.
 
-![contentdb quote context existing demo](images/contentdb/contentdb-quote-context-existing-demo.png)
+![Historical demonstration of quotation context in an earlier ContentDB interface. The matching passage appears between the text before and after it; this is not a capture of the current UI.](images/contentdb/contentdb-quote-context-existing-demo.png)
 
 *Historical demonstration of quotation context in an earlier ContentDB interface. The matching passage appears between the text before and after it; this is not a capture of the current UI.*

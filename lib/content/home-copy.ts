@@ -10,7 +10,7 @@
 export const HERO = {
   heading: 'Good work starts with good questions.',
   line: 'I write the articles B2B SaaS buyers read before they choose a product, and I build the AI tools content and SEO teams use every week.',
-  who: 'Peace Akinwale. 51 articles for ManyRequests since 2024. AI Docs Watch, public, checked every day. A search recorder and a page audit tool an SEO agency’s strategists use. The three questions below are how I decide what’s worth making and whether it’s true.',
+  who: 'Peace Akinwale. 51 articles for ManyRequests since 2024. AI Docs Watch, public, checked every day. A search recorder and a page audit tool an SEO agency’s strategists use.',
 };
 
 // One plain line above each question, so a reader knows what the section is
@@ -113,7 +113,7 @@ export const ALOUD = {
 export const READING_APP = {
   // brief
   p1: 'People can listen to a digest or star a useful post to return to later. Those saved posts give the team material to discuss and draw on when creating new content. The app handles the recurring collection and preparation, while people decide what is worth using.',
-  p2: 'I don’t call a build done until a real person has walked it on the live app. The first notification this app sent said a post was in the feed and the week’s roundup. It wasn’t, and that became the first lesson in the article.',
+  p2: 'I don’t call a build done until a real person has walked it on the live app. This app’s first notification said a post was in the feed and in the week’s roundup. The roundup didn’t have it. That became the first lesson in the article.',
   shot: '/case-studies/reading-app/reader-01-feed.png',
   shotAlt: 'The reading app’s feed with unread and starred posts and the reader’s own refresh control. Identifying information is blurred.',
   shotCaption: 'The feed, with unread and starred views. The reader chooses when to refresh, so new posts never move what they are reading.',

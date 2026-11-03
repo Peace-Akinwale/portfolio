@@ -21,13 +21,13 @@ related:
 
 Coding sessions get stuck on steps that need a browser on my Mac, like loading an extension to test it. I built Reach to pass that step to a local session and send the result back. That cuts out the manual handoff between the coding conversation and the computer. A video demo gave me the idea, and I designed my own version.
 
-![reach 02 how it works](images/reach/reach-02-how-it-works.png)
+![The diagram shows the task handoff and the point where the owner is asked to take over.](images/reach/reach-02-how-it-works.png)
 
 *The diagram shows the task handoff and the point where the owner is asked to take over.*
 
 ### Send a task to the Mac that can run it
 
-![reach 04 overlay needs you demo](images/reach/reach-04-overlay-needs-you-demo.png)
+![Scripted demonstration of the sign-in handoff. The flight task illustrates the interface; it is not evidence of a booking.](images/reach/reach-04-overlay-needs-you-demo.png)
 
 *Scripted demonstration of the sign-in handoff. The flight task illustrates the interface; it is not evidence of a booking.*
 

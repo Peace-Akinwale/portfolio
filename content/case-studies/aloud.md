@@ -31,7 +31,7 @@ I started with articles and pasted text. Then I added extraction for PDF, EPUB a
 
 Playback keeps going while you move between screens, so browsing the library doesn't interrupt an article. Read mode lets you check the wording alongside the narration, and Listen mode keeps the audio controls in view.
 
-![aloud listen june 2026](images/aloud/aloud-listen-june-2026.png)
+![June 2026 build capture with the Listen and Read switch above the player and a passage-saving action below it.](images/aloud/aloud-listen-june-2026.png)
 
 *June 2026 build capture with the Listen and Read switch above the player and a passage-saving action below it.*
 
