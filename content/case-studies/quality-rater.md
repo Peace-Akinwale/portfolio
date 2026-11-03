@@ -8,7 +8,7 @@ date: 2026-10-13
 summary: "Google employs human quality raters who judge pages against its guidelines. Quality Rater uses the same guidelines to flag pages for a person to review. It gives provisional ratings and links each finding to a passage, so a writer can decide what needs attention. It's live for the agency's team as a work in progress. Measuring its accuracy is the next step."
 voice: informal
 notion_url: https://app.notion.com/p/403992da7a5781f583bef06d8253072c
-notion_last_edited: 2026-10-24T17:30:32.907Z
+notion_last_edited: 2026-10-30T23:39:38.112Z
 tags:
   - "content audit"
 related:
@@ -20,15 +20,22 @@ related:
 
 Google's human quality raters review pages using the Search Quality Rater Guidelines. Does the page show first-hand experience? Is it clear who's responsible for it? Are its claims accurate? Does it earn trust for what it's trying to do? Agencies already ask these questions by hand during content audits, one page at a time. Quality Rater asks them across a whole site.
 
+![qr 02 run](images/quality-rater/qr-02-run.png)
+
+*The run screen groups suggested review priorities and shows how much of the site was assessed. Identifying information is anonymized.*
 
 ### Give the strategist somewhere to start
 
 Once a site has been checked, the run screen groups the high-priority pages and the findings that keep coming up. So a strategist can start with a problem that shows up across several pages, instead of opening every report in turn. These are suggestions for where a person should look, not proof that the pages are bad.
 
+![qr 03 page report](images/quality-rater/qr-03-page-report.png)
+
+*A report points to the passage behind a concern so the reviewer can accept or reject it. They can defer it when more investigation is needed.*
 
 ### Show the passage behind each suggested fix
 
 Each report links its finding to a passage and explains the suggested fix. The strategist can read that passage before deciding to accept the recommendation or reject it. Recording a reason keeps the reviewer's judgment next to the model's suggestion.
+
 
 
 A reviewer can ask for a rewrite through the draft checker. A separate writing model prepares it, with checks meant to reject changes to quoted source material. That keeps rewriting tied to a person's decision, instead of acting on every flagged issue.

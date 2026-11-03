@@ -8,7 +8,7 @@ date: 2026-06-10
 summary: "I built a private app an agency uses to follow SEO and AEO trends. Its founder kept checking LinkedIn and saving posts across task lists. The app gathered public posts into one feed to review, with audio digests for listening instead of reading. Starred posts fed newsletter notes that the founder could edit before sending them to the publishing system."
 voice: informal
 notion_url: https://app.notion.com/p/403992da7a578154a913e2c0f47463f7
-notion_last_edited: 2026-10-25T14:24:03.685Z
+notion_last_edited: 2026-10-30T23:42:18.968Z
 links:
   - "Five lessons from building it, an article | /the-success-message-was-the-bug"
 tags:
@@ -35,6 +35,9 @@ I wrote up the new requirements from the call and shipped its first version that
 
 The app crawls about 190 people's public posts every day. It also follows selected YouTube and X accounts and industry news feeds. The top of the feed says what the crawl did, so the founder knows how much is waiting before they start.
 
+![reader 01 feed](images/reading-app/reader-01-feed.png)
+
+*The feed groups unread and starred posts and shows collection status. The reader chooses when to refresh. Identifying information is anonymized.*
 
 The founder can go through posts in one place and star the ones worth using. Off-topic updates are hidden by default, with a “Show everything” switch to see what got left out. Feedback helps tune the feed. That gives the founder a research queue to work through on purpose, instead of reopening LinkedIn to check what's new.
 
@@ -45,6 +48,7 @@ The founder likes listening. So I added audio versions of the weekly LinkedIn an
 ### From a star to a newsletter note
 
 Starring a post does two things. It clears the post from the unread list, and it adds it to that week's newsletter note. On the Roundups screen, starred posts wait under "Building now." There the founder can reorder them or top them with a note.
+
 
 
 The app drafts a newsletter note from three chosen posts and the founder's own commentary, sticking to the limit they picked. The founder edits it before sending it to the publishing system as a draft. So their research picks become the starting point for the newsletter, and they don't have to collect the same links again.
@@ -58,6 +62,7 @@ Two smaller rules came from watching the app in use. The feed only refreshes whe
 ### Everything the app makes, in one place
 
 As more outputs got added, I brought them together in a shared Library. The founder can get back to a digest or find a newsletter draft without remembering which part of the app made it. The Library also links to related research tools, including AI Docs Watch.
+
 
 
 ### What the build delivered

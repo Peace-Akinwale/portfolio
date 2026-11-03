@@ -8,7 +8,7 @@ date: 2026-10-02
 summary: "An AI search app sends and receives data in the background before it answers. That includes the searches it writes and the sources it cites. I recorded hundreds of real conversations and built the pipeline that turned that traffic into a labelled reference. It's a public article with eight platform pages and narrated audio. Each field is labelled as seen or inferred."
 voice: informal
 notion_url: https://app.notion.com/p/403992da7a5781549c62ef65f6569916
-notion_last_edited: 2026-10-24T17:28:34.379Z
+notion_last_edited: 2026-10-30T23:39:34.660Z
 tags:
   - "AI search"
   - "research"
@@ -35,9 +35,15 @@ I built a pipeline that pulls the AI apps' own requests and response fields out 
 
 Each entry explains what the field contains and links to an example from the recordings. A researcher can follow that example to check whether the suggested meaning matches the data in front of them.
 
+![telemetry 01 label entry](images/what-ai-search-apps-do-before-they-answer/telemetry-01-label-entry.png)
+
+*A reference entry explains a recorded field and links to an example, while marking interpretation as uncertain.*
 
 The main article compares what each platform exposes, including whether you can see its search queries. That helps anyone planning an investigation pick which records to look at, and understand where a platform leaves gaps.
 
+![telemetry 02 platform table](images/what-ai-search-apps-do-before-they-answer/telemetry-02-platform-table.png)
+
+*The comparison summarizes what the recorded traffic exposed on each platform. It describes the recordings behind the reference, not a guarantee of current behavior.*
 
 ### Label what we saw, and what we think it means
 

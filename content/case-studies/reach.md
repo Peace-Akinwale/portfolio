@@ -8,7 +8,7 @@ date: 2026-09-27
 summary: "Reach is a personal tool I built so my AI coding sessions stop waiting on me. Some steps only work on my Mac's screen, like a signed-in browser or an extension's own page. When a session hits one, Reach starts a Claude Code session on the Mac I pick. Its dedicated browser handles the workflows I've tested. Desktop apps come next."
 voice: informal
 notion_url: https://app.notion.com/p/403992da7a5781c28d08f130a8388772
-notion_last_edited: 2026-10-24T17:30:10.579Z
+notion_last_edited: 2026-10-30T23:42:22.799Z
 tags:
   - "agents"
   - "automation"
@@ -21,15 +21,22 @@ related:
 
 Coding sessions get stuck on steps that need a browser on my Mac, like loading an extension to test it. I built Reach to pass that step to a local session and send the result back. That cuts out the manual handoff between the coding conversation and the computer. A video demo gave me the idea, and I designed my own version.
 
+![reach 02 how it works](images/reach/reach-02-how-it-works.png)
+
+*The diagram shows the task handoff and the point where the owner is asked to take over.*
 
 ### Send a task to the Mac that can run it
 
+![reach 04 overlay needs you demo](images/reach/reach-04-overlay-needs-you-demo.png)
+
+*Scripted demonstration of the sign-in handoff. The flight task illustrates the interface; it is not evidence of a booking.*
 
 A session says what outcome it needs and picks the Mac. Reach queues the work and starts a local Claude Code session when it's needed. It closes idle sessions after 15 minutes, so the computer isn't keeping an agent running between tasks.
 
 The local session uses whatever tools that Mac has, and the tested browser workflows run in a dedicated Chrome profile. It sends the result back to the session that asked, so the original work can carry on without me relaying anything.
 
 A status page and a small overlay show what the session is doing. I can stop it or give an approval it asks for without piecing the task back together from a terminal log.
+
 
 
 ### Pause for passwords and sign-ins
@@ -40,6 +47,7 @@ I set the safety rules first, because the tool acts on a real computer with real
 - **Screenshots pause while it waits for me**, because that's when I'm typing a password. An early review caught frames being uploaded at that moment, and I made the pause a rule.
 - **The local channel the overlay talks to needs a token** and refuses requests from web pages. A site open in the browser can't send it commands.
 - **It runs on my own subscription** with no API keys, and only on my Macs.
+
 
 
 ### Keep local sessions from running when they don't need to

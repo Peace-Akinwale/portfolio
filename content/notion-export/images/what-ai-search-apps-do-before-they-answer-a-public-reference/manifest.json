@@ -1,0 +1,30 @@
+{
+  "page": "What AI search apps do before they answer: a public reference",
+  "slug": "what-ai-search-apps-do-before-they-answer-a-public-reference",
+  "notion_url": "https://app.notion.com/p/403992da7a5781549c62ef65f6569916",
+  "exported_at": "2026-11-03T17:58:32.318Z",
+  "images": [
+    {
+      "n": 1,
+      "file": "1-telemetry-01-label-entry.png",
+      "original_name": "telemetry-01-label-entry.png",
+      "bytes": 532605,
+      "content_type": "image/png",
+      "notion_block_id": "03c81caf-0ed3-4190-811e-c136a12ba98f",
+      "caption_text_below_image": "*A reference entry explains a recorded field and links to an example, while marking interpretation as uncertain.*",
+      "downloaded": true,
+      "download_note": null
+    },
+    {
+      "n": 2,
+      "file": "2-telemetry-02-platform-table.png",
+      "original_name": "telemetry-02-platform-table.png",
+      "bytes": 670897,
+      "content_type": "image/png",
+      "notion_block_id": "ba014f17-df38-4b37-88dc-e16c6ad752ad",
+      "caption_text_below_image": "*The comparison summarizes what the recorded traffic exposed on each platform. It describes the recordings behind the reference, not a guarantee of current behavior.*",
+      "downloaded": true,
+      "download_note": null
+    }
+  ]
+}

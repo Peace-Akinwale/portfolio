@@ -1,0 +1,19 @@
+{
+  "page": "A reading app for reviewing posts and preparing newsletter notes",
+  "slug": "a-reading-app-for-reviewing-posts-and-preparing-newsletter-notes",
+  "notion_url": "https://app.notion.com/p/403992da7a578154a913e2c0f47463f7",
+  "exported_at": "2026-11-03T18:00:55.373Z",
+  "images": [
+    {
+      "n": 1,
+      "file": "1-reader-01-feed.png",
+      "original_name": "reader-01-feed.png",
+      "bytes": 126352,
+      "content_type": "image/png",
+      "notion_block_id": "00d94091-4a53-44ba-a91c-aebb942daf92",
+      "caption_text_below_image": "*The feed groups unread and starred posts and shows collection status. The reader chooses when to refresh. Identifying information is anonymized.*",
+      "downloaded": true,
+      "download_note": null
+    }
+  ]
+}

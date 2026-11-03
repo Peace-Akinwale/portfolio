@@ -8,7 +8,7 @@ date: 2026-10-01
 summary: "I built a fanout query analysis tool for an agency's content strategists. It turned a teammate's bookmarklet into a Chrome extension and a shared dashboard. It records the searches behind AI answers and tells apart the pages that came back from the pages that got cited. Strategists can check a client's visibility and send the recorded material to Claude for analysis."
 voice: informal
 notion_url: https://app.notion.com/p/403992da7a578155bc78c7d8e436e561
-notion_last_edited: 2026-10-24T22:21:21.230Z
+notion_last_edited: 2026-10-30T23:40:10.376Z
 tags:
   - "AI search"
   - "Chrome extension"
@@ -31,14 +31,24 @@ The agency asked me to turn it into a Chrome extension. I added a shared workflo
 
 A strategist picks a client and then uses the AI tool the way they would without the extension. It works in ChatGPT, Claude and Perplexity. Each finished answer becomes a run, with whatever search records are available plus the response. That keeps the investigation organised as the strategist works through the client's questions.
 
+![fanout 01 one run](images/fanout-query-analysis-tool/fanout-01-one-run.png)
+
+*A captured answer, with its recorded citations and brand mentions. Client details are masked.*
 
 There's a private switch for each site, so you can stop recording whenever you need to. The raw recording stays in your browser. Only the extracted records go to the team's shared database. Account and session identifiers come out first.
 
+![fanout 03 brands](images/fanout-query-analysis-tool/fanout-03-brands.png)
 
+*The Brands view keeps brand mentions separate from website citations. Client and competitor identities are masked.*
+
+![fanout 05 review](images/fanout-query-analysis-tool/fanout-05-review.png)
+
+*The review queue identifies captured and simulated runs. Incomplete captures have a separate count; research questions are masked.*
 
 ### Tell returned pages from cited ones
 
 The dashboard separates the pages that came back during search from the pages that were opened or cited. A strategist can see whether a client's page showed up in the results but never got cited, and then look at the other sources that were used. That gives them a specific visibility gap to dig into.
+
 
 
 ### Track brand mentions alongside website citations
@@ -46,12 +56,15 @@ The dashboard separates the pages that came back during search from the pages th
 A company can get recommended without a link, and its page can supply information without the company being named. The Brands page separates mentions from website citations, and records searches for the brand. So a strategist can say which kind of visibility the client has, instead of treating every appearance as the same thing.
 
 
+
 ### When the record is incomplete, the dashboard tells you what's missing
 
 In the September recordings some follow-up search wording wasn't available, even though the returned pages were there. Those rounds say “searches not recorded.” That stops a strategist from reading missing information as proof that no search happened.
 
 
+
 The Review page lists the questions where the client was missing from at least one complete run. Strategists can look at the supporting recordings and mark questions as reviewed, which gives the team a shared queue of gaps to look into.
+
 
 
 ### Test a whole question set at once, labelled as simulated

@@ -1,9 +1,9 @@
 ---
-title: "Build a course portal around the instructor’s workflow"
+title: "Building a platform around teaching and learning"
 date: 2026-10-25
 standfirst: "Building a members’ portal for an eight-week course taught me which parts of the instructor’s process the software should leave alone."
 notion_url: https://app.notion.com/p/403992da7a578152abc6e58249ea4db7
-notion_last_edited: 2026-10-24T17:26:40.213Z
+notion_last_edited: 2026-10-30T22:48:39.669Z
 tags:
   - "Building"
   - "Tools"

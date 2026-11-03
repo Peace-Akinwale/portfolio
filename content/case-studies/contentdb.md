@@ -3,12 +3,12 @@ title: "ContentDB: collect research and question your sources"
 name: "ContentDB"
 blurb: "Your articles and transcripts in one library you can search from a chat or from your AI assistant."
 kind: built
-status: "my own app, open to anyone"
+status: "my own app, private beta"
 date: 2026-04-15
 summary: "I built ContentDB to keep articles and video transcripts in one searchable library. It organises sources by client and adds a chat where you can bring a particular source into your question. It also gives a connected AI assistant tools to search the library and open a complete source."
 voice: informal
 notion_url: https://app.notion.com/p/403992da7a5781cfaff1de30c9c49f2f
-notion_last_edited: 2026-10-24T17:27:15.832Z
+notion_last_edited: 2026-10-31T09:35:09.780Z
 links:
   - "The ContentDB project page | /projects/contentdb"
 tags:
@@ -27,9 +27,7 @@ ContentDB is my own software project for that job. In the March to April 2026 bu
 
 I added separate ways in for links and uploaded files. Batch imports bring in YouTube videos and sitemap pages. They all feed the same library, so you don't need a different place to search each format.
 
-![contentdb add content demo](images/contentdb/contentdb-add-content-demo.png)
-
-*The import screen, with demonstration data.*
+![image](images/contentdb/image.png)
 
 Adding a group of sources needs more feedback than adding one article. Each item can take a while or fail on its own.
 
@@ -62,3 +60,7 @@ Say a writer brings in a saved customer interview and asks which passages back u
 I added an MCP connection, which lets a compatible AI assistant use tools inside another app. ContentDB's tools let an assistant search saved content and open a full item. They can also add material and find insights in customer transcripts. You can work from your assistant without copying each document into the conversation yourself.
 
 I also changed the connection so a server restart doesn't break an assistant's session. You don't have to reconnect before carrying on with your research, and the older connection still works for assistants already using it.
+
+![contentdb quote context existing demo](images/contentdb/contentdb-quote-context-existing-demo.png)
+
+*Historical demonstration of quotation context in an earlier ContentDB interface. The matching passage appears between the text before and after it; this is not a capture of the current UI.*

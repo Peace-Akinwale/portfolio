@@ -3,7 +3,7 @@ title: "The success message was a bug: five lessons from building an app an agen
 date: 2026-10-25
 standfirst: "A notification said the post was in the feed and the roundup. It wasn’t. Five lessons from building an app an agency uses to follow SEO and AEO trends, starting with that message."
 notion_url: https://app.notion.com/p/404992da7a5781ce8b6cd42fb274dc33
-notion_last_edited: 2026-10-25T16:02:11.561Z
+notion_last_edited: 2026-10-30T23:42:30.318Z
 tags:
   - "Building"
   - "AI"

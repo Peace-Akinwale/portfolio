@@ -68,9 +68,15 @@ function withInformal(slug, originalBody) {
   const draft = fs.readFileSync(file, 'utf8');
   const blocks = imageBlocks(originalBody);
   const markers = (draft.match(/\[\[img\]\]/g) || []).length;
-  if (markers !== blocks.length) throw new Error(`${slug}: informal draft has ${markers} image markers, original has ${blocks.length} images`);
+  // The export can carry a different set of images than the draft was written
+  // against (Peace re-cut the Notion pages on 30 and 31 Oct 2026). Markers take
+  // the images in order; spare markers go; spare images are appended at the end
+  // so nothing she added in Notion is lost. She places them when she folds the
+  // Notion text into the draft.
+  if (markers !== blocks.length) console.warn(`${slug}: informal draft has ${markers} image markers, export has ${blocks.length} images; ${markers > blocks.length ? 'dropping spare markers' : 'appending spare images at the end'}`);
   let k = 0;
-  let body = draft.replace(/\[\[img\]\]/g, () => blocks[k++]);
+  let body = draft.replace(/\[\[img\]\]/g, () => blocks[k++] ?? '');
+  if (k < blocks.length) body = body.trimEnd() + '\n\n' + blocks.slice(k).join('\n\n') + '\n';
   for (const [from, to] of Object.entries(CAPTION_FIXES)) body = body.replace(from, to);
   return { body, informal: true };
 }

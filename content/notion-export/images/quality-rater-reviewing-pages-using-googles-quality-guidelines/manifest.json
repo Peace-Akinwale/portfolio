@@ -1,0 +1,30 @@
+{
+  "page": "Quality Rater: reviewing pages using Google’s quality guidelines",
+  "slug": "quality-rater-reviewing-pages-using-googles-quality-guidelines",
+  "notion_url": "https://app.notion.com/p/403992da7a5781f583bef06d8253072c",
+  "exported_at": "2026-11-03T17:53:11.374Z",
+  "images": [
+    {
+      "n": 1,
+      "file": "1-qr-02-run.png",
+      "original_name": "qr-02-run.png",
+      "bytes": 169264,
+      "content_type": "image/png",
+      "notion_block_id": "64b76ab8-011e-4ab2-959c-00aa3bb109d0",
+      "caption_text_below_image": "*The run screen groups suggested review priorities and shows how much of the site was assessed. Identifying information is anonymized.*",
+      "downloaded": true,
+      "download_note": null
+    },
+    {
+      "n": 2,
+      "file": "2-qr-03-page-report.png",
+      "original_name": "qr-03-page-report.png",
+      "bytes": 250211,
+      "content_type": "image/png",
+      "notion_block_id": "87163f57-099f-4282-810f-a09f39b6fe00",
+      "caption_text_below_image": "*A report points to the passage behind a concern so the reviewer can accept or reject it. They can defer it when more investigation is needed.*",
+      "downloaded": true,
+      "download_note": null
+    }
+  ]
+}

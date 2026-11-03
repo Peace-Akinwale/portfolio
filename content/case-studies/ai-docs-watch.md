@@ -8,7 +8,7 @@ date: 2026-10-14
 summary: "AI Docs Watch checks six AI platforms' documentation and policies every day. They are Google, Gemini, OpenAI, Anthropic, Bing and Perplexity. When a page changes, it publishes both versions with the changed words marked. Each change gets a plain impact rating and a few words on what it means for an SEO or marketing team. I built the monitoring and the public site."
 voice: informal
 notion_url: https://app.notion.com/p/403992da7a57817c8a0ad5105de78b0e
-notion_last_edited: 2026-10-24T17:28:05.687Z
+notion_last_edited: 2026-10-31T08:47:00.392Z
 links:
   - "Open AI Docs Watch | https://docswatch.stevetoth.ai"
 tags:
@@ -37,12 +37,13 @@ Each of these got its own change page on the day it was caught, showing the old 
 
 When the tool catches a change, the site publishes a change page with a rating and a button that shows you the change side by side.
 
-![docswatch 02 change page](images/ai-docs-watch/docswatch-02-change-page.jpg)
+![docswatch adsbot explanation actions 2026 10 30](images/ai-docs-watch/docswatch-adsbot-explanation-actions-2026-10-30.jpg)
 
-*Archived documentation view, October 2026.*
+*Docs Watch connects an addition to OpenAI’s crawler documentation with questions marketers can ask about their advertising landing pages.*
 
 The comparison marks the changed words in archived copies of the publisher's page. So a strategist can hold the explanation up against the original wording, and use that evidence when they advise a client.
 
+![image](images/ai-docs-watch/image.png)
 
 ### Keep the capture date and the effective date apart
 
@@ -52,9 +53,15 @@ A documentation change has more than one date. It's easy to mix them up and end 
 - **The date we caught the change** shows up in the page's version history, down to the minute.
 - **The publisher's own date**, like "Last updated" or "Effective", stays inside the archived page and gets quoted in the write-up. It's never used as the change date.
 
+![Screenshot 2026 10 31 at 09.44.29](images/ai-docs-watch/Screenshot_2026-10-31_at_09.44.29.png)
+
+*Readers can narrow the updates by platform or search for a relevant topic. The impact definitions explain how the changes are classified.*
 
 Anthropic's usage policy shows why this matters. We captured it on October 7 and caught the change on October 14, but the new policy itself doesn't take effect until November 12, 2026.
 
+![docswatch 03 google before after](images/ai-docs-watch/docswatch-03-google-before-after.png)
+
+*Readers can compare the original wording behind an update, rather than relying only on the write-up.*
 
 ### Keep old pages readable when a vendor changes its styling
 
@@ -71,11 +78,10 @@ The founder asked whether we'd caught a new section in Anthropic's usage policy 
 So I changed what the writing step receives. New headings now come first, and it works to a text-length budget instead of a fixed number of passages. The revised write-up led with the section the first one missed. A team reading the summary now gets pointed to the policy issue it needs to look at.
 
 
+
 ### Publish the archive, and protect the hand edits
 
-![docswatch 01 hub](images/ai-docs-watch/docswatch-01-hub.jpg)
 
-*Archived documentation view, October 2026.*
 
 I set the product rules and decided how ratings and dates work, then directed AI coding agents through the build. I checked the write-ups against the archived pages. When a vendor or a reviewer showed us something we'd missed, I made the fix.
 

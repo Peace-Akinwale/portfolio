@@ -8,7 +8,7 @@ date: 2026-10-20
 summary: "An OKF (Open Knowledge Format) is a folder of short notes, one idea per note. Each note records its source and whether a person checked it. I turned an SEO agency founder's 1.23 million words into an OKF of 683 linked notes. Answers to the team's questions cite those notes. Then I built a kit for clients to host themselves."
 voice: informal
 notion_url: https://app.notion.com/p/403992da7a578116ae4ee9a53710f316
-notion_last_edited: 2026-10-24T22:18:34.889Z
+notion_last_edited: 2026-10-30T23:40:13.813Z
 links:
   - "Google’s OKF specification on GitHub | https://github.com/GoogleCloudPlatform/knowledge-catalog/blob/main/okf/SPEC.md"
   - "Marie Haynes on building an OKF brain | https://www.youtube.com/watch?v=esYAIA6lU-s"
@@ -35,20 +35,30 @@ The agency's founder had years of thinking spread across two Notion archives and
 
 I turned about 1.23 million words from more than 500 pages into focused notes that include concepts and playbooks. Related notes link to each other, so a teammate can move from an explanation to the procedure it supports. The reviewed snapshot had 683 notes with 2,939 links.
 
+![okf 06 graph dark](images/okf/okf-06-graph-dark.gif)
+
+*The knowledge map shows connections between notes in different layouts. This is a historical screen; the on-screen totals belong to that capture.*
 
 ### Ask a question, and get an answer you can check
 
 A teammate can ask how the agency handles a particular piece of work instead of searching the archives or waiting for the founder. The tool uses an index to pick up to eight relevant notes, then reads them in full to put together an answer grounded in that material.
 
+![okf 02 note trust](images/okf/okf-02-note-trust.png)
+
+*Source and human-review information on an individual note.*
 
 I made source citations a requirement, along with a clear marker for outside material. A teammate can open a cited note and check the instructions before using them. Its review status shows whether someone has checked the note, or whether it still needs a person to look it over.
 
+![okf 05 build kit](images/okf/okf-05-build-kit.png)
+
+*The client-kit input screen, where a build starts with the client’s own source files.*
 
 ### Review proposed notes before they're published
 
 The tool takes new material in several forms. A URL, a Notion page, a YouTube video, a PDF or pasted text all work. Before anything gets published, the tool screens it for secrets and personal data. Then it pulls out proposed notes and shows a plan. The plan lists the notes it'll create or update and the links it'll add.
 
 An admin approves or rejects it. If a publish turns out wrong, one click adds a reversing change. Nothing gets rewritten without a record.
+
 
 
 I made the review step mandatory early on. The first version published new material with no review. After watching a long video turn into notes I hadn't seen, I switched it to plan-then-approve. That way I could see what was being added before it landed.
@@ -60,6 +70,7 @@ A person has to approve a note before it gets verified status. Existing notes st
 ### Build a knowledge bundle the client hosts
 
 The agency then wanted to offer this to clients. I designed the client version so the client hosts it themselves and covers the hosting costs. A strategist or the client drops in a folder or a zip. They get back a linked note bundle and a website they can host.
+
 
 
 A colleague has already used the same skill to build a client bundle. I added export checks that look for agency keys and server addresses, which helps keep internal access details out of a package handed to a client.

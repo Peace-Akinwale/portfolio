@@ -3,14 +3,13 @@ title: "Aloud: listen to saved articles and return to useful passages"
 name: "Aloud"
 blurb: "My audio library for the articles I keep meaning to read, with a reading view and saved passages."
 kind: built
-status: "my own app, open to anyone"
+status: "my own app, invite-only"
 date: 2026-09-28
 summary: "I built Aloud because I had articles I wanted to read and kept leaving unread. It turns links and documents into a personal audio library, with a reading view and saved passages. In September I changed narration so it keeps the author's wording and finishes preparing a whole item after I've left the player."
 voice: informal
 notion_url: https://app.notion.com/p/403992da7a578174ba0dea8a39cb42fc
-notion_last_edited: 2026-10-24T17:27:37.604Z
+notion_last_edited: 2026-10-30T23:39:10.582Z
 links:
-  - "Try Aloud | https://aloud.peaceakinwale.com"
   - "The public Aloud log on GitHub | https://github.com/Peace-Akinwale/portfolio/blob/master/case-studies/aloud/index.md"
 tags:
   - "audio"
@@ -32,6 +31,9 @@ I started with articles and pasted text. Then I added extraction for PDF, EPUB a
 
 Playback keeps going while you move between screens, so browsing the library doesn't interrupt an article. Read mode lets you check the wording alongside the narration, and Listen mode keeps the audio controls in view.
 
+![aloud listen june 2026](images/aloud/aloud-listen-june-2026.png)
+
+*June 2026 build capture with the Listen and Read switch above the player and a passage-saving action below it.*
 
 The first approach got audio playing without a wait, but it relied on the player to ask for the remaining chapters. If you left the player, the rest might never get prepared.
 
