@@ -23,6 +23,6 @@ The hire-me plan (`2026-11-03-hire-me-plan.md`) is applied where it needed no ne
 11. **Hero lines.** The two lines under "Good work starts with good questions." are drafts on the page now. Approve, or give your wording.
 12. **Pass-along bio on About** says "He writes", and Lily's quote says "He took feedback", while the rest of the site is "I". Confirm the wording you want.
 13. **Lagos.** Removed from the hero and footer in this pass; it stays on About. Say if you want it back.
-14. **"Who uses it" lines** on every case study still carry the old text ("my own app, open to anyone", "in team use, private") until items 3 and 4 are answered.
+14. **"Who uses it" lines** now say who, from facts already on each page ("an SEO agency's content strategists", "anyone, it's public", "me, and anyone who signs up"). They gain a count when items 3 and 4 are answered. They live in the importer's table (`scripts/content/import-notion.mjs`), so a re-import keeps them.
 15. **The Garde story** appears on About, the Writing page and the blog. Keep it once, on the blog, or keep all three?
 16. **Nav labels.** "Projects" became "Case studies" and "Writing & work" became "Writing", because the two pages overlapped. "About me" and "Say hi" are as you chose on 29 Oct. Say if you want "About" and "Contact" instead; two readers found them faster.

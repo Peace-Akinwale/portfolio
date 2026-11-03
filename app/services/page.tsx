@@ -110,7 +110,12 @@ export default function ServicesPage() {
         <div>
           <h2 className="text-[1.5rem]">What you get with every article</h2>
           <ul className="mt-4 list-disc pl-5 text-[16px] leading-relaxed">
-            {WHATS_INCLUDED.map((i) => <li key={i} className="mb-1.5">{i}</li>)}
+            {WHATS_INCLUDED.map((i) => (
+              <li key={i} className="mb-1.5">
+                {i}
+                {i.startsWith('Phrasing an AI search tool') && <> (<Link href="/how-to-optimize-for-aeo" className="underline underline-offset-4">how I approach AEO</Link>)</>}
+              </li>
+            ))}
           </ul>
         </div>
         <div>
