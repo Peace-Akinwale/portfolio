@@ -69,13 +69,13 @@ export default function CaseStudiesPage() {
   return (
     <div className="gutter mx-auto max-w-[1180px] cs-page">
       <header className="cs-index">
-        <h1>Tools I built for content and SEO teams, and how they came together.</h1>
-        <p className="lead">Each one comes from the project’s own notes. Where a client’s data is private, I’ve blurred it. If a tool isn’t finished, the page says so.</p>
+        <h1>Case studies</h1>
+        <p className="lead">AI tools I designed and built for content and SEO teams, and a long-running B2B SaaS writing engagement. Client data is masked where it is private.</p>
       </header>
 
       <section className="cs-group" aria-labelledby="teams-h">
-        <h2 id="teams-h">Built for content and SEO teams</h2>
-        <p>The ones an agency’s strategists use in their week. Tap one to read the whole story.</p>
+        <h2 id="teams-h">Tools for content and SEO teams</h2>
+        <p>In use at an SEO and AEO agency, by its founder and strategists. Two are public.</p>
         <ul className="cs-list">
           {forTeams.map((cs) => (
             <Row key={cs.slug} href={`/case-studies/${cs.slug}`} date={cs.date} dateLabel={dayLabel(cs.date)} kind="built" context={cs.status} name={cs.name} line={cs.blurb} shot={firstImage(cs)} />
@@ -84,8 +84,8 @@ export default function CaseStudiesPage() {
       </section>
 
       <section className="cs-group" aria-labelledby="myself-h">
-        <h2 id="myself-h">Built for myself</h2>
-        <p>Tools for my own reading and research. The same build rules apply, and a real person walks every one before I call it done.</p>
+        <h2 id="myself-h">Independent products</h2>
+        <p>Products I own and run. Aloud and ContentDB are open to new sign-ups.</p>
         <ul className="cs-list">
           {forMyself.map((cs) => (
             <Row key={cs.slug} href={`/case-studies/${cs.slug}`} date={cs.date} dateLabel={dayLabel(cs.date)} kind="built" context={cs.status} name={cs.name} line={cs.blurb} shot={firstImage(cs)} />
@@ -94,8 +94,8 @@ export default function CaseStudiesPage() {
       </section>
 
       <section className="cs-group" aria-labelledby="wrote-h">
-        <h2 id="wrote-h">The writing, as a case study</h2>
-        <p>Two years of articles for one B2B SaaS client, written up in full. The articles themselves are on the <Link href="/portfolio#writing" className="underline underline-offset-4">writing page</Link>.</p>
+        <h2 id="wrote-h">Writing</h2>
+        <p>Product-led articles for a B2B SaaS company since 2024, with the search results they earned. Every sample is on the <Link href="/portfolio#writing" className="underline underline-offset-4">writing page</Link>.</p>
         <ul className="cs-list">
           <Row href="/case-studies/manyrequests" date={MANYREQUESTS_SINCE} dateLabel={`since ${MANYREQUESTS_SINCE}`} kind="wrote" context="ManyRequests, B2B SaaS client portal software" name={`${MANYREQUESTS_ARTICLE_COUNT} product-led articles for ManyRequests`} line="Articles where the product shows up inside the piece, and what they did in search." shot={{ src: '/images/case-studies/manyrequests/manyrequests-editorial-scoring-sheet-preview.png', alt: 'The keyword sheet for ManyRequests, with a business potential score per topic' }} />
           {wrote.map((cs) => (
@@ -105,8 +105,8 @@ export default function CaseStudiesPage() {
       </section>
 
       <section className="cs-group" aria-label="Articles about building">
-        <h2>Two builds I wrote up as articles instead</h2>
-        <p>More about what I learned than how it works.</p>
+        <h2>Articles on these builds</h2>
+        <p>What two of the builds taught me about shipping software a team relies on.</p>
         <ul className="cs-list">
           {articles.map((a) => (
             <Row key={a.slug} href={`/${a.slug}`} date={a.date} dateLabel={a.date ? dayLabel(a.date) : undefined} kind="wrote" context="Article" name={a.name} line={a.line} />

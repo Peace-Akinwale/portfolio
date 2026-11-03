@@ -3,7 +3,7 @@ title: "Building an OKF that a team can ask for guidance"
 name: "An OKF a team can ask"
 blurb: "A founder’s notes turned into linked notes the team can ask, and every answer cites where it came from."
 kind: built
-status: "an SEO agency’s team"
+status: "An SEO agency’s team"
 date: 2026-10-20
 summary: "An OKF (Open Knowledge Format) is a folder of short notes, one idea per note. Each note records its source and whether a person checked it. I turned an SEO agency founder's 1.23 million words into an OKF of 683 linked notes. Answers to the team's questions cite those notes. Then I built a kit for clients to host themselves."
 voice: informal

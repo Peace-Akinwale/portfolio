@@ -10,15 +10,15 @@
 export const HERO = {
   heading: 'Good work starts with good questions.',
   line: 'I write the articles B2B SaaS buyers read before they choose a product, and I build AI tools that content and SEO teams use every week.',
-  who: 'Peace Akinwale. 51 articles for ManyRequests since 2024. AI Docs Watch, public, checked every day. Fanout and Quality Rater, two tools an SEO agency’s strategists use.',
+  who: 'Peace Akinwale. 44 articles for ManyRequests since 2024. AI Docs Watch, public, checked every day. Fanout and Quality Rater, two tools an SEO agency’s strategists use.',
 };
 
 // One plain line above each question, so a reader knows what the section is
 // before reading the answer (3 Nov 2026 review).
 export const SECTION_NAMES = {
-  q1: 'How I check what I write and build',
-  q2: 'How I choose what to make',
-  q3: 'What finished looks like',
+  q1: 'Accuracy',
+  q2: 'Strategy',
+  q3: 'Delivery',
 };
 
 export const QUESTIONS = [
@@ -54,7 +54,7 @@ export const CONTENTDB = {
 export const MANYREQUESTS = {
   title: '10 best design annotation tools for agencies.',
   url: 'https://www.manyrequests.com/blog/design-annotation-software',
-  body: 'A comparison where the client’s product earns its place by solving the reader’s problem, not because a brief said to mention it. One of 51 articles I’ve written for them since 2024. By April it sat on page one of Google for “design annotation tools”.',
+  body: 'A comparison where the client’s product earns its place by solving the reader’s problem, not because a brief said to mention it. One of 44 articles of mine on their blog since 2024. By April it sat on page one of Google for “design annotation tools”.',
   caption: 'Google, April 2026. Rankings move, so this is a dated screenshot, not a promise.',
   quote: 'He asks the right questions, challenges assumptions when needed, and consistently delivers content that aligns with the content strategy.',
   quoteBy: 'Regine Garcia, Operations, Content & Systems at ManyRequests, 9 Feb 2026',

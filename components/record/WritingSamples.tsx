@@ -8,7 +8,7 @@ export function WritingSamples({ parsed }: { parsed: ParsedPortfolio }) {
   return (
     <section className="samples" id="writing" aria-labelledby="writing-h">
       <h2 id="writing-h">Writing samples, by client</h2>
-      <p>Everything I’ve published or ghostwritten that I’m allowed to link to. The list above shows off the ones with proof attached. This is all of it.</p>
+      <p>Every article I’ve published or ghostwritten that I can link to, grouped by client.</p>
       {parsed.sections.map((section) => (
         <div className="samples-section" key={section.heading}>
           <div>

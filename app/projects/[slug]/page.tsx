@@ -83,10 +83,10 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
       <header className="mb-12">
         <div className="mb-4">
           <Link
-            href="/projects"
+            href="/case-studies"
             className="text-sm uppercase tracking-wider text-muted-foreground transition-colors hover:text-accent"
           >
-            Earlier projects
+            Case studies
           </Link>
         </div>
 

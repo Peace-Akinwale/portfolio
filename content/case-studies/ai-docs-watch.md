@@ -3,7 +3,7 @@ title: "AI Docs Watch, a daily monitor of six AI platforms’ docs for SEO and c
 name: "AI Docs Watch"
 blurb: "Shows you an AI platform’s docs as they were before and after each change, with the changed words marked."
 kind: built
-status: "everyone, it’s public"
+status: "Public, open to everyone"
 date: 2026-10-14
 summary: "AI Docs Watch checks six AI platforms' documentation and policies every day. They are Google, Gemini, OpenAI, Anthropic, Bing and Perplexity. When a page changes, it publishes both versions with the changed words marked. Each change gets a plain impact rating and a few words on what it means for an SEO or marketing team. I built the monitoring and the public site."
 voice: informal

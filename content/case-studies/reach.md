@@ -3,7 +3,7 @@ title: "Reach: hands on my Mac for AI agents that can't reach it"
 name: "Reach"
 blurb: "When an AI coding session needs my Mac’s screen, it hands the job to Reach and gets the result back."
 kind: built
-status: "me, on two Macs"
+status: "Personal tool"
 date: 2026-09-27
 summary: "Reach is a personal tool I built so my AI coding sessions stop waiting on me. Some steps only work on my Mac's screen, like a signed-in browser or an extension's own page. When a session hits one, Reach starts a Claude Code session on the Mac I pick. Its dedicated browser handles the workflows I've tested. Desktop apps come next."
 voice: informal

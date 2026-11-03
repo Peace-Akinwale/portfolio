@@ -69,9 +69,9 @@ export default async function PortfolioPage() {
       <div className="gutter mx-auto max-w-[1180px]">
         <section className="record-open" aria-labelledby="record-h">
           <div>
-            <h1 id="record-h">The writing, and what clients said about it.</h1>
+            <h1 id="record-h">Writing</h1>
             <p className="who">
-              Articles for B2B SaaS companies and agencies, newest first, with whatever proof I have beside each. Every sample I’m allowed to link to is <a href="#writing">listed by client further down</a>. The tools I build are under <Link href="/case-studies">case studies</Link>.
+              Bottom-of-funnel articles for B2B SaaS companies and agencies, newest first, with the evidence for each. The full list of samples, by client, is <a href="#writing">below</a>. The tools I build are under <Link href="/case-studies">case studies</Link>.
             </p>
           </div>
           <figure>

@@ -3,7 +3,7 @@ title: "Aloud: listen to saved articles and return to useful passages"
 name: "Aloud"
 blurb: "My audio library for the articles I keep meaning to read, with a reading view and saved passages."
 kind: built
-status: "me, and anyone who signs up"
+status: "Open to anyone who signs up"
 date: 2026-09-28
 summary: "I built Aloud because I had articles I wanted to read and kept leaving unread. It turns links and documents into a personal audio library, with a reading view and saved passages. In September I changed narration so it keeps the author's wording and finishes preparing a whole item after I've left the player."
 voice: informal

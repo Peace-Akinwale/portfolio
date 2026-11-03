@@ -214,10 +214,10 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
             <header className="mb-12">
               <div className="mb-4">
                 <Link
-                  href="/projects"
+                  href="/case-studies"
                   className="text-sm uppercase tracking-wider text-muted-foreground hover:text-accent transition-colors"
                 >
-                  Earlier projects
+                  Case studies
                 </Link>
               </div>
 

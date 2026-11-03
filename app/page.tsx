@@ -12,7 +12,7 @@ import {
 export const metadata: Metadata = withOg({
   title: 'Peace Akinwale, B2B SaaS content writer and AI tool builder',
   description:
-    'Articles B2B SaaS buyers read before they choose a product, and AI tools that content and SEO teams use every week. 51 articles for ManyRequests, AI Docs Watch, the Fanout query analysis tool.',
+    'Articles B2B SaaS buyers read before they choose a product, and AI tools that content and SEO teams use every week. 44 articles for ManyRequests, AI Docs Watch, the Fanout query analysis tool.',
   alternates: { canonical: SITE_URL },
 }, { key: 'home', path: '/', alt: 'Good work starts with good questions. Peace Akinwale' });
 

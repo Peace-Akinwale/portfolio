@@ -2,12 +2,12 @@ import { ogImagePath } from '@/lib/og';
 import Link from 'next/link';
 import type { Metadata } from 'next';
 import { WorkWithMe } from '@/components/WorkWithMe';
-import { MANYREQUESTS_ARTICLE_COUNT, MANYREQUESTS_SINCE } from '@/lib/portfolio/manyrequests';
+import { MANYREQUESTS_ARTICLE_COUNT, MANYREQUESTS_RANKINGS, MANYREQUESTS_SINCE } from '@/lib/portfolio/manyrequests';
 import '@/components/case-study/case-study.css';
 import './manyrequests.css';
 
 export const metadata: Metadata = {
-  title: 'ManyRequests case study, 51 B2B SaaS articles',
+  title: `ManyRequests case study, ${MANYREQUESTS_ARTICLE_COUNT} B2B SaaS articles`,
   description:
     `How I wrote ${MANYREQUESTS_ARTICLE_COUNT} product-led articles for ManyRequests and made the product useful inside the piece.`,
   alternates: {
@@ -21,7 +21,7 @@ export const metadata: Metadata = {
     siteName: 'Peace Akinwale',
     type: 'article',
     images: ogImagePath('case-study-manyrequests')
-      ? [{ url: ogImagePath('case-study-manyrequests')!, width: 1200, height: 630, alt: '51 product-led articles for ManyRequests' }]
+      ? [{ url: ogImagePath('case-study-manyrequests')!, width: 1200, height: 630, alt: `${MANYREQUESTS_ARTICLE_COUNT} product-led articles for ManyRequests` }]
       : [{ url: 'https://peaceakinwale.com/images/case-studies/manyrequests/manyrequests-homepage.png', width: 1512, height: 793, alt: 'The ManyRequests homepage' }],
   },
   twitter: {
@@ -54,9 +54,9 @@ export default function ManyRequestsCaseStudyPage() {
       <header className="cs-cover cs-page">
         <div className="gutter mx-auto max-w-[1180px]">
           <p className="cs-crumbs">
-            <Link href="/portfolio">Writing &amp; work</Link>
+            <Link href="/case-studies">Case studies</Link>
             <span aria-hidden="true"> / </span>
-            <Link href="/case-studies">Projects</Link>
+            <span>ManyRequests</span>
           </p>
           <h1>{MANYREQUESTS_ARTICLE_COUNT} product-led articles for ManyRequests</h1>
           <p className="cs-point">Articles where the product shows up inside the piece, and what they did in search.</p>
@@ -243,7 +243,7 @@ export default function ManyRequestsCaseStudyPage() {
                 <li>{MANYREQUESTS_ARTICLE_COUNT} published articles across comparison and agency operations topics</li>
                 <li>22 high-fit topics where the product could be explained and shown in the body</li>
                 <li>Strong concentration around high-intent searches where ManyRequests had real product fit</li>
-                <li>Page one visibility for &ldquo;Workfront alternatives&rdquo; and &ldquo;design annotation tools&rdquo; during review</li>
+                <li>{MANYREQUESTS_RANKINGS.length} articles on Google&rsquo;s first page on 3 November 2026, shown below</li>
                 <li>Ongoing retainer, which tells you as much as any vanity metric</li>
               </ul>
             </div>
@@ -259,6 +259,26 @@ export default function ManyRequestsCaseStudyPage() {
                   <span><b>Regine Garcia</b>Operations, Content &amp; Systems at ManyRequests</span>
                 </figcaption>
               </figure>
+
+            <div className="mr-ranks" id="rankings">
+              <h3>Where they rank on Google, 3 November 2026</h3>
+              <p>Each screenshot shows the search and the ManyRequests result in context. Positions count organic results only. Searched with US results and no personalisation. Rankings move, so these are dated, not a promise.</p>
+              <ul>
+                {MANYREQUESTS_RANKINGS.map((r) => (
+                  <li key={r.query}>
+                    <figure>
+                      <a href={r.shot} target="_blank" rel="noopener">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img src={r.shot} alt={`Google results for “${r.query}”, with the ManyRequests article in position ${r.position}`} width={800} height={600} loading="lazy" />
+                      </a>
+                      <figcaption>
+                        <b>#{r.position}</b> for &ldquo;{r.query}&rdquo;. <a href={r.url} target="_blank" rel="noopener">{r.title}</a>
+                      </figcaption>
+                    </figure>
+                  </li>
+                ))}
+              </ul>
+            </div>
 
             <div className="prose">
               <p>What worked here was more than volume. It was product judgment.</p>
