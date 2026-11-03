@@ -14,7 +14,7 @@ describe('homepage copy', () => {
     );
     expect(all).not.toContain('The same three questions run through both');
     expect(all).not.toContain('under my own byline and ghostwritten');
-    expect(copy.HERO.who.startsWith('Peace Akinwale. 44 articles for ManyRequests since 2024.')).toBe(true);
+    expect(copy.HERO.who.startsWith('Peace Akinwale. 51 articles for ManyRequests since 2024.')).toBe(true);
     expect(copy.HERO.who).not.toContain('BOFU');
     expect(all).not.toContain('most of them for an AI-search agency');
   });

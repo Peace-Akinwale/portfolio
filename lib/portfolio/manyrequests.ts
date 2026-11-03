@@ -1,10 +1,11 @@
 import type { ParsedPortfolio, PortfolioProject } from '@/lib/hashnode/parsePortfolio';
 
-// Counted from bylines on manyrequests.com (Peace's rule, 27 Sep 2026). 51 on
-// 2026-09-27; 44 on 2026-11-03, after ManyRequests re-credited six articles to
-// other writers or "ManyRequests team" and merged one into another of hers.
-// Recount there before changing it; every page that quotes the number reads it from here.
-export const MANYREQUESTS_ARTICLE_COUNT = 44;
+// The number of articles Peace wrote for ManyRequests (Peace, 3 Nov 2026: use 51).
+// 51 were under her byline on 2026-09-27. On 2026-11-03 ManyRequests had re-credited
+// six to other writers or "ManyRequests team" and merged one, so their site shows
+// 44; those seven stay off the sample lists (RETIRED_SAMPLE_PATHS) because their
+// pages no longer carry her name. Every page that quotes the number reads it from here.
+export const MANYREQUESTS_ARTICLE_COUNT = 51;
 export const MANYREQUESTS_SINCE = '2024';
 
 // Credited to Peace on manyrequests.com but missing from the WordPress portfolio page. Newest first.

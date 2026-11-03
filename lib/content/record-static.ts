@@ -67,7 +67,7 @@ export const STATIC_ENTRIES: RecordEntry[] = [
       text: 'He asks the right questions, challenges assumptions when needed, and consistently delivers content that aligns with the content strategy.',
       by: 'Regine Garcia, Operations, Content & Systems at ManyRequests, on LinkedIn',
     },
-    body: ['44 of my articles sit on the ManyRequests blog under my byline, counted on their site in November 2026.'],
+    body: ['I’ve written 51 articles for ManyRequests since 2024.'],
     links: [{ label: 'How that work went, in a case study', href: '/case-studies/manyrequests' }],
   },
   {
