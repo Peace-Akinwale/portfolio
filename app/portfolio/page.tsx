@@ -16,7 +16,7 @@ import { SITE_URL } from '@/lib/site';
 export const revalidate = 300;
 
 export const metadata: Metadata = withOg({
-  title: 'My work, newest first',
+  title: 'Writing samples by client, and a dated record of the work',
   description:
     'A dated record of the tools I built and the articles I wrote, newest first. Each one has its evidence beside it, and every writing sample is listed by client.',
   alternates: { canonical: `${SITE_URL}/portfolio` },
@@ -97,8 +97,7 @@ export default async function PortfolioPage() {
 
         <section className="border-t border-border pt-12" aria-label="More">
           <p className="go">
-            <Link href="/case-studies">All my projects</Link>
-            <Link href="/projects">Earlier projects</Link>
+            <Link href="/case-studies">The case studies</Link>
           </p>
         </section>
         <WorkWithMe

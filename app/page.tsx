@@ -6,13 +6,13 @@ import '@/components/home/home.css';
 import { QuestionNav } from '@/components/home/QuestionNav';
 import { CALENDLY_URL, EMAIL, SITE_URL } from '@/lib/site';
 import {
-  HERO, QUESTIONS, ANSWERS, DOCS_WATCH, MANYREQUESTS, AEO, FANOUT, EDITOR, ALOUD, HOW_I_WORK, OFFER,
+  HERO, QUESTIONS, ANSWERS, SECTION_NAMES, DOCS_WATCH, MANYREQUESTS, AEO, FANOUT, EDITOR, READING_APP, HOW_I_WORK, OFFER,
 } from '@/lib/content/home-copy';
 
 export const metadata: Metadata = withOg({
-  title: 'Peace Akinwale. Articles for B2B SaaS companies and agencies, and AI tools for content teams',
+  title: 'B2B SaaS content writer, and AI tools for content and SEO teams',
   description:
-    'I write, and I build AI products. Most of what I do is deciding what’s worth making and checking that it’s true. Three questions, answered with the writing and the tools.',
+    'Articles B2B SaaS buyers read before they choose a product, and AI tools content and SEO teams use every week. 51 articles for ManyRequests, AI Docs Watch, a search recorder for AI answers.',
   alternates: { canonical: SITE_URL },
 }, { key: 'home', path: '/', alt: 'Good work starts with good questions. Peace Akinwale' });
 
@@ -54,6 +54,7 @@ export default function HomePage() {
       {/* Q1 */}
       <section className="split" id="q1" aria-labelledby="q1h">
         <div className="split-paper ground-paper">
+          <p className="section-name">{SECTION_NAMES.q1}</p>
           <h2 id="q1h">Is this true?</h2>
           <p className="answer">{ANSWERS.Q1}</p>
           <p className="eyebrow"><b>Writing</b> For ManyRequests, 5 Jan 2026</p>
@@ -90,6 +91,7 @@ export default function HomePage() {
       {/* Q2 */}
       <section className="split" id="q2" aria-labelledby="q2h">
         <div className="split-paper ground-paper">
+          <p className="section-name">{SECTION_NAMES.q2}</p>
           <h2 id="q2h">What’s worth making?</h2>
           <p className="answer">{ANSWERS.Q2}</p>
           <p className="eyebrow"><b>Writing</b> On my blog, 14 Apr 2026</p>
@@ -123,6 +125,7 @@ export default function HomePage() {
       {/* Q3 */}
       <section className="split" id="q3" aria-labelledby="q3h">
         <div className="split-paper ground-paper">
+          <p className="section-name">{SECTION_NAMES.q3}</p>
           <h2 id="q3h">What does done mean?</h2>
           <p className="answer">{ANSWERS.Q3}</p>
           <p className="eyebrow"><b>Writing</b> Ghostwritten for Jabra, 29 May 2025</p>
@@ -136,24 +139,19 @@ export default function HomePage() {
         </div>
         <div className="split-night ground-night">
           <p className="mobile-q">And from the building side</p>
-          <p className="eyebrow"><b>Building</b> Aloud, my own app, 28 Sep 2026</p>
-          <h3><Link href={ALOUD.caseStudy}>Done is measured on the live app, not reported by a test.</Link></h3>
-          <div className="body"><p>{ALOUD.p1}</p></div>
-          <dl className="kv">
-            {ALOUD.kv.map((row) => (
-              <div key={row.k} className="contents">
-                <dt>{row.k}</dt>
-                <dd>{row.v}</dd>
-              </div>
-            ))}
-          </dl>
-          <div className="body"><p>{ALOUD.p2}</p></div>
-          <figure className="shot narrow">
-            <Image src={ALOUD.shot} width={390} height={740} loading="lazy" sizes="330px" alt={ALOUD.shotAlt} />
-            <figcaption>{ALOUD.shotCaption}</figcaption>
+          <p className="eyebrow"><b>Building</b> An app an agency uses to follow SEO and AEO trends, 10 Jun 2026</p>
+          <h3><Link href={READING_APP.caseStudy}>Done is measured on the live app, not reported by a test.</Link></h3>
+          <div className="body">
+            <p>{READING_APP.p1}</p>
+            <p>{READING_APP.p2}</p>
+          </div>
+          <figure className="shot">
+            <Image src={READING_APP.shot} width={1340} height={712} loading="lazy" sizes="(max-width: 760px) 100vw, 50vw" alt={READING_APP.shotAlt} />
+            <figcaption>{READING_APP.shotCaption}</figcaption>
           </figure>
           <p className="go">
-            <Link href={ALOUD.caseStudy}>The whole Aloud story</Link>
+            <Link href={READING_APP.caseStudy}>How the app came together</Link>
+            <Link href={READING_APP.article}>Five lessons from building it</Link>
           </p>
         </div>
       </section>

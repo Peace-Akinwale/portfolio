@@ -2,27 +2,27 @@
 
 import { useState } from 'react';
 
+// The options match what the services page sells (3 Nov 2026 review: the form
+// offered TOFU, MOFU and eBooks that services excludes, and a tool buyer had one
+// vague option and no honest answer to the stage question).
 const PROJECT_TYPES = [
   'Select a type',
-  'Long-form TOFU article',
-  'MOFU article',
-  'BOFU / Comparison article',
-  'Content Refresh',
-  'Monthly Retainer',
-  'AI Systems / Workflow Automation',
-  'eBook',
+  'One article, new or refreshed',
+  'Articles every month',
+  'SEO and AEO strategy for our content',
+  'A tool or workflow for our team',
   'Other',
 ];
 
 const BUDGETS = [
   'Select a range',
   'Under $1,000',
-  '$1,000–$3,000',
-  '$3,000–$5,000',
-  '$5,000+',
+  '$1,000 to $3,000',
+  '$3,000 to $8,000',
+  '$8,000 and up',
 ];
 
-const BUILDING_TYPE = 'AI Systems / Workflow Automation';
+const BUILDING_TYPE = 'A tool or workflow for our team';
 
 // The stage options follow the service picked: a building client was being asked
 // about content strategy (review, 29 Oct 2026).
@@ -36,6 +36,7 @@ const BUILDING_STAGES = [
   'We know the task we want a tool for.',
   'We repeat a process every week and want to know whether a tool would help.',
   'We have a tool that doesn\'t work the way the team needs.',
+  'We want to offer AI-assisted work to our clients and need the system behind it.',
 ];
 
 const inputClass = 'w-full rounded-md border border-border bg-background px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-accent transition';
@@ -89,7 +90,7 @@ export default function ContactForm() {
           </h1>
         </div>
         <p className="text-sm leading-relaxed text-muted-foreground mt-4 max-w-lg">
-          Grab a free 30-minute call below. No pressure, it&rsquo;s a chat. Or scroll down and send me a message instead.
+          Book a 30-minute call below. You describe the work, and I say whether I&rsquo;m the right person for it. Or scroll down and write to me instead.
         </p>
         <p className="text-sm leading-relaxed text-muted-foreground mt-2 max-w-lg">
           Or email me at <a href="mailto:akindayopeaceakinwale@gmail.com" className="underline underline-offset-2 text-foreground">akindayopeaceakinwale@gmail.com</a>
@@ -174,7 +175,7 @@ export default function ContactForm() {
               </select>
             </div>
             <div>
-              <label htmlFor="contact-budget" className={labelClass}>Budget per project</label>
+              <label htmlFor="contact-budget" className={labelClass}>Budget, per article or per project</label>
               <select id="contact-budget" name="budget" value={form.budget} onChange={handleChange} className={inputClass}>
                 {BUDGETS.map((b) => (
                   <option key={b} value={b === 'Select a range' ? '' : b}>{b}</option>
@@ -194,8 +195,8 @@ export default function ContactForm() {
           </div>
 
           <div>
-            <label htmlFor="contact-about" className={labelClass}>Tell me about your company <span style={{ color: 'var(--accent)' }}>*</span></label>
-            <textarea id="contact-about" name="about" required value={form.about} onChange={handleChange} rows={3} placeholder="What you do and who you serve..." className={inputClass + ' resize-none'} />
+            <label htmlFor="contact-about" className={labelClass}>Tell me about the work, and who it is for <span style={{ color: 'var(--accent)' }}>*</span></label>
+            <textarea id="contact-about" name="about" required value={form.about} onChange={handleChange} rows={3} placeholder="The product or the task, and who it is for" className={inputClass + ' resize-none'} />
           </div>
 
           <div>

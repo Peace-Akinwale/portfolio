@@ -6,12 +6,16 @@ const all = JSON.stringify(copy);
 describe('homepage copy', () => {
   it('keeps the approved opening and drops the sentence Peace removed', () => {
     expect(copy.HERO.heading).toBe('Good work starts with good questions.');
+    // The two lines under the heading are the 3 Nov 2026 draft: what she does
+    // and for whom comes first (three buyer readers could not tell from the
+    // first screen). Peace approves or rewrites them; the heading is hers.
     expect(copy.HERO.line).toBe(
-      'I write, and I build AI products. Most of what I do is deciding what’s worth making and checking that it’s true.',
+      'I write the articles B2B SaaS buyers read before they choose a product, and I build the AI tools content and SEO teams use every week.',
     );
     expect(all).not.toContain('The same three questions run through both');
     expect(all).not.toContain('under my own byline and ghostwritten');
-    expect(copy.HERO.who).toBe('Peace Akinwale, Lagos. I write BOFU content for B2B SaaS companies and agencies, and I build AI-assisted tools for content teams.');
+    expect(copy.HERO.who.startsWith('Peace Akinwale. 51 articles for ManyRequests since 2024.')).toBe(true);
+    expect(copy.HERO.who).not.toContain('BOFU');
     expect(all).not.toContain('most of them for an AI-search agency');
   });
 

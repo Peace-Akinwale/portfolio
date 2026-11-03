@@ -4,7 +4,7 @@ import { WorkWithMe } from '@/components/WorkWithMe';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = withOg({
-  title: 'Earlier projects | Peace Akinwale',
+  title: 'Earlier projects',
   description:
     'I decide which content marketing processes are worth automating and build the tools that do it. Each project came out of my own work as a B2B SaaS writer.',
   alternates: {

@@ -150,7 +150,7 @@ export async function generateMetadata({ params }: ArticlePageProps): Promise<Me
   }
 
   return {
-    title: 'Page not found | Peace Akinwale',
+    title: 'Page not found',
   };
 }
 

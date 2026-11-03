@@ -2,9 +2,9 @@ import Link from 'next/link';
 import { NAV_LINKS, EMAIL, LINKEDIN_URL, X_URL } from '@/lib/site';
 
 const WORK_LINKS = [
-  { href: '/portfolio#writing', label: 'Writing samples' },
-  { href: '/projects', label: 'Earlier projects' },
-  { href: '/testimonials', label: 'Nice things clients said' },
+  { href: '/portfolio#writing', label: 'Writing samples by client' },
+  { href: '/case-studies/manyrequests', label: 'The ManyRequests case study' },
+  { href: '/testimonials', label: 'What clients say' },
   { href: '/rss.xml', label: 'RSS' },
 ];
 
@@ -17,7 +17,7 @@ export function Footer({ night = false }: { night?: boolean }) {
         <div>
           <p className="display text-[26px] font-[560] leading-none">Peace Akinwale</p>
           <p className="mt-3 max-w-[34ch] text-[15px] leading-relaxed text-muted-foreground">
-            I write BOFU content for B2B SaaS companies and agencies, and I build AI-assisted tools for content teams. Writing to you from Lagos.
+            I write the articles B2B SaaS buyers read before they choose a product, and I build the AI tools content and SEO teams use every week.
           </p>
         </div>
 
@@ -53,7 +53,7 @@ export function Footer({ night = false }: { night?: boolean }) {
         </nav>
       </div>
       <div className="gutter border-t border-border py-5 text-[13.5px] text-muted-foreground">
-        &copy; {year} Peace Akinwale. Thanks for scrolling all the way down.
+        &copy; {year} Peace Akinwale
       </div>
     </footer>
   );

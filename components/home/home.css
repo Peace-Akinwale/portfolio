@@ -36,6 +36,7 @@
 .split figure.shot { max-width: 600px; }
 .split figure.shot.narrow { max-width: 330px; }
 .split .mobile-q { display: none; font-size: 14px; color: var(--muted-foreground); margin: 0 0 10px; }
+.split .section-name { font-family: var(--font-sans); font-size: 14px; font-weight: 600; letter-spacing: 0.02em; color: var(--muted-foreground); margin: 0 0 8px; }
 .split .then { margin-top: 32px; }
 
 /* how I work */

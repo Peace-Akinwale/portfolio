@@ -5,7 +5,7 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Content for Marker.io | Peace Akinwale',
+  title: 'Content for Marker.io',
   alternates: {
     canonical: 'https://peaceakinwale.com/b2b-content-for-marker.io',
   },

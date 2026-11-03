@@ -11,9 +11,9 @@ import { MANYREQUESTS_ARTICLE_COUNT, MANYREQUESTS_SINCE } from '@/lib/portfolio/
 import { SITE_URL } from '@/lib/site';
 
 export const metadata: Metadata = withOg({
-  title: 'Projects',
+  title: 'Case studies. AI tools for content and SEO teams, and the writing behind them',
   description:
-    'The decisions that mattered in each project, and what someone can do with the result. Tools for content teams, and one long writing engagement.',
+    'Tools I built for content and SEO teams, and the decisions that mattered in each. Plus one long writing engagement. Each case study comes from the project’s own notes.',
   alternates: { canonical: `${SITE_URL}/case-studies` },
 }, { key: 'case-studies', path: '/case-studies', alt: 'Case studies by Peace Akinwale' });
 
@@ -48,9 +48,17 @@ function Row({ href, date, dateLabel, kind, context, name, line, shot }: {
   );
 }
 
+// Grouped by who the tool is for, then by how much it matters to a content or
+// SEO team hiring Peace (3 Nov 2026 review: a dated list mixed client builds
+// with her own apps, and the agency work did not stand out).
+const FOR_TEAMS = ['ai-docs-watch', 'fanout-query-analysis-tool', 'reading-app', 'quality-rater', 'okf', 'what-ai-search-apps-do-before-they-answer'];
+const FOR_MYSELF = ['aloud', 'contentdb', 'reach'];
+
 export default function CaseStudiesPage() {
   const studies = listCaseStudies();
-  const built = studies.filter((s) => s.kind === 'built');
+  const bySlug = (slugs: string[]) => slugs.map((s) => studies.find((cs) => cs.slug === s)).filter((cs): cs is NonNullable<typeof cs> => !!cs);
+  const forTeams = bySlug(FOR_TEAMS);
+  const forMyself = bySlug(FOR_MYSELF);
   const wrote = studies.filter((s) => s.kind === 'wrote');
   const articleDate = (slug: string) => getLocalArticle(slug)?.publishedAt.slice(0, 10);
   const articles = [
@@ -61,23 +69,33 @@ export default function CaseStudiesPage() {
   return (
     <div className="gutter mx-auto max-w-[1180px] cs-page">
       <header className="cs-index">
-        <h1>Things I’ve built, and how they came together.</h1>
-        <p className="lead">Each one comes from the project’s own notes. If a tool is private, I’ve blurred what needs blurring. If it isn’t finished, I say so.</p>
+        <h1>Tools I built for content and SEO teams, and how they came together.</h1>
+        <p className="lead">Each one comes from the project’s own notes. Where a client’s data is private, I’ve blurred it. If a tool isn’t finished, the page says so.</p>
       </header>
 
-      <section className="cs-group" aria-labelledby="built-h">
-        <h2 id="built-h">The tools</h2>
-        <p>Newest first. Tap one to read the whole story.</p>
+      <section className="cs-group" aria-labelledby="teams-h">
+        <h2 id="teams-h">Built for content and SEO teams</h2>
+        <p>The ones an agency’s strategists use in their week. Tap one to read the whole story.</p>
         <ul className="cs-list">
-          {built.map((cs) => (
+          {forTeams.map((cs) => (
+            <Row key={cs.slug} href={`/case-studies/${cs.slug}`} date={cs.date} dateLabel={dayLabel(cs.date)} kind="built" context={cs.status} name={cs.name} line={cs.blurb} shot={firstImage(cs)} />
+          ))}
+        </ul>
+      </section>
+
+      <section className="cs-group" aria-labelledby="myself-h">
+        <h2 id="myself-h">Built for myself</h2>
+        <p>Tools for my own reading and research. The same build rules apply, and a real person walks every one before I call it done.</p>
+        <ul className="cs-list">
+          {forMyself.map((cs) => (
             <Row key={cs.slug} href={`/case-studies/${cs.slug}`} date={cs.date} dateLabel={dayLabel(cs.date)} kind="built" context={cs.status} name={cs.name} line={cs.blurb} shot={firstImage(cs)} />
           ))}
         </ul>
       </section>
 
       <section className="cs-group" aria-labelledby="wrote-h">
-        <h2 id="wrote-h">And one long writing gig</h2>
-        <p>Written up in full. The individual articles live on <Link href="/portfolio#writing" className="underline underline-offset-4">my work page</Link>.</p>
+        <h2 id="wrote-h">The writing, as a case study</h2>
+        <p>Two years of articles for one B2B SaaS client, written up in full. The articles themselves are on the <Link href="/portfolio#writing" className="underline underline-offset-4">writing page</Link>.</p>
         <ul className="cs-list">
           <Row href="/case-studies/manyrequests" date={MANYREQUESTS_SINCE} dateLabel={`since ${MANYREQUESTS_SINCE}`} kind="wrote" context="ManyRequests, B2B SaaS client portal software" name={`${MANYREQUESTS_ARTICLE_COUNT} product-led articles for ManyRequests`} line="Articles where the product shows up inside the piece, and what they did in search." shot={{ src: '/images/case-studies/manyrequests/manyrequests-editorial-scoring-sheet-preview.png', alt: 'The keyword sheet for ManyRequests, with a business potential score per topic' }} />
           {wrote.map((cs) => (

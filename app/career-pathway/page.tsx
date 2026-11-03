@@ -3,7 +3,7 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Career Assessment Tool | Peace Akinwale',
+  title: 'Career Assessment Tool',
   description:
     'Figure out the career you\'re the best fit for so you can move from uncertainty to clarity, and then from clarity to action.',
   alternates: {

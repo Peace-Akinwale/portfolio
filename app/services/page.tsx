@@ -5,7 +5,7 @@ import { CALENDLY_URL, EMAIL, SITE_URL } from '@/lib/site';
 import { OFFER } from '@/lib/content/home-copy';
 
 export const metadata: Metadata = withOg({
-  title: 'Services and prices',
+  title: 'B2B SaaS content writing and AI tools for content teams. Services and prices',
   description:
     'Bottom-of-funnel articles for B2B SaaS companies and agencies, priced per article or per month. Tool building for content teams, scoped around the work your team repeats every week.',
   alternates: { canonical: `${SITE_URL}/services` },
@@ -53,7 +53,7 @@ const FAQS = [
   { q: 'What about building a tool?', a: 'Tell me about the task first. Some tasks don’t need software, and I’ll say so. If a tool would help, we scope it together around how the team already works. I make the build decisions and log them in a decisions file, and nothing is called done until it passes a live check.' },
 ];
 
-const CLIENTS = ['ManyRequests', 'Jabra', 'Marker.io', 'HigherVisibility', 'Pangea.ai', 'Spicy Margarita'];
+const CLIENTS = ['ManyRequests', 'Exceed SEO', 'Jabra', 'Marker.io', 'HigherVisibility', 'Pangea.ai', 'Spicy Margarita'];
 
 export default function ServicesPage() {
   return (
@@ -62,7 +62,7 @@ export default function ServicesPage() {
         <h1 className="max-w-[18ch]">Writing with me, and building with me.</h1>
         <p className="serif mt-5 max-w-[60ch] text-[1.2rem] leading-[1.45]">{SERVICE_COPY}</p>
         <p className="mt-3 max-w-[60ch] text-[15px] text-muted-foreground">
-          Here’s who I’ve written for. {CLIENTS.slice(0, -1).join(', ')} and {CLIENTS[CLIENTS.length - 1]}. The evidence, and the tools, are on <Link href="/portfolio" className="underline underline-offset-4">the work page</Link>.
+          Here’s who I’ve written for. {CLIENTS.slice(0, -1).join(', ')} and {CLIENTS[CLIENTS.length - 1]}. The articles are on the <Link href="/portfolio#writing" className="underline underline-offset-4">writing page</Link>, the ManyRequests work is a <Link href="/case-studies/manyrequests" className="underline underline-offset-4">case study</Link>, and the tools are under <Link href="/case-studies" className="underline underline-offset-4">case studies</Link>.
         </p>
       </section>
 
@@ -78,7 +78,7 @@ export default function ServicesPage() {
           <a className="button button-line" href={CALENDLY_URL} rel="noopener" target="_blank">Book a 30-minute call</a>
         </div>
         <div className="border-t border-border bg-[var(--accent-wash)]" id="building">
-          <h2>Building</h2>
+          <h2 id="building">Building</h2>
           <p>{TOOL_CTA}</p>
           <p className="note">Scoped per project after we’ve talked about the task. I write the requirements and decide the architecture. Then I build the tool and set its security rules, directing coding agents through the work.</p>
           <p className="note">Every tool I build keeps a decisions file, and nothing is called done until a real person has used it on the live app. The case studies show what that looks like.</p>

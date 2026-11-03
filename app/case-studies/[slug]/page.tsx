@@ -64,16 +64,16 @@ export default async function CaseStudyPage({ params }: { params: Promise<{ slug
       <header className="cs-cover cs-page">
         <div className="gutter mx-auto max-w-[1180px]">
           <p className="cs-crumbs">
-            <Link href="/portfolio">Writing &amp; work</Link>
+            <Link href="/case-studies">Case studies</Link>
             <span aria-hidden="true"> / </span>
-            <Link href="/case-studies">Projects</Link>
+            <span>{cs.name}</span>
           </p>
           <div className={shot ? 'cs-cover-grid' : undefined}>
             <div>
               <h1>{cs.name}</h1>
               <p className="cs-point">{cs.blurb}</p>
               <dl className="cs-strip">
-                <div><dt>Who can use it</dt><dd>{cs.status}</dd></div>
+                <div><dt>Who uses it</dt><dd>{cs.status}</dd></div>
                 <div><dt>Reading time</dt><dd>about {cs.readingMinutes} min</dd></div>
               </dl>
               {cs.links.length > 0 && (
@@ -131,11 +131,19 @@ export default async function CaseStudyPage({ params }: { params: Promise<{ slug
             ))}
           </ul>
         </section>
-        <WorkWithMe
-          heading="Want a tool like this for your team?"
-          body="Tell me about the work your team repeats every week. On a 30-minute call I’ll tell you whether a tool would take it off their plate, and what building it would involve."
-          secondary={{ label: 'See everything I’ve worked on', href: '/portfolio' }}
-        />
+        {cs.kind === 'built' ? (
+          <WorkWithMe
+            heading="Want a tool like this for your team?"
+            body="Tell me about the work your team repeats every week. On a 30-minute call I’ll tell you whether a tool would take it off their plate, and what building it would involve."
+            secondary={{ label: 'How building with me works', href: '/services#building' }}
+          />
+        ) : (
+          <WorkWithMe
+            heading="Want articles like these for your product?"
+            body="Tell me about the product and the readers you want to reach. On a 30-minute call I’ll say whether I’m the right writer for it."
+            secondary={{ label: 'Writing prices and what you get', href: '/services#prices' }}
+          />
+        )}
       </div>
     </>
   );

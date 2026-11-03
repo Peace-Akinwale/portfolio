@@ -4,10 +4,21 @@
 // docs/qa/copy-rules-2026-10-28.md at her request. The originals are in
 // docs/superpowers/specs/2026-10-25-site-rebuild-brief.md.
 
+// Draft, 3 Nov 2026, for Peace's approval. The heading is hers (she liked it on
+// 23 Oct). The two lines under it now say what she does and for whom before
+// anything else, because three buyer readers could not tell from the first screen.
 export const HERO = {
   heading: 'Good work starts with good questions.',
-  line: 'I write, and I build AI products. Most of what I do is deciding what’s worth making and checking that it’s true.',
-  who: 'Peace Akinwale, Lagos. I write BOFU content for B2B SaaS companies and agencies, and I build AI-assisted tools for content teams.',
+  line: 'I write the articles B2B SaaS buyers read before they choose a product, and I build the AI tools content and SEO teams use every week.',
+  who: 'Peace Akinwale. 51 articles for ManyRequests since 2024. AI Docs Watch, public, checked every day. A search recorder and a page audit tool an SEO agency’s strategists use. The three questions below are how I decide what’s worth making and whether it’s true.',
+};
+
+// One plain line above each question, so a reader knows what the section is
+// before reading the answer (3 Nov 2026 review).
+export const SECTION_NAMES = {
+  q1: 'How I check what I write and build',
+  q2: 'How I choose what to make',
+  q3: 'What finished looks like',
 };
 
 export const QUESTIONS = [
@@ -102,6 +113,11 @@ export const ALOUD = {
 export const READING_APP = {
   // brief
   p1: 'People can listen to a digest or star a useful post to return to later. Those saved posts give the team material to discuss and draw on when creating new content. The app handles the recurring collection and preparation, while people decide what is worth using.',
+  p2: 'I don’t call a build done until a real person has walked it on the live app. The first notification this app sent said a post was in the feed and the week’s roundup. It wasn’t, and that became the first lesson in the article.',
+  shot: '/case-studies/reading-app/reader-01-feed.png',
+  shotAlt: 'The reading app’s feed with unread and starred posts and the reader’s own refresh control. Identifying information is blurred.',
+  shotCaption: 'The feed, with unread and starred views. The reader chooses when to refresh, so new posts never move what they are reading.',
+  caseStudy: '/case-studies/reading-app',
   article: '/the-success-message-was-the-bug',
   articleTitle: 'The success message was a bug: five lessons from building an app an agency uses to follow SEO and AEO trends',
 };
