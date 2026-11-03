@@ -133,7 +133,7 @@ export default function ContentDbPage() {
           >
             Open the live app
           </a>
-          <span className="self-center text-sm text-muted-foreground">Free. Ask me for an invite to sign up.</span>
+          <span className="self-center text-sm text-muted-foreground">Free to try. New accounts come with $2 of AI usage.</span>
         </div>
       </header>
 
@@ -343,7 +343,7 @@ export default function ContentDbPage() {
           <div className="flex flex-col gap-3">
             <h2 className="text-2xl font-bold">Use contentDB</h2>
             <p className="max-w-2xl leading-relaxed text-muted-foreground">
-              contentDB is live and free. Sign-up needs an invite from me. The product works as a standalone web app and as an MCP-connected system for AI-assisted research and writing.
+              contentDB is live. Anyone can sign up, and new accounts come with $2 of AI usage. The product works as a standalone web app and as an MCP-connected system for AI-assisted research and writing.
             </p>
             <div>
               <a

@@ -3,7 +3,7 @@ title: "ContentDB: collect research and question your sources"
 name: "ContentDB"
 blurb: "Your articles and transcripts in one library you can search from a chat or from your AI assistant."
 kind: built
-status: "my own app, sign-up by invite"
+status: "my own app, open to anyone"
 date: 2026-04-15
 summary: "I built ContentDB to keep articles and video transcripts in one searchable library. It organises sources by client and adds a chat where you can bring a particular source into your question. It also gives a connected AI assistant tools to search the library and open a complete source."
 voice: informal
