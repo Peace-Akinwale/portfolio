@@ -5,6 +5,7 @@ blurb: "Pulls the posts worth reading into one feed you can listen to, and starr
 kind: built
 status: "An SEO agency’s founder and team"
 date: 2026-06-10
+published: 2026-10-25
 summary: "An app an SEO agency uses to follow SEO and AEO trends. It collects posts from the people and sources the founder follows, lets him listen to digests, and turns the posts he stars into the week's newsletter roundup. The first version went live the night I started it, and it has run for the founder, his team and the agency's course students since."
 voice: informal
 notion_url: https://app.notion.com/p/403992da7a578154a913e2c0f47463f7

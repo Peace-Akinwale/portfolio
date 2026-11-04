@@ -5,6 +5,7 @@ blurb: "Shows you an AI platform’s docs as they were before and after each cha
 kind: built
 status: "The agency’s founder, every day in Slack. Public since October 2026"
 date: 2026-07-22
+published: 2026-10-25
 summary: "AI Docs Watch is a public monitor of six AI platforms' documentation. It keeps every captured version of a page and shows the before and after on the publisher's own page, with a short report of what changed and when it takes effect. I built the first version in one evening for an SEO agency's founder, who now gets its reports in Slack every day. It caught Anthropic's usage policy rewrite on 14 October, four weeks before the new policy takes effect. The first report on it covered the wrong part, and fixing that changed how every report is written."
 voice: informal
 notion_url: https://app.notion.com/p/403992da7a57817c8a0ad5105de78b0e

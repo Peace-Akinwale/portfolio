@@ -5,6 +5,7 @@ blurb: "What AI search apps send and receive while they answer you, explained fi
 kind: built
 status: "Public reference"
 date: 2026-10-02
+published: 2026-10-25
 summary: "A public reference to what AI search apps send and receive while they answer you. It covers every internal label ChatGPT, Gemini, Google AI Mode, Claude, Perplexity and Brave use in the background, explained from real recordings. My team recorded and cleaned 284 conversations, and I built the reference with the agency's founder in a few days. He now owns and edits it."
 voice: informal
 notion_url: https://app.notion.com/p/403992da7a5781549c62ef65f6569916

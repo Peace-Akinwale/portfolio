@@ -22,6 +22,7 @@ export interface CaseStudy {
   status: string;
   date: string;
   built?: string; // the label the strip shows when a build spans months, e.g. "Aug to Sep 2026"
+  published?: string; // YYYY-MM-DD, the day the case study went onto the site; shown on the page
   summary: string;
   cover?: { src: string; alt: string };
   for?: string;
@@ -62,6 +63,7 @@ export function readCaseStudyFile(file: string): CaseStudy {
     status: asString(data.status),
     date: asString(data.date),
     built: data.built ? asString(data.built) : undefined,
+    published: data.published ? asString(data.published) : undefined,
     summary: smartQuotes(asString(data.summary)),
     cover: cover ? { src: `${imageBase}/${cover}`, alt: asString(data.cover_alt, asString(data.title, slug)) } : undefined,
     for: data.for ? asString(data.for) : undefined,

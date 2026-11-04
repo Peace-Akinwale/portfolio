@@ -5,6 +5,7 @@ blurb: "A founder’s notes turned into linked notes the team can ask, and every
 kind: built
 status: "An SEO agency’s team"
 date: 2026-07-02
+published: 2026-10-25
 summary: "An OKF a team can ask. I turned an SEO agency founder's archive, about 1.23 million words across 534 Notion pages, into a knowledge base of linked notes in Google's Open Knowledge Format. The team can ask it questions and every answer cites the note and the source behind it. The hard part was trust, so a person's review and a scripted source check carry different labels."
 voice: informal
 notion_url: https://app.notion.com/p/403992da7a578116ae4ee9a53710f316

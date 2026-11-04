@@ -5,6 +5,7 @@ blurb: "My audio library for the articles I keep meaning to read, with a reading
 kind: built
 status: "Open to anyone who signs up"
 date: 2026-06-15
+published: 2026-10-25
 summary: "Aloud is my audio reader. Paste a link or upload a PDF, EPUB or Word file and hear it read, with a reading view and saved passages. I built it for myself and my wife and later opened it to anyone. Three decisions shaped it. Keep the author's words as written, prepare a whole item before you ask for it, and put a ceiling on what each person can spend."
 voice: informal
 notion_url: https://app.notion.com/p/403992da7a578174ba0dea8a39cb42fc

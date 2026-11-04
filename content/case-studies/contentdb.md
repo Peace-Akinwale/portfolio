@@ -5,6 +5,7 @@ blurb: "Your articles and transcripts in one library you can search in the app o
 kind: built
 status: "Open to anyone who signs up"
 date: 2026-03-03
+published: 2026-10-25
 summary: "ContentDB is my research library. It keeps a company's articles, podcasts, transcripts and PDFs in one place, and an AI assistant can search it through MCP, so a writer gets the exact passage a leader wrote or said instead of something found online. I built it for my own articles and later rebuilt it as a quote checker for writers. Anyone can sign up, with $2 of AI usage to start."
 voice: informal
 notion_url: https://app.notion.com/p/403992da7a5781cfaff1de30c9c49f2f

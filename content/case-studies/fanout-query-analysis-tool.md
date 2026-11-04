@@ -6,6 +6,7 @@ kind: built
 status: "An SEO agency’s founder and strategists"
 date: 2026-08-26
 built: "Aug to Sep 2026"
+published: 2026-10-25
 summary: "The fanout query analysis tool records what happens behind an AI answer. It shows the searches ChatGPT, Claude or Perplexity ran, the pages that came back, and the pages that got cited. I built it for an SEO agency's strategists, starting from a teammate's bookmarklet. It became a Chrome extension with a shared dashboard, plus a service that runs whole prompt sets through the API and labels them as simulated."
 voice: informal
 notion_url: https://app.notion.com/p/403992da7a578155bc78c7d8e436e561

@@ -5,7 +5,7 @@ import { getAllPostSlugs, getStaticPage, getAllStaticPageSlugs } from '@/lib/has
 import '@/components/article/article.css';
 import { loadPost, loadAllPosts, isLocalArticle, relatedTo } from '@/lib/content/posts';
 import { listLocalArticles } from '@/lib/content/articles';
-import { formatReadingTime } from '@/lib/hashnode/utils';
+import { formatDate, formatReadingTime } from '@/lib/hashnode/utils';
 import { parsePortfolioHtml } from '@/lib/hashnode/parsePortfolio';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
@@ -356,12 +356,12 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
         <header className="article-head">
           <p className="kicker">
             <Link href="/blog">Blog</Link>
-            {post.tags && post.tags.length > 0 && <> · {post.tags[0].name}</>}
           </p>
           <h1>{post.title}</h1>
           {post.brief && <p className="standfirst">{post.brief}</p>}
           <p className="meta">
             <span>By <Link href="/about" className="underline underline-offset-4 hover:text-accent" rel="author">{post.author.name}</Link></span>
+            <time dateTime={post.publishedAt}>{formatDate(post.publishedAt, 'd MMMM yyyy')}</time>
             <span>{formatReadingTime(post.readTimeInMinutes)}</span>
           </p>
           {post.coverImage?.url && (

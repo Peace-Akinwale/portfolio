@@ -30,6 +30,7 @@ function Row({ cs }: { cs: CaseStudy }) {
       </Link>
       <div>
         <h3><Link href={href}>{cs.name}</Link></h3>
+        {cs.published && <p className="cs-row-date"><time dateTime={cs.published}>{new Date(cs.published + 'T00:00:00Z').toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' })}</time></p>}
         {lines ? (
           <>
             <p>{lines.problem}</p>

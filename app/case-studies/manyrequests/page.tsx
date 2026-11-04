@@ -60,6 +60,8 @@ export default function ManyRequestsCaseStudyPage() {
           </p>
           <h1>{MANYREQUESTS_ARTICLE_COUNT} product-led articles for ManyRequests</h1>
           <p className="cs-point">Articles where the product shows up inside the piece, and what they did in search.</p>
+          {/* First published 25 Apr 2026 (git history of this page). */}
+          <p className="cs-date"><time dateTime="2026-04-25">25 Apr 2026</time></p>
           <nav className="cs-index-nav" aria-label="In this case study">
             <ul>
               {CHAPTERS.map((c) => (

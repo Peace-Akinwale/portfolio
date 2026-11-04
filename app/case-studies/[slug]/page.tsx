@@ -88,6 +88,7 @@ export default async function CaseStudyPage({ params }: { params: Promise<{ slug
             <div>
               <h1>{cs.name}</h1>
               <p className="cs-point">{cs.blurb}</p>
+              {cs.published && <p className="cs-date"><time dateTime={cs.published}>{new Date(cs.published + 'T00:00:00Z').toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' })}</time></p>}
               {cs.links.length > 0 && (
                 <p className="cs-links">
                   {cs.links.map((l) => <Href key={l.href} href={l.href} className="button cs-button">{l.label}</Href>)}

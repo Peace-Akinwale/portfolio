@@ -5,6 +5,7 @@ blurb: "When an AI coding session needs my Mac’s screen, it hands the job to R
 kind: built
 status: "Personal tool"
 date: 2026-09-02
+published: 2026-10-25
 summary: "Reach is a personal tool. When an AI coding session hits a step that only works on my Mac's screen, like a signed-in browser or an extension's own page, it hands the step to a Claude Code session on the right Mac and gets the result back. It runs on my Claude subscription, not an API key, starts only when a task is waiting, and stops for anything that needs a password."
 voice: informal
 notion_url: https://app.notion.com/p/403992da7a5781c28d08f130a8388772

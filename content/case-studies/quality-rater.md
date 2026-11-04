@@ -5,6 +5,7 @@ blurb: "Checks every page against Google’s quality guidelines and points at th
 kind: built
 status: "An SEO agency’s founder and strategists, first version"
 date: 2026-10-05
+published: 2026-10-25
 summary: "Quality Rater reads every page on a site against Google's Search Quality Rater Guidelines, gives each one a provisional rating, and points at the exact sentence behind every concern. I built it for an SEO agency's strategists and writers in 116 commits over about three weeks. It's a first version, and nobody has yet measured how often its ratings agree with a person's."
 voice: informal
 notion_url: https://app.notion.com/p/403992da7a5781f583bef06d8253072c
