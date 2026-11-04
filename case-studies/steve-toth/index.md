@@ -5472,3 +5472,34 @@ A colleague built the email sign-up the founder asked for on the public docs-cha
 - **"It works" was tested as a subscriber would test it.** A form that confirms a sign-up is not a mailing list; sending a real address through it is what showed the second half was missing, before readers noticed.
 
 ---
+
+## 2026-11-04, fixing a missing roundup article by retiring an old product rule
+
+Steve selected four articles twice and received only three. The fourth link had been saved correctly; an earlier requirement for three articles still silently trimmed the selection before the writer saw it.
+
+### What shipped
+
+- **The selected list now determines roundup size and order.** Removed the obsolete cap from first generation, regeneration and shared composition, along with automatic deferral of the trimmed items. Explicit exclusions remain effective, and three is still the fallback target for an empty lane.
+- **The fix reached both the web app and scheduled crawler.** Railway deployments completed, the crawler's source hash matched the fix, and the served web service worker identified the fixed commit again during handoff verification.
+- **The existing draft was repaired, not duplicated.** A backed-up, conditionally saved rewrite retained the original sources and added Charly Wargnier's selected article last. Independent readback confirmed the saved source order and matching body; publication remained under Steve's control.
+- **Regression coverage checks what enters the writer and what is saved.** The initial reproduction failed at the selection boundaries. The fresh final suite passed 1,821 tests across 169 files.
+
+### Decisions worth recording
+
+- **Retire the obsolete rule instead of raising the cap.** Changing three to four would move the same defect to the next larger selection. The user's chosen list is now authoritative.
+- **Distinguish defaults from constraints.** An empty-lane fallback can help a user get started without silently overriding an explicit selection.
+- **Verify the existing artifact separately from the code.** A deployed fix would improve future writes but leave the reported draft incomplete. The repair guarded against overwriting intervening edits and saved the body and source metadata together.
+
+### Frictions and course corrections
+
+- **A once-explicit requirement had become a silent failure.** The July instruction said three articles; the current picker allowed more. Existing cap tests protected the old behavior, so the new tests had to assert the current selection contract.
+- **Local environment settings leaked into the proposed reader links.** The preview contained localhost URLs. They were corrected to the public origin before saving and the saved links were checked.
+- **Deployment had more than one surface.** The web followed Git, while the crawler required a snapshot upload. Both were verified; a web-only deploy would leave the scheduled writer unchanged.
+- **Client acceptance remains separate.** Peace sent Steve the repaired draft link. No independent approval from Steve was observed, and the unrelated Chrome background-notification question was not diagnosed as part of this fix.
+
+### Why this matters for the portfolio
+
+- A dropped item in an AI workflow can be a deterministic product rule upstream of the model. Compare the user's selection, writer input and persisted result before changing prompts or blaming retrieval.
+- Closing an incident includes repairing the affected artifact and confirming every execution surface, not just passing tests or shipping code.
+
+---
