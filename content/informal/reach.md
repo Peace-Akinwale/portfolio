@@ -1,49 +1,35 @@
 ## Portfolio summary
 
-Reach is a personal tool I built so my AI coding sessions stop waiting on me. Some steps only work on my Mac's screen, like a signed-in browser or an extension's own page. When a session hits one, Reach starts a Claude Code session on the Mac I pick. Its dedicated browser handles the workflows I've tested. Desktop apps come next.
+Reach is a personal tool. When an AI coding session hits a step that only works on my Mac's screen, like a signed-in browser or an extension's own page, it hands the step to a Claude Code session on the right Mac and gets the result back. It runs on my Claude subscription, not an API key, starts only when a task is waiting, and stops for anything that needs a password.
 
 ## Case study
 
-### Hand computer tasks to a session on the right Mac
+### Cloud coding sessions stall on steps that need a real Mac
 
-Coding sessions get stuck on steps that need a browser on my Mac, like loading an extension to test it. I built Reach to pass that step to a local session and send the result back. That cuts out the manual handoff between the coding conversation and the computer. A video demo gave me the idea, and I designed my own version.
+Coding sessions in the cloud kept stalling on steps that need a real Mac, like loading an extension to test it or checking a page while signed in. Each time, I was the handoff. "Anytime I am working in any session, and the typical Claude model can't use computer use for some tasks, I can delegate it to Reach."
 
-[[img]]
+The idea came from a demo by Dan Shipper. My version had one hard constraint. It runs on my Claude subscription. If a design needed an API key, it was the wrong design.
 
-### Send a task to the Mac that can run it
+### A normal Claude Code session is the hands, and it stops for passwords
 
-[[img]]
+**An unmodified Claude Code session is the hands.** The website takes the task and the Mac runs it, in a normal Claude Code session that receives tasks through a channel. Nothing is billed per call.
 
-A session says what outcome it needs and picks the Mac. Reach queues the work and starts a local Claude Code session when it's needed. It closes idle sessions after 15 minutes, so the computer isn't keeping an agent running between tasks.
-
-The local session uses whatever tools that Mac has, and the tested browser workflows run in a dedicated Chrome profile. It sends the result back to the session that asked, so the original work can carry on without me relaying anything.
-
-A status page and a small overlay show what the session is doing. I can stop it or give an approval it asks for without piecing the task back together from a terminal log.
+**Sign-ins stop for me.** I wanted Reach to handle chores like signing a command-line tool in. I drew a line. Device codes and consent screens are fine, but typing a password or a two-factor code stops the task and asks me. The overlay on my screen shows when it's waiting.
 
 [[img]]
 
-### Pause for passwords and sign-ins
+**Start only when needed.** The first host ran all the time. It restarted itself while paused and sat on a warning for about 34 hours while the watchdog reported it as running. "Reach should only start when it is needed. Not turned on by default." A launcher now checks the queue every 30 seconds, starts a session when there's a task, and stops it after 15 idle minutes.
 
-I set the safety rules first, because the tool acts on a real computer with real accounts.
+**One Mac per task, chosen by me.** I have two Macs. "Each Mac should have its own config." When a task is sent, I pick the Mac, rather than letting the first free one grab it or waking both.
 
-- **It never types a password** or completes a sign-in. It won't touch a CAPTCHA or a two-factor code either, and calls me instead.
-- **Screenshots pause while it waits for me**, because that's when I'm typing a password. An early review caught frames being uploaded at that moment, and I made the pause a rule.
-- **The local channel the overlay talks to needs a token** and refuses requests from web pages. A site open in the browser can't send it commands.
-- **It runs on my own subscription** with no API keys, and only on my Macs.
+**Cut the hosting bill.** The website deploys from GitHub and sleeps when idle, which moved it under Railway's cheapest allowance and ended hand-deploys.
+
+### Two real tasks ran end to end, and the first click still hasn't
+
+It ran its first two real tasks end to end. One returned the Mac's system version, and one loaded an extension into the Chrome profile Reach drives.
+
+The instructions the session receives were being cut at 2,048 characters, and the cut removed the line "Never type passwords or secrets. Never complete a sign-in." I rewrote them to 1,787 characters and added a test that fails if they grow past the limit. A host on the other Mac later uploaded about 650 screenshots on a single task while the database struggled.
 
 [[img]]
 
-### Keep local sessions from running when they don't need to
-
-- **Wake only when needed.** The first version ran around the clock, and once sat stuck on a startup warning for 34 hours. Reach now starts a session only for a queued task. It accepts that one known warning itself, and no other.
-- **One Mac per task.** With two Macs, waking both for every task wasted a startup. Now each task names its Mac, and each Mac runs one task at a time.
-- **A dedicated browser for automation.** The browser automation I was using couldn't open extension pages or Chrome's own settings, and Chrome won't let anything remote-control a person's main profile. So Reach uses a separate Chrome profile it can drive without those limits, and it reloads the extensions I'm testing every time it starts.
-- **Keep the safety instructions inside the space available.** A limit on instruction length had cut off the password rule. I shortened the instructions and added a length check, so that rule always makes it into what the session receives.
-
-### What the build delivered
-
-I built Reach from a written spec and four plans, directing AI coding agents through the build and its review passes. That took two days in early September and a third in late September.
-
-It runs on two Macs. The tasks it's finished so far include reading a Mac's system version and loading a browser extension into its own Chrome profile. That dedicated browser has done the most real work. I've used it to record AI search sessions for research and to test the browser extensions I build.
-
-The next step is finishing workflows inside desktop apps. That still needs the right macOS accessibility access and testing from start to finish. The browser work already makes for a useful handoff, and I'm not claiming the wider desktop workflow is done.
+Reach has 462 tests across its parts. It hasn't yet driven a click through computer use, because the Mac's accessibility permission has never been granted to it. I'm its only user.

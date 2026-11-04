@@ -1,4 +1,4 @@
-/* Case-study pages and the case-study index. Title in Sprat, prose in Newsreader
+/* Case-study pages and the case-study index. Title in Fraunces, prose in DM Sans
    at 66ch, figures with sans captions, a facts column on wide screens. */
 
 /* No green on these pages (Peace, 2026-10-25): the site accent is the Dated
@@ -9,9 +9,9 @@
 .cs-cover { background: var(--card); color: var(--foreground); padding: 22px 0 40px; margin: 10px clamp(8px, 1.4vw, 20px) 0; border-radius: 28px; }
 .cs-cover a { color: inherit; }
 .cs-crumbs { font-size: 14px; margin: 0 0 40px; color: var(--muted-foreground); }
-.cs-crumbs a { text-decoration: underline; text-underline-offset: 3px; text-decoration-color: var(--sun); }
-.cs-cover h1 { color: var(--foreground); font-size: clamp(2.6rem, 6vw, 5.2rem); font-weight: 500; font-stretch: 128%; line-height: .98; letter-spacing: -0.015em; max-width: 14ch; margin: 0 0 22px; }
-.cs-point { font-family: var(--font-serif); font-optical-sizing: auto; font-size: clamp(1.25rem, 2vw, 1.6rem); line-height: 1.35; max-width: 36ch; margin: 0 0 32px; color: var(--foreground); }
+.cs-crumbs a { text-decoration: underline; text-underline-offset: 3px; text-decoration-color: var(--link-rule); }
+.cs-cover h1 { color: var(--foreground); max-width: 16ch; margin: 0 0 18px;  }
+.cs-point { font-size: clamp(1.15rem, 1.6vw, 1.35rem); line-height: 1.4; max-width: 40ch; margin: 0 0 28px; color: var(--foreground); }
 .cs-strip { display: flex; flex-wrap: wrap; gap: 10px; margin: 0 0 22px; padding: 0; font-size: 14.5px; }
 .cs-strip > div { background: var(--background); border-radius: 14px; padding: 10px 16px; }
 .cs-strip dt { color: var(--muted-foreground); font-size: 13px; margin-bottom: 2px; }
@@ -22,7 +22,7 @@
 .cs-index-nav p { font-size: 15px; color: var(--muted-foreground); margin: 0 0 10px; }
 .cs-index-nav ul { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 40px; }
 .cs-index-nav li a { display: block; padding: 9px 0; border-top: 1px solid var(--border); text-decoration: none; font-size: 15.5px; line-height: 1.35; }
-.cs-index-nav li a:hover { text-decoration: underline; text-decoration-color: var(--sun); }
+.cs-index-nav li a:hover { text-decoration: underline; text-decoration-color: var(--link-rule); }
 
 /* cover preview, 29 Oct 2026: the first screenshot in the study sits beside the
    title so the product shows before the walkthrough. */
@@ -34,32 +34,32 @@
 .cs-shot.is-portrait img { object-position: top center; }
 @media (max-width: 900px) { .cs-cover-grid { grid-template-columns: 1fr; gap: 24px; } .cs-cover-shot { max-width: 520px; } .cs-cover-shot.is-portrait { max-width: 220px; justify-self: start; } }
 
-/* in short */
-.cs-short { max-width: 900px; margin: 40px 0 8px; padding: 28px 32px; border-radius: 24px; background: var(--card); }
-.cs-short-label { display: inline-block; font-size: 14px; color: var(--foreground); font-weight: 600; margin: 0 0 12px; padding: 3px 12px; border-radius: 999px; background: var(--sun-wash); }
-.cs-short-text { font-family: var(--font-serif); font-optical-sizing: auto; font-size: clamp(1.2rem, 1.8vw, 1.45rem); line-height: 1.45; margin: 0; }
+/* lede: the summary, as the first paragraph of the page */
+.cs-lede { max-width: 66ch; margin: 44px 0 8px; font-size: clamp(1.2rem, 1.7vw, 1.4rem); line-height: 1.45; }
 
 /* chapters: one column, a rule between them */
 .cs-chapter { max-width: 760px; border-top: 1px solid var(--border); padding: 40px 0 8px; }
 .cs-chapter:first-of-type { border-top: 0; }
-.cs-chapter h2 { font-size: clamp(1.6rem, 2.6vw, 2.2rem); font-weight: 520; max-width: 24ch; margin: 0 0 16px; }
+.cs-chapter h2 { font-size: clamp(1.5rem, 2.3vw, 2rem); font-weight: 500; max-width: 26ch; margin: 0 0 16px; }
 .cs-chapter .prose { max-width: 66ch; }
 .cs-chapter .prose figure { margin: 1.5rem 0 2rem; }
 .cs-chapter .prose figure img { width: 100%; }
 html:has(.cs-chapter) { scroll-padding-top: 80px; }
 
-/* related */
+/* related, one line */
+.cs-next-line { border-top: 1px solid var(--border); padding: 28px 0 40px; margin: 24px 0 0; font-size: 15.5px; }
+.cs-next-line a { text-decoration: underline; text-underline-offset: 3px; text-decoration-color: var(--link-rule); }
 .cs-next { border-top: 1px solid var(--border); padding: 40px 0 56px; }
 .cs-next h2 { font-size: 1.6rem; font-weight: 520; margin: 0 0 16px; }
 .cs-next ul { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
 .cs-next li a { display: block; text-decoration: none; padding: 18px 20px; border-radius: 18px; background: var(--card); }
 .cs-next li a:hover b { text-decoration: underline; }
-.cs-next li b { font-family: var(--font-display); font-stretch: 122%; font-weight: 540; font-size: 1.35rem; line-height: 1.1; display: block; margin-bottom: 6px; }
+.cs-next li b { font-family: var(--font-display); font-weight: 540; font-size: 1.35rem; line-height: 1.1; display: block; margin-bottom: 6px; }
 .cs-next li span { font-family: var(--font-serif); font-size: 1rem; line-height: 1.45; color: var(--muted-foreground); display: block; }
 
 /* index */
 .cs-index { padding: 48px 0 32px; }
-.cs-index h1 { font-size: clamp(2rem, 4.2vw, 3.4rem); font-weight: 520; max-width: 16ch; margin: 0 0 14px; }
+.cs-index h1 { max-width: 16ch; margin: 0 0 14px;  }
 .cs-index .lead { font-family: var(--font-serif); font-optical-sizing: auto; font-size: 1.2rem; max-width: var(--measure); margin: 0; }
 .cs-group { padding: 36px 0 8px; }
 .cs-group h2 { font-size: 1.2rem; font-family: var(--font-sans); font-weight: 600; margin: 0 0 6px; letter-spacing: 0; }
@@ -91,7 +91,6 @@ html:has(.cs-chapter) { scroll-padding-top: 80px; }
   .cs-index-nav { display: none; }
   .cs-cover { padding: 16px 0 32px; }
   .cs-crumbs { margin-bottom: 28px; }
-  .cs-cover h1 { font-stretch: 125%; }
   .cs-row.has-shot { grid-template-columns: 1fr; gap: 18px; }
   .cs-shot { order: -1; width: 100%; }
   .cs-row { padding: 22px 0 26px; }
@@ -108,3 +107,27 @@ html:has(.cs-chapter) { scroll-padding-top: 80px; }
 .mr-ranks figcaption { font-family: var(--font-sans); font-size: 14px; margin-top: 8px; color: var(--muted-foreground); }
 .mr-ranks figcaption b { color: var(--foreground); }
 @media (max-width: 700px) { .mr-ranks ul { grid-template-columns: 1fr; } }
+
+/* index cards, 4 Nov 2026: one screenshot, the name, the problem, the decision, who uses it. */
+.cs-also { margin: 22px 0 0; font-size: 16px; max-width: var(--measure); }
+.cs-also a { text-decoration: underline; text-underline-offset: 3px; text-decoration-color: var(--link-rule); }
+.cs-group > p a { text-decoration: underline; text-underline-offset: 3px; text-decoration-color: var(--link-rule); }
+
+/* 4 Nov 2026: a tall phone screenshot keeps its shape without filling the screen. */
+.cs-chapter .prose figure img { width: auto; max-width: 100%; max-height: 640px; margin: 0 auto; display: block; }
+
+/* Case-study index as blog-style rows (Peace, 4 Nov 2026): one study per line,
+   a hairline between them, the study's own screenshot on the left. */
+.cs-rows { list-style: none; margin: 0; padding: 0; }
+.cs-row { display: grid; grid-template-columns: 260px minmax(0, 1fr); gap: 8px 40px; border-top: 1px solid var(--border); padding: 24px 0 28px; }
+.cs-row-shot { position: relative; display: block; aspect-ratio: 16 / 10; border-radius: 12px; overflow: hidden; border: 1px solid var(--border); background: var(--card); align-self: start; }
+.cs-row-shot img { object-fit: cover; object-position: top left; }
+.cs-row h3 { font-size: clamp(1.4rem, 2.4vw, 1.9rem); font-weight: 520; margin: 0 0 8px; max-width: 26ch; }
+.cs-row h3 a { text-decoration: none; }
+.cs-row h3 a:hover { text-decoration: underline; text-decoration-thickness: 2px; text-decoration-color: var(--link-rule); }
+.cs-row p { font-family: var(--font-serif); font-optical-sizing: auto; font-size: 1.05rem; line-height: 1.5; margin: 0 0 8px; max-width: 60ch; }
+.cs-row .tagline { font-family: var(--font-sans); font-size: 13.5px; color: var(--muted-foreground); margin: 0; }
+@media (max-width: 700px) {
+  .cs-row { grid-template-columns: 1fr; gap: 14px; }
+  .cs-row-shot { aspect-ratio: 16 / 9; }
+}

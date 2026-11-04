@@ -43,7 +43,14 @@ export function isLocalArticle(post: HashnodePost | LocalArticle): post is Local
 
 // The 2025 job-hunting post stays reachable at its URL but is off the blog list and
 // out of related posts: it contradicts the services page (review, 29 Oct 2026).
-export const HIDDEN_FROM_LIST = new Set(['content-manager-roles']);
+// The three 2024 SEO pieces leave the list on 4 Nov 2026 (page plan): they stay
+// reachable by URL but read below the standard the rest of the site is held to.
+export const HIDDEN_FROM_LIST = new Set([
+  'content-manager-roles',
+  'sales-enablement-content-strategy',
+  'linkedin-automation-and-social-selling',
+  'best-3-ai-search-engines-that-answer-queries-like-chat-gpt',
+]);
 export const HIDDEN_FROM_RELATED = HIDDEN_FROM_LIST;
 
 export function relatedTo(post: HashnodePost, all: HashnodePost[], n = 3): HashnodePost[] {

@@ -1,7 +1,6 @@
 // Behaviour checks the screenshot script cannot see: anchors land below the
 // sticky header, reduced motion disables the split widening and smooth scroll,
-// keyboard focus is visible on the header links, the /portfolio filter hides
-// the right entries and announces the count, dark mode keeps contrast tokens,
+// keyboard focus is visible on the header links, dark mode keeps contrast tokens,
 // and Back after an in-page anchor returns to the top. Prints one line per check.
 import puppeteer from 'puppeteer';
 const base = process.env.QA_BASE ?? 'http://localhost:3000';
@@ -20,7 +19,7 @@ async function page(w = 1440, h = 900, opts = {}) {
 }
 
 // 1. anchors below the sticky header
-for (const [route, hash, w] of [['/', '#q2', 1440], ['/', '#q3', 390], ['/portfolio', '#writing', 1440], ['/portfolio', '#m-2026-04', 1440]]) {
+for (const [route, hash, w] of [['/', '#building', 1440], ['/', '#thinking', 390], ['/portfolio', '#writing', 1440], ['/portfolio', '#writing', 390]]) {
   const p = await page(w, w === 390 ? 844 : 900);
   await p.goto(base + route, { waitUntil: 'networkidle0' });
   await p.evaluate(() => { document.documentElement.style.scrollBehavior = 'auto'; });
@@ -30,44 +29,21 @@ for (const [route, hash, w] of [['/', '#q2', 1440], ['/', '#q3', 390], ['/portfo
     const el = document.querySelector(h); const hd = document.querySelector('header.site-header');
     if (!el) return { missing: true };
     const top = el.getBoundingClientRect().top; const hb = hd ? hd.getBoundingClientRect().bottom : 0;
-    const bars = [...document.querySelectorAll('.record-bar, .qnav')].filter((b) => getComputedStyle(b).position === 'sticky').map((b) => b.getBoundingClientRect().bottom);
+    const bars = [...document.querySelectorAll('.record-bar')].filter((b) => getComputedStyle(b).position === 'sticky').map((b) => b.getBoundingClientRect().bottom);
     return { top: Math.round(top), headerTop: Math.round(hd.getBoundingClientRect().top), headerBottom: Math.round(hb), barsBottom: Math.round(Math.max(hb, ...bars)) };
   }, hash);
   ok(`anchor ${route}${hash} @${w}: header stays stuck, target lands below every sticky bar`, !r.missing && r.headerTop === 0 && r.top >= r.barsBottom - 1, JSON.stringify(r));
   await p.close();
 }
 
-// 1b. /portfolio: header, filter bar and month rail stay in view while scrolling, like dated.html
-{
-  const p = await page(1440, 900);
-  await p.goto(base + '/portfolio', { waitUntil: 'networkidle0' });
-  await p.evaluate(() => { document.documentElement.style.scrollBehavior = 'auto'; window.scrollTo(0, 3000); });
-  await new Promise((r) => setTimeout(r, 400));
-  const r = await p.evaluate(() => ({ bar: Math.round(document.querySelector('.record-bar').getBoundingClientRect().top), rail: Math.round(document.querySelector('.rail').getBoundingClientRect().top), header: Math.round(document.querySelector('header.site-header').getBoundingClientRect().top), now: document.querySelector('.record-now b').textContent, current: document.querySelector('.rail a[aria-current="true"]')?.textContent }));
-  ok('/portfolio: header, filter bar and rail stick; rail and "now" follow the scroll', r.header === 0 && r.bar === 56 && r.rail >= 100 && r.rail <= 160 && !!r.current, JSON.stringify(r));
-  await p.close();
-}
+// 1b. (removed 4 Nov 2026: /portfolio no longer has a record bar or month rail)
 
-// 2. reduced motion: no widening on hover, no smooth scroll
+// 2. reduced motion: no smooth scroll (the homepage stopped widening halves on hover, 4 Nov 2026)
 {
   const p = await page(1440, 900, { reducedMotion: true });
   await p.goto(base + '/', { waitUntil: 'networkidle0' });
-  await p.hover('#q1 .split-paper');
-  await new Promise((r) => setTimeout(r, 500));
-  const r = await p.evaluate(() => ({ cols: getComputedStyle(document.querySelector('#q1')).gridTemplateColumns, smooth: getComputedStyle(document.documentElement).scrollBehavior }));
-  const [a, b] = r.cols.split(' ').map(parseFloat);
-  ok('reduced motion: halves stay equal on hover', Math.abs(a - b) < 2 && r.smooth === 'auto', JSON.stringify(r));
-  await p.close();
-}
-// 2b. with motion allowed the hovered half widens
-{
-  const p = await page(1440, 900);
-  await p.goto(base + '/', { waitUntil: 'networkidle0' });
-  await p.hover('#q1 .split-paper');
-  await new Promise((r) => setTimeout(r, 600));
-  const cols = await p.evaluate(() => getComputedStyle(document.querySelector('#q1')).gridTemplateColumns);
-  const [a, b] = cols.split(' ').map(parseFloat);
-  ok('motion: hovered paper half widens', a > b * 1.1, cols);
+  const r = await p.evaluate(() => ({ smooth: getComputedStyle(document.documentElement).scrollBehavior, proofs: document.querySelectorAll('.proof').length }));
+  ok('reduced motion: no smooth scroll; four proof blocks render', r.smooth === 'auto' && r.proofs === 4, JSON.stringify(r));
   await p.close();
 }
 
@@ -84,26 +60,13 @@ for (const [route, hash, w] of [['/', '#q2', 1440], ['/', '#q3', 390], ['/portfo
   await p.close();
 }
 
-// 4. /portfolio filter
-{
-  const p = await page();
-  await p.goto(base + '/portfolio', { waitUntil: 'networkidle0' });
-  await p.click('.record-filters button:nth-child(3)');
-  await new Promise((r) => setTimeout(r, 300));
-  const r = await p.evaluate(() => {
-    const visible = [...document.querySelectorAll('.entry')].filter((e) => !e.hidden);
-    return { kinds: [...new Set(visible.map((e) => e.dataset.kind))], status: document.querySelector('.record-filters + p, .sr-only[aria-live]')?.textContent, pressed: document.querySelector('.record-filters button[aria-pressed="true"]')?.textContent };
-  });
-  ok('filter Writing shows only wrote/said and announces the count', r.kinds.every((k) => k === 'wrote' || k === 'said') && /entries shown/.test(r.status || '') && r.pressed === 'Writing', JSON.stringify(r));
-  await p.click('.record-filters button:nth-child(1)');
-  await p.close();
-}
+// 4. (removed 4 Nov 2026: /portfolio no longer has a filter)
 
 // 5. dark mode tokens on the homepage shell and a case study
 {
   const p = await page(1440, 900, { dark: true });
   await p.goto(base + '/case-studies/aloud', { waitUntil: 'networkidle0' });
-  const r = await p.evaluate(() => ({ bg: getComputedStyle(document.body).backgroundColor, fg: getComputedStyle(document.body).color, h1: getComputedStyle(document.querySelector('.cs-short-text')).color }));
+  const r = await p.evaluate(() => ({ bg: getComputedStyle(document.body).backgroundColor, fg: getComputedStyle(document.body).color, h1: getComputedStyle(document.querySelector('.cs-lede')).color }));
   const main = await p.evaluate(() => getComputedStyle(document.querySelector('.theme-dated')).backgroundColor);
   ok('dark mode (system): ink ground with light text, same family as light', main === 'rgb(15, 35, 52)' && r.h1 === 'rgb(230, 238, 244)', JSON.stringify({ ...r, main }));
   await p.close();
@@ -129,9 +92,10 @@ for (const [route, hash, w] of [['/', '#q2', 1440], ['/', '#q3', 390], ['/portfo
   const p = await page();
   await p.goto(base + '/', { waitUntil: 'networkidle0' });
   await p.evaluate(() => { document.documentElement.style.scrollBehavior = 'auto'; });
-  await p.click('.qnav a[href="#q3"]');
+  await p.evaluate(() => { const a = document.createElement('a'); a.href = '#thinking'; a.id = 'qa-jump'; a.textContent = 'jump'; document.body.prepend(a); });
+  await p.click('#qa-jump');
   await new Promise((r) => setTimeout(r, 500));
-  const atQ3 = await p.evaluate(() => location.hash === '#q3' && window.scrollY > 500);
+  const atQ3 = await p.evaluate(() => location.hash === '#thinking' && window.scrollY > 500);
   await p.goBack();
   await new Promise((r) => setTimeout(r, 500));
   const back = await p.evaluate(() => ({ hash: location.hash, y: window.scrollY }));
@@ -150,6 +114,22 @@ for (const [route, hash, w] of [['/', '#q2', 1440], ['/', '#q3', 390], ['/portfo
   await new Promise((r) => setTimeout(r, 200));
   const closed = await p.evaluate(() => document.querySelector('header button[aria-expanded]').getAttribute('aria-expanded'));
   ok('phone menu: opens, every link ≥ 44px tall, Escape closes', open.expanded === 'true' && open.links.length >= 6 && open.links.every((h) => h >= 44) && closed === 'false', JSON.stringify({ open, closed }));
+  await p.close();
+}
+
+// 8. Unlayered global rules must not beat Tailwind utilities (bug hunt, 4 Nov 2026):
+//    a field's control edge and an underline set by class must actually render.
+{
+  const p = await page(1440, 900);
+  await p.goto(base + '/contact', { waitUntil: 'networkidle0' });
+  const r = await p.evaluate(() => {
+    const probe = document.createElement('span'); probe.style.color = 'var(--control-border)'; document.body.append(probe);
+    const want = getComputedStyle(probe).color; probe.remove();
+    const field = document.querySelector('#contact-name');
+    const link = [...document.querySelectorAll('a')].find((a) => /open it on Calendly/.test(a.textContent));
+    return { want, field: getComputedStyle(field).borderTopColor, underline: link ? getComputedStyle(link).textDecorationLine : 'missing' };
+  });
+  ok('utilities win over global base rules: field edge and class underline render', r.field === r.want && r.underline === 'underline', JSON.stringify(r));
   await p.close();
 }
 

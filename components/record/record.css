@@ -14,7 +14,7 @@
 .record-filters button { font: inherit; font-size: 14px; font-weight: 500; background: transparent; color: var(--muted-foreground); border: 1px solid transparent; border-radius: 999px; padding: 6px 12px; cursor: pointer; min-height: 36px; }
 .record-filters button:hover { color: var(--foreground); border-color: var(--border); }
 .record-filters button[aria-pressed="true"] { background: var(--accent); color: var(--accent-foreground); border-color: var(--accent); }
-.record-now { font-family: var(--font-display); font-stretch: 122%; font-size: 17px; color: var(--muted-foreground); white-space: nowrap; margin: 0; }
+.record-now { font-family: var(--font-display); font-size: 17px; color: var(--muted-foreground); white-space: nowrap; margin: 0; }
 .record-now b { color: var(--foreground); font-weight: 560; }
 .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 
@@ -23,7 +23,7 @@
 .rail ol { list-style: none; margin: 0; padding: 0; }
 .rail li { margin: 0 0 14px; }
 .rail li[hidden] { display: none; }
-.rail a { display: block; text-decoration: none; font-family: var(--font-display); font-stretch: 122%; font-size: 22px; line-height: 1; color: var(--muted-foreground); padding: 4px 0 4px 12px; border-left: 2px solid transparent; }
+.rail a { display: block; text-decoration: none; font-family: var(--font-display); font-size: 22px; line-height: 1; color: var(--muted-foreground); padding: 4px 0 4px 12px; border-left: 2px solid transparent; }
 .rail a small { display: block; font-family: var(--font-sans); font-size: 12px; color: var(--muted-foreground); margin-top: 5px; }
 .rail a:hover { color: var(--foreground); }
 .rail a[aria-current="true"] { color: var(--foreground); border-left-color: var(--accent); }
@@ -67,7 +67,8 @@
 .samples-section .intro p { margin: 0 0 .5em; }
 .samples-section ul { list-style: none; margin: 0; padding: 0; columns: 2; column-gap: 32px; }
 .samples-section li { break-inside: avoid; margin: 0 0 10px; font-size: 15.5px; line-height: 1.4; }
-.samples-section li a { text-decoration: none; }
+/* Titles are links, so they look like links (council, 4 Nov 2026). */
+.samples-section li a { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; text-decoration-color: color-mix(in srgb, currentColor 35%, transparent); }
 .samples-section li a:hover { text-decoration: underline; color: var(--accent); }
 .samples-section .more { font-size: 14.5px; margin: 8px 0 0; }
 
@@ -96,3 +97,14 @@
   .samples { padding: 40px 0 16px; }
 }
 @media (max-width: 340px) { .record-filters button { padding: 5px 8px; font-size: 13px; } }
+
+/* writing page, 4 Nov 2026: a plain header, two pieces of evidence, then every sample by client. */
+.writing-head { padding: 48px 0 28px; max-width: 64ch; }
+.writing-head h1 { margin: 0 0 14px;  }
+.writing-head .lede { font-size: clamp(1.1rem, 1.5vw, 1.3rem); line-height: 1.45; margin: 0; }
+.writing-proof { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 40px; align-items: start; padding: 8px 0 48px; }
+.writing-proof figure { margin: 0; }
+.writing-proof img { width: 100%; height: auto; display: block; border-radius: var(--radius, 16px); background: var(--card); box-shadow: 0 24px 48px -32px rgba(13,30,44,.5); }
+.writing-proof figcaption { font-size: 14.5px; color: var(--muted-foreground); margin-top: 10px; }
+.writing-proof figcaption a { text-decoration: underline; text-underline-offset: 3px; }
+@media (max-width: 800px) { .writing-proof { grid-template-columns: 1fr; } .writing-proof .narrow { max-width: 300px; } }

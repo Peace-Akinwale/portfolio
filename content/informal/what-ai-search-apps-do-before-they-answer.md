@@ -1,53 +1,39 @@
 ## Portfolio summary
 
-An AI search app sends and receives data in the background before it answers. That includes the searches it writes and the sources it cites. I recorded hundreds of real conversations and built the pipeline that turned that traffic into a labelled reference. It's a public article with eight platform pages and narrated audio. Each field is labelled as seen or inferred.
+A public reference to what AI search apps send and receive while they answer you. It covers every internal label ChatGPT, Gemini, Google AI Mode, Claude, Perplexity and Brave use in the background, explained from real recordings. My team recorded and cleaned 284 conversations, and I built the reference with the agency's founder in a few days. He now owns and edits it.
 
 ## Case study
 
-### Explain the fields you see in AI search traffic
+### Thousands of internal labels that mean nothing on their own
 
-The agency's founder wanted a reference that explained the field names that show up in AI search recordings, because they're hard to make sense of on their own. So I built a page for each platform. A researcher can look up an unfamiliar field and check the recording behind its explanation, instead of starting from raw traffic every time.
+When you record what an AI search app does while it answers, you get thousands of fields with internal names that mean nothing on their own. The agency's founder wanted a public reference that explains them, one folder per platform, plus a page on how they work together. He wanted it for a conference talk, and he asked for it overnight.
 
-### Hundreds of recorded conversations to start from
+The recordings came first. My team recorded conversations in each app, and I built a cleaner that replaces personal values with stable placeholders. It finished at 284 sessions, every one passing a leak check twice. Before that, 51 of the first 89 files we delivered still carried live login cookies in a header the cleaner never read. We found it, re-masked all of them, and added the leak check.
 
-The reference is built on browser recordings I made and cleaned in September for an earlier research project. It rests on 284 three-turn conversations. They span ChatGPT and its deep research mode, Gemini, Google AI Mode, Google AI Overviews, Claude, Perplexity and Brave.
+### Every explanation says what was seen, apart from what was inferred
 
-A teammate chose which sessions to record. I recorded them and stripped out personal and account data. Then I built a parser for each platform.
+**Stop spending, and keep what's paid for.** The first runs on the company's API key cost $37 to $40 in an evening. "Stop spending money right now." Every later pass ran on subscription agents, and the pipeline learned to merge new work into what already existed instead of starting again.
 
-### Turn recordings into entries a researcher can check
-
-I built a pipeline that pulls the AI apps' own requests and response fields out of the recordings. It leaves out the trackers from the websites visited, so unrelated web activity stays out of the reference. That turned a big pile of recordings into entries a researcher can search and compare.
-
-### What a reader can look up
-
-Each entry explains what the field contains and links to an example from the recordings. A researcher can follow that example to check whether the suggested meaning matches the data in front of them.
+**Say only what the recordings show.** An early draft ended each platform with "what you can do with it". I cut it. "We can be wrong about what you can do with it." Each platform now ends on what the labels mean. Every explanation separates what was observed from what was inferred, and links to the recording behind it.
 
 [[img]]
 
-The main article compares what each platform exposes, including whether you can see its search queries. That helps anyone planning an investigation pick which records to look at, and understand where a platform leaves gaps.
+**Check the absences hardest.** The draft said several things were "not visible" in the recordings. A fact-check pass overturned five of those claims, and of 65 lines saying a label's purpose couldn't be seen, 59 turned out to have answers in the data. Google sends some of it as unnamed lists, which an extractor that looks for names can't see. Every absence is now checked by hand before it's published.
+
+**One source of truth, his.** After the founder reviewed it, he rewrote all 19 pages himself. I didn't fold his edits back into the generator. His HTML became the single source, guarded by a check he wrote, and the generator now stops with an error if anyone runs it. One source edited in place beats two that drift.
+
+**Hold a release when the data moves.** When ChatGPT changed its format, a strategist found that his citations had stopped parsing. A parser update was ready after three test chats. "We need more research first." I held it, adopted a teammate's parser after measuring both, and told the founder myself that his page described a citation format ChatGPT no longer sends.
+
+### Eight platform folders where every example opens the exact line
+
+A main article on how the labels work together, eight platform folders, a prompt readers can take to any AI tool, and narration of the pages in the founder's cloned voice. Every link to a recorded example opens the exact line, and all 3,708 resolve.
 
 [[img]]
 
-### Label what we saw, and what we think it means
+### He used it for his talk, and two of my own wrong claims went out
 
-Entries keep visible data apart from an interpretation of what it means. Words like “likely” make that uncertainty plain, so nobody mistakes the reference for official vendor documentation. Example values use safe placeholders instead of real account data.
+The pages went live on the founder's site, held out of search until he was ready. He used them for his talk slides. Strategists check new recordings against them.
 
-### A version you can listen to
+Two of my own wrong claims went out in one evening and I caught both. One described a refusal as a page the AI had opened, and one cited another product's recordings. A styling clash that made the labels look like they were floating was a shared class name. The audio estimate was wrong by half, 11,000 characters quoted against 21,733 measured.
 
-Some people take things in better by listening. So I added narration to the article and all eight platform pages. That's nine audio tracks, generated from the published pages themselves.
-
-When the pages changed, I re-rendered the tracks from the new text and changed the file addresses. That way returning listeners got the new audio instead of an old cached copy.
-
-### Handing the pages over to the founder
-
-The first complete version went live on October 2, 2026. Before launch I applied a round of the founder's review notes everywhere the same issue came up. Over the next two days the founder rewrote and extended all the pages. They also added a check that keeps every required section in place.
-
-My original generator could have overwritten the founder's edits with older source material. So I retired it and used the edited pages for every update after that, narration included. That kept the editorial work intact, and kept listeners on the same version as readers.
-
-### Keep the reference current as the apps change
-
-The reference describes the apps as they behaved when the conversations were recorded in September 2026. AI apps change their traffic as they ship new models.
-
-On October 8 ChatGPT moved to a new model, and its answers started marking citations in a new way. I compared fresh traffic against the ChatGPT page the same day, and 133 of its 183 labels still showed up.
-
-That's why the reference needs dated observations and fresh recordings. Researchers can check whether an entry still matches the traffic they see, instead of assuming a field will stay the same.
+I took a standing rule from it. When a platform we read changes, sweep every reader we own in the same session.

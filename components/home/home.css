@@ -1,77 +1,82 @@
-/* The Seam homepage: paper on the left for writing, night on the right for
-   building, one question per section answered on both sides. Tokens from
-   docs/design-reference-2026-10.md; the halves use .ground-paper/.ground-night. */
+/* Homepage, 4 Nov 2026. Four proof spreads, one per ability the site has to
+   show (writing, building, AI tools end to end, thinking). Each spread is one
+   artefact at about 60% of the width beside a narrow column of text, on
+   alternating sky and deep-blue grounds. No question nav, no hover widening.
+   Tokens from docs/design-reference-2026-10.md; .ground-night switches a
+   spread to the night column of the palette. */
 
 .home { font-size: 17px; }
 
 /* hero */
-.hero { display: grid; grid-template-columns: 1fr 1fr; min-height: min(70vh, 640px); }
-.hero-paper { padding: clamp(40px, 7vh, 80px) var(--gutter) 40px; display: flex; flex-direction: column; justify-content: flex-start; gap: 36px; }
-.hero h1 { font-size: clamp(2.6rem, 5vw, 4.6rem); font-weight: 520; margin: 0; max-width: 11ch; }
-.hero-line { font-family: var(--font-serif); font-optical-sizing: auto; font-size: clamp(1.2rem, 1.7vw, 1.45rem); line-height: 1.35; max-width: 32ch; margin: 0; }
-.hero-who { font-size: 15.5px; color: var(--muted-foreground); max-width: var(--measure); margin: 14px 0 0; }
-.hero-night { position: relative; overflow: hidden; display: grid; align-items: end; padding: 0; }
-.hero-portrait { position: relative; z-index: 1; width: min(100%, 560px); margin: 0; justify-self: center; align-self: end; }
-.hero-portrait img { width: 100%; height: auto; max-height: min(70vh, 640px); object-fit: cover; object-position: 50% 20%; display: block; }
+.hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 380px;
+  gap: clamp(28px, 5vw, 72px);
+  align-items: center;
+  padding: clamp(40px, 7vh, 88px) var(--gutter) clamp(40px, 6vh, 72px);
+  border-bottom: 1px solid var(--border);
+}
+.hero h1 { font-size: clamp(2.4rem, 4.4vw, 4rem); font-weight: 500; margin: 0 0 22px; max-width: 18ch; }
+.hero-line { font-size: clamp(1.15rem, 1.5vw, 1.35rem); line-height: 1.4; max-width: 46ch; margin: 0 0 26px; }
+.hero-actions { display: flex; flex-wrap: wrap; gap: 10px; margin: 0; }
+.hero-portrait { margin: 0; justify-self: end; width: 100%; max-width: 380px; }
+.hero-portrait img { width: 100%; height: auto; max-height: 520px; object-fit: cover; object-position: 50% 18%; display: block; border-radius: var(--radius, 16px); }
 
-/* question nav */
-.qnav { position: sticky; top: 56px; z-index: 25; background: var(--background); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
-.qnav ol { list-style: none; margin: 0; padding: 0 var(--gutter); display: flex; gap: 4px 22px; flex-wrap: wrap; min-height: 46px; align-items: center; }
-.qnav a { text-decoration: none; font-size: 15px; font-weight: 500; color: var(--muted-foreground); padding: 12px 0; display: inline-block; border-bottom: 2px solid transparent; }
-.qnav a[aria-current="true"] { color: var(--foreground); border-bottom-color: var(--accent); }
-.qnav a:hover { color: var(--foreground); }
+/* proof spreads */
+.proof {
+  display: grid;
+  grid-template-columns: minmax(0, 38fr) minmax(0, 62fr);
+  gap: clamp(28px, 4vw, 64px);
+  align-items: start;
+  padding: clamp(48px, 7vh, 88px) var(--gutter);
+  border-bottom: 1px solid var(--border);
+}
+.proof.night { border-bottom: 0; }
+.proof-text { max-width: 44ch; position: sticky; top: 88px; }
+.proof h2 { font-size: clamp(1.7rem, 2.6vw, 2.5rem); font-weight: 500; line-height: 1.08; margin: 0 0 18px; letter-spacing: -0.02em; }
+.proof p { margin: 0 0 .9em; line-height: 1.55; }
+.proof .catch { padding: 12px 16px; border-left: 3px solid var(--marigold); background: var(--card); border-radius: 0 12px 12px 0; margin: 6px 0 18px; }
+.proof.night .catch { background: rgba(255,255,255,.06); }
+.proof .go { margin: 18px 0 0; }
+.proof .go a { display: block; margin: 0 0 8px; }
 
-/* the pairs */
-.split { display: grid; grid-template-columns: 1fr 1fr; transition: grid-template-columns .35s ease; }
-.split:has(.split-paper:hover), .split:has(.split-paper:focus-within) { grid-template-columns: 1.25fr 1fr; }
-.split:has(.split-night:hover), .split:has(.split-night:focus-within) { grid-template-columns: 1fr 1.25fr; }
-.split > div { padding: 52px var(--gutter) 56px; min-width: 0; border-bottom: 1px solid var(--border); }
-.split h2 { font-size: clamp(2rem, 3.6vw, 3.4rem); font-weight: 520; margin: 0 0 14px; max-width: 14ch; }
-.split .answer { font-family: var(--font-serif); font-optical-sizing: auto; font-size: clamp(1.15rem, 1.5vw, 1.35rem); line-height: 1.4; max-width: 34ch; margin: 0 0 30px; padding-left: 14px; border-left: 3px solid var(--accent); }
-.split h3 { font-size: clamp(1.3rem, 1.9vw, 1.7rem); font-weight: 560; margin: 0 0 12px; max-width: 26ch; }
-.split h3 a { text-decoration: none; }
-.split h3 a:hover { text-decoration: underline; text-decoration-thickness: 2px; }
-.split .body { max-width: var(--measure); font-family: var(--font-serif); font-optical-sizing: auto; font-size: 1.1rem; line-height: 1.55; }
-.split .body p { margin: 0 0 .8em; }
-.split figure.shot { max-width: 600px; }
-.split figure.shot.narrow { max-width: 330px; }
-.split .mobile-q { display: none; font-size: 14px; color: var(--muted-foreground); margin: 0 0 10px; }
-.split .section-name { font-family: var(--font-sans); font-size: 14px; font-weight: 600; letter-spacing: 0.02em; color: var(--muted-foreground); margin: 0 0 8px; }
-.split .then { margin-top: 32px; }
+.exhibit { margin: 0; min-width: 0; }
+.exhibit img {
+  width: 100%; height: auto; display: block;
+  border-radius: var(--radius, 16px);
+  background: var(--card);
+  box-shadow: 0 1px 0 rgba(13,30,44,.05), 0 30px 60px -36px rgba(13,30,44,.55);
+}
+.exhibit figcaption { font-size: 14.5px; color: var(--muted-foreground); margin-top: 12px; max-width: 70ch; }
+.proof.night .exhibit img { box-shadow: 0 30px 60px -30px rgba(6,16,26,.75); }
 
-/* how I work */
-.how { padding: 60px var(--gutter) 64px; border-bottom: 1px solid var(--border); }
-.how-inner { max-width: 1100px; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr); gap: 40px; }
-.how h2 { font-size: clamp(2rem, 3.6vw, 3rem); font-weight: 520; max-width: 12ch; margin: 0; }
-.how p { max-width: var(--measure); font-family: var(--font-serif); font-optical-sizing: auto; font-size: 1.15rem; line-height: 1.5; margin: 0; }
-.how p + p { margin-top: 14px; }
+/* the three questions */
+.questions { margin: 0 0 18px; display: grid; gap: 14px; }
+.questions div { padding-left: 14px; border-left: 3px solid var(--marigold); }
+.questions dt { font-family: var(--font-display); font-weight: 500; font-size: 1.35rem; line-height: 1.15; margin: 0 0 4px; letter-spacing: -0.01em; }
+.questions dd { margin: 0; line-height: 1.5; }
+
+/* offer */
+.offer { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(28px, 4vw, 64px); padding: clamp(48px, 7vh, 80px) var(--gutter); }
+/* The section carries the gutter, so the columns add none: the offer's left edge
+   then matches every other homepage section (design guide §30, 4 Nov 2026). */
+#work-with-me > div { padding: 0; }
+.offer h2 { font-size: clamp(1.8rem, 3vw, 2.4rem); font-weight: 500; margin: 0 0 12px; }
+.offer p { max-width: var(--measure); font-size: 1.05rem; line-height: 1.5; }
+.offer .note { font-size: 14.5px; color: var(--muted-foreground); }
+.offer-actions { display: flex; flex-wrap: wrap; gap: 10px; margin: 8px 0 0; }
 
 @media (max-width: 900px) {
-  .hero h1 { font-size: clamp(2.3rem, 7vw, 3.5rem); }
-  .split > div { padding: 40px var(--gutter) 44px; }
-  .how-inner { grid-template-columns: 1fr; }
+  .hero { grid-template-columns: 1fr; gap: 24px; }
+  .hero-portrait { justify-self: start; max-width: 260px; order: -1; }
+  .hero-portrait img { max-height: 320px; }
+  .proof { grid-template-columns: 1fr; gap: 24px; padding: 40px var(--gutter) 44px; }
+  .proof-text { position: static; max-width: var(--measure); }
+  .offer { grid-template-columns: 1fr; gap: 36px; }
 }
-@media (max-width: 760px) {
+@media (max-width: 600px) {
   .home { font-size: 16px; }
-  .hero { grid-template-columns: 1fr; min-height: 0; }
-  .hero-paper { padding: 36px var(--gutter) 30px; gap: 22px; }
-  .hero h1 { font-size: clamp(2.1rem, 10vw, 2.9rem); }
-  .hero-portrait { width: 100%; }
-  .hero-portrait img { max-height: 54vw; object-position: 50% 22%; }
-  .qnav { top: 0; position: relative; }
-  .qnav ol { min-height: 0; padding: 8px var(--gutter); gap: 0 16px; }
-  .qnav a { padding: 8px 0; font-size: 14px; }
-  .split { grid-template-columns: 1fr !important; }
-  .split > div { padding: 34px var(--gutter) 38px; }
-  .split h2 { font-size: clamp(1.8rem, 8.5vw, 2.3rem); }
-  .split .mobile-q { display: block; }
-  .split figure.shot.narrow { max-width: 100%; }
-  .go a { display: block; margin: 0 0 8px; }
-  .how { padding: 44px var(--gutter) 48px; }
-}
-@media (prefers-reduced-motion: reduce) {
-  .split, .split:has(.split-paper:hover), .split:has(.split-paper:focus-within), .split:has(.split-night:hover), .split:has(.split-night:focus-within) { grid-template-columns: 1fr 1fr; transition: none; }
-}
-@media (prefers-reduced-motion: reduce) and (max-width: 760px) {
-  .split { grid-template-columns: 1fr; }
+  .hero h1 { font-size: clamp(2rem, 9vw, 2.6rem); }
+  .hero-portrait { max-width: 200px; }
+  .hero-portrait img { max-height: 240px; }
 }

@@ -20,15 +20,15 @@ const EXPORT = path.join(ROOT, 'content', 'notion-export');
 // who, from facts already on the page; Peace adds the counts when she has them.
 // This table is the source of truth: a re-import rewrites the case-study files.
 const PAGES = {
-  'ai-docs-watch': { slug: 'ai-docs-watch', title: 'AI Docs Watch, a daily monitor of six AI platforms’ docs for SEO and content teams', name: 'AI Docs Watch', blurb: 'Shows you an AI platform’s docs as they were before and after each change, with the changed words marked.', type: 'case-study', kind: 'built', date: '2026-10-14', status: 'Public, open to everyone', links: ['Open AI Docs Watch | https://docswatch.stevetoth.ai'], tags: ['monitoring', 'documentation'], related: ['what-ai-search-apps-do-before-they-answer', 'fanout-query-analysis-tool'] },
-  'contentdb-collect-research-and-question-your-sources': { slug: 'contentdb', name: 'ContentDB', blurb: 'Your articles and transcripts in one library you can search from a chat or from your AI assistant.', type: 'case-study', kind: 'built', date: '2026-04-15', status: 'Open to anyone who signs up', links: ['Try ContentDB | https://contentdb.peaceakinwale.com'], tags: ['research', 'MCP'], related: ['aloud', 'okf'] },
-  'aloud-listen-to-saved-articles-and-return-to-useful-passages': { slug: 'aloud', name: 'Aloud', blurb: 'My audio library for the articles I keep meaning to read, with a reading view and saved passages.', type: 'case-study', kind: 'built', date: '2026-09-28', status: 'Open to anyone who signs up', links: ['Try Aloud | https://aloud.peaceakinwale.com'], tags: ['audio', 'reading'], related: ['contentdb', 'reading-app'] },
-  'quality-rater-reviewing-pages-using-googles-quality-guidelines': { slug: 'quality-rater', name: 'Quality Rater', blurb: 'Checks every page against Google’s quality guidelines and points at the exact passage behind each flag.', type: 'case-study', kind: 'built', date: '2026-10-13', status: 'An SEO agency’s founder and strategists, first version', links: [], tags: ['content audit'], related: ['ai-docs-watch', 'okf'] },
-  'fanout-query-analysis-tool': { slug: 'fanout-query-analysis-tool', title: 'Fanout query analysis tool, the searches behind AI answers recorded for an SEO agency', name: 'Fanout query analysis tool', blurb: 'Records the searches behind AI answers, and tells the pages that came back apart from the ones that got cited.', type: 'case-study', kind: 'built', date: '2026-10-01', status: 'An SEO agency’s founder and strategists', links: [], tags: ['AI search', 'Chrome extension'], related: ['what-ai-search-apps-do-before-they-answer', 'ai-docs-watch'] },
+  'ai-docs-watch': { slug: 'ai-docs-watch', title: 'AI Docs Watch, a daily monitor of AI platforms’ docs', name: 'AI Docs Watch', blurb: 'Shows you an AI platform’s docs as they were before and after each change, with the changed words marked.', type: 'case-study', kind: 'built', date: '2026-07-22', status: 'The agency’s founder, every day in Slack. Public since October 2026', links: ['Open AI Docs Watch | https://docswatch.stevetoth.ai'], tags: ['monitoring', 'documentation'], related: ['what-ai-search-apps-do-before-they-answer', 'fanout-query-analysis-tool'] },
+  'contentdb-collect-research-and-question-your-sources': { slug: 'contentdb', name: 'ContentDB', blurb: 'Your articles and transcripts in one library you can search in the app or from your AI assistant.', type: 'case-study', kind: 'built', date: '2026-03-03', status: 'Open to anyone who signs up', links: ['Try ContentDB | https://contentdb.peaceakinwale.com'], tags: ['research', 'MCP'], related: ['aloud', 'okf'] },
+  'aloud-listen-to-saved-articles-and-return-to-useful-passages': { slug: 'aloud', name: 'Aloud', blurb: 'My audio library for the articles I keep meaning to read, with a reading view and saved passages.', type: 'case-study', kind: 'built', date: '2026-06-15', status: 'Open to anyone who signs up', links: ['Try Aloud | https://aloud.peaceakinwale.com'], tags: ['audio', 'reading'], related: ['contentdb', 'reading-app'] },
+  'quality-rater-reviewing-pages-using-googles-quality-guidelines': { slug: 'quality-rater', name: 'Quality Rater', blurb: 'Checks every page against Google’s quality guidelines and points at the exact passage behind each flag.', type: 'case-study', kind: 'built', date: '2026-10-05', status: 'An SEO agency’s founder and strategists, first version', links: [], tags: ['content audit'], related: ['ai-docs-watch', 'okf'] },
+  'fanout-query-analysis-tool': { slug: 'fanout-query-analysis-tool', title: 'Fanout query analysis tool, the searches behind AI answers', name: 'Fanout query analysis tool', blurb: 'Records the searches behind AI answers, and tells the pages that came back apart from the ones that got cited.', type: 'case-study', kind: 'built', date: '2026-08-26', built: 'Aug to Sep 2026', status: 'An SEO agency’s founder and strategists', links: [], tags: ['AI search', 'Chrome extension'], related: ['what-ai-search-apps-do-before-they-answer', 'ai-docs-watch'] },
   'what-ai-search-apps-do-before-they-answer-a-public-reference': { slug: 'what-ai-search-apps-do-before-they-answer', name: 'A public reference to AI search traffic', blurb: 'What AI search apps send and receive while they answer you, explained field by field. Each explanation comes with the recording behind it.', type: 'case-study', kind: 'built', date: '2026-10-02', status: 'Public reference', links: [], tags: ['AI search', 'research'], related: ['fanout-query-analysis-tool', 'ai-docs-watch'] },
-  'building-an-okf-that-a-team-can-ask-for-guidance': { slug: 'okf', video: { after: '### What an OKF is', id: 'esYAIA6lU-s', title: 'Build an OKF brain like mine! (Marie Haynes, YouTube)', caption: 'Marie Haynes walks through the OKF brain she built for her own SEO work. She shows how a note is structured and how it differs from retrieval over whole documents. 23 minutes, June 2026. The format itself is Google’s, and its <a href="https://github.com/GoogleCloudPlatform/knowledge-catalog/blob/main/okf/SPEC.md">specification is on GitHub</a>.' }, name: 'An OKF a team can ask', blurb: 'A founder’s notes turned into linked notes the team can ask, and every answer cites where it came from.', type: 'case-study', kind: 'built', date: '2026-10-20', status: 'An SEO agency’s team', links: ['Google’s OKF specification on GitHub | https://github.com/GoogleCloudPlatform/knowledge-catalog/blob/main/okf/SPEC.md', 'Marie Haynes on building an OKF brain | https://www.youtube.com/watch?v=esYAIA6lU-s'], tags: ['knowledge', 'OKF'], related: ['contentdb', 'quality-rater'] },
+  'building-an-okf-that-a-team-can-ask-for-guidance': { slug: 'okf', video: { after: '### An OKF is a set of short linked notes that remember their sources', id: 'esYAIA6lU-s', title: 'Build an OKF brain like mine! (Marie Haynes, YouTube)', caption: 'Marie Haynes walks through the OKF brain she built for her own SEO work. She shows how a note is structured and how it differs from retrieval over whole documents. 23 minutes, June 2026. The format itself is Google’s, and its <a href="https://github.com/GoogleCloudPlatform/knowledge-catalog/blob/main/okf/SPEC.md">specification is on GitHub</a>.' }, name: 'An OKF a team can ask', blurb: 'A founder’s notes turned into linked notes the team can ask, and every answer cites where it came from.', type: 'case-study', kind: 'built', date: '2026-07-02', status: 'An SEO agency’s team', links: ['Google’s OKF specification on GitHub | https://github.com/GoogleCloudPlatform/knowledge-catalog/blob/main/okf/SPEC.md', 'Marie Haynes on building an OKF brain | https://www.youtube.com/watch?v=esYAIA6lU-s'], tags: ['knowledge', 'OKF'], related: ['contentdb', 'quality-rater'] },
   'a-reading-app-for-reviewing-posts-and-preparing-newsletter-notes': { slug: 'reading-app', title: 'An app an agency uses to follow SEO and AEO trends', name: 'An app an agency uses to follow SEO and AEO trends', blurb: 'Pulls the posts worth reading into one feed you can listen to, and starred posts turn into newsletter notes.', type: 'case-study', kind: 'built', date: '2026-06-10', status: 'An SEO agency’s founder and team', links: ['Five lessons from building it, an article | /the-success-message-was-the-bug'], tags: ['reading', 'newsletter'], related: ['aloud', 'ai-docs-watch'] },
-  'reach-hands-on-my-mac-for-ai-agents-that-cant-reach-it': { slug: 'reach', name: 'Reach', blurb: 'When an AI coding session needs my Mac’s screen, it hands the job to Reach and gets the result back.', type: 'case-study', kind: 'built', date: '2026-09-27', status: 'Personal tool', links: [], tags: ['agents', 'automation'], related: ['aloud', 'contentdb'] },
+  'reach-hands-on-my-mac-for-ai-agents-that-cant-reach-it': { slug: 'reach', name: 'Reach', blurb: 'When an AI coding session needs my Mac’s screen, it hands the job to Reach and gets the result back.', type: 'case-study', kind: 'built', date: '2026-09-02', status: 'Personal tool', links: [], tags: ['agents', 'automation'], related: ['aloud', 'contentdb'] },
   'build-a-course-portal-around-the-instructors-workflow': { slug: 'build-a-course-portal-around-the-instructors-workflow', type: 'article', date: '2026-10-25', standfirst: 'Building a members’ portal for an eight-week course taught me which parts of the instructor’s process the software should leave alone.', tags: ['Building', 'Tools'] },
   'the-success-message-was-the-bug-five-lessons-from-building-an-ai-assisted-reading-tool': { slug: 'the-success-message-was-the-bug', title: 'The success message was a bug: five lessons from building an app an agency uses to follow SEO and AEO trends', type: 'article', date: '2026-10-25', standfirst: 'A notification said the post was in the feed and the roundup. It wasn’t. Five lessons from building an app an agency uses to follow SEO and AEO trends, starting with that message.', tags: ['Building', 'AI'], review: 'Review before launch: “for about two weeks” in lesson 4 conflicts with the checked commit interval of roughly 8½ hours. Peace to confirm the wording.' },
 };
@@ -38,6 +38,23 @@ const STAND_INS = {
   'ai-docs-watch/1-docswatch-02-change-page.png': 'public/images/home/docswatch-change.jpg',
   'ai-docs-watch/6-docswatch-01-hub.png': 'public/images/home/docswatch-hub-no-nav.jpg',
   'contentdb-collect-research-and-question-your-sources/1-contentdb-add-content-demo.png': 'public/images/contentdb/add-content.png',
+};
+
+// Alt text and captions the export got wrong, fixed on the site only (the export
+// stays as Notion has it). Council review, 4 Nov 2026: an alt that read "image",
+// and a caption that used a second name for the tool.
+const IMAGE_TEXT_FIXES = {
+  // Peace, 4 Nov 2026: no meta commentary on the site, including notes that a
+  // screenshot is masked.
+  'fanout-query-analysis-tool': [
+    [/ Client details are masked\./g, ''],
+    [/ Client and competitor identities are masked\./g, ''],
+    [/; research questions are masked\./g, '.'],
+  ],
+  'ai-docs-watch': [
+    [/(?<!AI )Docs Watch connects/g, 'AI Docs Watch connects'],
+    ['![image](images/ai-docs-watch/image.png)', '![A change report on AI Docs Watch, with why a Google Ads change matters and four actions for advertisers.](images/ai-docs-watch/image.png)'],
+  ],
 };
 
 const missing = [];
@@ -121,7 +138,9 @@ function placeImages(body, exportSlug, siteSlug, publicDir) {
     const altText = caption ? caption.replace(/^\*|\*$/g, '') : alt.replace(/[-_]/g, ' ');
     out.push(`![${altText}](images/${siteSlug}/${target})`);
   }
-  return out.join('\n');
+  let text = out.join('\n');
+  for (const [from, to] of IMAGE_TEXT_FIXES[siteSlug] ?? []) text = text.replace(from, to);
+  return text;
 }
 
 function splitSummary(body) {
@@ -155,7 +174,7 @@ for (const [name, meta] of Object.entries(PAGES)) {
     const placed = placeImages(chosen.body, name, meta.slug, publicDir);
     const { summary, rest: body0 } = splitSummary(placed);
     const rest = meta.video ? insertVideo(body0, meta.video) : body0;
-    const fm = `---\ntitle: ${q(meta.title ?? head.title)}\nname: ${q(meta.name)}\nblurb: ${q(meta.blurb)}\nkind: ${meta.kind}\nstatus: ${q(meta.status)}\ndate: ${meta.date}\n${meta.for ? `for: ${q(meta.for)}\n` : ''}summary: ${q(summary)}\nvoice: ${chosen.informal ? 'informal' : 'original'}\nnotion_url: ${head.notion_url}\nnotion_last_edited: ${head.notion_last_edited}\n${yamlList('links', meta.links)}${yamlList('tags', meta.tags)}${yamlList('related', meta.related)}---\n`;
+    const fm = `---\ntitle: ${q(meta.title ?? head.title)}\nname: ${q(meta.name)}\nblurb: ${q(meta.blurb)}\nkind: ${meta.kind}\nstatus: ${q(meta.status)}\ndate: ${meta.date}\n${meta.built ? `built: ${q(meta.built)}\n` : ''}${meta.for ? `for: ${q(meta.for)}\n` : ''}summary: ${q(summary)}\nvoice: ${chosen.informal ? 'informal' : 'original'}\nnotion_url: ${head.notion_url}\nnotion_last_edited: ${head.notion_last_edited}\n${yamlList('links', meta.links)}${yamlList('tags', meta.tags)}${yamlList('related', meta.related)}---\n`;
     const file = path.join(ROOT, 'content', 'case-studies', `${meta.slug}.md`);
     fs.mkdirSync(path.dirname(file), { recursive: true });
     fs.writeFileSync(file, fm + '\n' + rest.trimEnd() + '\n');

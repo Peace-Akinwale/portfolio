@@ -4,8 +4,8 @@ name: "An OKF a team can ask"
 blurb: "A founder’s notes turned into linked notes the team can ask, and every answer cites where it came from."
 kind: built
 status: "An SEO agency’s team"
-date: 2026-10-20
-summary: "An OKF (Open Knowledge Format) is a folder of short notes, one idea per note. Each note records its source and whether a person checked it. I turned an SEO agency founder's 1.23 million words into an OKF of 683 linked notes. Answers to the team's questions cite those notes. Then I built a kit for clients to host themselves."
+date: 2026-07-02
+summary: "An OKF a team can ask. I turned an SEO agency founder's archive, about 1.23 million words across 534 Notion pages, into a knowledge base of linked notes in Google's Open Knowledge Format. The team can ask it questions and every answer cites the note and the source behind it. The hard part was trust, so a person's review and a scripted source check carry different labels."
 voice: informal
 notion_url: https://app.notion.com/p/403992da7a578116ae4ee9a53710f316
 notion_last_edited: 2026-10-30T23:40:13.813Z
@@ -20,61 +20,51 @@ related:
   - "quality-rater"
 ---
 
-### What an OKF is
+### An OKF is a set of short linked notes that remember their sources
 
-Open Knowledge Format stores knowledge as short linked notes that people and AI tools can both read. Each note records its sources and its review status. It also carries a date for checking whether it's still current. That gives a team more context than an answer copied out of an unlabelled document.
+An OKF is a set of short notes, one idea each, linked to each other and to the source they came from. Google published the format, and its specification says how a note records where it came from, when it was last checked and who checked it. An AI tool can answer from those notes instead of guessing across whole documents.
 
 <figure class="video"><iframe src="https://www.youtube-nocookie.com/embed/esYAIA6lU-s" title="Build an OKF brain like mine! (Marie Haynes, YouTube)" loading="lazy" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture; fullscreen" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe><figcaption>Marie Haynes walks through the OKF brain she built for her own SEO work. She shows how a note is structured and how it differs from retrieval over whole documents. 23 minutes, June 2026. The format itself is Google’s, and its <a href="https://github.com/GoogleCloudPlatform/knowledge-catalog/blob/main/okf/SPEC.md">specification is on GitHub</a>.</figcaption></figure>
 
 
-### The team kept asking the founder, because the knowledge was scattered
+### 1.23 million words the team couldn't tell whether to trust
 
-The agency's founder had years of thinking spread across two Notion archives and their own head. When the team needed an answer, they asked the founder. Or they asked an AI tool connected to the raw archives. It searched whole pages and gave patchy answers. The goal was one distilled source the team could ask instead, in the founder's own frameworks.
+The founder's thinking sat in two Notion archives. The agency asked for a brain the team could query, hosted like a site. I built the first version in two days, with extraction, search, a graph and a Claude connector.
 
-### 1.23 million words into 683 linked notes
-
-I turned about 1.23 million words from more than 500 pages into focused notes that include concepts and playbooks. Related notes link to each other, so a teammate can move from an explanation to the procedure it supports. The reviewed snapshot had 683 notes with 2,939 links.
+Three weeks later a teammate asked me on a call how we could trust it wasn't making things up. I had to walk him through it at length. That call set the real job. I wrote it down that day. "What makes this fresh? What makes this reliable? Does this still match the reality of today?"
 
 ![The knowledge map shows connections between notes in different layouts. This is a historical screen; the on-screen totals belong to that capture.](images/okf/okf-06-graph-dark.gif)
 
 *The knowledge map shows connections between notes in different layouts. This is a historical screen; the on-screen totals belong to that capture.*
 
-### Ask a question, and get an answer you can check
+### A person's review and a script's check never share a label
 
-A teammate can ask how the agency handles a particular piece of work instead of searching the archives or waiting for the founder. The tool uses an index to pick up to eight relevant notes, then reads them in full to put together an answer grounded in that material.
+**Build to the specification, not a guess at it.** When Google published version 0.2 with trust signals, I read the spec itself and planned field by field. "I think we need to do it right based on what v2 says."
+
+**Keep who wrote it apart from who checked it.** My first reaction was that everything should count as verified, because the founder wrote all of it. Then the distinction landed. He wrote the notes. An AI wrote the cards from them, and nobody had checked those. So all 470 cards shipped unverified, and I asked for a way to fix that by hand. Each note got a Mark as verified button, and later each row of the list did too. A script was never allowed to write a person's name into the verified field, because that would forge a review in something the team relies on.
 
 ![Source and human-review information on an individual note.](images/okf/okf-02-note-trust.png)
 
 *Source and human-review information on an individual note.*
 
-I made source citations a requirement, along with a clear marker for outside material. A teammate can open a cited note and check the instructions before using them. Its review status shows whether someone has checked the note, or whether it still needs a person to look it over.
+**Don't show it to the founder before I trust it.** Before the release I stopped. "No need to show Steve. I, myself, haven't seen it. I don't know what to trust here." I asked for a full check against the specification first. It found 43 clauses met and two small failures, and both were fixed before I shipped it.
+
+**Review before anything lands.** New material goes through plan-then-approve. The tool screens it for secrets and personal data, then shows the notes it would create and the links it would add, and a person approves the plan. The weekly import of the founder's own new posts is the one exception, and it still runs the screening.
+
+**Clients host their own.** When the agency wanted to offer OKFs to clients, the first plan was to host them. I changed it the same day. The client takes away a self-contained kit and hosts it, and the agency pays nothing for their usage after the build. The export refuses any file that carries the agency's servers or keys. Each run states up front how much it will read, about 400,000 words, and reads exactly that.
+
+### Ask with citations, plus a kit clients host themselves
+
+The OKF app has Ask with citations, Browse, a Graph, note pages with their trust badge and source link, an approval queue, and single and batch verify. A Claude connector lets the team ask from Claude. The client kit turns a client's own files into a hosted bundle. A demo kit read 101 documents into 331 notes for $4.60 in 48 minutes.
 
 ![The client-kit input screen, where a build starts with the client’s own source files.](images/okf/okf-05-build-kit.png)
 
 *The client-kit input screen, where a build starts with the client’s own source files.*
 
-### Review proposed notes before they're published
+### 683 linked notes, with 382 checked against their source
 
-The tool takes new material in several forms. A URL, a Notion page, a YouTube video, a PDF or pasted text all work. Before anything gets published, the tool screens it for secrets and personal data. Then it pulls out proposed notes and shows a plan. The plan lists the notes it'll create or update and the links it'll add.
+The archive became 683 linked notes with 2,939 links. A source check against the original Notion pages confirmed 382 of the first 470 cards, challenged 61 and flagged 20 as out of date. Those 381 confirmed cards carry a separate "Fact checked and confirmed" label from that check. The verified label stays for notes a person has reviewed.
 
-An admin approves or rejects it. If a publish turns out wrong, one click adds a reversing change. Nothing gets rewritten without a record.
+I found several faults myself by using it. Badges I couldn't see turned out to be a cached old build. A note written in 2023 showed a 2024 date, because the importer stored Notion's last-edited time. The field was renamed to say what it is. 255 index files were counting as concepts, and removing them took the graph from 726 nodes to 470. Later, approvals started failing in silence. There were three causes, and 15 wrongly rejected items were recovered.
 
-
-
-I made the review step mandatory early on. The first version published new material with no review. After watching a long video turn into notes I hadn't seen, I switched it to plan-then-approve. That way I could see what was being added before it landed.
-
-### Keep “verified” for notes a person has reviewed
-
-A person has to approve a note before it gets verified status. Existing notes started out unverified, and none got the label without a review. That helps teammates tell what they can use with confidence from what they should check before acting on it.
-
-### Build a knowledge bundle the client hosts
-
-The agency then wanted to offer this to clients. I designed the client version so the client hosts it themselves and covers the hosting costs. A strategist or the client drops in a folder or a zip. They get back a linked note bundle and a website they can host.
-
-
-
-A colleague has already used the same skill to build a client bundle. I added export checks that look for agency keys and server addresses, which helps keep internal access details out of a package handed to a client.
-
-### What the build delivered
-
-My aim was to make the agency's knowledge usable when its key people weren't around, while keeping review decisions with people. I set that review rule and directed AI coding agents through the build. Teammates can ask for guidance and check the material behind an answer before they act on it.
+When I caught myself redesigning screens to my own taste, I stopped. "Let's not do this based on what I say. What's a good way to handle this?" Each screen now has a one-sentence job and five rules for changing it.

@@ -16,7 +16,7 @@ export async function POST(req: Request) {
     const body = await req.json();
     const { name, email, company, projectType, stage, about, message, budget } = body;
 
-    if (!name || !email || !projectType || !stage || !about || !EMAIL_PATTERN.test(String(email))) {
+    if (!name || !email || !projectType || !about || !EMAIL_PATTERN.test(String(email))) {
       return NextResponse.json({ error: 'Missing or invalid fields.' }, { status: 400 });
     }
 
@@ -35,7 +35,7 @@ export async function POST(req: Request) {
         <p><strong>Email:</strong> ${e(email)}</p>
         <p><strong>Company:</strong> ${e(company) || '—'}</p>
         <p><strong>Project type:</strong> ${e(projectType)}</p>
-        <p><strong>Stage:</strong> ${e(stage)}</p>
+        <p><strong>Stage:</strong> ${e(stage || 'not given')}</p>
         <p><strong>About the company:</strong><br/>${e(about)}</p>
         <p><strong>Message:</strong><br/>${e(message) || '—'}</p>
         <p><strong>Budget:</strong> ${e(budget) || '—'}</p>

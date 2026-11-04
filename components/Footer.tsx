@@ -1,60 +1,46 @@
 import Link from 'next/link';
-import { NAV_LINKS, EMAIL, LINKEDIN_URL, X_URL } from '@/lib/site';
+import { NAV_LINKS, EMAIL, LINKEDIN_URL, X_URL, CALENDLY_URL } from '@/lib/site';
 
-const WORK_LINKS = [
-  { href: '/portfolio#writing', label: 'Writing samples by client' },
-  { href: '/case-studies/manyrequests', label: 'The ManyRequests case study' },
-  { href: '/testimonials', label: 'What clients say' },
-  { href: '/rss.xml', label: 'RSS' },
-];
-
+// Footer, redesigned 4 Nov 2026 (Peace: "the footer can be much better designed").
+// One closing action instead of three link lists that repeated the header:
+// who she is and the call on top, the site in one line beneath, then the year.
+// The RSS feed is linked from <head> in app/layout.tsx, not from here.
 export function Footer({ night = false }: { night?: boolean }) {
   const year = new Date().getFullYear();
 
   return (
-    <footer className={`${night ? 'ground-night' : ''} mt-auto border-t border-border`}>
-      <div className="gutter grid gap-10 py-12 md:grid-cols-[1.4fr_1fr_1fr_1fr]">
+    <footer className={`${night ? 'ground-night' : ''} site-footer mt-auto border-t border-border`}>
+      <div className="gutter footer-top">
         <div>
-          <p className="display text-[26px] font-[560] leading-none">Peace Akinwale</p>
-          <p className="mt-3 max-w-[34ch] text-[15px] leading-relaxed text-muted-foreground">
-            I write the articles B2B SaaS buyers read before they choose a product, and I build the AI tools content and SEO teams use every week.
+          <p className="footer-name display">Peace Akinwale</p>
+          <p className="footer-line">
+            I write the articles B2B SaaS buyers read before they choose a product, and I build AI workflows for content and SEO teams.
           </p>
         </div>
+        <div className="footer-cta">
+          <a href={CALENDLY_URL} target="_blank" rel="noopener" className="button button-ink">Book a 30-minute call</a>
+          <a href={`mailto:${EMAIL}`} className="footer-email">{EMAIL}</a>
+        </div>
+      </div>
 
+      <div className="gutter footer-links">
         <nav aria-label="Pages">
-          <p className="footer-label">Around the site</p>
-          <ul className="mt-3 flex flex-col gap-2">
+          <ul>
             {NAV_LINKS.map((l) => (
-              <li key={l.href}>
-                <Link href={l.href} className="footer-link">{l.label}</Link>
-              </li>
+              <li key={l.href}><Link href={l.href} className="footer-link">{l.label}</Link></li>
             ))}
           </ul>
         </nav>
-
-        <nav aria-label="More of the work">
-          <p className="footer-label">More to look at</p>
-          <ul className="mt-3 flex flex-col gap-2">
-            {WORK_LINKS.map((l) => (
-              <li key={l.href}>
-                <Link href={l.href} className="footer-link">{l.label}</Link>
-              </li>
-            ))}
-          </ul>
-        </nav>
-
         <nav aria-label="Elsewhere">
-          <p className="footer-label">Find me elsewhere</p>
-          <ul className="mt-3 flex flex-col gap-2">
-            <li><a href={`mailto:${EMAIL}`} className="footer-link">Email</a></li>
+          <ul>
+            <li><Link href="/testimonials" className="footer-link">What clients say</Link></li>
             <li><a href={LINKEDIN_URL} target="_blank" rel="noopener noreferrer" className="footer-link">LinkedIn</a></li>
             <li><a href={X_URL} target="_blank" rel="noopener noreferrer" className="footer-link">X</a></li>
           </ul>
         </nav>
       </div>
-      <div className="gutter border-t border-border py-5 text-[13.5px] text-muted-foreground">
-        &copy; {year} Peace Akinwale
-      </div>
+
+      <p className="gutter footer-base">&copy; {year} Peace Akinwale</p>
     </footer>
   );
 }

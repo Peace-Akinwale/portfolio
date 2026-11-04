@@ -3,11 +3,11 @@
 import Link from 'next/link';
 import { useEffect, useId, useState } from 'react';
 import { usePathname } from 'next/navigation';
-import { NAV_LINKS } from '@/lib/site';
+import { CALENDLY_URL, NAV_LINKS } from '@/lib/site';
 import { ThemeToggle } from '@/components/ThemeToggle';
 
 // One top bar for every page: the name on the left, the six sections on the
-// right, "Book a call" last. Sticky, on the page's own ground, with a hairline.
+// right, "Let’s chat" last (Peace, 4 Nov 2026: an invitation to talk; it opens the same Calendly page as every body button). Sticky, on the page's own ground, with a hairline.
 // Under 1024px the sections sit behind a disclosure button, so a label never wraps.
 export function Header() {
   const pathname = usePathname();
@@ -46,15 +46,16 @@ export function Header() {
             </Link>
           ))}
           <ThemeToggle />
-          <Link href="/contact" className="button button-ink whitespace-nowrap text-[14px]">
-            Book a call
-          </Link>
+          <a href={CALENDLY_URL} target="_blank" rel="noopener" className="button button-ink whitespace-nowrap text-[14px]">
+            Let’s chat
+          </a>
         </nav>
 
         <div className="flex items-center gap-1 lg:hidden">
-        <Link href="/contact" className="button button-ink min-h-9 shrink-0 whitespace-nowrap px-3 py-1.5 text-[12.5px]">
-          Book a call
-        </Link>
+        {/* Under 360px the header cannot hold the name, this button, the theme toggle and the menu; the menu repeats "Let’s chat". */}
+        <a href={CALENDLY_URL} target="_blank" rel="noopener" className="button button-ink min-h-9 shrink-0 whitespace-nowrap px-3 py-1.5 text-[12.5px] header-book">
+          Let’s chat
+        </a>
         <ThemeToggle />
         <button
           type="button"
@@ -93,9 +94,9 @@ export function Header() {
               </li>
             ))}
           </ul>
-          <Link href="/contact" className="button button-ink mt-2 inline-flex" onClick={() => setOpen(false)}>
-            Book a call
-          </Link>
+          <a href={CALENDLY_URL} target="_blank" rel="noopener" className="button button-ink mt-2 inline-flex" onClick={() => setOpen(false)}>
+            Let’s chat
+          </a>
         </nav>
       )}
     </header>

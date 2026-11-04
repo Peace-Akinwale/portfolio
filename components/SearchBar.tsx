@@ -30,7 +30,7 @@ export function SearchBar({ onSearch, placeholder = 'Looking for something? Sear
           value={query}
           onChange={handleChange}
           placeholder={placeholder}
-          className="w-full px-6 py-4 bg-muted border border-border focus:border-foreground focus:outline-none transition-colors"
+          className="w-full px-6 py-4 bg-muted border border-[var(--control-border)] focus:border-foreground focus:outline-none transition-colors"
         />
         <button
           type="submit"

@@ -80,7 +80,7 @@ export const STATIC_ENTRIES: RecordEntry[] = [
     href: 'https://www.manyrequests.com/blog/design-annotation-software',
     context: 'for ManyRequests',
     body: [
-      'A comparison piece where the client’s product earns its place by solving the reader’s problem, not because a brief said to mention it. By April it sat on page one of Google for “design annotation tools”.',
+      'A comparison piece where the client’s product earns its place by solving the reader’s problem, not because a brief said to mention it. In April 2026 it was the third organic result on Google for “design annotation tools”.',
     ],
     figure: {
       src: '/images/home/serp-design-annotation.png',
@@ -103,7 +103,7 @@ export const STATIC_ENTRIES: RecordEntry[] = [
       by: 'Nathan Vander Heyden, Head of Marketing at Marker.io, on LinkedIn',
     },
     body: [],
-    links: [{ label: 'The Marker.io samples', href: '/b2b-content-for-marker.io' }],
+    links: [{ label: 'The Marker.io samples', href: '/portfolio' }],
   },
   {
     id: 'editor',

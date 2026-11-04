@@ -12,7 +12,7 @@ type Section = { heading: string; clientName: string; introHtml?: string; projec
 export const LINEUPR_SECTION: Section = {
   heading: 'Ghostwritten for LineUpr, through Exceed SEO',
   clientName: 'LineUpr',
-  introHtml: '<p>Comparisons and buying guides for an event app, May to September 2026. Published under the client’s bylines.</p>',
+  introHtml: '<p>Comparisons and buying guides for an event app.</p>',
   projects: [
     { title: 'Sched pricing 2026: Plans, extra costs and user reviews', link: 'https://lineupr.com/en/blog/sched-pricing' },
     { title: '8 Best Event Survey Apps for Higher Response Rates', link: 'https://lineupr.com/en/blog/best-event-survey-apps' },
@@ -35,7 +35,7 @@ export const LINEUPR_SECTION: Section = {
 export const INVITEDESK_SECTION: Section = {
   heading: 'Ghostwritten for InviteDesk, through Exceed SEO',
   clientName: 'InviteDesk',
-  introHtml: '<p>Guides and comparisons for B2B event software, June to October 2026. Published under the client’s bylines. Two are rewrites of older pages.</p>',
+  introHtml: '<p>Guides and comparisons for B2B event software.</p>',
   projects: [
     { title: '8 Best Event Check-In Apps for B2B Corporate Events (rewrite)', link: 'https://invitedesk.com/en-gb/blog/event-check-in-apps/' },
     { title: '8 Best CRMs for Event Management in 2026, Compared by Use Case', link: 'https://invitedesk.com/en-gb/blog/crm-for-event-management/' },

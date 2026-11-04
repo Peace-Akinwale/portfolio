@@ -5,7 +5,7 @@ blurb: "Pulls the posts worth reading into one feed you can listen to, and starr
 kind: built
 status: "An SEO agency’s founder and team"
 date: 2026-06-10
-summary: "I built a private app an agency uses to follow SEO and AEO trends. Its founder kept checking LinkedIn and saving posts across task lists. The app gathered public posts into one feed to review, with audio digests for listening instead of reading. Starred posts fed newsletter notes that the founder could edit before sending them to the publishing system."
+summary: "An app an SEO agency uses to follow SEO and AEO trends. It collects posts from the people and sources the founder follows, lets him listen to digests, and turns the posts he stars into the week's newsletter roundup. The first version went live the night I started it, and it has run for the founder, his team and the agency's course students since."
 voice: informal
 notion_url: https://app.notion.com/p/403992da7a578154a913e2c0f47463f7
 notion_last_edited: 2026-10-30T23:42:18.968Z
@@ -19,52 +19,38 @@ related:
   - "ai-docs-watch"
 ---
 
-### Get recurring research out of the social feed
+### A founder opening LinkedIn ten times a day and losing the posts he wanted to keep
 
-The founder runs an SEO agency and two newsletters, and their research happened in the gaps of the day. In their words, LinkedIn was "on the home screen of my phone," and they were "opening it 10 times a day."
+On our first call the agency's founder described his day. He was opening LinkedIn ten times a day to keep up, he learns best by listening, and he wanted the posts worth reading in a condensed, manageable form. The posts he kept were the raw material for two newsletters, and they were getting lost in the feed.
 
-Every useful post went into one of three Google Tasks lists to come back to later. By June 2026 those lists held 714 saved items.
+That call changed the plan. I'd been asked for a LinkedIn post engine. The reading feed became the build instead, and the first version went live that night.
 
-They wanted "a way to totally replace" that process. It had to follow the people they trust and let them work through those posts "in a condensed and manageable way." They also prefer listening to long articles over reading them.
+### It reads to him, and his voice stays his own
 
-I'd been building a different tool until June 10, 2026. It was an engine that drafted LinkedIn posts. On a call that day, the founder said drafting wasn't the problem. The checking and saving was.
+**The app reads, and it doesn't write his posts.** "Radar is not to write his LinkedIn content, although he can definitely create content from ideas he has saved." The app collects, summarises and reads aloud. The founder's voice stays his. The client newsletter is still sent from Notion, where his team already works.
 
-I wrote up the new requirements from the call and shipped its first version that same night. The post engine's infrastructure stayed and went to work for the new app.
+**A notification goes to the exact thing.** "When the user decides to click on that notification, it should take them to the exact page or chat or activity that the notification popped up for. So this must be well done." Every notification, whether a push, a Slack message or the bell in the app, opens the item it's about.
 
-### Review collected posts in one feed
-
-The app crawls about 190 people's public posts every day. It also follows selected YouTube and X accounts and industry news feeds. The top of the feed says what the crawl did, so the founder knows how much is waiting before they start.
+**Refresh is the reader's choice.** I added a refresh when the app came back to the foreground, to help on iPhone. Five days later I took it out. "Until a user pulls to refresh, app should not auto refresh." Pull-to-refresh replaced it, and the rule went into the project's instructions. Other updates can arrive silently, but the reader's place never moves on its own.
 
 ![The feed groups unread and starred posts and shows collection status. The reader chooses when to refresh. Identifying information is anonymized.](images/reading-app/reader-01-feed.png)
 
 *The feed groups unread and starred posts and shows collection status. The reader chooses when to refresh. Identifying information is anonymized.*
 
-The founder can go through posts in one place and star the ones worth using. Off-topic updates are hidden by default, with a “Show everything” switch to see what got left out. Feedback helps tune the feed. That gives the founder a research queue to work through on purpose, instead of reopening LinkedIn to check what's new.
+**Keep his behaviour, fix where it lands.** The founder wanted the page to jump to the top after he cleared a post. I kept that, and changed what's at the top. It's now the first post he hasn't seen yet. The alternative, rebuilding the feed with only unseen posts, would have removed posts he never asked to remove.
 
-### Listen to digests and newsletter notes
+**The message reports what the worker did.** A notification once told the founder his link was in the roundup when it wasn't. I set a rule afterwards. The background job that does the work reports what happened, and the alert repeats that report. It can't claim more than the job confirms.
 
-The founder likes listening. So I added audio versions of the weekly LinkedIn and industry-news digests. They can catch up without reading every collected post. Newsletter notes also got narrated and short-video versions, so the same edited material can go out in another format.
+**Check a pattern before teaching it.** When we studied how the founder edited one week's roundup, I stopped before changing the writer's instructions. "These patterns come from one week. Before editing the roundup writer's prompt, validate them against two or three earlier published weeks." Four patterns held every week, and only those went in.
 
-### From a star to a newsletter note
+### One feed with digests to listen to and roundups built from his stars
 
-Starring a post does two things. It clears the post from the unread list, and it adds it to that week's newsletter note. On the Roundups screen, starred posts wait under "Building now." There the founder can reorder them or top them with a note.
+A feed of posts from about 200 followed profiles and 28 news sources, with unread, read and starred views and filters for LinkedIn, X, news and YouTube. Digests the founder can listen to. Weekly roundups built from his stars, capped at his top three in the order he ranked them. Idea queues, a studio for drafting from saved ideas, notifications that deep-link, and an admin view. Later came pasting any link into the feed or a roundup, AI Docs Watch for readers, and sign-in with Google.
 
+### The live app kept finding what 1,253 tests missed
 
+The feed went live on day one at 714 imported ideas and 159 profiles. Team accounts came two weeks later, with anyone on the agency's email domain approved as a reader. Course students got the same reader access the month after, and they can sign themselves up.
 
-The app drafts a newsletter note from three chosen posts and the founder's own commentary, sticking to the limit they picked. The founder edits it before sending it to the publishing system as a draft. So their research picks become the starting point for the newsletter, and they don't have to collect the same links again.
+I tested on the live app, not just in the test suite, and the live app kept finding what the tests missed. A server-side duplicate check raced and let three copies of one link through. An Undo on the star toast didn't remove the star. A feed jump passed every unit test and failed three ways in the browser. After the false notification, I ran a truth audit across this app and two others and found 27 messages that could claim success without proof. All 27 were fixed.
 
-### Rules that protect the account
-
-I set account-protection rules before writing any code. The app holds no LinkedIn login or cookies. There's no way to post or comment from it. Engagement stays with the founder, through links they open themselves. Public posts come through a third-party data service that doesn't need the founder's account.
-
-Two smaller rules came from watching the app in use. The feed only refreshes when asked, so posts don't jump around while you're reading. And a separate check stops generated newsletter copy from promising agency services, so an automated draft can't make commitments the founder hasn't approved.
-
-### Everything the app makes, in one place
-
-As more outputs got added, I brought them together in a shared Library. The founder can get back to a digest or find a newsletter draft without remembering which part of the app made it. The Library also links to related research tools, including AI Docs Watch.
-
-
-
-### What the build delivered
-
-I turned the founder's requests into one connected reading and publishing workflow, and directed AI coding agents through the build. It gave them a place to review collected research and turn chosen posts into newsletter drafts. Teammates get reader accounts.
+The founder publishes the roundup note the app generates rather than writing his own. The project ran to 573 commits and 1,253 tests.

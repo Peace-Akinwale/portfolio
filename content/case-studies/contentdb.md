@@ -1,11 +1,11 @@
 ---
 title: "ContentDB: collect research and question your sources"
 name: "ContentDB"
-blurb: "Your articles and transcripts in one library you can search from a chat or from your AI assistant."
+blurb: "Your articles and transcripts in one library you can search in the app or from your AI assistant."
 kind: built
 status: "Open to anyone who signs up"
-date: 2026-04-15
-summary: "I built ContentDB to keep articles and video transcripts in one searchable library. It organises sources by client and adds a chat where you can bring a particular source into your question. It also gives a connected AI assistant tools to search the library and open a complete source."
+date: 2026-03-03
+summary: "ContentDB is my research library. It keeps a company's articles, podcasts, transcripts and PDFs in one place, and an AI assistant can search it through MCP, so a writer gets the exact passage a leader wrote or said instead of something found online. I built it for my own articles and later rebuilt it as a quote checker for writers. Anyone can sign up, with $2 of AI usage to start."
 voice: informal
 notion_url: https://app.notion.com/p/403992da7a5781cfaff1de30c9c49f2f
 notion_last_edited: 2026-10-31T09:35:09.780Z
@@ -19,48 +19,40 @@ related:
   - "okf"
 ---
 
-Saving research is only half the job. Later you need to find the passage again, with enough of the source around it to tell whether it answers your question.
+### The quotes a writer needs sit in places nobody searches
 
-ContentDB is my own software project for that job. In the March to April 2026 build I connected a few ways of adding material to a web library with search and chat. I owned the interface and the server work, and directed AI coding assistants through both. Each saved item records its source URL and the client it belongs to.
+Every article I write leans on what the company already knows, like an executive's podcast answer or a gated ebook. Those pieces sit in different places, so in practice nobody uses them. I'd dig through old documents and move quotes by hand.
 
-### Bring articles and whole batches into one library
+Before the first commit I wrote down what I wanted the product to do. A writer asks their AI tool whether any executive has said something relevant on a topic, and gets back what they actually wrote or said. "Fast, precise, exactly what is in their previous database, not just a random insight found online. This is the premise I am gunning for."
 
-I added separate ways in for links and uploaded files. Batch imports bring in YouTube videos and sitemap pages. They all feed the same library, so you don't need a different place to search each format.
+### One job, done from inside the writer's own AI tool
+
+**MCP from the first commit.** The point was to search the library from Claude while writing, so the MCP server shipped on day one. Two days later I saw what setup asked of a user. They had to clone a repo and edit a config file in a terminal. "I don't think the best use case with MCP is for users to have to head to their terminal to fix it." The hosted endpoint and a connector page in Settings replaced all of that.
+
+**Narrow it to a quote checker.** The first build ran 126 commits and then sat for six months. When I came back, I wrote down two options. A research workspace for agencies needs billing and roles that one maintainer can't sustain. A quote checker for writers, MCP-first, does one job well. I picked the second and cut the rest, from the AI summary on every search to billing. Generation happens in the writer's own Claude or ChatGPT, so ContentDB only pays for finding and checking.
+
+**Show the text around the quote.** The thing that makes a quote safe to use is the sentence before and after it. The old build stored that context and never showed it. Search now returns a passage of 300 to 800 characters with the passages either side. PDFs and Word files are stored verbatim, and anything a model had to retype is badged "Not verbatim".
 
 ![image](images/contentdb/image.png)
 
-Adding a group of sources needs more feedback than adding one article. Each item can take a while or fail on its own.
+**Let people in, with a ceiling.** When I set up access, I didn't have anyone's email in advance. "The emails are available when they sign up. That's why I said people should be automatically added to an allowlist." Anyone can now sign up and gets $2 of AI usage, once, per account. The gate lives in the app, not in the shared database, because a database trigger on the shared sign-in had already broken another app's sign-ups that week.
 
-So batch imports run as jobs that show their progress and tell you what finished or failed, and the server limits how many sources it works on at once. You can follow a bigger import and see which items need a second look.
+**Railway, because MCP can't wait.** The free host slept, and the API took 32 to 43 seconds to wake. That's too slow for a tool Claude calls in the middle of an answer. I moved it to Railway and retired the old hosts.
 
-For document uploads, plain text goes into the library as it is. Other supported formats go through extraction first. I also added search by meaning, so you don't have to remember an item's exact title or wording to find it. Then you can open the stored text and read it in full.
+### A library that returns the passage and the text around it
 
-### Group sources by client, and bring back a conversation's scope
-
-In the April redesign, I organised sources by client instead of keeping a separate collections system. A writer can pick the client they're working on and search only that client's material. That makes it easier to get back to the right research without wading through sources saved for other assignments.
-
-An earlier change also saves the selected client with each conversation. When you reopen a thread, the interface brings that selection back. You can pick up where you left off without setting the scope up again.
-
-### Show the text around a quote
-
-A short matching passage can leave out the sentence that explains it. So I added the surrounding context from the stored source. For transcripts it picks the relevant segment and includes the segments on either side. For other text, it includes the nearby sentences.
-
-The assistant tools return that context with the source title and URL, where there is one. Chat also gets the source titles, plus instructions to say so when information is missing. That gives you something to check before you use an answer or a quote. A generated answer still needs checking. A guessed speaker label isn't a confirmed attribution.
-
-### Bring a chosen source into the chat
-
-Search helps when you're exploring a library. But sometimes you already know which article you want to talk about.
-
-So I added a “Cite in chat” action. A writer picks a source and asks a question about it, and the server includes an excerpt from that source even if search would have missed it.
-
-Say a writer brings in a saved customer interview and asks which passages back up a point in their draft. Long documents still need checking, because the excerpt has a length limit.
-
-### Search and open the library from an AI assistant
-
-I added an MCP connection, which lets a compatible AI assistant use tools inside another app. ContentDB's tools let an assistant search saved content and open a full item. They can also add material and find insights in customer transcripts. You can work from your assistant without copying each document into the conversation yourself.
-
-I also changed the connection so a server restart doesn't break an assistant's session. You don't have to reconnect before carrying on with your research, and the older connection still works for assistants already using it.
+Article URLs, YouTube, podcast feeds, sitemaps, pasted text, call transcripts, PDFs, Word files and images go in. Sources are grouped by client. Search returns the passage and its neighbours. Ten MCP tools give Claude or ChatGPT the same search, and a pain-points view pulls customer problems out of transcripts. Sign in by email or Google.
 
 ![Historical demonstration of quotation context in an earlier ContentDB interface. The matching passage appears between the text before and after it; this is not a capture of the current UI.](images/contentdb/contentdb-quote-context-existing-demo.png)
 
 *Historical demonstration of quotation context in an earlier ContentDB interface. The matching passage appears between the text before and after it; this is not a capture of the current UI.*
+
+### 5,194 passages for a cent, and two outages no screen showed
+
+The rebuild added 50 commits on top of the first 126. Backfilling passages for my 76 sources produced 5,194 passages for about a cent, and the whole library has cost $0.04 in AI usage to date. The test suite went from 44 to 238.
+
+Some failures came to me from outside. Early on, a user's Claude Desktop couldn't see the server and they asked for a refund. I shipped two transport fixes that day. On my return I found the database had been paused for inactivity during the six-month gap and the old host had been blocking every deploy. Neither showed up on screen. A bug hunt found them.
+
+One came from me. Before the release I asked, "Should I trust you and push live? Have you done a bug hunt first? Have you tested the app itself in browsers?" It hadn't. Seven more fixes and a full walk through the app came before I merged it.
+
+ContentDB runs at contentdb.peaceakinwale.com. The user I can prove is me. Sign-up is open.

@@ -3,116 +3,94 @@ import Image from 'next/image';
 import Link from 'next/link';
 import type { Metadata } from 'next';
 import '@/components/case-study/case-study.css';
-import { firstImage, listCaseStudies } from '@/lib/content/case-studies';
-import { getLocalArticle } from '@/lib/content/articles';
-import { dayLabel } from '@/lib/content/dates';
-import { KIND_LABEL } from '@/lib/content/record';
+import { firstImage, listCaseStudies, type CaseStudy } from '@/lib/content/case-studies';
+import { CASE_STUDY_LINES } from '@/lib/content/case-study-lines';
 import { MANYREQUESTS_ARTICLE_COUNT, MANYREQUESTS_SINCE } from '@/lib/portfolio/manyrequests';
 import { SITE_URL } from '@/lib/site';
+import { WorkWithMe } from '@/components/WorkWithMe';
 
 export const metadata: Metadata = withOg({
-  title: 'Case studies, AI tools for content and SEO teams',
+  title: 'Case studies, AI workflows for content and SEO teams',
   description:
-    'Tools I built for content and SEO teams, and the decisions that mattered in each. Plus one long writing engagement. Each case study comes from the project’s own notes.',
+    'AI workflows I built for content and SEO teams, and the decisions that shaped each one. Plus one long writing engagement. Each case study comes from the project’s own records.',
   alternates: { canonical: `${SITE_URL}/case-studies` },
 }, { key: 'case-studies', path: '/case-studies', alt: 'Case studies by Peace Akinwale' });
 
-// One row of the dated list. The thumbnail slot is left out when there is no shot.
-function Row({ href, date, dateLabel, kind, context, name, line, shot }: {
-  href: string;
-  date?: string;
-  dateLabel?: string;
-  kind: 'built' | 'wrote';
-  context?: string;
-  name: string;
-  line: string;
-  shot?: { src: string; alt: string; portrait?: boolean } | null;
-}) {
+// One row per case study, laid out like the blog index (Peace, 4 Nov 2026):
+// the case study's own screenshot on the left, then the name, the problem and the
+// decision. No status or meta lines (Peace, 4 Nov 2026).
+function Row({ cs }: { cs: CaseStudy }) {
+  const shot = firstImage(cs);
+  const lines = CASE_STUDY_LINES[cs.slug];
+  const href = `/case-studies/${cs.slug}`;
   return (
-    <li className={shot ? 'cs-row has-shot' : 'cs-row'} data-kind={kind}>
-      <div className="cs-row-text">
-        <p className="meta">
-          {date && <time dateTime={date}>{dateLabel ?? date}</time>}
-          <span className="kind">{KIND_LABEL[kind]}</span>
-          {context && <span>{context}</span>}
-        </p>
-        <h3><Link href={href}>{name}</Link></h3>
-        <p className="line">{line}</p>
+    <li className="cs-row">
+      <Link href={href} className="cs-row-shot" tabIndex={-1} aria-hidden="true">
+        {shot && <Image src={shot.src} alt="" fill sizes="(max-width: 700px) 100vw, 260px" loading="lazy" />}
+      </Link>
+      <div>
+        <h3><Link href={href}>{cs.name}</Link></h3>
+        {lines ? (
+          <>
+            <p>{lines.problem}</p>
+            <p>{lines.decision}</p>
+          </>
+        ) : (
+          <p>{cs.blurb}</p>
+        )}
       </div>
-      {shot && (
-        <Link href={href} className={shot.portrait ? 'cs-shot is-portrait' : 'cs-shot'} tabIndex={-1} aria-hidden="true">
-          <Image src={shot.src} alt={shot.alt} fill sizes="(max-width: 640px) 100vw, 220px" loading="lazy" />
-        </Link>
-      )}
     </li>
   );
 }
 
-// Grouped by who the tool is for, then by how much it matters to a content or
-// SEO team hiring Peace (3 Nov 2026 review: a dated list mixed client builds
-// with her own apps, and the agency work did not stand out).
-const FOR_TEAMS = ['ai-docs-watch', 'fanout-query-analysis-tool', 'reading-app', 'quality-rater', 'okf', 'what-ai-search-apps-do-before-they-answer'];
-const FOR_MYSELF = ['aloud', 'contentdb', 'reach'];
+// Grouped by who the tool is for. Reach is a developer tool and sits in one line
+// under the products rather than as a card (page plan, 4 Nov 2026).
+const FOR_TEAMS = ['fanout-query-analysis-tool', 'ai-docs-watch', 'reading-app', 'okf', 'what-ai-search-apps-do-before-they-answer', 'quality-rater'];
+const MY_OWN = ['contentdb', 'aloud'];
 
 export default function CaseStudiesPage() {
   const studies = listCaseStudies();
-  const bySlug = (slugs: string[]) => slugs.map((s) => studies.find((cs) => cs.slug === s)).filter((cs): cs is NonNullable<typeof cs> => !!cs);
+  const bySlug = (slugs: string[]) => slugs.map((s) => studies.find((cs) => cs.slug === s)).filter((cs): cs is CaseStudy => !!cs);
   const forTeams = bySlug(FOR_TEAMS);
-  const forMyself = bySlug(FOR_MYSELF);
-  const wrote = studies.filter((s) => s.kind === 'wrote');
-  const articleDate = (slug: string) => getLocalArticle(slug)?.publishedAt.slice(0, 10);
-  const articles = [
-    { slug: 'the-success-message-was-the-bug', name: 'The success message was a bug', line: 'Five lessons from building an app an agency uses to follow SEO and AEO trends.' },
-    { slug: 'build-a-course-portal-around-the-instructors-workflow', name: 'Build a course portal around the instructor’s workflow', line: 'Which parts of an existing process the software should leave alone.' },
-  ].map((a) => ({ ...a, date: articleDate(a.slug) }));
+  const myOwn = bySlug(MY_OWN);
+  const reach = studies.find((cs) => cs.slug === 'reach');
 
   return (
     <div className="gutter mx-auto max-w-[1180px] cs-page">
       <header className="cs-index">
         <h1>Case studies</h1>
-        <p className="lead">AI tools I designed and built for content and SEO teams, and a long-running B2B SaaS writing engagement. Client data is masked where it is private.</p>
       </header>
 
       <section className="cs-group" aria-labelledby="teams-h">
-        <h2 id="teams-h">Tools for content and SEO teams</h2>
-        <p>In use at an SEO and AEO agency, by its founder and strategists. Two are public.</p>
-        <ul className="cs-list">
-          {forTeams.map((cs) => (
-            <Row key={cs.slug} href={`/case-studies/${cs.slug}`} date={cs.date} dateLabel={dayLabel(cs.date)} kind="built" context={cs.status} name={cs.name} line={cs.blurb} shot={firstImage(cs)} />
-          ))}
+        <h2 id="teams-h">AI workflows for content and SEO teams</h2>
+        <ul className="cs-rows">
+          {forTeams.map((cs) => <Row key={cs.slug} cs={cs} />)}
         </ul>
       </section>
 
-      <section className="cs-group" aria-labelledby="myself-h">
-        <h2 id="myself-h">Independent products</h2>
-        <p>Products I own and run. Aloud and ContentDB are open to new sign-ups.</p>
-        <ul className="cs-list">
-          {forMyself.map((cs) => (
-            <Row key={cs.slug} href={`/case-studies/${cs.slug}`} date={cs.date} dateLabel={dayLabel(cs.date)} kind="built" context={cs.status} name={cs.name} line={cs.blurb} shot={firstImage(cs)} />
-          ))}
+      <section className="cs-group" aria-labelledby="own-h">
+        <h2 id="own-h">Products of my own</h2>
+        <ul className="cs-rows">
+          {myOwn.map((cs) => <Row key={cs.slug} cs={cs} />)}
         </ul>
+        {reach && (
+          <p className="cs-also">
+            Also built: <Link href={`/case-studies/${reach.slug}`}>{reach.name}</Link>, for when an AI coding session needs my Mac’s screen. It hands the step to a session on the right Mac and sends the result back. Passwords stay with me.
+          </p>
+        )}
       </section>
 
       <section className="cs-group" aria-labelledby="wrote-h">
         <h2 id="wrote-h">Writing</h2>
-        <p>Product-led articles for a B2B SaaS company since 2024, with the search results they earned. Every sample is on the <Link href="/portfolio#writing" className="underline underline-offset-4">writing page</Link>.</p>
-        <ul className="cs-list">
-          <Row href="/case-studies/manyrequests" date={MANYREQUESTS_SINCE} dateLabel={`since ${MANYREQUESTS_SINCE}`} kind="wrote" context="ManyRequests, B2B SaaS client portal software" name={`${MANYREQUESTS_ARTICLE_COUNT} product-led articles for ManyRequests`} line="Articles where the product shows up inside the piece, and what they did in search." shot={{ src: '/images/case-studies/manyrequests/manyrequests-editorial-scoring-sheet-preview.png', alt: 'The keyword sheet for ManyRequests, with a business potential score per topic' }} />
-          {wrote.map((cs) => (
-            <Row key={cs.slug} href={`/case-studies/${cs.slug}`} date={cs.date} dateLabel={dayLabel(cs.date)} kind="wrote" context={cs.status} name={cs.name} line={cs.blurb} shot={firstImage(cs)} />
-          ))}
-        </ul>
+        <p>
+          <Link href="/case-studies/manyrequests">{MANYREQUESTS_ARTICLE_COUNT} product-led articles for ManyRequests since {MANYREQUESTS_SINCE}</Link>.
+        </p>
       </section>
-
-      <section className="cs-group" aria-label="Articles about building">
-        <h2>Articles on these builds</h2>
-        <p>What two of the builds taught me about shipping software a team relies on.</p>
-        <ul className="cs-list">
-          {articles.map((a) => (
-            <Row key={a.slug} href={`/${a.slug}`} date={a.date} dateLabel={a.date ? dayLabel(a.date) : undefined} kind="wrote" context="Article" name={a.name} line={a.line} />
-          ))}
-        </ul>
-      </section>
+      <WorkWithMe
+        heading="Want something like this for your team?"
+        body="Tell me about the work your team repeats every week, or the articles you need. On a 30-minute call I’ll say whether an AI workflow or an article would help."
+        secondary={{ label: 'How building with me works', href: '/services#building' }}
+      />
     </div>
   );
 }

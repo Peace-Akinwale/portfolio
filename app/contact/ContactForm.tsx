@@ -10,7 +10,7 @@ const PROJECT_TYPES = [
   'One article, new or refreshed',
   'Articles every month',
   'SEO and AEO strategy for our content',
-  'A tool or workflow for our team',
+  'An AI workflow for our team',
   'Other',
 ];
 
@@ -22,7 +22,7 @@ const BUDGETS = [
   '$8,000 and up',
 ];
 
-const BUILDING_TYPE = 'A tool or workflow for our team';
+const BUILDING_TYPE = 'An AI workflow for our team';
 
 // The stage options follow the service picked: a building client was being asked
 // about content strategy (review, 29 Oct 2026).
@@ -33,14 +33,16 @@ const WRITING_STAGES = [
 ];
 
 const BUILDING_STAGES = [
-  'We know the task we want a tool for.',
-  'We repeat a process every week and want to know whether a tool would help.',
+  'We know the task we want an AI workflow for.',
+  'We repeat a process every week and want to know whether an AI workflow would help.',
   'We have a tool that doesn\'t work the way the team needs.',
   'We want to offer AI-assisted work to our clients and need the system behind it.',
 ];
 
-const inputClass = 'w-full rounded-md border border-border bg-background px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-accent transition';
-const labelClass = 'text-xs font-bold uppercase tracking-[0.08em] text-muted-foreground mb-1.5 block';
+// Design guide, 4 Nov 2026: inputs need a 3:1 edge (--control-border), 16px text, and a visible focus ring;
+// labels use one cue (weight), not capitals, tracking, weight and grey at once.
+const inputClass = 'w-full rounded-md border border-[var(--control-border)] bg-background px-4 py-2.5 text-[16px] text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-accent transition';
+const labelClass = 'text-[15px] font-semibold text-foreground mb-1.5 block';
 
 export default function ContactForm() {
   const [form, setForm] = useState({
@@ -78,19 +80,11 @@ export default function ContactForm() {
 
       {/* ── Header ─────────────────────────────────── */}
       <div className="mb-10">
-        <p className="text-xs font-bold uppercase tracking-[0.15em] mb-4" style={{ color: 'var(--accent)' }}>
-          Say hi
-        </p>
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <h1
-            className="text-3xl sm:text-4xl font-extrabold text-foreground leading-[1.1]"
-            style={{ letterSpacing: '-0.03em' }}
-          >
-            Let&rsquo;s talk about it.
-          </h1>
+          <h1 className="text-foreground">Book a call, or write to me.</h1>
         </div>
         <p className="text-sm leading-relaxed text-muted-foreground mt-4 max-w-lg">
-          Book a 30-minute call below. You describe the work, and I say whether I&rsquo;m the right person for it. Or scroll down and write to me instead.
+          Thirty minutes. You describe the article or the task, and I tell you whether I&rsquo;m the right person for it.
         </p>
         <p className="text-sm leading-relaxed text-muted-foreground mt-2 max-w-lg">
           Or email me at <a href="mailto:akindayopeaceakinwale@gmail.com" className="underline underline-offset-2 text-foreground">akindayopeaceakinwale@gmail.com</a>
@@ -129,7 +123,7 @@ export default function ContactForm() {
       <div className="flex items-center gap-4 mb-12">
         <span className="flex-1 h-px bg-border" />
         <p className="text-xs font-bold uppercase tracking-[0.15em] text-muted-foreground whitespace-nowrap">
-          Rather write first?
+          Or write to me
         </p>
         <span className="flex-1 h-px bg-border" />
       </div>
@@ -137,25 +131,25 @@ export default function ContactForm() {
       {/* ── Form ───────────────────────────────────── */}
       {status === 'sent' ? (
         <div className="flex flex-col gap-4 py-10">
-          <p className="text-2xl font-extrabold text-foreground" style={{ letterSpacing: '-0.02em' }}>Message sent.</p>
+          <p role="status" className="text-2xl font-semibold text-foreground">Message sent.</p>
           <p className="text-sm text-muted-foreground leading-relaxed">Thanks for writing. I&rsquo;ll get back to you within a business day.</p>
           <button
             onClick={() => { setStatus('idle'); setForm({ name: '', email: '', company: '', projectType: '', stage: '', about: '', message: '', budget: '' }); }}
-            className="text-xs font-bold uppercase tracking-[0.08em] underline underline-offset-2 mt-2 self-start"
-            style={{ color: 'var(--accent)' }}
+            className="button button-line mt-2 self-start"
           >
             Send another message
           </button>
         </div>
       ) : (
         <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+          <p className="text-[14px] text-muted-foreground">Fields marked * are required.</p>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
             <div>
-              <label htmlFor="contact-name" className={labelClass}>Full Name <span style={{ color: 'var(--accent)' }}>*</span></label>
+              <label htmlFor="contact-name" className={labelClass}>Full name <span aria-hidden="true">*</span></label>
               <input id="contact-name" name="name" autoComplete="name" required value={form.name} onChange={handleChange} placeholder="Your name" className={inputClass} />
             </div>
             <div>
-              <label htmlFor="contact-email" className={labelClass}>Work Email <span style={{ color: 'var(--accent)' }}>*</span></label>
+              <label htmlFor="contact-email" className={labelClass}>Work email <span aria-hidden="true">*</span></label>
               <input id="contact-email" name="email" type="email" autoComplete="email" required value={form.email} onChange={handleChange} placeholder="you@company.com" className={inputClass} />
             </div>
           </div>
@@ -167,7 +161,7 @@ export default function ContactForm() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
             <div>
-              <label htmlFor="contact-project-type" className={labelClass}>Type of project <span style={{ color: 'var(--accent)' }}>*</span></label>
+              <label htmlFor="contact-project-type" className={labelClass}>Type of project <span aria-hidden="true">*</span></label>
               <select id="contact-project-type" name="projectType" required value={form.projectType} onChange={handleChange} className={inputClass}>
                 {PROJECT_TYPES.map((t) => (
                   <option key={t} value={t === 'Select a type' ? '' : t}>{t}</option>
@@ -185,8 +179,8 @@ export default function ContactForm() {
           </div>
 
           <div>
-            <label htmlFor="contact-stage" className={labelClass}>Where are you in the process? <span style={{ color: 'var(--accent)' }}>*</span></label>
-            <select id="contact-stage" name="stage" required value={form.stage} onChange={handleChange} className={inputClass}>
+            <label htmlFor="contact-stage" className={labelClass}>Where are you in the process?</label>
+            <select id="contact-stage" name="stage" value={form.stage} onChange={handleChange} className={inputClass}>
               <option value="">Select a stage</option>
               {(form.projectType === BUILDING_TYPE ? BUILDING_STAGES : WRITING_STAGES).map((s) => (
                 <option key={s} value={s}>{s}</option>
@@ -195,7 +189,7 @@ export default function ContactForm() {
           </div>
 
           <div>
-            <label htmlFor="contact-about" className={labelClass}>Tell me about the work, and who it is for <span style={{ color: 'var(--accent)' }}>*</span></label>
+            <label htmlFor="contact-about" className={labelClass}>Tell me about the work, and who it is for <span aria-hidden="true">*</span></label>
             <textarea id="contact-about" name="about" required value={form.about} onChange={handleChange} rows={3} placeholder="The product or the task, and who it is for" className={inputClass + ' resize-none'} />
           </div>
 
@@ -205,16 +199,16 @@ export default function ContactForm() {
           </div>
 
           {status === 'error' && (
-            <p className="text-sm text-red-500">Something went wrong. Try emailing me at <a href="mailto:akindayopeaceakinwale@gmail.com" className="underline">akindayopeaceakinwale@gmail.com</a></p>
+            <p role="alert" className="text-[15px]" style={{ color: 'var(--danger)' }}>Your message didn&rsquo;t send. What you typed is still here, so you can try again, or email me at <a href="mailto:akindayopeaceakinwale@gmail.com" className="underline">akindayopeaceakinwale@gmail.com</a>.</p>
           )}
 
           <button
             type="submit"
             disabled={status === 'sending'}
-            className="w-full py-3 text-xs font-bold uppercase tracking-[0.08em] rounded-md transition-all hover:opacity-90 disabled:opacity-60"
-            style={{ background: 'var(--accent)', color: 'var(--accent-foreground)' }}
+            className="button button-accent w-full disabled:opacity-60"
+            aria-busy={status === 'sending'}
           >
-            {status === 'sending' ? 'Sending...' : 'Send message'}
+            {status === 'sending' ? 'Sending your message…' : 'Send message'}
           </button>
         </form>
       )}

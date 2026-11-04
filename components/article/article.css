@@ -5,7 +5,7 @@
 .article-head .kicker { font-size: 14px; color: var(--muted-foreground); margin: 0 0 14px; }
 .article-head .kicker a { text-decoration: none; }
 .article-head .kicker a:hover { text-decoration: underline; color: var(--accent); }
-.article-head h1 { font-size: clamp(2rem, 4.4vw, 3.5rem); font-weight: 520; margin: 0 0 16px; }
+.article-head h1 { margin: 0 0 16px;  }
 .article-head .standfirst { font-family: var(--font-serif); font-optical-sizing: auto; font-size: clamp(1.15rem, 1.5vw, 1.3rem); line-height: 1.45; margin: 0 0 18px; }
 .article-head .meta { font-size: 14.5px; color: var(--muted-foreground); display: flex; flex-wrap: wrap; gap: 6px 14px; margin: 0; }
 .article-cover { margin: 28px 0 0; }
@@ -28,7 +28,7 @@
 
 /* index */
 .posts-head { padding: 48px 0 24px; }
-.posts-head h1 { font-size: clamp(2rem, 4.2vw, 3.4rem); font-weight: 520; max-width: 16ch; margin: 0 0 14px; }
+.posts-head h1 { max-width: 16ch; margin: 0 0 14px;  }
 .posts-head .lead { font-family: var(--font-serif); font-optical-sizing: auto; font-size: 1.2rem; max-width: var(--measure); margin: 0 0 24px; }
 .posts { list-style: none; margin: 0; padding: 0; }
 .post-row { display: grid; grid-template-columns: 150px minmax(0, 1fr); gap: 8px 40px; border-top: 1px solid var(--border); padding: 24px 0 28px; }

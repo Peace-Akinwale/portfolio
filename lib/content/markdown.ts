@@ -21,7 +21,41 @@ export function renderMarkdown(md: string, opts: RenderOptions): string {
     (_m, img: string, cap: string) => `<figure>${img}<figcaption>${cap}</figcaption></figure>`,
   );
   html = html.replace(/<p>(<img [^>]*>)<\/p>/g, (_m, img: string) => `<figure>${img}</figure>`);
-  return html;
+  return smartQuotesHtml(html);
+}
+
+// Curly quotes and apostrophes in prose (Lupton, Thinking with Type: typographers use
+// real quotation marks, not the typewriter's straight ones). Text inside <code> and
+// <pre>, and inside tags and attributes, is left alone.
+export function smartQuotes(s: string): string {
+  return s
+    .replace(/(^|[\s(\[{\u2014\u2013-])"/g, '$1\u201C')
+    .replace(/"/g, '\u201D')
+    .replace(/(^|[\s(\[{\u2014\u2013-])'/g, '$1\u2018')
+    .replace(/'/g, '\u2019');
+}
+
+function smartQuotesHtml(html: string): string {
+  let inCode = 0;
+  // The last visible character before this text run. A quote straight after an
+  // inline tag (`</a>'s`, `<strong>"x"`) is judged by the text before the tag,
+  // not by the start of the run (bug hunt, 4 Nov 2026).
+  let prev = '';
+  return html.split(/(<[^>]+>)/).map((part) => {
+    if (part.startsWith('<')) {
+      if (/^<(code|pre)\b/i.test(part)) inCode++;
+      else if (/^<\/(code|pre)>/i.test(part)) inCode = Math.max(0, inCode - 1);
+      if (/^<\/?(p|li|h\d|blockquote|figure|figcaption|td|th|br|div|ul|ol)\b/i.test(part)) prev = '';
+      return part;
+    }
+    if (!part) return part;
+    if (inCode) { prev = part.slice(-1); return part; }
+    const plain = part.replace(/&#39;/g, "'").replace(/&quot;/g, '"');
+    const anchor = prev; // '' at the start of a block, else the real character before the tag
+    const out = smartQuotes(anchor + plain).slice(anchor.length);
+    prev = out.slice(-1);
+    return out;
+  }).join('');
 }
 
 export function plainText(html: string): string {

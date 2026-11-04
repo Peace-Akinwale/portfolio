@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { parseFrontMatter, asString, asList } from './frontmatter';
-import { renderMarkdown, imageRefs, readingMinutes } from './markdown';
+import { smartQuotes, renderMarkdown, imageRefs, readingMinutes } from './markdown';
 
 // Case studies live in content/case-studies/<slug>.md with their images in
 // public/case-studies/<slug>/. Front matter:
@@ -21,6 +21,7 @@ export interface CaseStudy {
   kind: CaseStudyKind;
   status: string;
   date: string;
+  built?: string; // the label the strip shows when a build spans months, e.g. "Aug to Sep 2026"
   summary: string;
   cover?: { src: string; alt: string };
   for?: string;
@@ -56,11 +57,12 @@ export function readCaseStudyFile(file: string): CaseStudy {
     slug,
     title: asString(data.title, slug),
     name: asString(data.name, asString(data.title, slug)),
-    blurb: asString(data.blurb, asString(data.summary)),
+    blurb: smartQuotes(asString(data.blurb, asString(data.summary))),
     kind,
     status: asString(data.status),
     date: asString(data.date),
-    summary: asString(data.summary),
+    built: data.built ? asString(data.built) : undefined,
+    summary: smartQuotes(asString(data.summary)),
     cover: cover ? { src: `${imageBase}/${cover}`, alt: asString(data.cover_alt, asString(data.title, slug)) } : undefined,
     for: data.for ? asString(data.for) : undefined,
     links: parseLinks(asList(data.links)),

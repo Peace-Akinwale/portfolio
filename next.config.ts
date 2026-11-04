@@ -40,6 +40,12 @@ const nextConfig: NextConfig = {
         permanent: true,
       },
       {
+        // 4 Nov 2026: the Marker.io samples now sit on the writing page.
+        source: '/b2b-content-for-marker.io',
+        destination: '/portfolio',
+        permanent: true,
+      },
+      {
         source: '/tools',
         destination: '/case-studies',
         permanent: true,

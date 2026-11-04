@@ -5,7 +5,7 @@
 
 /* article callouts */
 .mr-callout { background: var(--card); border-radius: 20px; padding: 22px 24px 24px; margin: 0 0 16px; }
-.mr-callout > a { display: inline-block; font-family: var(--font-sans); font-weight: 600; font-size: 15.5px; color: var(--foreground); text-decoration: underline; text-decoration-color: var(--sun); text-underline-offset: 3px; margin: 0 0 10px; }
+.mr-callout > a { display: inline-block; font-family: var(--font-sans); font-weight: 600; font-size: 15.5px; color: var(--foreground); text-decoration: underline; text-decoration-color: var(--link-rule); text-underline-offset: 3px; margin: 0 0 10px; }
 .mr-callout p { font-size: 1.05rem; line-height: 1.5; margin: 0 0 1rem; }
 .mr-callout img { display: block; width: 100%; margin: 0.25rem 0 0; border-radius: 12px; }
 

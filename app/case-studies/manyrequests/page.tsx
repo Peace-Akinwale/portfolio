@@ -36,9 +36,9 @@ export const metadata: Metadata = {
 // The chapters, in page order. The cover's "What's in here" list reads them.
 const CHAPTERS = [
   { id: 'the-challenge', title: 'A crowded category where the easy version of this work is familiar' },
-  { id: 'what-i-did', title: `What I did across all ${MANYREQUESTS_ARTICLE_COUNT} articles` },
-  { id: 'the-articles', title: 'The articles that explain the approach' },
-  { id: 'the-results', title: 'What the work produced' },
+  { id: 'what-i-did', title: 'Every topic had to let the product do real work inside the article' },
+  { id: 'the-articles', title: 'Three articles that show the method' },
+  { id: 'the-results', title: `${MANYREQUESTS_ARTICLE_COUNT} published articles, and a retainer that is still running` },
 ];
 
 function Ext({ href, children }: { href: string; children: React.ReactNode }) {
@@ -60,12 +60,7 @@ export default function ManyRequestsCaseStudyPage() {
           </p>
           <h1>{MANYREQUESTS_ARTICLE_COUNT} product-led articles for ManyRequests</h1>
           <p className="cs-point">Articles where the product shows up inside the piece, and what they did in search.</p>
-          <dl className="cs-strip">
-            <div><dt>Written for</dt><dd>ManyRequests, since {MANYREQUESTS_SINCE}</dd></div>
-            <div><dt>Reading time</dt><dd>about 8 min</dd></div>
-          </dl>
           <nav className="cs-index-nav" aria-label="In this case study">
-            <p>What’s in here</p>
             <ul>
               {CHAPTERS.map((c) => (
                 <li key={c.id}><a href={`#${c.id}`}>{c.title}</a></li>
@@ -76,12 +71,9 @@ export default function ManyRequestsCaseStudyPage() {
       </header>
 
       <div className="gutter mx-auto max-w-[1180px] cs-page">
-        <section className="cs-short" aria-label="In short">
-          <p className="cs-short-label">The short version</p>
-          <p className="cs-short-text">
+        <p className="cs-lede">
             <Ext href="https://www.manyrequests.com/">ManyRequests</Ext> did not need more blog posts that mentioned the product once near the end and called that product-led content. They needed articles that could rank for the right searches and show where the product fit while the reader was still making up their mind.
           </p>
-        </section>
 
         <div className="cs-chapter">
           <div className="prose">
@@ -243,7 +235,7 @@ export default function ManyRequestsCaseStudyPage() {
                 <li>{MANYREQUESTS_ARTICLE_COUNT} published articles across comparison and agency operations topics</li>
                 <li>22 high-fit topics where the product could be explained and shown in the body</li>
                 <li>Strong concentration around high-intent searches where ManyRequests had real product fit</li>
-                <li>{MANYREQUESTS_RANKINGS.length} articles on Google&rsquo;s first page on 3 November 2026, shown below</li>
+                <li>{MANYREQUESTS_RANKINGS.length} articles on Google&rsquo;s first page on 3 November 2026</li>
                 <li>Ongoing retainer, which tells you as much as any vanity metric</li>
               </ul>
             </div>
@@ -262,7 +254,7 @@ export default function ManyRequestsCaseStudyPage() {
 
             <div className="mr-ranks" id="rankings">
               <h3>Where they rank on Google, 3 November 2026</h3>
-              <p>Each screenshot shows the search and the ManyRequests result in context. Positions count organic results only. Searched with US results and no personalisation. Rankings move, so these are dated, not a promise.</p>
+              <p>Positions count organic results only. Searched with US results and no personalisation. Rankings move, so these are dated, not a promise.</p>
               <ul>
                 {MANYREQUESTS_RANKINGS.map((r) => (
                   <li key={r.query}>

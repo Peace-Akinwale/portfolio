@@ -1,61 +1,45 @@
 ## Portfolio summary
 
-I built a fanout query analysis tool for an agency's content strategists. It turned a teammate's bookmarklet into a Chrome extension and a shared dashboard. It records the searches behind AI answers and tells apart the pages that came back from the pages that got cited. Strategists can check a client's visibility and send the recorded material to Claude for analysis.
+The fanout query analysis tool records what happens behind an AI answer. It shows the searches ChatGPT, Claude or Perplexity ran, the pages that came back, and the pages that got cited. I built it for an SEO agency's strategists, starting from a teammate's bookmarklet. It became a Chrome extension with a shared dashboard, plus a service that runs whole prompt sets through the API and labels them as simulated.
 
 ## Case study
 
-### AI answers come from searches the reader never sees
+### The searches behind an AI answer explain why a client showed up, or didn't
 
-When someone asks ChatGPT which vendor to choose, it might search the web before it answers. If you can see those searches and the pages that came back, you can work out why a client showed up in the answer or why it didn't.
+When someone asks ChatGPT which vendor to choose, it may search the web first. If you can see those searches and the pages that came back, you can work out why a client showed up in the answer, or why it didn't.
 
-### A teammate's bookmarklet proved the searches could be recorded
+A teammate had proved it could be recorded. His bookmarklet captured ChatGPT's searches and pages, but every prompt meant switching it on by hand and uploading files to Claude. The agency asked me to lead a Chrome extension built from it. I set two requirements on the first day. It needed a dashboard, not a panel per run, and it had to record while you use the AI tool, with no button to press.
 
-A teammate built a bookmarklet that captured ChatGPT's searches and the pages that came with them. Every prompt meant switching it on by hand and then uploading the downloaded files to Claude.
+### The parser I inherited missed four of ten citations
 
-The agency asked me to turn it into a Chrome extension. I added a shared workflow organised by client, so strategists could get back to their research without piecing together downloaded files.
+On day one I ran the bookmarklet's analysis on one capture and read the result against the raw stream. It reported 6 citations. The answer carried 10. It dropped every page ChatGPT reads in full rather than skims. The extension's parser reads both kinds, and I passed the finding back to the teammate.
 
-### The extension records each answer while you use the AI tool as usual
+### It records while strategists work, and says what it couldn't record
 
-A strategist picks a client and then uses the AI tool the way they would without the extension. It works in ChatGPT, Claude and Perplexity. Each finished answer becomes a run, with whatever search records are available plus the response. That keeps the investigation organised as the strategist works through the client's questions.
-
-[[img]]
-
-There's a private switch for each site, so you can stop recording whenever you need to. The raw recording stays in your browser. Only the extracted records go to the team's shared database. Account and session identifiers come out first.
+**Record in the browser people already use.** A strategist picks a client and uses ChatGPT, Claude or Perplexity as usual. Each finished answer becomes a run with its searches, pages and citations. There's a private switch for each site, the raw stream stays in the browser, and only the extracted record goes to the shared database.
 
 [[img]]
 
-[[img]]
+**Run whole prompt sets, and say they're simulated.** Strategists needed to track many prompts at once, not one at a time, so I reversed my own earlier rule against paid API calls. Before building it, I tested five real prompts across four model settings. Cheap was the aim, but not at the cost of useless data on a real client. The default became the cheapest setting that still matched the captured runs, and every API run is labelled Simulated so nobody mistakes it for a recording from the consumer app.
 
-### Tell returned pages from cited ones
+**Say what wasn't recorded.** Then runs started showing zero searches but eight pages. ChatGPT had stopped streaming the search wording. Zero searches would have been a false claim, because the pages prove a search happened. The label became "searches not recorded".
 
-The dashboard separates the pages that came back during search from the pages that were opened or cited. A strategist can see whether a client's page showed up in the results but never got cited, and then look at the other sources that were used. That gives them a specific visibility gap to dig into.
-
-[[img]]
-
-### Track brand mentions alongside website citations
-
-A company can get recommended without a link, and its page can supply information without the company being named. The Brands page separates mentions from website citations, and records searches for the brand. So a strategist can say which kind of visibility the client has, instead of treating every appearance as the same thing.
+**A chart that doesn't flatter the client.** Citations show as a running total, with the number of answers asked written beside it. One line, and it still tells the truth. Take a made-up example. If a client is cited in 30 answers out of 130, the chart shows the other 100 beside the 30.
 
 [[img]]
 
-### When the record is incomplete, the dashboard tells you what's missing
+**Strategists own the judgement calls.** Competitor lists come from the strategist, because I could get them wrong. Sources are split into publishers and competitors and aggregated, so clients don't see the noise the team sees.
 
-In the September recordings some follow-up search wording wasn't available, even though the returned pages were there. Those rounds say “searches not recorded.” That stops a strategist from reading missing information as proof that no search happened.
+### A Chrome extension with a shared dashboard, plus a runner for whole prompt sets
 
-[[img]]
-
-The Review page lists the questions where the client was missing from at least one complete run. Strategists can look at the supporting recordings and mark questions as reviewed, which gives the team a shared queue of gaps to look into.
+A Chrome extension for ChatGPT, Claude and Perplexity with a side panel for the summary, the searches and the sources. A dashboard with a client roster, an overview per client, prompts, sources cited, brands, a review queue and reports. A runner service that sends prompt sets through the API within a monthly cap and emails the strategist when a batch finishes. A one-click send to Claude with the analysis instructions and the recorded material attached, and a client view a strategist can share.
 
 [[img]]
 
-### Test a whole question set at once, labelled as simulated
+### Green tests kept missing what the live app showed
 
-I added a background service that runs a client's question set through OpenAI's API with web search switched on. That lets the team look at more answers without typing every prompt by hand. These runs are labelled simulated, so you can always tell them apart from recordings made in the consumer apps.
+The first live capture found 46 pages and 14 citations, and three defects that 283 passing tests had missed. That kept happening, so I stopped trusting green tests on their own. 117 runner tests passed against database rows that never occur in production. A speed fix kept 2,209 tests green and broke the page in the browser, so I reverted it. Bug hunts before the team got access found that any signed-in account could empty twelve tables, and that the extension dropped answers on Claude and Perplexity. Both were fixed.
 
-### Send results to Claude in one click
+Simulated runs cost about $0.04 a prompt, and a client's 100-prompt set about $4 to $6. In a 38-prompt trial the simulated runs agreed with the captured ones on brand mentions 36 times.
 
-Send to Claude opens a run or a filtered set of runs. The team's analysis instructions and the recorded material come with it. So the strategist can dig into the responses without moving files around by hand. Reports can also be exported for more analysis.
-
-The goal is for the strategist to analyse every response they get, and build a dashboard for the client if they want one.
-
-I set the requirements and checked the captures against the raw recordings. I directed AI coding agents through the build between August and October 2026. A teammate's bookmarklet was the starting point. Each run describes one answer at one moment, and future answers can be different.
+It took 309 commits over 24 days. It ended with 28 clients and 141 live captures in the database, and the wider team was given access.

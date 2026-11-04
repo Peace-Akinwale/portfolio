@@ -5,7 +5,7 @@ import { getAllPostSlugs, getStaticPage, getAllStaticPageSlugs } from '@/lib/has
 import '@/components/article/article.css';
 import { loadPost, loadAllPosts, isLocalArticle, relatedTo } from '@/lib/content/posts';
 import { listLocalArticles } from '@/lib/content/articles';
-import { formatDate, formatReadingTime } from '@/lib/hashnode/utils';
+import { formatReadingTime } from '@/lib/hashnode/utils';
 import { parsePortfolioHtml } from '@/lib/hashnode/parsePortfolio';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
@@ -221,7 +221,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
                 </Link>
               </div>
 
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
+              <h1 className="mb-6">
                 {staticPage.title}
               </h1>
 
@@ -295,7 +295,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
 
         <article className="max-w-4xl mx-auto px-6 py-16">
           <header className="mb-12">
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
+            <h1 className="mb-6">
               {staticPage.title}
             </h1>
           </header>
@@ -362,7 +362,6 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
           {post.brief && <p className="standfirst">{post.brief}</p>}
           <p className="meta">
             <span>By <Link href="/about" className="underline underline-offset-4 hover:text-accent" rel="author">{post.author.name}</Link></span>
-            <time dateTime={post.publishedAt}>{formatDate(post.publishedAt, 'd MMMM yyyy')}</time>
             <span>{formatReadingTime(post.readTimeInMinutes)}</span>
           </p>
           {post.coverImage?.url && (

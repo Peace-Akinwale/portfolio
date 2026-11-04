@@ -27,7 +27,6 @@ export const FIXED_PAGES: { path: string; sources: string[] }[] = [
   { path: '/contact', sources: ['app/contact/page.tsx'] },
   { path: '/testimonials', sources: ['app/testimonials/page.tsx'] },
   { path: '/case-studies/manyrequests', sources: ['app/case-studies/manyrequests/page.tsx'] },
-  { path: '/b2b-content-for-marker.io', sources: ['app/b2b-content-for-marker.io/page.tsx'] },
   // Client sample pages: WordPress pages rendered as portfolio grids by app/[slug].
   { path: '/b2b-content-for-manyrequests', sources: ['app/[slug]/page.tsx', 'lib/portfolio/manyrequests.ts'] },
   { path: '/content-for-highervisibility', sources: ['app/[slug]/page.tsx'] },

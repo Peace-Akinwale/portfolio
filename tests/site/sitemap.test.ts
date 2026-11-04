@@ -19,7 +19,7 @@ describe('sitemap', () => {
   it('lists every case study, local article, the fixed pages and the client sample pages', () => {
     for (const cs of listCaseStudies()) expect(urls).toContain(`https://peaceakinwale.com/case-studies/${cs.slug}`);
     for (const a of listLocalArticles()) expect(urls).toContain(`https://peaceakinwale.com/${a.slug}`);
-    for (const p of ['', '/portfolio', '/case-studies', '/blog', '/services', '/about', '/contact', '/testimonials', '/case-studies/manyrequests', '/b2b-content-for-marker.io', '/b2b-content-for-manyrequests', '/content-for-highervisibility', '/content-for-pangea']) {
+    for (const p of ['', '/portfolio', '/case-studies', '/blog', '/services', '/about', '/contact', '/testimonials', '/case-studies/manyrequests', '/b2b-content-for-manyrequests', '/content-for-highervisibility', '/content-for-pangea']) {
       expect(urls).toContain(`https://peaceakinwale.com${p}`);
     }
   });

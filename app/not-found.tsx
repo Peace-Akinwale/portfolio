@@ -8,10 +8,10 @@ export const metadata: Metadata = {
 
 const PLACES = [
   { href: '/services', label: 'Services', note: 'What I write and build, and what it costs' },
-  { href: '/case-studies', label: 'Case studies', note: 'One page per tool, with the whole story' },
+  { href: '/case-studies', label: 'Case studies', note: 'One page per project, with the whole story' },
   { href: '/portfolio', label: 'Writing', note: 'Every writing sample by client, and what clients said' },
   { href: '/blog', label: 'The blog', note: 'Posts about writing for B2B SaaS and directing AI coding agents through a build' },
-  { href: '/contact', label: 'Say hi', note: 'Book a call or send a message' },
+  { href: '/contact', label: 'Contact', note: 'Book a call or send a message' },
 ];
 
 export default function NotFound() {

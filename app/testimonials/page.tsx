@@ -245,16 +245,7 @@ export default function TestimonialsPage() {
       <section className="border-b border-border bg-background">
         <div className="mx-auto max-w-7xl px-6 pb-10 pt-12 sm:pb-12 sm:pt-16">
           <div className="max-w-3xl">
-            <h1
-              className="mb-4 text-3xl font-extrabold leading-[1.1] text-foreground sm:text-4xl md:text-5xl"
-              style={{ letterSpacing: '-0.03em' }}
-            >
-              Nice things clients said
-            </h1>
-            <p className="max-w-2xl text-base leading-relaxed text-muted-foreground sm:text-lg">
-              Every one of these is from someone I&apos;ve worked with. I copied each one from LinkedIn or
-              took a screenshot of the doc or chat it came from. I haven&apos;t tidied any of them up.
-            </p>
+            <h1 className="mb-4 text-foreground">What clients say</h1>
           </div>
         </div>
       </section>
@@ -320,9 +311,7 @@ export default function TestimonialsPage() {
           </div>
 
           <div className="mt-16">
-            <p className="mb-8 text-[10px] font-bold uppercase tracking-[0.18em] text-muted-foreground">
-              Direct feedback
-            </p>
+            <h2 className="mb-8 text-[1.5rem] text-foreground">Comments on the work itself</h2>
             <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
               {screenshotTestimonials.map((testimonial) => (
                 <article
@@ -345,9 +334,6 @@ export default function TestimonialsPage() {
                     <p className="mt-1 text-sm text-muted-foreground">
                       {testimonial.role} · {testimonial.company}
                     </p>
-                    <p className="mt-3 text-[11px] font-bold uppercase tracking-[0.12em] text-muted-foreground">
-                      {testimonial.note}
-                    </p>
                   </div>
                 </article>
               ))}
@@ -359,7 +345,7 @@ export default function TestimonialsPage() {
       <section className="border-t border-border bg-background">
         <div className="mx-auto max-w-7xl px-6 py-16 sm:py-20">
           <WorkWithMe
-            heading="Want to be next?"
+            heading="Work with me"
             body="Book a 30-minute call and tell me what you’re working on. If I’m not the right person for it, I’ll say so."
             secondary={{ label: 'Send a message', href: '/contact' }}
           />

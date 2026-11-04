@@ -1,11 +1,11 @@
 ---
-title: "AI Docs Watch, a daily monitor of six AI platforms’ docs for SEO and content teams"
+title: "AI Docs Watch, a daily monitor of AI platforms’ docs"
 name: "AI Docs Watch"
 blurb: "Shows you an AI platform’s docs as they were before and after each change, with the changed words marked."
 kind: built
-status: "Public, open to everyone"
-date: 2026-10-14
-summary: "AI Docs Watch checks six AI platforms' documentation and policies every day. They are Google, Gemini, OpenAI, Anthropic, Bing and Perplexity. When a page changes, it publishes both versions with the changed words marked. Each change gets a plain impact rating and a few words on what it means for an SEO or marketing team. I built the monitoring and the public site."
+status: "The agency’s founder, every day in Slack. Public since October 2026"
+date: 2026-07-22
+summary: "AI Docs Watch is a public monitor of six AI platforms' documentation. It keeps every captured version of a page and shows the before and after on the publisher's own page, with a short report of what changed and when it takes effect. I built the first version in one evening for an SEO agency's founder, who now gets its reports in Slack every day. It caught Anthropic's usage policy rewrite on 14 October, four weeks before the new policy takes effect. The first report on it covered the wrong part, and fixing that changed how every report is written."
 voice: informal
 notion_url: https://app.notion.com/p/403992da7a57817c8a0ad5105de78b0e
 notion_last_edited: 2026-10-31T08:47:00.392Z
@@ -19,70 +19,52 @@ related:
   - "fanout-query-analysis-tool"
 ---
 
-### Help SEO and marketing teams see what AI platforms change
+### AI platforms rewrite their docs without notice, and the day it happens matters
 
-AI platforms change how they work all the time, and their own documentation is the clearest record of it. It might be a new opt-out, or a ranking factor that disappears without an announcement. Each edit tells you more about how the platform decides what to show, which is what you need to know to be visible in it.
+The agency's founder asked for something that watches ChatGPT's, Gemini's and Claude's "how it works" pages and compares the versions when they change. AI platforms rewrite their documentation without notice, and the rewrite often decides how they crawl, cite and rank pages. If you advise clients on AI search, you need to know the day it happens.
 
-The agency's founder asked for a way to catch these edits without rereading the same pages every day, so I built a monitoring tool around archived copies of them. You can see the wording that changed and the date it changed, then decide whether your tactics need to change.
+I set one rule before I wrote anything. The diff is only the trigger. What he needs is a short report of what changed and what it means for the pages he advises on.
 
-Three changes it caught show what I mean.
+### Every report can be checked against the page itself
 
-- **Google added an AI opt-out to Search Console.** AI Docs Watch [caught it on October 27, 2026](https://docswatch.stevetoth.ai/google/control-what-you-share-with-google-search/2026-10-27/). Google's documentation now lists a site-wide control that takes a site out of AI Overviews and AI Mode. If you're a publisher who doesn't want your content used there, that's the switch. If you're a brand that wants to be seen, it's a reason to make sure nobody flips it by accident. And any site in your space that opts out leaves more room in those answers for the ones that stay.
-- **ChatGPT spelled out how it ranks products.** [Caught on July 23, 2026](https://docswatch.stevetoth.ai/openai/shopping-with-chatgpt-search/2026-07-23/). OpenAI's shopping help page named the factors it ranks merchants by. They are availability, price, quality, and whether you're the maker or the primary seller. It also said Shopify stores are fed in with no setup, and it dropped Instant Checkout from the list of ranking factors. A brand selling through ChatGPT now knows which product data to fix first.
-- **OpenAI's product feed came with a condition.** [Caught on October 14, 2026](https://docswatch.stevetoth.ai/openai/merchant-feed-terms/2026-10-14/). OpenAI's merchant feed terms now say a merchant who submits a feed can't block OpenAI's crawlers and gives up any text-and-data-mining opt-out against OpenAI. That's a trade worth making on purpose, not one to find out about after you've signed.
+**Real pages, not a demo.** The first build needed something to show. I didn't let it invent busy states. "Crawl their last updates and let's see what they say." Every baseline came from the live pages that evening.
 
-Each of these got its own change page on the day it was caught, showing the old wording next to the new.
+**A report that can't lie.** The day after launch I fact-checked the first reports myself and found three that were wrong. One read a rename from a link label, one guessed about an unreleased product, and one framed old archive changes as news. "There's a problem with Docs Watch, and I just caught it. Imagine if he saw this first." I rewrote the rules for what a report may say, stripped page boilerplate before comparing, and re-baselined every page. Later I went further. The reports state what happened and carry no opinion, and the code rejects a first-person take.
 
-### Before and after, on the publisher's own page
+**Build the archive.** He showed me how archive.org keeps whole pages. A side-by-side screenshot wasn't enough. "If we need to build the capability of archive.org, let's build it." Each version is stored as the page itself, so you can compare the original wording yourself instead of trusting the summary.
 
-When the tool catches a change, the site publishes a change page with a rating and a button that shows you the change side by side.
+**Only pages it can read every day.** A page that renders only with JavaScript failed in silence. "If we can't reliably crawl them regularly, let's leave them." It came back once a headless browser could fetch it. When I narrowed the legal pages to the ones that affect search and buyers, I asked for one more check "so that you don't not crawl things that you should crawl". That check found four more pages OpenAI's sitemap didn't list.
 
-![Docs Watch connects an addition to OpenAI’s crawler documentation with questions marketers can ask about their advertising landing pages.](images/ai-docs-watch/docswatch-adsbot-explanation-actions-2026-10-30.jpg)
+**Ask before crawling in public.** Before the site went public I asked, "Is there any law against this kind of crawling? Just so we don't mess up in a grand way." The answer came from research, not a lawyer, and shaped the pages. They carry short excerpts with attribution, a live link, a named crawler and a takedown contact.
 
-*Docs Watch connects an addition to OpenAI’s crawler documentation with questions marketers can ask about their advertising landing pages.*
+![AI Docs Watch connects an addition to OpenAI’s crawler documentation with questions marketers can ask about their advertising landing pages.](images/ai-docs-watch/docswatch-adsbot-explanation-actions-2026-10-30.jpg)
 
-The comparison marks the changed words in archived copies of the publisher's page. So a strategist can hold the explanation up against the original wording, and use that evidence when they advise a client.
+*AI Docs Watch connects an addition to OpenAI’s crawler documentation with questions marketers can ask about their advertising landing pages.*
 
-![image](images/ai-docs-watch/image.png)
+### A daily monitor with a short report and the full before and after for every change
 
-### Keep the capture date and the effective date apart
+A daily monitor checks the watchlist and archives every page that changes. Each change gets a page with a short report, its impact rating, and a link to the full before and after on the publisher's own page. You can filter by platform, search, and read every archived version underneath.
 
-A documentation change has more than one date. It's easy to mix them up and end up saying something like "Google changed this on October 2." So the site keeps them separate.
+![A change report on AI Docs Watch, with why a Google Ads change matters and four actions for advertisers.](images/ai-docs-watch/image.png)
 
-- **The capture date** labels each side of the comparison. It's when a copy of the page was stored.
-- **The date we caught the change** shows up in the page's version history, down to the minute.
-- **The publisher's own date**, like "Last updated" or "Effective", stays inside the archived page and gets quoted in the write-up. It's never used as the change date.
+The founder edits the public site by committing to it. A marker in each edited page stops the generator from overwriting his words.
 
 ![Readers can narrow the updates by platform or search for a relevant topic. The impact definitions explain how the changes are classified.](images/ai-docs-watch/Screenshot_2026-10-31_at_09.44.29.png)
 
 *Readers can narrow the updates by platform or search for a relevant topic. The impact definitions explain how the changes are classified.*
 
-Anthropic's usage policy shows why this matters. We captured it on October 7 and caught the change on October 14, but the new policy itself doesn't take effect until November 12, 2026.
+### It caught four changes early, and one wrong report changed how every report is written
+
+The watchlist went from 11 pages to about 500, across Google, OpenAI, Anthropic, Perplexity, Bing and Gemini. The site has 127 high or medium impact changes and 369 archived versions.
+
+Four catches are public and dated. ChatGPT Instant Checkout and the Shopify catalogue, caught 23 July. Google's fact-checking rule, caught 2 October, before the LinkedIn posts about it. OpenAI's product feed requiring you not to block its bots, caught 14 October. Google's Search Console control to opt out of AI Overviews, caught 27 October.
+
+Anthropic's usage policy rewrite is the catch I learned most from. It changed on 8 October and takes effect on 12 November. The monitor captured it and wrote about the wrong part. The rewrite had 152 changed passages, and the step that writes the report only saw the first 24. The section that mattered began at passage 51. Raising the limit wasn't enough on its own, so the report now lists every new heading first. The capture date and the effective date sit apart on every page, because a reader needs both. One says when the monitor caught it, and the other says when it starts to count.
+
+Other failures came from scale. Vendor stylesheets expired, so 45 of 56 archived pages lost their styling until every capture embedded its own CSS. A bot-check screen was stored as a page's "before", and a cheaper fetch path published false changes. I withdrew 18 of 192 rather than deleting them, and added a hold-for-review step that catches 16 of the 19 known false changes before they publish.
 
 ![Readers can compare the original wording behind an update, rather than relying only on the write-up.](images/ai-docs-watch/docswatch-03-google-before-after.png)
 
 *Readers can compare the original wording behind an update, rather than relying only on the write-up.*
 
-### Keep old pages readable when a vendor changes its styling
-
-Some vendors swapped out their stylesheets after a deployment, and older archived pages got hard to read. So I stored the styling with each capture. You can still look at an earlier page after the live site has changed, which keeps a comparison useful long after the day the change was caught.
-
-### Help readers decide which changes deserve their attention
-
-The impact rating helps you decide what to look at first. A high-impact update might mean you need to change how you work. A medium-impact one touches a narrower part of the guidance. A low-impact one is wording or layout, with nothing substantive changed. The archived comparison is on the same page, so you can check what the rating is based on.
-
-### Catch new headings in long policy rewrites
-
-The founder asked whether we'd caught a new section in Anthropic's usage policy that bans seeding fake sources for AI answers. We had caught the change, but the first write-up didn't mention that section. The reason was mechanical. The policy rewrite had 152 changed passages, and the writer only saw the first 24. The new section started at passage 51.
-
-So I changed what the writing step receives. New headings now come first, and it works to a text-length budget instead of a fixed number of passages. The revised write-up led with the section the first one missed. A team reading the summary now gets pointed to the policy issue it needs to look at.
-
-
-
-### Publish the archive, and protect the hand edits
-
-
-
-I set the product rules and decided how ratings and dates work, then directed AI coding agents through the build. I checked the write-ups against the archived pages. When a vendor or a reviewer showed us something we'd missed, I made the fix.
-
-The agency's CTO runs the server it's served from, and the founder reviews the site and edits pages by hand. The regeneration workflow protects those hand edits, so an editorial correction stays put when the system produces another version of the page.
+It costs about $35 to $70 a month at 500 pages. The founder gets a report in Slack for each change and a daily summary. Readers of the agency's reading app and its course students have it too.

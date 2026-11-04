@@ -3,29 +3,32 @@ import * as copy from '@/lib/content/home-copy';
 
 const all = JSON.stringify(copy);
 
+// The homepage was rebuilt on 4 Nov 2026 around the four abilities the site has
+// to prove. These tests hold the approved passages from the 25 Oct brief in
+// place and keep the lines Peace removed from coming back.
 describe('homepage copy', () => {
-  it('keeps the approved opening and drops the sentence Peace removed', () => {
-    expect(copy.HERO.heading).toBe('Good work starts with good questions.');
-    // The two lines under the heading are the 3 Nov 2026 draft: what she does
-    // and for whom comes first (three buyer readers could not tell from the
-    // first screen). Peace approves or rewrites them; the heading is hers.
-    expect(copy.HERO.line).toBe(
-      'I write the articles B2B SaaS buyers read before they choose a product, and I build AI tools that content and SEO teams use every week.',
-    );
+  it('opens with what she does and for whom, and keeps the lines Peace removed out', () => {
+    expect(copy.HERO.heading).toBe('I write for B2B SaaS companies and build AI workflows for content teams.');
+    expect(JSON.stringify(copy.HERO)).not.toContain('BOFU');
+    expect('proof' in copy.HERO).toBe(false);
+    expect(all).not.toContain('Good work starts with good questions');
     expect(all).not.toContain('The same three questions run through both');
     expect(all).not.toContain('under my own byline and ghostwritten');
-    expect(copy.HERO.who.startsWith('Peace Akinwale. 51 articles for ManyRequests since 2024.')).toBe(true);
-    expect(copy.HERO.who).not.toContain('BOFU');
     expect(all).not.toContain('most of them for an AI-search agency');
   });
 
   it('uses the approved passages, as edited to the 28 Oct copy rules', () => {
-    expect(copy.DOCS_WATCH.p1).toContain('AI Docs Watch checks API documentation for product changes across AI platforms such as OpenAI and Anthropic.');
+    // The fanout and AI Docs Watch passages were cut to one paragraph each at Peace's request on 4 Nov 2026.
+    expect(copy.AI_TOOLS.p1.startsWith('AI Docs Watch tracks documentation changes')).toBe(true);
+    expect(copy.BUILDING.p1).toContain('export the results to analyse in Claude');
     expect(copy.CONTENTDB.p1.startsWith('I built ContentDB to help writers use the expertise already sitting in a company’s content.')).toBe(true);
-    expect(copy.AEO.heading).toBe('What AEO checklists leave out');
-    expect(copy.FANOUT.p2).toContain('export the results as JSON for further analysis in Claude');
-    expect(copy.HOW_I_WORK.p1.startsWith('I research every article and design every tool myself.')).toBe(true);
-    expect(copy.HOW_I_WORK.p1).not.toMatch(/^I use AI/);
+    expect(copy.READING_APP.p1.startsWith('People can listen to a digest or star a useful post')).toBe(true);
+    // Shortened at Peace's request, 4 Nov 2026; it still ends on the check.
+    expect(copy.THINKING.how).toContain('The part I own is the check.');
+    expect(copy.THINKING.how).not.toMatch(/^I use AI/);
+    // Design guide, 4 Nov 2026: section labels in the reader's language, so BOFU is spelled out.
+    expect(copy.OFFER.writing.startsWith('I write bottom-of-funnel content for B2B SaaS companies and agencies')).toBe(true);
+    expect(JSON.stringify(copy)).not.toContain('BOFU');
     expect(copy.OFFER.prices).toEqual([
       'Refresh an existing article, $400 (2,000 to 2,500 words)',
       'Write a new article, $600 (2,000 to 3,000 words)',
@@ -33,18 +36,29 @@ describe('homepage copy', () => {
     ]);
   });
 
-  it('keeps the Garde paragraph with Garde, not Aloud', () => {
-    expect(copy.GARDE.p1).toContain('I stopped paying for cloud resources and shut it down');
-    expect(JSON.stringify(copy.ALOUD)).not.toContain('shut it down');
-    expect(copy.GARDE.essay).toBe('/what-i-learned-vibe-coding-my-first-app-shutting-it-down');
-  });
-
-  it('names the tools the way Peace asked', () => {
+  it('names the tools the way Peace asked, and never with an em dash', () => {
     expect(all).not.toMatch(/Fanout Notebook|Notebook OKF/);
     expect(all).not.toContain('—');
+    expect(all).not.toMatch(/\bquietly\b/i);
   });
 
-  it('points the reading app at the lessons article, not a case study', () => {
+  it('keeps the three questions, in her order, as the thinking block', () => {
+    expect(copy.THINKING.questions.map((q) => q.q)).toEqual(['Is this true?', 'What’s worth making?', 'What does done mean?']);
+  });
+
+  it('points the reading app at the lessons article', () => {
     expect(copy.READING_APP.article).toBe('/the-success-message-was-the-bug');
+    expect(copy.THINKING.links.some((l) => l.href === '/the-success-message-was-the-bug')).toBe(true);
+  });
+
+  it('every proof block links somewhere real on the site', () => {
+    for (const block of [copy.WRITING, copy.BUILDING, copy.AI_TOOLS, copy.THINKING]) {
+      expect(block.links.length).toBeGreaterThan(0);
+      for (const l of block.links) expect(l.href.startsWith('/')).toBe(true);
+      expect(block.shot.startsWith('/')).toBe(true);
+      // Peace removed the writing and building captions on 4 Nov 2026; a caption, when present, says something.
+      const caption = (block as { caption?: string }).caption;
+      if (caption) expect(caption.length).toBeGreaterThan(20);
+    }
   });
 });

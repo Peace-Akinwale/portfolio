@@ -19,8 +19,8 @@ export function BlogClient({ initialPosts, wordpressDown }: { initialPosts: Hash
   return (
     <div className="gutter mx-auto max-w-[1100px]">
       <header className="posts-head">
-        <h1>Stuff I’ve written, about writing and about building.</h1>
-        <p className="lead">How I write for B2B SaaS companies, and what I’ve learned from the tools I’ve built. Newest first.</p>
+        <h1>Notes on writing and building.</h1>
+        <p className="lead">How I write for B2B SaaS companies, and what I’ve learned from the tools I’ve built.</p>
         <SearchBar onSearch={setQuery} />
         {query && (
           <p className="mt-3 text-[14px] text-muted-foreground" aria-live="polite">

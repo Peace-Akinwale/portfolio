@@ -45,9 +45,9 @@ function Href({ href, children, className }: { href: string; children: React.Rea
 }
 
 // A case study reads as a cover and a set of chapters: the cover holds the name,
-// the one-line point, the facts and a chapter index; the summary follows in
-// full; each section of the draft becomes a chapter. No chapter numbers and no
-// green (Peace removed both, 2026-10-25). The prose is Peace's.
+// the one-line point, two facts and the first screenshot; the summary follows as
+// a lede; each section of the draft becomes a chapter. No chapter numbers, no
+// chapter index, no reading time, no "if you liked this one" (4 Nov 2026). The prose is Peace's.
 export default async function CaseStudyPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const cs = getCaseStudy(slug);
@@ -88,10 +88,6 @@ export default async function CaseStudyPage({ params }: { params: Promise<{ slug
             <div>
               <h1>{cs.name}</h1>
               <p className="cs-point">{cs.blurb}</p>
-              <dl className="cs-strip">
-                <div><dt>Who uses it</dt><dd>{cs.status}</dd></div>
-                <div><dt>Reading time</dt><dd>about {cs.readingMinutes} min</dd></div>
-              </dl>
               {cs.links.length > 0 && (
                 <p className="cs-links">
                   {cs.links.map((l) => <Href key={l.href} href={l.href} className="button cs-button">{l.label}</Href>)}
@@ -100,28 +96,15 @@ export default async function CaseStudyPage({ params }: { params: Promise<{ slug
             </div>
             {shot && (
               <a href="#preview" className={shot.portrait ? 'cs-cover-shot is-portrait' : 'cs-cover-shot'} aria-label="Jump to the first screenshot">
-                <Image src={shot.src} alt={shot.alt} fill sizes="(max-width: 900px) 100vw, 480px" />
+                <Image src={shot.src} alt={shot.alt} fill priority sizes="(max-width: 900px) 100vw, 480px" />
               </a>
             )}
           </div>
-          {chapters.length > 1 && (
-            <nav className="cs-index-nav" aria-label="In this case study">
-              <p>What’s in here</p>
-              <ul>
-                {chapters.map((c) => (
-                  <li key={c.id}><a href={`#${c.id}`}>{c.title}</a></li>
-                ))}
-              </ul>
-            </nav>
-          )}
         </div>
       </header>
 
       <div className="gutter mx-auto max-w-[1180px] cs-page">
-        <section className="cs-short" aria-label="In short">
-          <p className="cs-short-label">The short version</p>
-          <p className="cs-short-text">{cs.summary}</p>
-        </section>
+        <p className="cs-lede">{cs.summary}</p>
 
         {introHtml && <div className="cs-chapter"><div className="prose" dangerouslySetInnerHTML={{ __html: introHtml }} /></div>}
 
@@ -134,23 +117,15 @@ export default async function CaseStudyPage({ params }: { params: Promise<{ slug
           </section>
         ))}
 
-        <section className="cs-next" aria-labelledby="next-h">
-          <h2 id="next-h">If you liked this one</h2>
-          <ul>
-            {next.map((c) => (
-              <li key={c.slug}>
-                <Link href={`/case-studies/${c.slug}`}>
-                  <b>{c.name}</b>
-                  <span>{c.blurb}</span>
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </section>
+        <p className="cs-next-line">
+          Next: {next.slice(0, 1).map((c) => <Link key={c.slug} href={`/case-studies/${c.slug}`}>{c.name}</Link>)}
+          <span aria-hidden="true"> · </span>
+          <Link href="/case-studies">All case studies</Link>
+        </p>
         {cs.kind === 'built' ? (
           <WorkWithMe
-            heading="Want a tool like this for your team?"
-            body="Tell me about the work your team repeats every week. On a 30-minute call I’ll tell you whether a tool would take it off their plate, and what building it would involve."
+            heading="Want an AI workflow like this for your team?"
+            body="Tell me about the work your team repeats every week. On a 30-minute call I’ll tell you whether an AI workflow would take it off their plate, and what building one would involve."
             secondary={{ label: 'How building with me works', href: '/services#building' }}
           />
         ) : (
