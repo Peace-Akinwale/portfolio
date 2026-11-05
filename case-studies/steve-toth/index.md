@@ -5503,3 +5503,32 @@ Steve selected four articles twice and received only three. The fourth link had 
 - Closing an incident includes repairing the affected artifact and confirming every execution surface, not just passing tests or shipping code.
 
 ---
+## 2026-11-04 to 2026-11-05, the docs-change monitor stops reporting icon swaps as new documentation, and the email list goes live
+
+Two days on the public docs-change monitor. A colleague's email sending went live overnight, Peace checked what it actually sends, and the next morning's review queue held three changes that turned out to be false. Two of them led to a root fix.
+
+### What shipped
+
+- **The email list is live, built by a colleague and checked end to end.** Daily, weekly and monthly emails go out through the mailing service after every site update. Peace's own test subscription received the first two dailies (3 changes, then 11). Correcting the 2026-11-03 entry: "nothing would ever be sent" was true when written; the colleague built the sending part that same night.
+- **Three held changes cleared, all false.** One was a vendor capitalizing a product name. On the other two, a vendor's docs site swapped one invisible icon character after eight existing headings, and the summary step called them "four new sections". The monitor's hold step, built 2026-11-02, kept all three off the public site.
+- **The root fix: icon-font characters no longer count.** The text extractor now drops Unicode private-use characters, the range icon fonts draw with. Proof on the stored pages: with those characters removed, the before and after copies of both pages are identical (15,563 and 48,793 characters). New tests cover the exact case; the full suite passes 1,825 tests in 170 files.
+- **Deployed in the required order:** the crawler first, then the web app and worker, because the web app's "add a page" path uses the same extractor.
+
+### Decisions worth recording
+
+- **Fix it where the text is made, not where changes are reviewed.** Teaching the review step to wave icon swaps through would still create the false change every time. Rejected as well: stripping at comparison time only, because the stored fingerprint would differ on every check.
+- **Ship it as a new version of the extraction rules.** The monitor already handles a rules change safely: it re-reads each page under the old rules, quietly resets the baseline when only the rules moved, and still reports a real vendor edit that lands the same day. Reusing that path avoided a hand reset of about 500 pages.
+- **Question the email length before anyone complains.** Each email lists every high and medium change until a size limit, which is about 50 items in a busy week; the first weekly had 63. Peace proposed capping by the existing impact rating (top 5 daily, 10 weekly, 30 monthly). That decision belongs to the colleague and the founder; it is drafted, not decided.
+
+### Frictions and course corrections
+
+- **The deploy was refused, then run by hand.** The session's permission check blocked the production deploy, so Peace ran it. The first attempt failed because the commands were given without the folder to run them in, and the second was typed into a window still streaming deploy logs. Both cost minutes, not data, and every command now carries its folder.
+- **An explanation was wrong.** The daily review post showed one of three held items; the first explanation (two arrived later) was disproved by the timestamps, and the code lists every held item. The cause is still unverified.
+- **A known gap stays open.** The email footer's unsubscribe link removes a reader from the founder's newsletter too, while he asked for the two lists to stay separate.
+
+### Why this matters for the portfolio
+
+- **A review gate only buys time; the fix belongs at the source.** The hold step stopped two false "new documentation" claims from reaching readers, and the root fix means it never has to catch that pattern again.
+- **Reuse the system's own safety path for risky changes.** Changing how 500 pages are read was safe because the monitor already knew how to absorb a rules change without false alarms.
+
+---
