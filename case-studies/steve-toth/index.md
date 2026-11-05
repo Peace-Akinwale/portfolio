@@ -5532,3 +5532,34 @@ Two days on the public docs-change monitor. A colleague's email sending went liv
 - **Reuse the system's own safety path for risky changes.** Changing how 500 pages are read was safe because the monitor already knew how to absorb a rules change without false alarms.
 
 ---
+
+## 2026-11-04 to 2026-11-05, cutting the content-quality app down to its thesis: two features removed, one rebuilt from Peace's own earlier app
+
+The internal content-quality app had grown four tools. The team's new direction for it is narrow: find quick wins from what a client's buyers ask AI assistants. Over two days Peace removed the two tools that no longer served that, rebuilt internal linking around an app he had made earlier, and ran a design guide he wrote from three design books against every screen. Everything is verified locally and waits for his word to deploy.
+
+### What shipped (locally, not yet deployed)
+
+- **Site checks removed in whole:** page-by-page rating of a client site, its run screen, page reports, the re-rating scripts, 22 rubric questions only pages used, and their database tables (one migration that also deletes drafts made from page reports, as Peace chose). Tracked files show about 51,500 lines deleted.
+- **Site audit removed in whole** after Peace asked for a case to keep it and there was none (below). Internal linking, the one thing it fed, now reads a client's sitemap directly, the way Peace's own earlier app My Links does: read the sitemap once, paste a draft or import a Google Doc, get sentence-level link suggestions. A migration renames the audit tables to a plain page index and carries saved suggestions over.
+- **A bug hunt with every finding fixed:** four parallel reviewers found 41 issues (15 in the client workspace, 11 in internal links, 5 in the rating rules, 10 left over from the removal). Among them: a fix-finding run that failed outright for clients with about 83 or more buyer questions, a rerun that deleted undecided suggestions the moment it started, and link suggestions pointing at legal pages and other clients' sites.
+- **The design guide applied:** two contrast failures on every screen fixed (button labels 3.74:1 to 5.26:1, grey meta text 3.16:1 to 5.09:1, now pinned by a test), one set of text sizes, one date and one number format, error messages that stay until dismissed, saves held while a signed-out user signs back in, and every workspace tab opening with one sentence on what it is for.
+- **Verified:** the full check passes (1,700 tests in 159 files, plus the production build), and every screen was walked at desktop and phone width.
+
+### Decisions worth recording
+
+- **A feature earns its place against the team's other tools, not on its own merits.** Peace on the site audit: "while it's clean, it's still a lot of data among many other tools the team currently has, so it needs to earn its place." Its overlaps, technical checks and rankings repeated tools the team already pays for, and the new fix finder already reads the pages AI answers point at. Removed.
+- **New suggestions never overwrite old ones.** A rerun used to replace every undecided suggestion. Peace: "we need to do this in a way that we can run new suggestions without overwriting previous ones." Runs now add beside earlier ones, skip repeats (same page and the same buyer questions) and say how many were already listed. Rejected: archiving replaced suggestions, which keeps the overwrite and only hides the loss.
+- **A screen must explain itself.** After asking what a Search Console table and its "Add URL" button did, Peace said: "i have to ask you questions about how things work. i shouldn't have to." The whole manual evidence path (hand capture, Search Console, a separate analysis step) went, because the fix finder now picks its own pages, and each tab got a plain purpose line.
+
+### Frictions and course corrections
+
+- **Scope decided alone.** "Remove Site checks entirely" was read narrowly, and the neighboring site audit was kept without asking because internal linking used it. Peace had to ask why it was still there. The rule now: name adjacent features in the one scoping question.
+- **The reference app half-copied.** Internal linking was meant to work like My Links, which takes a Google Doc as well as pasted text; the first rebuild offered paste only, and Peace had to ask where the Google Docs import was.
+- **A stale server, twice misread.** One walk judged screens served by the previous build, because the old server still held the port; another took a page stuck on its loading state for a bug, when the browser pane was hidden and running no animation frames. Both are now checks in the bug-hunt guide.
+
+### Why this matters for the portfolio
+
+- **Removing is a product skill.** Two working features went because the app's purpose changed, and the case for each was made in the team's terms, against the tools it already has.
+- **A reference build is a spec for the whole flow, not the look.** Matching his own earlier app meant checking every input and the round trip back to the Google Doc.
+
+---
