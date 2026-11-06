@@ -5616,3 +5616,36 @@ A follow-up to the entry above, same day. Before writing the session handoff Pea
 - **Verify against the real dependency before calling a fix done.** The morning's fix shipped with passing tests and would have silently failed the next day; the hunt is what made the fix true.
 
 ---
+
+## 2026-11-06, the AI-answers app gets its name, LLM Desk, and a redesign that measured why it looked boxy
+
+Same day as the entries above, a different product. The app Peace had built the night before (Simon's answer judgment, the page optimizer, Steve's claims-and-evidence workflow and the Quality Rater's fixes and links in one Django app) worked but, in his words, "looks very basic". He pointed at two of a colleague's apps as the bar and asked for them to be reverse engineered rather than asking the colleague for a kit.
+
+### What shipped
+
+- **A measured answer to "why is ours boxy".** One probe script ran on all three apps at the same window size. Ours had 20 of 49 text pieces in uppercase code font against 1 of 30 and 2 of 25 on the two references, 1 icon against 26 and 289, and 2,244 words on its Answers page against 1,148 and 746. Edge contrast, computed from each app's own color tokens, was about 1.2:1 on the references; ours drew every table head with a 2 px rule at 15.5:1. The write-up names the mechanisms (soft surfaces, fills instead of outlines, tinted greys, in-between font weights, motion, icons) and the colleague's token values.
+- **The whole app moved onto that system in one pass**, because Peace wanted to review it at once: one sidebar layout for all 60 screens, a client switcher that keeps the section when you change client, plain section names (Runs, Answers, Claims, Fixes, Page tests, Internal links, Results) with a one-line explanation each, a client Overview page, horizontal client rows, and a "Report across runs" that keeps every run separate and adds them together.
+- **Named.** "LLM Desk by Notebook Agency", after ten shorter names were offered and declined.
+- 1,638 tests pass (21 new). Nothing committed, pushed, deployed or paid for; the review build runs locally.
+
+### Decisions worth recording
+
+- **"Not boxy" was being read as "no cards", and that reading produced grid paper.** Removing cards left only lines to separate things: rules, outlined buttons, outlined status pills, side bars. The reference apps are card-based; the difference is edges you barely see and controls with no outline. The design rule was rewritten with numbers (radius, edge contrast, weights) so it cannot be misread the same way again.
+- **Tints of the six brand colors are allowed; new hues are not.** The brand guide says "never tint or shade", written for marketing output. Both reference apps are built on tints of the same six colors, mixed in CSS, so the app's tokens now do the same and a test fails on any literal color or any mix that names a hex.
+- **Rename the screens, not the URLs.** Engineering names (M1 gate, experiment, measurement, journey, fan-out query, registry) became words a strategist would use, in the UI and in exports, while routes, bookmarks and the chat connector stayed unchanged. The judge's instructions to the model were deliberately left alone so earlier verdicts stay comparable.
+- **A test client was deleted, not merged.** Peace thought "Review Clinic App" belonged inside Jane; the database showed it was a first-day review fixture with invented brands and no runs, so it went.
+
+### Frictions and course corrections
+
+- **The first redesign missed.** A full pass on a "data product" treatment (stat bands, chips, signed deltas, diff blocks) across all nine sections was delivered with 18 screenshots and rejected the same hour: "i said not boxy and i still always get boxy." The measurement pass came second, and should have come first.
+- **Five parallel builders collided on one test database** and two of them ran git stash against instructions. The tree survived; the lesson (a test database per builder, "no git at all" in the brief) is now a standing rule.
+- **A base layout block named like the pages' content block replaced the shell on 70 pages.** The test suite caught it (75 failures); the block was renamed.
+- **Dark mode read as black holes.** Hover tints mixed toward the page color vanished on dark cards; they are now translucent so they lift on any surface.
+- **The report across runs still confuses.** Peace's own walkthrough afterwards said it mixes historical volume with current standing and leaves follow-up chats out; the counting rule is the first item of the next brief.
+
+### Why this matters for the portfolio
+
+- **Measure the gap before redesigning toward it.** One afternoon of probing three apps said more than a day of styling, and turned a taste disagreement into numbers both sides could check.
+- **A rule that can be misread will be.** "Not boxy" produced the opposite of what was meant until it carried radii and contrast ratios.
+
+---
