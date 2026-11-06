@@ -5563,3 +5563,35 @@ The internal content-quality app had grown four tools. The team's new direction 
 - **A reference build is a spec for the whole flow, not the look.** Matching his own earlier app meant checking every input and the round trip back to the Google Doc.
 
 ---
+
+## 2026-11-06, a spent scraping budget traced to comments paid for and thrown away, and one Slack post instead of twenty
+
+Two jobs in one day. The founder was being tagged in about 20 long Slack messages a day by the docs-change monitor, and Peace was sure he did not read them. While fixing that, five monitored pages turned out to be failing, which led to the real problem: the shared scraping account (Apify) had hit its $150 monthly cap, and nearly all of it was being spent on LinkedIn comments the system had stopped saving.
+
+### What shipped
+
+- **One Slack post per daily rebuild instead of one per change.** It copies the layout of the monitor's email: impact, platform and page, the title linked to its page, and one sentence. Ten changes at most, the rest linked. The founder is tagged only when a change is high impact. A render of that day's 22 real changes produced one post with one tag.
+- **LinkedIn comments read again.** Since about 2026-10-28 the scraping vendor had moved comments out of each post into separate items. The mapping kept posts only, so author comments saved per week went from about 80 to 26 to 0 while the comments were still billed.
+- **Each post's comments bought once.** Every daily crawl had been re-buying the comments of every post in a two to three day window, including fresh posts it then discarded. Now posts come alone, comments are fetched in a separate run only for posts never fetched (a new database column marks them), posts with no comments cost nothing, and the cap per post dropped from 20 to 10. All 11,369 stored posts were marked done so the first run would not re-buy the last three days.
+- **Measured, not guessed:** the LinkedIn scraper had spent about $143 of the $150; the docs-change monitor's own scraping cost $4.79 for the month. 1,848 tests pass after both changes.
+- **A buyer access question answered from the send log:** every recordings buyer's welcome email was delivered; two had never requested a sign-in code, which named the likely person who wrote in.
+
+### Decisions worth recording
+
+- **Show less of what is already written, rather than write something new.** The short Slack post reuses the title and one-line summary written once at publish, so it adds no AI cost. Rejected: a model-written daily summary.
+- **Keep the comments, cut the waste.** Peace's first reaction to the bill was that the comments were needed. The fix kept them and removed the re-buying instead of dropping comments or fetching them only when a post hints at a link, which would have been cheaper but could miss them.
+- **No alarm.** A Slack alert for a day with zero saved author comments was proposed and declined by Peace.
+
+### Frictions and course corrections
+
+- **The silent break ran nine days.** Nothing errored: the vendor still sent the data, just somewhere the code did not look, and the bill kept running. Found only because a budget ran out.
+- **Production writes refused, then allowed.** The session's permission check blocked the database migration and a one-row page deactivation. Deploy was held until Peace allowed the migration, because the new code writes that column; the deactivation still waits on his tap in the admin screen.
+- **The cost figure is still an estimate.** Roughly $50 to $60 a month instead of $150, from one day's run; the first crawls will measure it.
+- **A label drift fixed on the way.** The daily review post called high and medium "Real impact" and called low "Minor", while the site's Medium is the AI's "minor". It now uses the site's three words.
+
+### Why this matters for the portfolio
+
+- **A budget alert is a bug report.** The overspend was two bugs: a vendor format change and a fetch window that re-bought the same data. Raising the cap would have hidden both.
+- **Measure the bill per component before cutting.** Per-run usage records separated the scraper's $143 from the monitor's $5, so the fix went to the right place.
+
+---
