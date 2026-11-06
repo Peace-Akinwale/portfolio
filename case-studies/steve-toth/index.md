@@ -5595,3 +5595,24 @@ Two jobs in one day. The founder was being tagged in about 20 long Slack message
 - **Measure the bill per component before cutting.** Per-run usage records separated the scraper's $143 from the monitor's $5, so the fix went to the right place.
 
 ---
+
+## 2026-11-06, the same day's bug hunt finds the fix repeating the bug it fixed
+
+A follow-up to the entry above, same day. Before writing the session handoff Peace asked for a bug hunt over the day's two deployed changes.
+
+### What shipped
+
+- **One real bug, fixed and proven.** The new comments-only scraper sends its items with no type label and the post id in a longer format. The fix from the morning grouped comments only by that label and the short id, so on the real output it matched nothing: every post would have been marked "comments fetched" with no comment saved. The original bug, again, inside its own fix. Corrected, then proven on two real posts whose authors had commented (both came back, at positions 3 and 8 of 10).
+- **One smaller fix:** a failed database read no longer overwrites a post's stored comment with nothing.
+- **Four suspicions ruled out by live checks**, not by reading: the date format the scraper accepts, the new database query, what the scraper returns on a timeout, and the stored preview of an added link.
+- 1,851 tests pass; about 8 cents of scraping spent on the proof runs, stated before it was spent.
+
+### Frictions and course corrections
+
+- **Green tests, wrong fixture.** The unit tests passed because their sample data was written from the documentation, not captured from the real service. One paid live call caught it in five seconds. The rule now written into the bug-hunt guide: build test data from a captured real response.
+
+### Why this matters for the portfolio
+
+- **Verify against the real dependency before calling a fix done.** The morning's fix shipped with passing tests and would have silently failed the next day; the hunt is what made the fix true.
+
+---
