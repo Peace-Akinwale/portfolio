@@ -117,3 +117,6 @@
 .writing-proof figcaption a { text-decoration: underline; text-underline-offset: 3px; }
 @media (max-width: 800px) { .writing-proof { grid-template-columns: 1fr; } .writing-proof .narrow { max-width: 300px; } }
 .writing-more .go { font-size: 17px; font-weight: 400; }
+/* "All <client> articles" is a link and looks like one, like the titles (8 Nov 2026). */
+.samples-section .more a { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; text-decoration-color: color-mix(in srgb, currentColor 35%, transparent); }
+.samples-section .more a:hover { color: var(--accent); }

@@ -11,6 +11,7 @@ import { WritingSamples } from '@/components/record/WritingSamples';
 import descriptions from '@/lib/content/page-descriptions.json';
 import { SITE_URL } from '@/lib/site';
 import { INVITEDESK_SECTION, LINEUPR_SECTION } from '@/lib/portfolio/exceed';
+import { publicHref, CLIENT_PAGE_DESCRIPTIONS } from '@/lib/content/client-pages';
 
 export const revalidate = 300;
 
@@ -65,21 +66,34 @@ export default async function PortfolioPage() {
   const samples = (await loadSamples()) ?? { sections: [LINEUPR_SECTION, INVITEDESK_SECTION, MARKERIO_SECTION, JABRA_SECTION] };
 
   const descriptionsByClient = {
-  "ManyRequests": "Comparisons and guides that show agency owners how to manage client requests, approvals, retainers and billing. The product appears where it helps explain how to do the work.",
+  "ManyRequests": CLIENT_PAGE_DESCRIPTIONS['b2b-content-for-manyrequests'],
   "LineUpr, through Exceed SEO": "Articles that help event organisers choose an app for their event, from comparing pricing to understanding what will encourage attendees to use it.",
   "InviteDesk, through Exceed SEO": "Software comparisons and practical guides for teams managing B2B events, guest relationships and the follow-up that turns an event conversation into a sales opportunity.",
   "Marker.io": "Ghostwritten software-testing and website-QA guides that explain how to perform the work, report problems and give developers the context they need to fix them.",
   "Jabra, through Spicy Margarita": "Articles that explain how meeting-room design and communication tools affect the people trying to hear, speak and work together in a meeting.",
-  "HigherVisibility": "Ghostwritten articles that explain SEO, content strategy and lead generation through decisions a business needs to make.",
-  "Pangea.ai": "Articles that help readers understand software-development work and compare the tools available to them.",
+  "HigherVisibility": CLIENT_PAGE_DESCRIPTIONS['content-for-highervisibility'],
+  "Pangea.ai": CLIENT_PAGE_DESCRIPTIONS['content-for-pangea'],
   "Earlier essays and journalism": "Some of my writing before I specialised in B2B SaaS."
 };
+  // Extra names the CMS uses for a client (its clientName is cut at the first
+  // dot, so "Pangea.ai" arrives as "pangea"; the essays section is "Old Essays").
+  const aliases: Partial<Record<keyof typeof descriptionsByClient, string[]>> = {
+    "Pangea.ai": ['pangea'],
+    "Earlier essays and journalism": ['old essays'],
+  };
   samples.sections = samples.sections.map((section) => {
-    const key = Object.keys(descriptionsByClient).find((name) => {
-      const client = name.split(',')[0];
-      return (section.clientName ?? section.heading).toLowerCase().includes(client.toLowerCase());
-    }) as keyof typeof descriptionsByClient | undefined;
-    return key ? { ...section, heading: key, introHtml: '<p>' + descriptionsByClient[key] + '</p>' } : section;
+    const name = (section.clientName ?? section.heading).toLowerCase();
+    const key = (Object.keys(descriptionsByClient) as (keyof typeof descriptionsByClient)[]).find((k) =>
+      [k.split(',')[0], ...(aliases[k] ?? [])].some((term) => name.includes(term.toLowerCase())));
+    const readMoreLink = 'readMoreLink' in section && section.readMoreLink ? publicHref(section.readMoreLink) : undefined;
+    if (!key) return { ...section, readMoreLink };
+    return {
+      ...section,
+      heading: key,
+      clientName: key === 'Pangea.ai' ? 'Pangea.ai' : section.clientName,
+      introHtml: '<p>' + descriptionsByClient[key] + '</p>',
+      readMoreLink,
+    };
   });
 
   return (

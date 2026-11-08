@@ -15,7 +15,7 @@ import { ReadingProgress } from '@/components/ReadingProgress';
 import { TableOfContents } from '@/components/TableOfContents';
 import { ImageLightbox } from '@/components/ImageLightbox';
 import { CodeBlockEnhancer } from '@/components/CodeBlockEnhancer';
-import { publicPathForSlug, withTitleOverride } from '@/lib/content/client-pages';
+import { publicPathForSlug, withTitleOverride, CLIENT_NAME_OVERRIDES, CLIENT_PAGE_DESCRIPTIONS } from '@/lib/content/client-pages';
 import { NEW_MANYREQUESTS_ARTICLES, withCurrentManyRequestsSamples } from '@/lib/portfolio/manyrequests';
 
 interface ArticlePageProps {
@@ -128,12 +128,16 @@ export async function generateMetadata({ params }: ArticlePageProps): Promise<Me
   const staticPage = withTitleOverride(slug, await getStaticPage(slug));
 
   if (staticPage) {
+    // Own share tags, so a shared client page doesn't inherit the homepage's
+    // og:url and og:title from the layout (bug hunt, 8 Nov 2026).
+    const url = `https://peaceakinwale.com${publicPathForSlug(slug)}`;
+    const description = CLIENT_PAGE_DESCRIPTIONS[slug] ?? staticPage.title;
     return {
       title: staticPage.title,
-      description: staticPage.title,
-      alternates: {
-        canonical: `https://peaceakinwale.com${publicPathForSlug(slug)}`,
-      },
+      description,
+      alternates: { canonical: url },
+      openGraph: { title: staticPage.title, description, url, siteName: 'Peace Akinwale', locale: 'en_US', type: 'website', images: [{ url: DEFAULT_OG, width: 1200, height: 630, alt: staticPage.title }] },
+      twitter: { card: 'summary_large_image', title: staticPage.title, description, images: [DEFAULT_OG] },
     };
   }
 
@@ -250,10 +254,14 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
     }
 
     // Try parsing as portfolio-style content (lists of links)
-    const parsed = withCurrentManyRequestsSamples(
+    const parsedRaw = withCurrentManyRequestsSamples(
       parsePortfolioHtml(staticPage.content.html, staticPage.title),
       slug === 'b2b-content-for-manyrequests' ? NEW_MANYREQUESTS_ARTICLES : [],
     );
+    const nameOverride = CLIENT_NAME_OVERRIDES[slug];
+    const parsed = nameOverride
+      ? { ...parsedRaw, sections: parsedRaw.sections.map((sec) => ({ ...sec, clientName: nameOverride })) }
+      : parsedRaw;
     const hasPortfolioContent = parsed.sections.some(s => s.projects.length > 0);
 
     if (hasPortfolioContent) {
