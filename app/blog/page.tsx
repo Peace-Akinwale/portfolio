@@ -1,20 +1,20 @@
-import { getPosts } from '@/lib/hashnode/client';
-import { BlogClient } from './BlogClient';
+import descriptions from '@/lib/content/page-descriptions.json';
+import { withOg } from '@/lib/og';
 import type { Metadata } from 'next';
+import '@/components/article/article.css';
+import { loadAllPosts } from '@/lib/content/posts';
+import { BlogClient } from './BlogClient';
+import { SITE_URL } from '@/lib/site';
 
-export const revalidate = 300; // Revalidate every 5 minutes
+export const revalidate = 300;
 
-export const metadata: Metadata = {
-  title: 'Blog | Peace Akinwale',
-  description: 'B2B SaaS content writing insights — articles on product-led content, content refreshes, SEO, and AI search optimization.',
-  alternates: {
-    canonical: 'https://peaceakinwale.com/blog',
-  },
-};
+export const metadata: Metadata = withOg({
+  title: 'Blog',
+  description: descriptions.Blog,
+  alternates: { canonical: `${SITE_URL}/blog` },
+}, { key: 'blog', path: '/blog', alt: 'Writing about the work, by Peace Akinwale' });
 
 export default async function BlogPage() {
-  // Fetch posts on the server
-  const { posts } = await getPosts(50);
-
-  return <BlogClient initialPosts={posts} />;
+  const { posts, wordpressDown } = await loadAllPosts();
+  return <BlogClient initialPosts={posts} wordpressDown={wordpressDown} />;
 }

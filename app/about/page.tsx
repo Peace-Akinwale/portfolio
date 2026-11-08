@@ -1,75 +1,21 @@
-import { getStaticPage } from '@/lib/hashnode/client';
+import { withOg } from '@/lib/og';
 import type { Metadata } from 'next';
-import Image from 'next/image';
+import { readPage } from '@/lib/content/pages';
+import { ContentPage } from '@/components/ContentPage';
+import descriptions from '@/lib/content/page-descriptions.json';
+import { SITE_URL } from '@/lib/site';
 
-export const metadata: Metadata = {
-  title: 'About | Peace Akinwale',
-  description: 'Peace Akinwale is a B2B SaaS content writer who specializes in product-led content that rank on Google and is cited in AI search.',
-  alternates: {
-    canonical: 'https://peaceakinwale.com/about',
-  },
-};
+export const metadata: Metadata = withOg({
+  title: "About Peace Akinwale · B2B SaaS writer & AI workflow builder",
+  description: descriptions["About"],
+  alternates: { canonical: SITE_URL + "/about" },
+}, { key: "about", path: "/about", alt: "About Peace Akinwale · B2B SaaS writer & AI workflow builder" });
 
-export default async function AboutPage() {
-  const page = await getStaticPage('about');
-
+export default function Page() {
+  const page = readPage('about');
   return (
-    <div className="max-w-7xl mx-auto px-6 py-24">
-      <div className="max-w-4xl mx-auto">
-      {/* Photo */}
-      <div className="mb-12">
-        <div className="relative w-full max-w-md mx-auto aspect-[3/4] overflow-hidden rounded-lg shadow-xl">
-          <Image
-            src="/images/peace-akinwale-about-wedding.jpg"
-            alt="Peace Akinwale"
-            fill
-            className="object-cover object-top"
-            priority
-          />
-        </div>
-      </div>
-
-      {/* Header */}
-      <div className="mb-12">
-        <h1 className="text-4xl md:text-5xl font-bold mb-4 text-foreground">
-          {page?.title || "I'm Peace Akinwale"}
-        </h1>
-      </div>
-
-      {/* Content */}
-      {page?.content?.html ? (
-        <div
-          className="prose prose-lg max-w-none"
-          dangerouslySetInnerHTML={{ __html: page.content.html }}
-        />
-      ) : (
-        <div className="prose prose-lg max-w-none">
-          <p className="text-lg leading-relaxed mb-6 text-muted-foreground">
-            I&rsquo;m a B2B SaaS content writer based in Lagos. I write product-led articles that rank on Google, show up in ChatGPT and Perplexity, and actually move the needle for the companies I work with.
-          </p>
-          <p className="mb-6 text-muted-foreground">
-            My background is in understanding how products work and how buyers think. Before I write anything, I dig into your product, your ICP, and what your competitors are getting wrong. The article only happens after that.
-          </p>
-
-          <h2 className="text-2xl font-bold mb-4 mt-10 text-foreground">
-            How I work
-          </h2>
-          <p className="mb-4 text-muted-foreground">
-            I write one first draft — no AI scaffolding, no outsourced outlines. I evaluate every topic for business potential before I accept it, and I push back if the fit isn&rsquo;t there. Most clients go from two rounds of feedback to zero by the end of an engagement.
-          </p>
-          <p className="mb-4 text-muted-foreground">
-            I also build lightweight AI systems and content workflows for teams who want to reduce the manual work on their plate without sacrificing quality on the output.
-          </p>
-
-          <h2 className="text-2xl font-bold mb-4 mt-10 text-foreground">
-            Who I&rsquo;ve written for
-          </h2>
-          <p className="mb-4 text-muted-foreground">
-            ManyRequests, Marker.io, HigherVisibility, Jabra, Pangea.ai, Spicy Margarita, and a handful of other B2B SaaS brands over the past few years.
-          </p>
-        </div>
-      )}
-      </div>
-    </div>
+    <>
+      <ContentPage {...page} portrait={true} caseStudy={false} />
+    </>
   );
 }

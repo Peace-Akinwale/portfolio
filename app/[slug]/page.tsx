@@ -1,11 +1,13 @@
-import { getPostBySlug, getAllPostSlugs, getStaticPage, getAllStaticPageSlugs, getPosts } from '@/lib/hashnode/client';
-import { formatDate, formatReadingTime } from '@/lib/hashnode/utils';
+import { ogImagePath, DEFAULT_OG } from '@/lib/og';
+import { getAllPostSlugs, getStaticPage, getAllStaticPageSlugs } from '@/lib/hashnode/client';
+import '@/components/article/article.css';
+import { loadPost, isLocalArticle } from '@/lib/content/posts';
+import { listLocalArticles } from '@/lib/content/articles';
 import { parsePortfolioHtml } from '@/lib/hashnode/parsePortfolio';
-import { notFound } from 'next/navigation';
+import { notFound, permanentRedirect } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
 import type { Metadata } from 'next';
-import { ArticleCard } from '@/components/ArticleCard';
 import { PortfolioGrid } from '@/components/PortfolioGrid';
 import { fetchOgImagesForPortfolio } from '@/lib/fetchOgImages';
 import { ShareButtons } from '@/components/ShareButtons';
@@ -13,28 +15,13 @@ import { ReadingProgress } from '@/components/ReadingProgress';
 import { TableOfContents } from '@/components/TableOfContents';
 import { ImageLightbox } from '@/components/ImageLightbox';
 import { CodeBlockEnhancer } from '@/components/CodeBlockEnhancer';
-import { ArticleEndCta } from '@/components/ArticleEndCta';
-import { Comments } from '@/components/Comments';
-import { BlogPageBackground } from '@/components/BlogPageBackground';
+import { publicPathForSlug, withTitleOverride, CLIENT_NAME_OVERRIDES, CLIENT_PAGE_DESCRIPTIONS } from '@/lib/content/client-pages';
+import { NEW_MANYREQUESTS_ARTICLES, withCurrentManyRequestsSamples } from '@/lib/portfolio/manyrequests';
 
 interface ArticlePageProps {
   params: Promise<{ slug: string }>;
 }
 
-const NEW_MANYREQUESTS_ARTICLES = [
-  {
-    title: 'Wrike vs ClickUp: Which Tool Is Better for Agencies?',
-    link: 'https://www.manyrequests.com/blog/wrike-vs-clickup',
-  },
-  {
-    title: 'Agency Retainer Model: How to Price, Package, and Scale',
-    link: 'https://www.manyrequests.com/blog/agency-retainer-model',
-  },
-  {
-    title: '6 Best Project Management Software for Designers in 2026',
-    link: 'https://www.manyrequests.com/blog/project-management-software-for-designers',
-  },
-];
 
 function getAssetName(url: string): string {
   try {
@@ -98,29 +85,32 @@ export const revalidate = 3600;
 
 // Generate static paths for all articles and static pages
 export async function generateStaticParams() {
+  const localSlugs = listLocalArticles().map((a) => a.slug);
   const postSlugs = await getAllPostSlugs();
   const staticPageSlugs = await getAllStaticPageSlugs();
-  return [...postSlugs, ...staticPageSlugs].map((slug) => ({ slug }));
+  return [...new Set([...localSlugs, ...postSlugs, ...staticPageSlugs])].map((slug) => ({ slug }));
 }
 
 // Generate metadata for SEO
 export async function generateMetadata({ params }: ArticlePageProps): Promise<Metadata> {
   const { slug } = await params;
 
-  // Try fetching as a blog post first
-  let post = await getPostBySlug(slug);
+  // A local article first, then a WordPress post
+  const post = await loadPost(slug);
 
   if (post) {
+    const canva = isLocalArticle(post) ? ogImagePath(`article-${post.slug}`) : null;
+    const images = canva ? [canva] : post.coverImage?.url ? [post.coverImage.url] : [DEFAULT_OG];
     return {
       title: post.seo?.title || post.title,
       description: post.seo?.description || post.brief,
       alternates: {
-        canonical: `https://peaceakinwale.com/${slug}`,
+        canonical: `https://peaceakinwale.com/blog/${slug}`,
       },
       openGraph: {
         title: post.seo?.title || post.title,
         description: post.seo?.description || post.brief,
-        images: post.coverImage?.url ? [post.coverImage.url] : [],
+        images,
         type: 'article',
         publishedTime: post.publishedAt,
         authors: [post.author.name],
@@ -129,40 +119,45 @@ export async function generateMetadata({ params }: ArticlePageProps): Promise<Me
         card: 'summary_large_image',
         title: post.seo?.title || post.title,
         description: post.seo?.description || post.brief,
-        images: post.coverImage?.url ? [post.coverImage.url] : [],
+        images,
       },
     };
   }
 
   // If not a post, try fetching as a static page
-  const staticPage = await getStaticPage(slug);
+  const staticPage = withTitleOverride(slug, await getStaticPage(slug));
 
   if (staticPage) {
+    // Own share tags, so a shared client page doesn't inherit the homepage's
+    // og:url and og:title from the layout (bug hunt, 8 Nov 2026).
+    const url = `https://peaceakinwale.com${publicPathForSlug(slug)}`;
+    const description = CLIENT_PAGE_DESCRIPTIONS[slug] ?? staticPage.title;
     return {
       title: staticPage.title,
-      description: staticPage.title,
-      alternates: {
-        canonical: `https://peaceakinwale.com/${slug}`,
-      },
+      description,
+      alternates: { canonical: url },
+      openGraph: { title: staticPage.title, description, url, siteName: 'Peace Akinwale', locale: 'en_US', type: 'website', images: [{ url: DEFAULT_OG, width: 1200, height: 630, alt: staticPage.title }] },
+      twitter: { card: 'summary_large_image', title: staticPage.title, description, images: [DEFAULT_OG] },
     };
   }
 
   return {
-    title: 'Page Not Found',
+    title: 'Page not found',
   };
 }
 
 export default async function ArticlePage({ params }: ArticlePageProps) {
   const { slug } = await params;
 
-  // Try fetching as a blog post first
-  let post = await getPostBySlug(slug);
+  // A local article first, then a WordPress post
+  const post = await loadPost(slug);
+  if (post) permanentRedirect(`/blog/${slug}`);
   let isStaticPage = false;
   let staticPage = null;
 
   // If not a post, try fetching as a static page
   if (!post) {
-    staticPage = await getStaticPage(slug);
+    staticPage = withTitleOverride(slug, await getStaticPage(slug));
     isStaticPage = !!staticPage;
   }
 
@@ -197,7 +192,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
       const coverImage = projectCoverImages[slug];
       const wordCount = staticPage.content.html.replace(/<[^>]+>/g, '').split(/\s+/).filter(Boolean).length;
       const readTime = Math.max(1, Math.round(wordCount / 200));
-      const pageUrl = `https://peaceakinwale.com/${slug}`;
+      const pageUrl = `https://peaceakinwale.com${publicPathForSlug(slug)}`;
       const renderedStaticHtml = stripLeadingDuplicateCoverImage(staticPage.content.html, coverImage);
 
       return (
@@ -210,14 +205,14 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
             <header className="mb-12">
               <div className="mb-4">
                 <Link
-                  href="/projects"
+                  href="/case-studies"
                   className="text-sm uppercase tracking-wider text-muted-foreground hover:text-accent transition-colors"
                 >
-                  Projects
+                  Case studies
                 </Link>
               </div>
 
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
+              <h1 className="mb-6">
                 {staticPage.title}
               </h1>
 
@@ -259,20 +254,24 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
     }
 
     // Try parsing as portfolio-style content (lists of links)
-    const parsed = parsePortfolioHtml(staticPage.content.html, staticPage.title);
+    const parsedRaw = withCurrentManyRequestsSamples(
+      parsePortfolioHtml(staticPage.content.html, staticPage.title),
+      slug === 'b2b-content-for-manyrequests' ? NEW_MANYREQUESTS_ARTICLES : [],
+    );
+    const nameOverride = CLIENT_NAME_OVERRIDES[slug];
+    const parsed = nameOverride
+      ? { ...parsedRaw, sections: parsedRaw.sections.map((sec) => ({ ...sec, clientName: nameOverride })) }
+      : parsedRaw;
     const hasPortfolioContent = parsed.sections.some(s => s.projects.length > 0);
 
     if (hasPortfolioContent) {
-      if (slug === 'b2b-content-for-manyrequests' && parsed.sections.length > 0) {
-        parsed.sections[0].projects.unshift(...NEW_MANYREQUESTS_ARTICLES);
-      }
       const ogImages = await fetchOgImagesForPortfolio(parsed);
       return (
         <>
           <PortfolioGrid parsed={parsed} pageTitle={staticPage.title} ogImages={ogImages} />
           <div className="max-w-4xl mx-auto px-6 pb-16 text-center">
             <Link
-              href="/portfolio"
+              href="/writing"
               className="inline-block text-sm uppercase tracking-wide border-b-2 border-foreground hover:border-muted-foreground hover:text-muted-foreground transition-colors"
             >
               ← Back to Portfolio
@@ -291,7 +290,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
 
         <article className="max-w-4xl mx-auto px-6 py-16">
           <header className="mb-12">
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
+            <h1 className="mb-6">
               {staticPage.title}
             </h1>
           </header>
@@ -316,155 +315,5 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
     );
   }
 
-  // Render blog post
-  if (!post) {
-    notFound();
-  }
-
-  // Get related posts, preferring tag overlap and falling back to the latest posts.
-  const { posts: allPosts } = await getPosts(20);
-  const postTagSlugs = new Set(post.tags?.map((tag) => tag.slug.toLowerCase()) ?? []);
-  const renderedPostHtml = stripLeadingDuplicateCoverImage(post.content.html, post.coverImage?.url);
-  const relatedPosts = allPosts
-    .filter((candidate) => candidate.id !== post.id)
-    .map((candidate) => {
-      const overlap =
-        candidate.tags?.filter((tag) => postTagSlugs.has(tag.slug.toLowerCase())).length ?? 0;
-
-      return {
-        candidate,
-        overlap,
-        recency: new Date(candidate.publishedAt).getTime(),
-      };
-    })
-    .sort((left, right) => {
-      if (right.overlap !== left.overlap) {
-        return right.overlap - left.overlap;
-      }
-
-      return right.recency - left.recency;
-    })
-    .slice(0, 3)
-    .map((entry) => entry.candidate);
-
-  return (
-    <>
-      <BlogPageBackground />
-      <ReadingProgress />
-      <TableOfContents />
-      <ImageLightbox />
-      <CodeBlockEnhancer />
-
-      <article className="max-w-4xl mx-auto px-6 py-16">
-        {/* Article Header */}
-        <header className="mb-12">
-        {/* Tags */}
-        {post.tags && post.tags.length > 0 && (
-          <div className="mb-4">
-            <span className="text-sm uppercase tracking-wider text-muted-foreground">
-              {post.tags[0].name}
-            </span>
-          </div>
-        )}
-
-        {/* Title */}
-        <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
-          {post.title}
-        </h1>
-
-        {/* Author & Meta */}
-        <div className="flex flex-wrap items-center gap-4 text-muted-foreground mb-8">
-          <Link
-            href="/blog"
-            className="text-sm font-medium hover:text-accent transition-colors"
-          >
-            By {post.author.name}
-          </Link>
-          <span>•</span>
-          <time dateTime={post.publishedAt} className="text-sm">
-            {formatDate(post.publishedAt, 'MMMM dd, yyyy')}
-          </time>
-          <span>•</span>
-          <span className="text-sm font-medium px-3 py-1 bg-muted rounded-sm">
-            {formatReadingTime(post.readTimeInMinutes)}
-          </span>
-        </div>
-
-        {/* Cover Image */}
-        {post.coverImage?.url && (
-          <div className="relative aspect-[16/9] overflow-hidden bg-muted mb-12">
-            <Image
-              src={post.coverImage.url}
-              alt={post.title}
-              fill
-              className="object-cover"
-              priority
-            />
-          </div>
-        )}
-      </header>
-
-      {/* Article Content */}
-      <div
-        className="prose prose-lg max-w-none"
-        dangerouslySetInnerHTML={{ __html: renderedPostHtml }}
-      />
-
-      {/* Article Footer */}
-      <footer className="mt-16 pt-8 border-t border-border">
-        {/* Tags */}
-        {post.tags && post.tags.length > 0 && (
-          <div className="mb-8">
-            <h3 className="text-sm uppercase tracking-wider text-muted-foreground mb-3">
-              Tags
-            </h3>
-            <div className="flex flex-wrap gap-2">
-              {post.tags.map((tag) => (
-                <span
-                  key={tag.id}
-                  className="px-3 py-1 bg-muted text-sm hover:bg-accent hover:text-accent-foreground transition-colors"
-                >
-                  {tag.name}
-                </span>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Share */}
-        <div className="mb-8">
-          <h3 className="text-sm uppercase tracking-wider text-muted-foreground mb-3">
-            Share
-          </h3>
-          <ShareButtons url={post.url} title={post.title} />
-        </div>
-
-        <ArticleEndCta />
-      </footer>
-
-      {/* Related Articles */}
-      {relatedPosts.length > 0 && (
-        <section className="mt-24 pt-12 border-t border-border">
-          <h2 className="text-3xl font-bold mb-8">Related Articles</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {relatedPosts.map((relatedPost) => (
-              <ArticleCard key={relatedPost.id} post={relatedPost} />
-            ))}
-          </div>
-        </section>
-      )}
-
-      {/* Back to Blog */}
-      <div className="mt-16 text-center">
-        <Link
-          href="/blog"
-          className="inline-block text-sm uppercase tracking-wide border-b-2 border-foreground hover:border-muted-foreground hover:text-muted-foreground transition-colors"
-        >
-          ← Back to Blog
-        </Link>
-      </div>
-      <Comments postSlug={post.slug} postTitle={post.title} />
-      </article>
-    </>
-  );
+  notFound();
 }

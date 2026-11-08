@@ -1,0 +1,52 @@
+{
+  "page": "AI Docs Watch",
+  "slug": "ai-docs-watch",
+  "notion_url": "https://app.notion.com/p/403992da7a57817c8a0ad5105de78b0e",
+  "exported_at": "2026-11-03T17:58:49.545Z",
+  "images": [
+    {
+      "n": 1,
+      "file": "1-docswatch-adsbot-explanation-actions-2026-10-30.jpg",
+      "original_name": "docswatch-adsbot-explanation-actions-2026-10-30.jpg",
+      "bytes": 183065,
+      "content_type": "image/jpeg",
+      "notion_block_id": "f5af1144-41d1-4a28-ada3-71e8bd66148c",
+      "caption_text_below_image": "*Docs Watch connects an addition to OpenAI’s crawler documentation with questions marketers can ask about their advertising landing pages.*",
+      "downloaded": true,
+      "download_note": null
+    },
+    {
+      "n": 2,
+      "file": "2-image.png",
+      "original_name": "image.png",
+      "bytes": 2462015,
+      "content_type": "image/png",
+      "notion_block_id": "40a992da-7a57-80c4-8930-eecfd4f700a2",
+      "caption_text_below_image": null,
+      "downloaded": true,
+      "download_note": null
+    },
+    {
+      "n": 3,
+      "file": "3-Screenshot_2026-10-31_at_09.44.29.png",
+      "original_name": "Screenshot_2026-10-31_at_09.44.29.png",
+      "bytes": 1662141,
+      "content_type": "image/png",
+      "notion_block_id": "82491059-3980-4d51-ad50-0213d4f9391a",
+      "caption_text_below_image": "*Readers can narrow the updates by platform or search for a relevant topic. The impact definitions explain how the changes are classified.*",
+      "downloaded": true,
+      "download_note": null
+    },
+    {
+      "n": 4,
+      "file": "4-docswatch-03-google-before-after.png",
+      "original_name": "docswatch-03-google-before-after.png",
+      "bytes": 411042,
+      "content_type": "image/png",
+      "notion_block_id": "2ccf1f6b-3a59-41f0-91be-146b693f350b",
+      "caption_text_below_image": "*Readers can compare the original wording behind an update, rather than relying only on the write-up.*",
+      "downloaded": true,
+      "download_note": null
+    }
+  ]
+}

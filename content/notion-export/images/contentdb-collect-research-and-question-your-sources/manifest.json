@@ -1,0 +1,30 @@
+{
+  "page": "ContentDB: collect research and question your sources",
+  "slug": "contentdb-collect-research-and-question-your-sources",
+  "notion_url": "https://app.notion.com/p/403992da7a5781cfaff1de30c9c49f2f",
+  "exported_at": "2026-11-03T17:54:36.955Z",
+  "images": [
+    {
+      "n": 1,
+      "file": "1-image.png",
+      "original_name": "image.png",
+      "bytes": 270385,
+      "content_type": "image/png",
+      "notion_block_id": "40a992da-7a57-806f-9ed0-e189ebd97476",
+      "caption_text_below_image": null,
+      "downloaded": true,
+      "download_note": null
+    },
+    {
+      "n": 2,
+      "file": "2-contentdb-quote-context-existing-demo.png",
+      "original_name": "contentdb-quote-context-existing-demo.png",
+      "bytes": 119788,
+      "content_type": "image/png",
+      "notion_block_id": "8af519dc-2db9-47bc-8543-222028c22137",
+      "caption_text_below_image": "*Historical demonstration of quotation context in an earlier ContentDB interface. The matching passage appears between the text before and after it; this is not a capture of the current UI.*",
+      "downloaded": true,
+      "download_note": null
+    }
+  ]
+}

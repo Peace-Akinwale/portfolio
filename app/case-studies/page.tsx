@@ -1,121 +1,84 @@
+import { withOg } from '@/lib/og';
+import Image from 'next/image';
 import Link from 'next/link';
 import type { Metadata } from 'next';
-import { getFaviconUrl } from '@/lib/ogImage';
+import '@/components/case-study/case-study.css';
+import { firstImage, listCaseStudies } from '@/lib/content/case-studies';
+import { readPage } from '@/lib/content/pages';
+import descriptions from '@/lib/content/page-descriptions.json';
+import { SITE_URL } from '@/lib/site';
+import { WorkWithMe } from '@/components/WorkWithMe';
 
-export const metadata: Metadata = {
-  title: 'Case Studies | Peace Akinwale',
-  description:
-    'Deep-dives into B2B SaaS content engagements — what I was hired to do, how I approached it, and what the work produced.',
-  alternates: {
-    canonical: 'https://peaceakinwale.com/case-studies',
-  },
+export const metadata: Metadata = withOg({
+  title: 'B2B SaaS content & AI workflow case studies · Peace Akinwale',
+  description: descriptions['Case studies'],
+  alternates: { canonical: SITE_URL + '/case-studies' },
+}, { key: 'case-studies', path: '/case-studies', alt: 'Case studies by Peace Akinwale' });
+
+type Entry = { title: string; href: string; summary: string; image?: { src: string; alt: string } };
+
+// Images whose shape differs from the 16:10 card are shown whole, centred on a
+// mat in the image's own edge colour, so no white strip shows beside them (8 Nov 2026).
+const MATS: Record<string, string> = {
+  '/course-portal-cover-blue.png': '#d0e0eb',
+  '/lateef-research-feedback.png': '#1b1d21',
 };
-
-const CASE_STUDIES = [
-  {
-    client: 'ManyRequests',
-    domain: 'manyrequests.com',
-    category: 'B2B SaaS · Client portal software',
-    headline: '43 product-led articles, including page-1 rankings against Workfront and the design crowd',
-    summary:
-      'ManyRequests hired me to write articles where the product shows up inside the piece — in the comparisons, in the how-to steps, in the screenshots, in real customer stories. Over 20 months I wrote 43 of them.',
-    stats: [
-      { value: '43', label: 'Articles published · 88% BOFU' },
-      { value: '#6', label: 'Google for "Workfront alternatives"' },
-      { value: '20mo', label: 'Active retainer' },
-    ],
-    href: '/case-studies/manyrequests',
-  },
-];
+function matFor(src: string): string | undefined {
+  return Object.entries(MATS).find(([end]) => src.endsWith(end))?.[1];
+}
+function Row({ entry }: { entry: Entry }) {
+  return (
+    <li className={entry.image ? "cs-row" : "cs-row cs-row-text-only"}>
+      {entry.image && <Link href={entry.href} className="cs-row-shot" tabIndex={-1} aria-hidden="true" style={matFor(entry.image.src) ? { background: matFor(entry.image.src)! } : undefined}>
+        {entry.image && <Image src={entry.image.src} alt="" fill style={matFor(entry.image.src) ? { objectFit: "contain", objectPosition: "center" } : undefined} sizes="(max-width: 700px) 100vw, 260px" />}
+      </Link>}
+      <div>
+        <h3><Link href={entry.href}>{entry.title}</Link></h3>
+        <p>{entry.summary}</p>
+        <Link href={entry.href} className="underline underline-offset-4">Read the case study</Link>
+      </div>
+    </li>
+  );
+}
 
 export default function CaseStudiesPage() {
+  const studies = listCaseStudies();
+  const entries = (slugs: string[]) => slugs.flatMap((slug) => {
+    const cs = studies.find((s) => s.slug === slug);
+    return cs ? [{ title: cs.name, href: '/case-studies/' + cs.slug, summary: cs.blurb, image: firstImage(cs) ?? undefined }] : [];
+  });
+  const writing = {
+    title: readPage('manyrequests').title,
+    href: '/case-studies/manyrequests',
+    summary: '51 articles since 2024 that explain how agency owners can use the product, with examples from the published work and dated search results.',
+    image: { src: '/images/case-studies/manyrequests/wrike-vs-clickup-product.png', alt: 'ManyRequests used inside a product comparison' },
+  };
+  const mylinks = {
+    title: 'MyLinks',
+    href: '/projects/mylinks',
+    summary: 'I built MyLinks to help me find relevant pages on a client’s site without repeating the same searches for every article.',
+    image: { src: 'https://res.cloudinary.com/cloud-blog-publisher/image/upload/v1772468764/mylinks_app_sitemap_tw3zld.png', alt: 'MyLinks site inventory' },
+  };
   return (
-    <>
-      {/* ── Hero ───────────────────────────────────────── */}
-      <section className="bg-background border-b border-border">
-        <div className="max-w-7xl mx-auto px-6 pt-16 sm:pt-24 pb-16">
-          <div className="max-w-3xl">
-            <p
-              className="text-xs font-bold uppercase tracking-[0.15em] mb-5"
-              style={{ color: 'var(--accent)' }}
-            >
-              Case Studies
-            </p>
-            <h1
-              className="text-3xl sm:text-4xl md:text-5xl font-extrabold leading-[1.1] mb-6 text-foreground"
-              style={{ letterSpacing: '-0.03em' }}
-            >
-              Client work, broken down
-            </h1>
-            <p className="text-base sm:text-lg leading-relaxed text-muted-foreground max-w-2xl">
-              What I was hired to do, how I approached it, and what the work produced. Numbers where I have them.
-            </p>
-          </div>
-        </div>
+    <div className="gutter mx-auto max-w-[1180px] cs-page">
+      <header className="cs-index"><h1>What I’ve written and built</h1></header>
+      <section className="cs-group" aria-labelledby="writing-h">
+        <h2 id="writing-h">Content writing</h2>
+        <ul className="cs-rows"><Row entry={writing} />{entries(['exceed-seo']).map((entry) => <Row key={entry.href} entry={entry} />)}</ul>
       </section>
-
-      {/* ── Case study cards ───────────────────────────── */}
-      <section className="bg-background">
-        <div className="max-w-7xl mx-auto px-6 py-16 sm:py-20">
-          <div className="flex flex-col gap-6 max-w-4xl">
-            {CASE_STUDIES.map((cs) => (
-              <Link
-                key={cs.href}
-                href={cs.href}
-                className="group rounded-xl border border-border p-8 sm:p-10 transition-all hover:border-accent/40 hover:shadow-md"
-                style={{ background: 'var(--background)' }}
-              >
-                <div className="flex items-center gap-3 mb-6">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={getFaviconUrl(cs.domain, 32)}
-                    alt=""
-                    width={20}
-                    height={20}
-                    className="rounded"
-                    loading="lazy"
-                  />
-                  <span className="text-xs font-bold uppercase tracking-[0.15em] text-muted-foreground">
-                    {cs.client} &middot; {cs.category}
-                  </span>
-                </div>
-                <h2
-                  className="text-xl sm:text-2xl font-extrabold text-foreground mb-4 leading-[1.2] group-hover:text-accent transition-colors"
-                  style={{ letterSpacing: '-0.02em' }}
-                >
-                  {cs.headline}
-                </h2>
-                <p className="text-[14px] leading-[1.8] text-muted-foreground mb-8 max-w-2xl">
-                  {cs.summary}
-                </p>
-                <div className="flex flex-wrap gap-4 mb-8">
-                  {cs.stats.map((s, i) => (
-                    <div
-                      key={i}
-                      className="rounded-lg border border-border px-4 py-3"
-                      style={{ background: 'var(--muted)' }}
-                    >
-                      <p
-                        className="text-xl font-extrabold mb-0.5"
-                        style={{ letterSpacing: '-0.02em', color: 'var(--accent)' }}
-                      >
-                        {s.value}
-                      </p>
-                      <p className="text-[11px] text-muted-foreground">{s.label}</p>
-                    </div>
-                  ))}
-                </div>
-                <span
-                  className="inline-flex items-center gap-2 text-sm font-bold underline underline-offset-4 transition-opacity group-hover:opacity-70"
-                  style={{ color: 'var(--accent)' }}
-                >
-                  Read the full breakdown &rarr;
-                </span>
-              </Link>
-            ))}
-          </div>
-        </div>
+      <section className="cs-group" aria-labelledby="teams-h">
+        <h2 id="teams-h">AI workflows for marketing teams</h2>
+        <ul className="cs-rows">{entries(['fanout-query-analysis-tool', 'ai-docs-watch', 'okf']).map((entry) => <Row key={entry.href} entry={entry} />)}</ul>
       </section>
-    </>
+      <section className="cs-group" aria-labelledby="learning-h">
+        <h2 id="learning-h">Teaching and learning</h2>
+        <ul className="cs-rows">{entries(['build-a-course-portal-around-the-instructors-workflow']).map((entry) => <Row key={entry.href} entry={entry} />)}</ul>
+      </section>
+      <section className="cs-group" aria-labelledby="own-h">
+        <h2 id="own-h">Tools I built for my own work</h2>
+        <ul className="cs-rows">{[...entries(['contentdb', 'aloud']), mylinks].map((entry) => <Row key={entry.href} entry={entry} />)}</ul>
+      </section>
+      <WorkWithMe heading="Have something in mind?" body="Have an idea you haven’t had time to build, or a process you’d like to automate? Tell me what the team does now and what you’d like the tool to handle." secondary={{ label: 'Tell me about it', href: '/contact' }} />
+    </div>
   );
 }

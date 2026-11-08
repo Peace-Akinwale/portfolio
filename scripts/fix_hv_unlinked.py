@@ -4,16 +4,19 @@ For the HigherVisibility Hashnode page:
   - Delete every other article line that still lacks a hyperlink
 """
 import json
+import os
 import urllib.request
+import urllib.parse
 import sys
 import re
 
 sys.stdout.reconfigure(encoding='utf-8')
 
-API_TOKEN  = '0c0544d0-9392-4a6a-bb33-5ec0dfd66ec8'
+API_TOKEN  = os.environ['HASHNODE_TOKEN']  # never hard-code: this repo is public
 GQL_URL    = 'https://gql.hashnode.com'
 PUB_HOST   = 'peaceakinwale.hashnode.dev'
-REVAL_URL  = 'https://portfolio-pink-delta-52.vercel.app/api/revalidate?secret=revalidate-peace-2026'
+REVAL_URL  = (os.environ.get('SITE_URL', 'https://peaceakinwale.com') + '/api/revalidate?secret='
+              + urllib.parse.quote(os.environ['REVALIDATION_SECRET']))
 
 # Articles that get NEW links (keep these)
 NEW_LINKS = {

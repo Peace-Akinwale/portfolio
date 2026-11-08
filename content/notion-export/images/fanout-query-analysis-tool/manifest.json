@@ -1,0 +1,41 @@
+{
+  "page": "Fanout query analysis tool",
+  "slug": "fanout-query-analysis-tool",
+  "notion_url": "https://app.notion.com/p/403992da7a578155bc78c7d8e436e561",
+  "exported_at": "2026-11-03T17:58:27.301Z",
+  "images": [
+    {
+      "n": 1,
+      "file": "1-fanout-01-one-run.png",
+      "original_name": "fanout-01-one-run.png",
+      "bytes": 224829,
+      "content_type": "image/png",
+      "notion_block_id": "f22da976-50b1-4233-96cb-7dc049bcb98f",
+      "caption_text_below_image": "*A captured answer, with its recorded citations and brand mentions. Client details are masked.*",
+      "downloaded": true,
+      "download_note": null
+    },
+    {
+      "n": 2,
+      "file": "2-fanout-03-brands.png",
+      "original_name": "fanout-03-brands.png",
+      "bytes": 202516,
+      "content_type": "image/png",
+      "notion_block_id": "84fdc425-7a34-44aa-ae89-e949eb12f5be",
+      "caption_text_below_image": "*The Brands view keeps brand mentions separate from website citations. Client and competitor identities are masked.*",
+      "downloaded": true,
+      "download_note": null
+    },
+    {
+      "n": 3,
+      "file": "3-fanout-05-review.png",
+      "original_name": "fanout-05-review.png",
+      "bytes": 206620,
+      "content_type": "image/png",
+      "notion_block_id": "0df5c367-01c6-4210-8c0c-d1119a60764d",
+      "caption_text_below_image": "*The review queue identifies captured and simulated runs. Incomplete captures have a separate count; research questions are masked.*",
+      "downloaded": true,
+      "download_note": null
+    }
+  ]
+}

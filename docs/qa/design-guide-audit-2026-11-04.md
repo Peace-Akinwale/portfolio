@@ -1,0 +1,37 @@
+# Design guide audit, 4 November 2026
+
+The site checked against Peace's guide, "What these three books teach about designing SaaS apps and websites" (Lupton, *Thinking with Type*; Müller-Brockmann, *Grid Systems*; Nielsen 1994), and the books' own text. The guide is about method, not a style. It sets no hues, fonts or radii, so the sky-to-ink palette with marigold (28 Oct) and Fraunces with DM Sans (4 Nov) stay. What changed is how colour, type and copy are used.
+
+| Guide section | Finding on the site | Change | How it was checked |
+|---|---|---|---|
+| §10 Colour needs jobs; §17 contrast | Text passes everywhere (lowest 5.5:1). Outline buttons, form fields and the search box used the hairline colour, 1.33:1 against the page. Marigold link underlines were 1.44:1 on the light ground. No colour roles for error or success; the form used a hard-coded red. | New roles in `app/informal.css`: `--control-border` (3.5:1 light, 4.4:1 dark, 4.3:1 night), `--link-rule` (deep marigold #9C6207, 3.9:1 on sky; marigold on dark grounds), `--danger`, `--success` (5:1 or better on every ground). Applied to outline buttons, inputs, search, and every link underline. | Contrast computed for every pair; screenshots in light and dark. |
+| §2–§4 Hierarchy, three cues at most (Lupton PDF 94) | Form labels stacked capitals, tracking, bold and grey. The submit button stacked capitals, tracking, bold and tiny type. | Labels are sentence case, one cue (weight). The submit button is the site's standard button. | Screenshot at 390. |
+| Consistency (Müller-Brockmann PDF 123): titles at one size | Page titles ran 54 to 63px on desktop across pages, at three weights. | Every page title uses the one global size and weight (60px desktop, 36px at 320). The homepage hero stays larger, as the guide allows. | Measured on 12 pages at 1440 and 320. |
+| §17 Reflow at 320px | At 320 the phone header ran 54px past the screen and cut the menu button. | Under 360px the header's "Book a call" hides; the menu repeats it. | Every page measured at 320: nothing past the edge. |
+| §20 Screenshots at a readable scale | Homepage and services proof images were whole screens shrunk to a quarter on a phone. | Cropped to the evidence: the three organic results with the arrow, the brands-named and cited-pages panel, the AI Docs Watch before and after cut at a full sentence. Images never upscale past their own width. | Screenshots at 1440 and 390. |
+| §12 Buttons say what happens | "See the work" went to case studies only. "Contact" on services opened a form beside text that said "Email me". "What every article includes" landed at the top of services. | "See the case studies"; "Email me" (mailto); the includes link goes to `/services#includes`. | Links read from the rendered pages. |
+| §13 Forms; §14 states | Required asterisks unexplained. Error said "Something went wrong" only. Labels in Title Case. | "Fields marked * are required." Error says the message didn't send, that the text is kept, and gives the email address, as `role="alert"`. Success is `role="status"`. Labels in sentence case. Inputs 16px. | Code read; screenshot. |
+| §11 Labels in the reader's language | "BOFU" on the homepage, services and article end. The blog title "Writing on writing and building" clashed with the nav's "Writing" (the samples page). | "bottom-of-funnel"; blog title "Notes on writing and building." | Tests pin the new wording. |
+| Lupton PDF 47, 164: real type | No italic DM Sans was loaded, so captions were browser-slanted fakes. Case-study prose had straight quotes. | DM Sans italic loaded; `font-synthesis: none`. A render pass curls quotes and apostrophes in prose, leaving code alone (`lib/content/markdown.ts`, with a test). | 162 tests pass. |
+| §7 Cards | The case-study grid became rows earlier today at Peace's request. | No change. | |
+
+Not changed, and why:
+- The header button says "Book a call" and body buttons say "Book a 30-minute call". The guide wants one name per action, but the phone header has no room for the longer label.
+- Case-study row thumbnails are small screenshots. They are decorative (hidden from screen readers) and every row has a readable title and text.
+- The Calendly embed on Contact stays blank in the app's built-in browser; it renders in headless Chrome. The code is unchanged.
+- Nielsen adds little for a marketing site beyond "leave out what isn't needed", which today's meta-commentary removal already did.
+
+Checks after the last change: 162 tests, tsc clean, production build, behaviour 10/10, every sitemap page plus the 404 at 1440 and 390 with no overflow and one H1, 12 pages at 320 with nothing past the edge.
+
+## Second round, updated guide (sections 27 to 34), 4 November 2026, late
+
+Peace supplied the full-review version of the guide and the page-by-page review of the three books, and said the pricing side "reads off". The new sections confirmed it and named why.
+
+| Guide section | Finding | Change | How it was checked |
+|---|---|---|---|
+| §9, §29: numbers aligned on a meaningful edge, in tabular figures; a quantity never split from its unit; label and value roles distinct | Prices were prose list items with no bullet and a leftover indent: "Refresh an existing article, $400 (2,000 to 2,500 words)". At 960px the item wrapped inside the parenthesis, so "$400 (2,000 to" sat on one line and "2,500 words)" on the next. The indent was a cue with no meaning (§4). | A small price table (`components/PriceList.tsx`): service on the left, price on the right edge in tabular figures and never wrapping, unit as supporting text under the name, one hairline per row. Rows are the single source; the one-line strings and the structured data derive from them. | Element screenshots at 1440, 960 and 390, light and dark; the JSON-LD offers read back as 400, 600, 2700 USD. |
+| §7, §20: comparable facts in comparable positions; billing interval and units visible | The workflow side described its price in a paragraph while the writing side listed it. | The workflow offer is one row in the same table shape: name, "Custom", and the unit line "Priced once we've talked about the task. Up to six weeks to build and settle". "Prices in US dollars." now sits under the homepage table too; the services note no longer repeats the 10% that the third row states. | Same screenshots. |
+| §30, §6: one alignment reference per page; drifting edges compete | Measured at 1440: the homepage offer block began at x=112 while every other section began at 56 (a gutter applied twice). On Services the pricing section began at 56 while the rest of the page began at 186. | The homepage columns add no gutter of their own; the services pricing section sits in the page's 1180px column. | Left edges counted per page before and after: home 56 for 25 elements, services 186 for 19; the second value on each page is its right column. |
+| §33: review content, then rendering, then operation | | | 163 tests, tsc, build, behaviour 11/11, both pages at 1440 and 390 with no overflow and one H1. |
+
+Checked against the new sections and left as they are: bullet lists wrap under their text (§29); captions sit under their images on every page (§27, G 104); link labels name their destinations (§28); the radius vocabulary is three values with three meanings, pill for controls, 16px for images and cards, 6px for fields (§30); the header says "Book a call" where the body says "Book a 30-minute call", kept for the phone header's width.

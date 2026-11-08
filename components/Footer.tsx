@@ -1,69 +1,46 @@
 import Link from 'next/link';
+import { NAV_LINKS, EMAIL, LINKEDIN_URL, X_URL, CALENDLY_URL } from '@/lib/site';
 
-export function Footer() {
-  const currentYear = new Date().getFullYear();
+// Footer, redesigned 4 Nov 2026 (Peace: "the footer can be much better designed").
+// One closing action instead of three link lists that repeated the header:
+// who she is and the call on top, the site in one line beneath, then the year.
+// The RSS feed is linked from <head> in app/layout.tsx, not from here.
+export function Footer({ night = false, compact = false }: { night?: boolean; compact?: boolean }) {
+  const year = new Date().getFullYear();
 
   return (
-    <footer className="border-t border-border mt-0">
-      <div className="max-w-7xl mx-auto px-6 py-12">
-        <div className="grid grid-cols-1 gap-8 md:grid-cols-5">
-          {/* About */}
-          <div className="md:col-span-1">
-            <h3 className="font-bold text-lg mb-3">Peace Akinwale</h3>
-            <p className="text-sm text-muted-foreground leading-relaxed">
-              Product-led B2B SaaS content writer for software and enterprise companies.
-            </p>
-          </div>
-
-          {/* Work */}
-          <div>
-            <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-muted-foreground mb-3">Work</p>
-            <nav className="flex flex-col gap-2">
-              <Link href="/services" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Services</Link>
-              <Link href="/case-studies" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Case Studies</Link>
-              <Link href="/portfolio" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Portfolio</Link>
-              <Link href="/testimonials" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Testimonials</Link>
-            </nav>
-          </div>
-
-          {/* Projects */}
-          <div>
-            <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-muted-foreground mb-3">Projects</p>
-            <nav className="flex flex-col gap-2">
-              <Link href="/projects" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Projects</Link>
-              <Link href="/projects/contentdb" className="text-sm text-muted-foreground hover:text-foreground transition-colors">contentDB</Link>
-              <Link href="/projects/career-pathway" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Career Pathway</Link>
-            </nav>
-          </div>
-
-          {/* Writing */}
-          <div>
-            <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-muted-foreground mb-3">Writing</p>
-            <nav className="flex flex-col gap-2">
-              <Link href="/blog" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Blog</Link>
-              <Link href="/about" className="text-sm text-muted-foreground hover:text-foreground transition-colors">About</Link>
-              <Link href="/contact" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Contact</Link>
-            </nav>
-          </div>
-
-          {/* Connect */}
-          <div>
-            <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-muted-foreground mb-3">Connect</p>
-            <div className="flex flex-col gap-2">
-              <a href="https://x.com/PeaceAkinwaleA" target="_blank" rel="noopener noreferrer" className="text-sm text-muted-foreground hover:text-foreground transition-colors">X (Twitter)</a>
-              <a href="https://linkedin.com/in/peaceakinwale" target="_blank" rel="noopener noreferrer" className="text-sm text-muted-foreground hover:text-foreground transition-colors">LinkedIn</a>
-              <a href="https://github.com/Peace-Akinwale" target="_blank" rel="noopener noreferrer" className="text-sm text-muted-foreground hover:text-foreground transition-colors">GitHub</a>
-            </div>
-          </div>
+    <footer className={`${night ? 'ground-night' : ''} site-footer mt-auto border-t border-border`}>
+      <div className="gutter footer-top">
+        <div>
+          <p className="footer-name display">Peace Akinwale</p>
+          {!compact && <p className="footer-line">
+            B2B SaaS content that explains your product’s use cases, and AI workflows configured to the way your marketing team works.
+          </p>}
         </div>
-
-        {/* Copyright */}
-        <div className="mt-12 pt-8 border-t border-border">
-          <p className="text-sm text-muted-foreground text-center">
-            © {currentYear} Peace Akinwale. All rights reserved.
-          </p>
+        <div className="footer-cta">
+          {!compact && <a href={CALENDLY_URL} target="_blank" rel="noopener" className="button button-ink">Book a 30-minute call</a>}
+          <a href={`mailto:${EMAIL}`} className="footer-email">{EMAIL}</a>
         </div>
       </div>
+
+      <div className="gutter footer-links">
+        <nav aria-label="Pages">
+          <ul>
+            {NAV_LINKS.map((l) => (
+              <li key={l.href}><Link href={l.href} className="footer-link">{l.label}</Link></li>
+            ))}
+          </ul>
+        </nav>
+        <nav aria-label="Elsewhere">
+          <ul>
+            <li><Link href="/testimonials" className="footer-link">What clients say</Link></li>
+            <li><a href={LINKEDIN_URL} target="_blank" rel="noopener noreferrer" className="footer-link">LinkedIn</a></li>
+            <li><a href={X_URL} target="_blank" rel="noopener noreferrer" className="footer-link">X</a></li>
+          </ul>
+        </nav>
+      </div>
+
+      <p className="gutter footer-base">&copy; {year} Peace Akinwale</p>
     </footer>
   );
 }

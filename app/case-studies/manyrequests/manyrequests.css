@@ -1,0 +1,23 @@
+/* The ManyRequests writing case study: what the shared case-study template
+   lacks. Article callouts (a card with the article's name, a note and a
+   screenshot of the product inside the piece) and a testimonial with a photo.
+   Everything else comes from case-study.css and .prose. */
+
+/* article callouts */
+.mr-callout { background: var(--card); border-radius: 20px; padding: 22px 24px 24px; margin: 0 0 16px; }
+.mr-callout > a { display: inline-block; font-family: var(--font-sans); font-weight: 600; font-size: 15.5px; color: var(--foreground); text-decoration: underline; text-decoration-color: var(--link-rule); text-underline-offset: 3px; margin: 0 0 10px; }
+.mr-callout p { font-size: 1.05rem; line-height: 1.5; margin: 0 0 1rem; }
+.mr-callout img { display: block; width: 100%; margin: 0.25rem 0 0; border-radius: 12px; }
+
+/* testimonial with photo */
+.mr-quote { max-width: 66ch; margin: 0.5rem 0 2rem; padding: 26px 28px; border-radius: 20px; background: var(--card); font-family: var(--font-serif); font-optical-sizing: auto; }
+.mr-quote blockquote { border: 0; padding: 0; margin: 0 0 18px; font-size: 1.2rem; line-height: 1.45; color: var(--foreground); }
+.mr-quote strong { font-weight: 600; }
+.mr-quote figcaption { display: flex; align-items: center; gap: 12px; margin: 0; font-family: var(--font-sans); font-size: 14px; color: var(--muted-foreground); }
+.mr-quote figcaption img { flex: 0 0 44px; width: 44px; height: 44px; border-radius: 999px; object-fit: cover; }
+.mr-quote figcaption b { display: block; color: var(--foreground); font-weight: 600; }
+
+@media (max-width: 640px) {
+  .mr-callout { padding: 18px 18px 20px; border-radius: 16px; }
+  .mr-quote { padding: 20px; border-radius: 16px; }
+}

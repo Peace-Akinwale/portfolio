@@ -1,7 +1,11 @@
+import descriptions from '@/lib/content/page-descriptions.json';
+import { WorkWithMe } from '@/components/WorkWithMe';
+import { withOg } from '@/lib/og';
 import type { Metadata } from 'next';
-import Link from 'next/link';
 import Image from 'next/image';
 import { Fragment } from 'react';
+import fs from 'node:fs';
+import path from 'node:path';
 
 type TextSegment = {
   text: string;
@@ -20,6 +24,7 @@ type LinkedInTestimonial = {
 
 type ScreenshotTestimonial = {
   name: string;
+  photo?: string;
   role: string;
   company: string;
   note: string;
@@ -27,7 +32,8 @@ type ScreenshotTestimonial = {
   alt: string;
 };
 
-const LINKEDIN_URL = 'https://www.linkedin.com/in/peaceakinwale/';
+// The recommendations section of the profile, not the profile itself.
+const RECOMMENDATIONS_URL = 'https://www.linkedin.com/in/peaceakinwale/details/recommendations/';
 
 const linkedInTestimonials: LinkedInTestimonial[] = [
   {
@@ -131,7 +137,7 @@ const linkedInTestimonials: LinkedInTestimonial[] = [
           text: 'Peace does great work from the beginning of every assignment. He follows guidelines, is available and receptive to feedback, and implements edits swiftly and efficiently. He consistently works in this manner. ',
         },
         {
-          text: 'Every article of his that I have been assigned to edit of his has been well-written and well-researched.',
+          text: 'Every article of his that I have been assigned to edit has been well-written and well-researched.',
           strong: true,
         },
       ],
@@ -180,29 +186,42 @@ const screenshotTestimonials: ScreenshotTestimonial[] = [
     company: 'Jabra (via Spicy Margarita)',
     note: 'Full feedback on the hybrid work schedule piece',
     image: '/images/testimonials/melissa-malec-jabra.png',
-    alt: 'Screenshot of Melissa Malec praising the research, structure, and product placements in the article.',
+    alt: 'Screenshot of Melissa Malec praising the research and the product placements in the article.',
   },
-];
+  {
+    name: 'Lateef Maleek',
+    photo: '/images/clients/lateef-maleek.png',
+    role: 'Senior Content Strategist',
+    company: 'Exceed SEO',
+    note: 'A message from 21 September 2026 about the depth and specificity of the research, with my reply',
+    image: '/case-studies/exceed-seo/lateef-research-feedback.png',
+    alt: 'Screenshot of Lateef Maleek praising the depth and specificity of Peace’s product research.',
+  },
+].filter((t) => fs.existsSync(path.join(process.cwd(), 'public', t.image)));
 
-export const metadata: Metadata = {
-  title: 'Client Testimonials | Peace Akinwale',
-  description:
-    'Read what clients say about working with Peace Akinwale - B2B SaaS content writer for product-led software companies.',
+export const metadata: Metadata = withOg({
+  title: 'What clients say',
+  description: descriptions.Testimonials,
   alternates: {
     canonical: 'https://peaceakinwale.com/testimonials',
   },
-};
+}, { key: 'testimonials', path: '/testimonials', alt: 'What clients say about Peace Akinwale' });
+
+/** The person's own words for the lead line: the bold passage they marked out, or the first sentence. Never a paraphrase. */
+function excerptOf(paragraphs: TextSegment[][]): string {
+  const strong = paragraphs.flat().find((segment) => segment.strong);
+  if (strong) return strong.text.trim().replace(/[,;]$/, '');
+  const first = (paragraphs[0] ?? []).map((segment) => segment.text).join('');
+  const sentence = first.match(/^[^.!?]*[.!?]/);
+  return (sentence ? sentence[0] : first).trim();
+}
 
 function renderParagraph(paragraph: TextSegment[], paragraphIndex: number) {
   return (
-    <p
-      key={paragraphIndex}
-      className="text-[15px] leading-[1.9] text-muted-foreground italic"
-      style={{ fontFamily: 'var(--font-serif)' }}
-    >
+    <p key={paragraphIndex} className="text-[15px] leading-[1.75] text-muted-foreground">
       {paragraph.map((segment, segmentIndex) => (
         segment.strong ? (
-          <strong key={segmentIndex} className="font-semibold not-italic text-foreground">
+          <strong key={segmentIndex} className="font-semibold text-foreground">
             {segment.text}
           </strong>
         ) : (
@@ -225,95 +244,81 @@ export default function TestimonialsPage() {
   return (
     <>
       <section className="border-b border-border bg-background">
-        <div className="mx-auto max-w-7xl px-6 pb-16 pt-16 sm:pb-20 sm:pt-24">
+        <div className="mx-auto max-w-7xl px-6 pb-10 pt-12 sm:pb-12 sm:pt-16">
           <div className="max-w-3xl">
-            <p
-              className="mb-4 text-xs font-bold uppercase tracking-[0.15em]"
-              style={{ color: 'var(--accent)' }}
-            >
-              Client testimonials
-            </p>
-            <h1
-              className="mb-6 text-3xl font-extrabold leading-[1.1] text-foreground sm:text-4xl md:text-5xl"
-              style={{ letterSpacing: '-0.03em' }}
-            >
-              What my clients say
-            </h1>
-            <p className="max-w-2xl text-base leading-relaxed text-muted-foreground sm:text-lg">
-              Every testimonial here is from a client I&apos;ve worked with directly - sourced from LinkedIn
-              recommendations and direct feedback from real projects.
-            </p>
+            <h1 className="mb-4 text-foreground">What clients say</h1>
+            <p>Clients and editors describe the product research, deadlines and revisions involved in working with me, so you can see what to expect when you send a brief.</p>
           </div>
         </div>
       </section>
 
       <section style={{ background: 'var(--muted)' }}>
-        <div className="mx-auto max-w-7xl px-6 py-20 sm:py-24">
-          <div className="max-w-5xl">
+        <div className="mx-auto max-w-7xl px-6 py-10 sm:py-14">
+          <div className="max-w-3xl">
             <div className="flex flex-col gap-6">
               {linkedInTestimonials.map((testimonial) => (
                 <article
                   key={testimonial.name}
-                  className="rounded-[1.5rem] border border-border bg-background px-6 py-6 shadow-[0_12px_30px_rgba(35,26,20,0.04)] sm:px-8 sm:py-8"
+                  className="rounded-[1.5rem] border border-border bg-background px-6 py-6 shadow-[0_12px_30px_rgba(21,24,58,0.05)] sm:px-8 sm:py-8"
                 >
-                  <div className="flex flex-col gap-8">
-                    <blockquote className="space-y-5">
-                      {testimonial.paragraphs.map((paragraph, index) => renderParagraph(paragraph, index))}
-                    </blockquote>
+                  <p
+                    className="text-[1.35rem] leading-[1.35] text-foreground"
+                    style={{ fontFamily: 'var(--font-serif)', fontOpticalSizing: 'auto', textWrap: 'pretty' }}
+                  >
+                    &ldquo;{excerptOf(testimonial.paragraphs)}&rdquo;
+                  </p>
 
-                    <div className="border-t border-border pt-5">
-                      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                        <div className="flex items-center gap-4">
-                          {testimonial.photo ? (
-                            <Image
-                              src={testimonial.photo}
-                              alt={testimonial.name}
-                              width={56}
-                              height={56}
-                              className="h-14 w-14 rounded-full object-cover"
-                              loading="lazy"
-                              sizes="56px"
-                            />
-                          ) : (
-                            <span className="flex h-14 w-14 items-center justify-center rounded-full bg-muted text-sm font-bold text-muted-foreground">
-                              {testimonial.initials}
-                            </span>
-                          )}
-                          <div>
-                            <p className="text-base font-bold text-foreground">{testimonial.name}</p>
-                            <p className="text-sm text-muted-foreground">{testimonial.role} · {testimonial.company}</p>
-                            <p className="text-xs uppercase tracking-[0.12em] text-muted-foreground">
-                              {testimonial.date}
-                            </p>
-                          </div>
-                        </div>
-                        <a
-                          href={LINKEDIN_URL}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.12em] text-white transition-opacity hover:opacity-90"
-                          style={{ background: '#0A66C2' }}
-                        >
-                          <LinkedInIcon />
-                          View on LinkedIn
-                        </a>
-                      </div>
+                  <div className="mt-5 flex items-center gap-4">
+                    {testimonial.photo ? (
+                      <Image
+                        src={testimonial.photo}
+                        alt={testimonial.name}
+                        width={48}
+                        height={48}
+                        className="h-12 w-12 rounded-full object-cover"
+                        loading="lazy"
+                        sizes="48px"
+                      />
+                    ) : (
+                      <span className="flex h-12 w-12 items-center justify-center rounded-full bg-muted text-sm font-bold text-muted-foreground">
+                        {testimonial.initials}
+                      </span>
+                    )}
+                    <div>
+                      <p className="text-base font-bold text-foreground">{testimonial.name}</p>
+                      <p className="text-sm text-muted-foreground">{testimonial.role} · {testimonial.company}</p>
+                      <p className="text-xs uppercase tracking-[0.12em] text-muted-foreground">
+                        {testimonial.date}
+                      </p>
                     </div>
                   </div>
+
+                  <blockquote className="mt-6 max-w-[68ch] space-y-4 border-t border-border pt-5">
+                    {testimonial.paragraphs.map((paragraph, index) => renderParagraph(paragraph, index))}
+                  </blockquote>
+
+                  <a
+                    href={RECOMMENDATIONS_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mt-6 inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.12em] text-accent-foreground transition-opacity hover:opacity-90"
+                    style={{ background: 'var(--accent)' }}
+                  >
+                    <LinkedInIcon />
+                    See it on LinkedIn
+                  </a>
                 </article>
               ))}
             </div>
           </div>
 
-          <div className="mt-20">
-            <p className="mb-10 text-[10px] font-bold uppercase tracking-[0.18em] text-muted-foreground">
-              Direct feedback
-            </p>
+          <div className="mt-16">
+            <h2 className="mb-8 text-[1.5rem] text-foreground">Feedback on individual articles</h2>
             <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
               {screenshotTestimonials.map((testimonial) => (
                 <article
                   key={testimonial.name}
-                  className="rounded-[1.5rem] border border-border bg-background p-5 shadow-[0_12px_30px_rgba(35,26,20,0.04)] sm:p-6"
+                  className="rounded-[1.5rem] border border-border bg-background p-5 shadow-[0_12px_30px_rgba(21,24,58,0.05)] sm:p-6"
                 >
                   <div className="rounded-[1rem] border border-border bg-muted/70 p-3">
                     <Image
@@ -326,14 +331,13 @@ export default function TestimonialsPage() {
                       sizes="(min-width: 1024px) 46vw, 92vw"
                     />
                   </div>
-                  <div className="mt-5">
-                    <p className="text-base font-bold text-foreground">{testimonial.name}</p>
+                  <div className="mt-5 reviewer-attribution">
+                    {testimonial.photo && <Image src={testimonial.photo} alt={testimonial.name} width={56} height={56} sizes="56px" />}
+                    <div><p className="text-base font-bold text-foreground">{testimonial.name}</p>
                     <p className="mt-1 text-sm text-muted-foreground">
                       {testimonial.role} · {testimonial.company}
                     </p>
-                    <p className="mt-3 text-[11px] font-bold uppercase tracking-[0.12em] text-muted-foreground">
-                      {testimonial.note}
-                    </p>
+                    </div>
                   </div>
                 </article>
               ))}
@@ -343,40 +347,12 @@ export default function TestimonialsPage() {
       </section>
 
       <section className="border-t border-border bg-background">
-        <div className="mx-auto max-w-7xl px-6 py-20 sm:py-24">
-          <div className="max-w-3xl">
-            <span className="mb-8 inline-flex items-center gap-2 rounded-full border border-border px-3 py-1.5 text-xs font-semibold text-muted-foreground">
-              <span className="inline-block h-1.5 w-1.5 rounded-full bg-green-500" />
-              Currently accepting 2 new clients
-            </span>
-            <h2
-              className="mb-4 text-2xl font-extrabold text-foreground sm:text-3xl"
-              style={{ letterSpacing: '-0.02em' }}
-            >
-              Ready to work together?
-            </h2>
-            <p className="mb-10 max-w-xl text-base leading-relaxed text-muted-foreground">
-              Book a free 30-minute call. No commitment, no pressure - just a conversation about your
-              content goals.
-            </p>
-            <div className="flex flex-col gap-3 sm:flex-row">
-              <a
-                href="https://calendly.com/akindayopeaceakinwale/30min"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-block rounded-md px-7 py-3 text-center text-xs font-bold uppercase tracking-[0.08em] text-white transition-all hover:opacity-90"
-                style={{ background: 'var(--accent)' }}
-              >
-                Book a free discovery call -&gt;
-              </a>
-              <Link
-                href="/contact"
-                className="inline-block rounded-md border border-border px-7 py-3 text-center text-xs font-bold uppercase tracking-[0.08em] text-foreground transition-all hover:bg-muted"
-              >
-                Send a message
-              </Link>
-            </div>
-          </div>
+        <div className="mx-auto max-w-7xl px-6 py-16 sm:py-20">
+          <WorkWithMe
+            heading="Have something in mind?"
+            body="Tell me about your product, an article you need, or an idea you’d like to develop for your team."
+            secondary={{ label: 'Send a message', href: '/contact' }}
+          />
         </div>
       </section>
     </>

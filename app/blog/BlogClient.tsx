@@ -1,77 +1,44 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useMemo, useState } from 'react';
 import { SearchBar } from '@/components/SearchBar';
 import { ArticleCard } from '@/components/ArticleCard';
 import type { HashnodePost } from '@/lib/hashnode/types';
 
-interface BlogClientProps {
-  initialPosts: HashnodePost[];
-}
+export function BlogClient({ initialPosts, wordpressDown }: { initialPosts: HashnodePost[]; wordpressDown: boolean }) {
+  const [query, setQuery] = useState('');
 
-export function BlogClient({ initialPosts }: BlogClientProps) {
-  const [filteredPosts, setFilteredPosts] = useState<HashnodePost[]>(initialPosts);
-  const [searchQuery, setSearchQuery] = useState('');
-
-  // Filter posts based on search query
-  useEffect(() => {
-    if (!searchQuery.trim()) {
-      setFilteredPosts(initialPosts);
-      return;
-    }
-
-    const query = searchQuery.toLowerCase();
-    const filtered = initialPosts.filter(
-      (post) =>
-        post.title.toLowerCase().includes(query) ||
-        post.brief.toLowerCase().includes(query) ||
-        post.tags?.some((tag) => tag.name.toLowerCase().includes(query))
+  const posts = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    if (!q) return initialPosts;
+    return initialPosts.filter(
+      (p) => p.title.toLowerCase().includes(q) || p.brief.toLowerCase().includes(q) || p.tags?.some((t) => t.name.toLowerCase().includes(q)),
     );
-
-    setFilteredPosts(filtered);
-  }, [searchQuery, initialPosts]);
-
-  const handleSearch = (query: string) => {
-    setSearchQuery(query);
-  };
+  }, [query, initialPosts]);
 
   return (
-    <div className="max-w-7xl mx-auto px-6 py-24">
-      {/* Header */}
-      <div className="mb-16">
-        <h1 className="text-5xl md:text-6xl font-bold mb-6">
-          Blog
-        </h1>
-
-        {/* Search Bar */}
-        <SearchBar onSearch={handleSearch} />
-      </div>
-
-      {/* Results Count */}
-      {searchQuery && (
-        <div className="mb-8">
-          <p className="text-sm text-muted-foreground">
-            {filteredPosts.length} {filteredPosts.length === 1 ? 'article' : 'articles'} found
-            {searchQuery && ` for "${searchQuery}"`}
+    <div className="gutter mx-auto max-w-[1100px]">
+      <header className="posts-head">
+        <h1>Notes on content and AI workflows</h1>
+        <p className="lead">I write about the decisions behind my content and AI workflows: how I check research before using it in an article, decide what to automate, and test whether a tool finishes the job.</p>
+        <SearchBar onSearch={setQuery} />
+        {query && (
+          <p className="mt-3 text-[14px] text-muted-foreground" aria-live="polite">
+            {posts.length} {posts.length === 1 ? 'article' : 'articles'} for “{query}”
           </p>
-        </div>
+        )}
+      </header>
+
+      {wordpressDown && (
+        <p className="review-note">Some of my posts live on WordPress and didn’t load. Here’s what did. Try again in a minute for the rest.</p>
       )}
 
-      {/* Articles Grid */}
-      {filteredPosts.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {filteredPosts.map((post) => (
-            <ArticleCard key={post.id} post={post} />
-          ))}
-        </div>
+      {posts.length > 0 ? (
+        <ul className="posts">
+          {posts.map((post) => <ArticleCard key={post.id} post={post} />)}
+        </ul>
       ) : (
-        <div className="text-center py-16">
-          <p className="text-muted-foreground">
-            {searchQuery
-              ? `No articles found for "${searchQuery}"`
-              : 'No articles yet. Check back soon!'}
-          </p>
-        </div>
+        <p className="posts-empty">{query ? `No articles match that search. Try another word.` : 'Nothing here yet.'}</p>
       )}
     </div>
   );

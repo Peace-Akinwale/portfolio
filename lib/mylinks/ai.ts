@@ -80,6 +80,8 @@ export interface InventoryPage {
   source: DestinationSource;
   label?: string | null;
   notes?: string | null;
+  meta_description?: string | null;
+  h2s?: string[] | null;
 }
 
 export const SuggestionSchema = z.object({

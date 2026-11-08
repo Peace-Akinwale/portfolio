@@ -1,0 +1,71 @@
+/* ───────────────────────────────────────────────────────────────────────────
+   Informal layer (26 Oct 2026). Peace asked for the whole site to feel
+   informal in copy and design. One sky-and-ink family (28 Oct 2026) with marigold
+   as the only accent; round shapes instead of square editorial rules; no
+   all-caps tracked labels; pill buttons and tags; soft-cornered screenshots.
+   ─────────────────────────────────────────────────────────────────────────── */
+:root { --sun: var(--marigold); --sun-wash: #F7DFA3; --clay-wash: var(--sky-3); --card: #F3F7FA; --radius: 16px; }
+/* Control edges contrast with their ground; the hairline --border is for
+   dividers only. Link underlines follow their text colour in every theme. */
+:root { --control-border: #5C7A93; --link-rule: currentColor; --danger: #A3241B; --success: #1F6B3A; }
+[data-theme="dark"] { --control-border: #6A8AA6; --link-rule: currentColor; --danger: #F2A39B; --success: #8FD3A6; }
+
+.theme-seam, .ground-paper { --control-border: #5C7A93; --link-rule: currentColor; --danger: #A3241B; --success: #1F6B3A; }
+[data-theme="dark"] .theme-seam, [data-theme="dark"] .ground-paper { --control-border: #6A8AA6; --link-rule: currentColor; --danger: #F2A39B; --success: #8FD3A6; }
+
+.ground-night, [data-theme="dark"] .ground-night { --control-border: #88A6BF; --link-rule: currentColor; --danger: #F2A39B; --success: #8FD3A6; }
+[data-theme="dark"] { --sun-wash: #4A3A12; --clay-wash: var(--ink-3); --card: var(--ink-deep); }
+
+.theme-seam, .ground-paper { --card: #F3F7FA; }
+[data-theme="dark"] .theme-seam, [data-theme="dark"] .ground-paper { --card: var(--ink-deep); }
+
+.ground-night, [data-theme="dark"] .ground-night { --card: var(--ink-2); --sun-wash: #4A3A12; }
+
+/* No shouting labels anywhere on the site's own pages. */
+.theme-dated .uppercase, .theme-seam .uppercase { text-transform: none; letter-spacing: 0; }
+
+/* Buttons and tags are round. */
+.button { border-radius: 999px; padding: 10px 20px; }
+.eyebrow b { display: inline-block; padding: 2px 10px; margin-right: 6px; border-radius: 999px; background: color-mix(in srgb, var(--accent) 14%, transparent); color: var(--accent); }
+
+/* Screenshots get soft corners and a little lift. */
+figure.shot img, .prose img, .prose figure.video iframe, .record-open img, .hero-portrait img {
+  border-radius: var(--radius);
+}
+figure.shot img, .prose img { box-shadow: 0 1px 0 rgba(13,30,44,.04), 0 18px 36px -24px rgba(13,30,44,.45); border-color: transparent; }
+
+/* Links underline in their text colour, thicker on hover. */
+.prose a, .go a { text-decoration-color: var(--link-rule); text-decoration-thickness: 2px; text-underline-offset: 4px; }
+.prose a:hover, .go a:hover { text-decoration-thickness: 4px; color: inherit; }
+
+
+/* Pull quotes: a rounded card rather than a rule. */
+.pull { border-left: 0; padding: 18px 22px; border-radius: var(--radius); background: var(--card); }
+
+/* Cards sit on the stone with a hairline and a soft shadow so they read as cards. */
+.cs-next li a, .cs-short, .article-cta, .entry details, .pull { box-shadow: inset 0 0 0 1px rgba(13,30,44,.06), 0 10px 24px -20px rgba(13,30,44,.35); }
+[data-theme="dark"] .cs-next li a, [data-theme="dark"] .cs-short, [data-theme="dark"] .article-cta { box-shadow: inset 0 0 0 1px rgba(255,255,255,.06); }
+
+/* End-of-page call to action (components/WorkWithMe.tsx, 28 Oct 2026): a card
+   with a heading, one line and two buttons, so it reads as an action. */
+.cta-card { margin: 8px 0 56px; padding: 32px clamp(22px, 4vw, 40px); border-radius: 28px; background: var(--accent); color: var(--accent-foreground); max-width: 920px; }
+.cta-card h2 { font-family: var(--font-display); font-size: clamp(1.6rem, 3vw, 2.2rem); font-weight: 520; line-height: 1.08; margin: 0 0 12px; color: inherit; }
+.cta-card p { font-family: var(--font-serif); font-optical-sizing: auto; font-size: 1.1rem; line-height: 1.5; margin: 0 0 22px; max-width: 56ch; opacity: .92; }
+.cta-actions { display: flex; flex-wrap: wrap; gap: 12px; }
+.cta-card .button-ink { background: var(--marigold); color: var(--marigold-ink); border-color: var(--marigold); }
+.cta-card .button-ink:hover { background: var(--accent-foreground); color: var(--accent); border-color: var(--accent-foreground); }
+.cta-card .button-line { color: var(--accent-foreground); border-color: color-mix(in srgb, var(--accent-foreground) 45%, transparent); }
+.cta-card .button-line:hover { border-color: var(--accent-foreground); }
+[data-theme="dark"] .cta-card { background: var(--ink-3); color: var(--ink-text); }
+[data-theme="dark"] .cta-card .button-line { color: var(--ink-text); border-color: color-mix(in srgb, var(--ink-text) 40%, transparent); }
+
+/* Reviewer portraits stay beside the attribution, at the same size on every page. */
+.reviewer-attribution { display: flex; align-items: center; gap: 14px; margin-block: 16px; }
+.reviewer-attribution > div { min-width: 0; }
+.reviewer-attribution > div > strong, .reviewer-attribution > div > span { display: block; }
+.reviewer-attribution img, .prose .reviewer-attribution img { width: 56px; height: 56px; min-width: 56px; flex: 0 0 56px; object-fit: cover; border-radius: 50%; margin: 0; border: 1px solid var(--border); box-shadow: none; }
+
+/* Primary action as a button, secondary as a plain link, replacing "A · B" link
+   pairs in Markdown pages (8 Nov 2026). Beats .prose a / .approved-prose a. */
+.cta-row { display: flex; flex-wrap: wrap; align-items: center; gap: 14px 24px; margin: 20px 0 8px; }
+.prose .cta-row a.button, .approved-prose .cta-row a.button, .cta-row a.button { color: var(--background); text-decoration: none; opacity: 1; }

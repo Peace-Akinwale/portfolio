@@ -3,6 +3,7 @@ Script to add missing hyperlinks to HigherVisibility and ManyRequests
 Hashnode static pages, then trigger revalidation.
 """
 import json
+import os
 import sys
 import urllib.request
 import urllib.parse
@@ -10,10 +11,11 @@ import re
 
 sys.stdout.reconfigure(encoding='utf-8')
 
-API_TOKEN = '0c0544d0-9392-4a6a-bb33-5ec0dfd66ec8'
+API_TOKEN = os.environ['HASHNODE_TOKEN']  # never hard-code: this repo is public
 GRAPHQL_URL = 'https://gql.hashnode.com'
 PUB_HOST = 'peaceakinwale.hashnode.dev'
-REVALIDATE_URL = 'https://portfolio-pink-delta-52.vercel.app/api/revalidate?secret=revalidate-peace-2026'
+REVALIDATE_URL = (os.environ.get('SITE_URL', 'https://peaceakinwale.com') + '/api/revalidate?secret='
+                  + urllib.parse.quote(os.environ['REVALIDATION_SECRET']))
 
 # ---------------------------------------------------------------------------
 # URL mapping for HigherVisibility entries that need links added.

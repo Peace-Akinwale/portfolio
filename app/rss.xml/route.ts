@@ -1,14 +1,16 @@
-import { getPosts } from '@/lib/hashnode/client';
+import { loadAllPosts } from '@/lib/content/posts';
 
 export const revalidate = 3600;
 
 export async function GET() {
-  const { posts } = await getPosts(50);
+  const { posts } = await loadAllPosts();
   const baseUrl = 'https://peaceakinwale.com';
 
   const items = posts
     .map((post) => {
-      const url = `${baseUrl}/${post.slug}`;
+      const url = `${baseUrl}/blog/${post.slug}`;
+      // Keep item identity stable for existing subscribers after the URL move.
+      const guid = `${baseUrl}/${post.slug}`;
       const pubDate = new Date(post.publishedAt).toUTCString();
       const description = post.seo?.description || post.brief || '';
       const escapedDesc = description.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
@@ -16,7 +18,7 @@ export async function GET() {
       return `    <item>
       <title>${escapedTitle}</title>
       <link>${url}</link>
-      <guid isPermaLink="true">${url}</guid>
+      <guid isPermaLink="true">${guid}</guid>
       <pubDate>${pubDate}</pubDate>
       <description>${escapedDesc}</description>
     </item>`;
@@ -28,7 +30,7 @@ export async function GET() {
   <channel>
     <title>Peace Akinwale</title>
     <link>${baseUrl}</link>
-    <description>B2B SaaS content writing insights — articles on product-led content, content refreshes, SEO, and AI search.</description>
+    <description>Articles by Peace Akinwale on writing for B2B SaaS companies, AI search, and building tools with AI coding agents.</description>
     <language>en-us</language>
     <atom:link href="${baseUrl}/rss.xml" rel="self" type="application/rss+xml"/>
 ${items}

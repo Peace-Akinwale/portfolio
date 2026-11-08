@@ -1,0 +1,90 @@
+/* Homepage, 4 Nov 2026. Four proof spreads, one per ability the site has to
+   show (writing, building, AI tools end to end, thinking). Each spread is one
+   artefact at about 60% of the width beside a narrow column of text, on
+   alternating sky and deep-blue grounds. No question nav, no hover widening.
+   Tokens from docs/design-reference-2026-10.md; .ground-night switches a
+   spread to the night column of the palette. */
+
+.home { font-size: 17px; }
+
+/* hero */
+.hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 380px;
+  gap: clamp(28px, 5vw, 72px);
+  align-items: center;
+  padding: 40px var(--gutter);
+  border-bottom: 1px solid var(--border);
+}
+.hero h1 { font-size: clamp(2.4rem, 4.4vw, 4rem); font-weight: 500; margin: 0 0 22px; max-width: 18ch; }
+.hero-line { font-size: clamp(1.15rem, 1.5vw, 1.35rem); line-height: 1.4; max-width: 46ch; margin: 0 0 26px; }
+.hero-actions { display: flex; flex-wrap: wrap; gap: 10px; margin: 0; }
+.hero-portrait { margin: 0; justify-self: end; width: 100%; max-width: 380px; }
+.hero-portrait img { width: 100%; height: auto; max-height: 440px; object-fit: cover; object-position: 50% 18%; display: block; border-radius: var(--radius, 16px); }
+
+/* proof spreads */
+.proof {
+  display: grid;
+  grid-template-columns: minmax(0, 38fr) minmax(0, 62fr);
+  gap: clamp(28px, 4vw, 64px);
+  align-items: start;
+  padding: 36px var(--gutter);
+  border-bottom: 1px solid var(--border);
+}
+.proof.night { border-bottom: 0; }
+.proof-text { max-width: 44ch; position: sticky; top: 88px; }
+.proof h2 { font-size: clamp(1.7rem, 2.6vw, 2.5rem); font-weight: 500; line-height: 1.08; margin: 0 0 18px; letter-spacing: -0.02em; }
+.proof p { margin: 0 0 .9em; line-height: 1.55; }
+.proof .catch { padding: 12px 16px; border-left: 3px solid var(--marigold); background: var(--card); border-radius: 0 12px 12px 0; margin: 6px 0 18px; }
+.proof.night .catch { background: rgba(255,255,255,.06); }
+.proof .go { margin: 18px 0 0; }
+.proof .go a { display: block; margin: 0 0 8px; }
+
+.exhibit { margin: 0; min-width: 0; }
+.exhibit img {
+  width: 100%; height: auto; display: block;
+  border-radius: var(--radius, 16px);
+  background: var(--card);
+  box-shadow: 0 1px 0 rgba(13,30,44,.05), 0 30px 60px -36px rgba(13,30,44,.55);
+}
+.exhibit figcaption { font-size: 14.5px; color: var(--muted-foreground); margin-top: 12px; max-width: 70ch; }
+.proof.night .exhibit img { box-shadow: 0 30px 60px -30px rgba(6,16,26,.75); }
+
+/* the three questions */
+.questions { margin: 0 0 18px; display: grid; gap: 14px; }
+.questions div { padding-left: 14px; border-left: 3px solid var(--marigold); }
+.questions dt { font-family: var(--font-display); font-weight: 500; font-size: 1.35rem; line-height: 1.15; margin: 0 0 4px; letter-spacing: -0.01em; }
+.questions dd { margin: 0; line-height: 1.5; }
+
+/* offer */
+.home .offer { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(28px, 4vw, 64px); padding: 40px var(--gutter); }
+/* The section carries the gutter, so the columns add none: the offer's left edge
+   then matches every other homepage section (design guide §30, 4 Nov 2026). */
+#work-with-me > div { padding: 0; }
+.home .offer h2 { font-size: clamp(1.8rem, 3vw, 2.4rem); font-weight: 500; margin: 0 0 12px; }
+.home .offer p { max-width: var(--measure); font-size: 1.05rem; line-height: 1.5; }
+.home .offer .note { font-size: 14.5px; color: var(--muted-foreground); }
+.home .offer-actions { display: flex; flex-wrap: wrap; gap: 10px; margin: 8px 0 0; }
+
+@media (max-width: 900px) {
+  .hero { grid-template-columns: 1fr; gap: 24px; padding: 32px var(--gutter); }
+  .hero-portrait { justify-self: start; max-width: 260px; order: -1; }
+  .hero-portrait img { max-height: 320px; }
+  .proof { grid-template-columns: 1fr; gap: 24px; padding: 32px var(--gutter); }
+  .proof-text { position: static; max-width: var(--measure); }
+  .home .offer { grid-template-columns: 1fr; gap: 32px; padding: 32px var(--gutter); }
+}
+@media (max-width: 600px) {
+  .home { font-size: 16px; }
+  .hero h1 { font-size: clamp(2rem, 9vw, 2.6rem); }
+  .hero-portrait { max-width: 200px; }
+  .hero-portrait img { max-height: 240px; }
+}
+
+/* The approved headline is longer; keep it readable without an oversized hero. */
+.hero h1 { max-width: 28ch; font-size: clamp(2rem, 3.5vw, 3.3rem); line-height: 1.15; }
+.home-prices { padding-left: 1.3rem; margin: 20px 0; }
+.home-prices li { margin-bottom: 12px; line-height: 1.5; }
+
+.home-prices { list-style: disc; }
+#thinking .exhibit { max-width: 580px; }

@@ -1,0 +1,41 @@
+{
+  "page": "Building an OKF that a team can ask for guidance",
+  "slug": "building-an-okf-that-a-team-can-ask-for-guidance",
+  "notion_url": "https://app.notion.com/p/403992da7a578116ae4ee9a53710f316",
+  "exported_at": "2026-11-03T18:00:53.848Z",
+  "images": [
+    {
+      "n": 1,
+      "file": "1-okf-06-graph-dark.gif",
+      "original_name": "okf-06-graph-dark.gif",
+      "bytes": 761144,
+      "content_type": "image/gif",
+      "notion_block_id": "44a513c9-04fd-41d5-a627-9c635b8e5bb2",
+      "caption_text_below_image": "*The knowledge map shows connections between notes in different layouts. This is a historical screen; the on-screen totals belong to that capture.*",
+      "downloaded": true,
+      "download_note": null
+    },
+    {
+      "n": 2,
+      "file": "2-okf-02-note-trust.png",
+      "original_name": "okf-02-note-trust.png",
+      "bytes": 192605,
+      "content_type": "image/png",
+      "notion_block_id": "5d77520d-54bc-4c29-9545-3b96e813e8e4",
+      "caption_text_below_image": "*Source and human-review information on an individual note.*",
+      "downloaded": true,
+      "download_note": null
+    },
+    {
+      "n": 3,
+      "file": "3-okf-05-build-kit.png",
+      "original_name": "okf-05-build-kit.png",
+      "bytes": 137486,
+      "content_type": "image/png",
+      "notion_block_id": "c99c6c35-0818-4b59-a4c2-f916b8f20e35",
+      "caption_text_below_image": "*The client-kit input screen, where a build starts with the client’s own source files.*",
+      "downloaded": true,
+      "download_note": null
+    }
+  ]
+}

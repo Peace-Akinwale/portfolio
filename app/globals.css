@@ -1,27 +1,51 @@
 @import "tailwindcss";
 
-/* Editorial Portfolio Design System - Monochrome */
+/* peaceakinwale.com, October 2026 rebuild. Tokens: docs/design-reference-2026-10.md.
+   Two grounds: paper (writing) and night (building). The page-level tokens below
+   keep their old names so every existing page and the MyLinks workspace pick up
+   the new palette unchanged. */
+
+/* One colour family (28 Oct 2026, decisions.md): sky and ink blue, with marigold
+   as the only accent. Every ground on the site is a value of the same family,
+   so light mode, dark mode and the homepage's night half all belong together.
+   The page-level tokens (--background, --accent, ...) keep their names so every
+   page and the MyLinks workspace pick up the palette unchanged.
+   - Dated, the default for every page: sky ground, ink-blue text, deep blue accent.
+   - Seam, the homepage only (.theme-seam on the chrome wrapper): the sky half for
+     writing and the ink half for building, switched with .ground-paper / .ground-night.
+   Dark mode (selected with the header toggle) uses
+   the two darkest values of the family. */
 
 :root {
-  /* Light mode — Electric Teal + Rose: fresh, modern, energetic */
-  --background: #f8f0e3;
-  --foreground: #130f0d;
-  --muted: #efe2cd;
-  --muted-foreground: #5f5449;
-  --border: #d2bea0;
-  --accent: #64734f;
-  --accent-foreground: #ffffff;
-  --accent2: #b55e3d;
-  --navy: #130f0d;
-  --orange: #b55e3d;
+  --sky: #D9E4EC; --sky-2: #C9D8E3; --sky-3: #B9CFDE; --sky-ink: #0D1E2C; --sky-soft: #3F5B70; --sky-rule: #B6C8D5; --sky-rule-strong: #93ACBE; --sky-accent: #1E3F5A; --sky-wash: #C3D5E2;
+  --ink: #0F2334; --ink-2: #16304A; --ink-3: #1E3F5A; --ink-deep: #0A1826; --ink-text: #E6EEF4; --ink-soft: #A4B9C9; --ink-rule: #243E55; --ink-rule-strong: #335170; --ink-accent: #B9CFDE; --ink-wash: #1A3A54;
+  --marigold: #F2B33A; --marigold-ink: #1C1500;
 
-  /* Typography */
-  --font-serif: Georgia, Cambria, "Times New Roman", Times, serif;
-  --font-sans: var(--font-body, var(--font-heading, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif));
+  /* Old family names, kept as aliases so nothing that still says paper or night breaks. */
+  --stone: var(--sky); --paper: var(--sky); --night: var(--ink); --night-2: var(--ink-2); --night-ink: var(--ink-text); --night-soft: var(--ink-soft); --night-rule: var(--ink-rule); --night-accent: var(--marigold);
+
+  --background: var(--sky);
+  --foreground: var(--sky-ink);
+  --muted: var(--sky-2);
+  --muted-foreground: var(--sky-soft);
+  --border: var(--sky-rule);
+  --border-strong: var(--sky-rule-strong);
+  --accent: var(--sky-accent);
+  --accent-foreground: #F3F7FA;
+  --accent-wash: var(--sky-wash);
+  --accent2: var(--accent);
+  --navy: var(--foreground);
+  --orange: var(--accent);
+
+  --gutter: clamp(18px, 4vw, 56px);
+  --measure: 62ch;
+
+  --font-serif-stack: var(--font-serif, Georgia, "Times New Roman", serif);
+  --font-sans-stack: var(--font-sans, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif);
+  --font-display-stack: var(--font-display, Georgia, "Times New Roman", serif);
 }
 
 @theme inline {
-  /* Colors */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-muted: var(--muted);
@@ -30,125 +54,194 @@
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
 
-  /* Typography */
-  --font-serif: var(--font-serif);
-  --font-sans: var(--font-sans);
+  --font-serif: var(--font-sans-stack); /* 4 Nov 2026: long-form is DM Sans now; the variable stays so every consumer keeps working */
+  --font-sans: var(--font-sans-stack);
+  --font-display: var(--font-display-stack);
 
-  /* Spacing for editorial layouts */
   --spacing-section: 6rem;
   --spacing-content: 2rem;
 }
 
-/* Dark mode */
+/* Dark mode: the ink values of the same family, for every page. */
 [data-theme="dark"] {
-  --background: #1d1814;
-  --foreground: #f5ecdf;
-  --muted: #29211b;
-  --muted-foreground: #c7b29c;
-  --border: #49382d;
-  --accent: #97a57d;
-  --accent-foreground: #171411;
-  --accent2: #d38561;
-  --navy: #f5ecdf;
-  --orange: #d38561;
+  --background: var(--ink); --foreground: var(--ink-text); --muted: var(--ink-2); --muted-foreground: var(--ink-soft);
+  --border: var(--ink-rule); --border-strong: var(--ink-rule-strong); --accent: var(--ink-accent); --accent-foreground: var(--sky-ink); --accent-wash: var(--ink-wash);
 }
 
-/* Auto dark mode (system preference) */
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --background: #1d1814;
-    --foreground: #f5ecdf;
-    --muted: #29211b;
-    --muted-foreground: #c7b29c;
-    --border: #49382d;
-    --accent: #97a57d;
-    --accent-foreground: #171411;
-    --accent2: #d38561;
-    --navy: #f5ecdf;
-    --orange: #d38561;
+
+/* The homepage's chrome and its sky halves: the same values as every other page. */
+.theme-seam, .ground-paper {
+  --background: var(--sky); --foreground: var(--sky-ink); --muted: var(--sky-2); --muted-foreground: var(--sky-soft);
+  --border: var(--sky-rule); --border-strong: var(--sky-rule-strong); --accent: var(--sky-accent); --accent-foreground: #F3F7FA; --accent-wash: var(--sky-wash);
+  background: var(--background); color: var(--foreground);
+}
+[data-theme="dark"] .theme-seam, [data-theme="dark"] .ground-paper {
+  --background: var(--ink); --foreground: var(--ink-text); --muted: var(--ink-2); --muted-foreground: var(--ink-soft);
+  --border: var(--ink-rule); --border-strong: var(--ink-rule-strong); --accent: var(--ink-accent); --accent-foreground: var(--sky-ink); --accent-wash: var(--ink-wash);
+}
+
+/* The homepage's night half: the deep blue of the family (not the near-black
+   ink, which read as black on a phone). The same in both modes: in dark mode
+   the sky half becomes ink, so the halves still read as two. Marigold is the
+   accent on it. */
+.ground-night {
+  --background: var(--ink-3); --foreground: var(--ink-text); --muted: #2A4D6B; --muted-foreground: #BFD0DD;
+  --border: #335170; --border-strong: #4A6A88; --accent: var(--marigold); --accent-foreground: var(--marigold-ink); --accent-wash: #2A4D6B;
+  background: var(--background); color: var(--foreground);
+}
+.theme-dated { background: var(--background); color: var(--foreground); }
+
+/* Blog posts once forced a white reading surface; they now read on the page ground. */
+.reading-light { color: var(--foreground); }
+
+/* Base styles */
+/* In the base layer so Tailwind utilities can override it. Unlayered, it beat
+   every border-[...] class (bug hunt, 4 Nov 2026: form fields kept the hairline). */
+@layer base {
+  * {
+    border-color: var(--border);
   }
 }
 
-/* Base styles */
-* {
-  border-color: var(--border);
-}
-
 html {
-  overflow-x: hidden;
+  /* clip, not hidden: hidden on html and body makes body a scroll container and breaks position: sticky */
+  overflow-x: clip;
 }
 
 body {
-  background:
-    radial-gradient(circle at top, rgba(181, 94, 61, 0.09), transparent 22%),
-    linear-gradient(180deg, color-mix(in srgb, var(--background) 96%, #fffaf3 4%) 0%, var(--background) 58%, color-mix(in srgb, var(--background) 90%, #f0e1ca 10%) 100%);
+  background: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans);
-  font-size: 16px;
-  line-height: 1.7;
+  font-size: 17px;
+  line-height: 1.55;
+  text-wrap: pretty;
   transition: background-color 0.3s ease, color 0.3s ease;
-  overflow-x: hidden;
+  overflow-x: clip;
   width: 100%;
-  max-width: 100vw;
+  /* Only real weights and italics (Lupton: never let software fake bold or italic). */
+  font-synthesis: none;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Typography — Syne for headings, DM Sans for body */
+/* Typography (4 Nov 2026). Fraunces for display headings, DM Sans for everything else. */
 h1, h2, h3, h4, h5, h6 {
-  font-family: var(--font-heading, var(--font-sans));
-  font-weight: 700;
-  line-height: 1.2;
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-optical-sizing: auto;
+  font-variation-settings: "SOFT" 30, "WONK" 0;
+  line-height: 1.04;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
   color: var(--foreground);
 }
+/* One page-title size on every page (design guide and Müller-Brockmann: titles at the same size and position). The homepage hero is the one exception. */
+h1 { font-size: clamp(2.25rem, 4.6vw, 3.75rem); margin-bottom: 1.25rem; }
+h2 { font-size: clamp(1.75rem, 3.4vw, 2.75rem); margin-bottom: 1rem; }
+h3 { font-size: clamp(1.35rem, 2vw, 1.75rem); margin-bottom: .75rem; }
+h4, h5, h6 { font-family: var(--font-sans); font-weight: 600; line-height: 1.3; letter-spacing: 0; }
 
-h1 {
-  font-size: clamp(2rem, 5vw, 3rem);
-  margin-bottom: 1.5rem;
-  letter-spacing: -0.02em;
+.display { font-family: var(--font-display); font-weight: 500; font-optical-sizing: auto; font-variation-settings: "SOFT" 30, "WONK" 1; line-height: 1.02; letter-spacing: -0.02em; text-wrap: balance; }
+.display-wide { font-variation-settings: "SOFT" 60, "WONK" 1; }
+.serif { font-family: var(--font-serif); font-optical-sizing: auto; }
+.sans { font-family: var(--font-sans); }
+.gutter { padding-left: var(--gutter); padding-right: var(--gutter); }
+.measure { max-width: var(--measure); }
+.tnum { font-variant-numeric: tabular-nums; }
+
+.skip-link { position: absolute; left: -999px; top: 8px; z-index: 60; background: var(--foreground); color: var(--background); padding: 8px 12px; }
+.skip-link:focus { left: 8px; }
+
+.button { display: inline-flex; align-items: center; justify-content: center; gap: .5rem; min-height: 44px; padding: 10px 18px; border: 1px solid currentColor; font-family: var(--font-sans); font-weight: 600; font-size: 15px; line-height: 1.2; text-decoration: none; }
+.button-ink { background: var(--foreground); color: var(--background); border-color: var(--foreground); }
+.button-ink:hover { background: var(--accent); border-color: var(--accent); color: var(--accent-foreground); }
+.button-accent { background: var(--accent); color: var(--accent-foreground); border-color: var(--accent); }
+.button-accent:hover { background: var(--foreground); border-color: var(--foreground); color: var(--background); }
+.button-line { background: transparent; color: var(--foreground); border-color: var(--control-border, var(--border-strong)); }
+.button-line:hover { border-color: var(--foreground); }
+/* Press feedback (taste skill): a 1px push, transform only; none under reduced motion. */
+.button { transition: transform .12s ease, background-color .15s ease, border-color .15s ease, color .15s ease; }
+.button:active { transform: translateY(1px); }
+@media (prefers-reduced-motion: reduce) { .button:active { transform: none; } }
+/* Under 360px the phone header cannot hold the name, the book button, the theme toggle and the menu (WCAG reflow at 320px); the menu repeats "Book a call". Plain CSS because the unlayered .button rule beats Tailwind's hidden. */
+@media (max-width: 359px) { .header-book { display: none; } }
+
+.nav-link { text-decoration: none; }
+.nav-link[aria-current="page"] { color: var(--foreground); text-decoration: underline; text-decoration-color: currentColor; text-decoration-thickness: 2px; text-underline-offset: 6px; }
+/* Price table (design guide §9, §29; 4 Nov 2026). Name left, price on the right
+   edge in tabular figures, unit beneath the name. One hairline per row carries the
+   eye from the service to its price; the last row closes with a hairline. */
+.prices { margin: 0; padding: 0; max-width: var(--measure); border-bottom: 1px solid var(--border); }
+.price-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; column-gap: 24px; align-items: baseline; border-top: 1px solid var(--border); padding: 10px 0 11px; }
+.price-row dt { margin: 0; min-width: 0; font-family: var(--font-sans); font-size: 16px; line-height: 1.4; }
+.price-name { display: block; color: var(--foreground); }
+.price-unit { display: block; margin-top: 2px; font-size: 14px; color: var(--muted-foreground); }
+.price-value { margin: 0; font-family: var(--font-sans); font-size: 17px; font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; text-align: right; color: var(--foreground); }
+
+/* Footer (4 Nov 2026): name and line beside the one closing action, the site in one row, the year. */
+.footer-top { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: end; gap: 24px 48px; padding-top: 56px; padding-bottom: 40px; }
+.footer-name { font-size: 28px; font-weight: 560; line-height: 1; margin: 0 0 12px; }
+.footer-line { max-width: 46ch; font-size: 16px; line-height: 1.5; color: var(--muted-foreground); margin: 0; }
+.footer-cta { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px; }
+.footer-email { font-size: 15px; color: var(--foreground); text-decoration: underline; text-underline-offset: 4px; text-decoration-color: var(--link-rule, currentColor); }
+.footer-links { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 32px; border-top: 1px solid var(--border); padding-top: 18px; padding-bottom: 18px; }
+.footer-links ul { display: flex; flex-wrap: wrap; gap: 4px 24px; list-style: none; margin: 0; padding: 0; }
+.footer-link { display: inline-block; padding: 4px 0; font-size: 15px; color: var(--foreground); text-decoration: none; }
+.footer-link:hover { text-decoration: underline; text-decoration-color: var(--link-rule, currentColor); text-underline-offset: 4px; }
+.footer-base { font-size: 13.5px; color: var(--muted-foreground); padding-top: 4px; padding-bottom: 28px; margin: 0; }
+@media (max-width: 700px) {
+  .footer-top { grid-template-columns: 1fr; align-items: start; padding-top: 40px; padding-bottom: 28px; }
+  .footer-links { flex-direction: column; }
 }
 
-h2 {
-  font-size: clamp(1.75rem, 4vw, 2.25rem);
-  margin-bottom: 1.25rem;
-  letter-spacing: -0.01em;
-}
-
-h3 {
-  font-size: clamp(1.5rem, 3vw, 1.75rem);
-  margin-bottom: 1rem;
-  letter-spacing: -0.01em;
-}
+.eyebrow { font-family: var(--font-sans); font-size: 13.5px; color: var(--muted-foreground); }
+.eyebrow b { font-weight: 600; color: var(--accent); }
+.go { font-family: var(--font-sans); font-size: 15px; font-weight: 500; }
+.go a { margin-right: 20px; text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; }
+.go a:hover { color: var(--accent); }
+figure.shot { margin: 20px 0 10px; }
+figure.shot img { border: 1px solid var(--border); background: var(--card); border-radius: 2px; }
+figure.shot figcaption { font-family: var(--font-sans); font-size: 14px; color: var(--muted-foreground); margin-top: 10px; max-width: var(--measure); }
+.pull { font-family: var(--font-serif); font-optical-sizing: auto; font-size: clamp(1.25rem, 1.7vw, 1.5rem); line-height: 1.35; margin: 14px 0 6px; padding-left: 16px; border-left: 3px solid var(--accent); max-width: 32ch; }
+.pull-by { font-family: var(--font-sans); font-size: 14px; color: var(--muted-foreground); margin: 0 0 16px; }
+.kv { display: grid; grid-template-columns: auto 1fr; gap: 6px 18px; max-width: var(--measure); margin: 14px 0 18px; font-size: 16px; }
+.kv dt { font-family: var(--font-display); font-size: 1.5rem; line-height: 1.1; font-weight: 600; color: var(--accent); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.kv dd { margin: 0; align-self: center; }
+@media (max-width: 640px) { .kv { grid-template-columns: 1fr; gap: 2px 0; } .kv dd { margin-bottom: 10px; } }
 
 /* Article content styling */
 .prose {
-  font-family: var(--font-serif);
-  font-size: 1.125rem;
-  line-height: 1.8;
-  max-width: 65ch;
+  font-family: var(--font-sans);
+  font-optical-sizing: auto;
+  font-size: 1.0625rem;
+  line-height: 1.65;
+  max-width: 66ch;
   color: var(--foreground);
 }
 
 .prose p {
-  margin-bottom: 1.5rem;
-  color: var(--muted-foreground);
+  margin-bottom: 1.35rem;
+  color: var(--foreground);
 }
 
 .prose h1, .prose h2, .prose h3, .prose h4, .prose h5, .prose h6 {
-  font-family: var(--font-serif);
-  font-weight: 700;
+  font-family: var(--font-display);
+  font-weight: 500;
+  line-height: 1.08;
   color: var(--foreground);
+  /* Leave room for the fixed header when a table-of-contents link jumps here */
+  scroll-margin-top: 6.5rem;
   margin-top: 2.5rem;
   margin-bottom: 1rem;
 }
 
 .prose h2 {
-  font-size: 2rem;
+  font-size: 1.9rem;
   color: var(--foreground);
 }
 
 .prose h3 {
-  font-size: 1.5rem;
+  font-size: 1.45rem;
   color: var(--foreground);
 }
 
@@ -183,7 +276,7 @@ h3 {
 .prose a {
   color: var(--accent);
   text-decoration: underline;
-  text-decoration-color: var(--accent);
+  text-decoration-color: currentColor;
   text-underline-offset: 3px;
   transition: all 0.2s ease;
 }
@@ -193,9 +286,9 @@ h3 {
 }
 
 .prose ul, .prose ol {
-  margin-bottom: 1.5rem;
-  padding-left: 2rem;
-  color: var(--muted-foreground);
+  margin-bottom: 1.35rem;
+  padding-left: 1.5rem;
+  color: var(--foreground);
 }
 
 .prose ul {
@@ -207,9 +300,9 @@ h3 {
 }
 
 .prose li {
-  margin-bottom: 0.5rem;
-  color: var(--muted-foreground);
-  padding-left: 0.5rem;
+  margin-bottom: 0.4rem;
+  color: var(--foreground);
+  padding-left: 0.25rem;
 }
 
 .prose li::marker {
@@ -222,15 +315,12 @@ h3 {
 }
 
 .prose blockquote {
-  border-left: 4px solid var(--accent);
-  padding: 1.5rem 2rem;
-  margin: 2.5rem 0;
-  font-style: italic;
+  border-left: 3px solid var(--accent);
+  padding: 0 0 0 1.25rem;
+  margin: 2rem 0;
   color: var(--foreground);
-  background: var(--muted);
-  font-size: 1.25rem;
-  line-height: 1.6;
-  border-radius: 4px;
+  font-size: 1.2rem;
+  line-height: 1.45;
 }
 
 .prose blockquote p {
@@ -248,15 +338,15 @@ h3 {
 }
 
 .prose pre {
-  background: #f0e1cf;
-  color: #1e1814;
+  background: var(--muted);
+  color: var(--foreground);
   padding: 1.25rem 1.5rem;
   border-radius: 8px;
   overflow-x: auto;
   margin: 1.5rem 0;
   font-size: 0.875rem;
   line-height: 1.7;
-  border: 1px solid #d2bea6;
+  border: 1px solid var(--border);
 }
 
 .prose pre code {
@@ -269,92 +359,51 @@ h3 {
 }
 
 /* Code block wrapper with copy button */
-.code-block-wrapper {
-  position: relative;
-  margin: 1.5rem 0;
-}
-
-.code-block-wrapper pre {
-  margin: 0;
-}
-
+.code-block-wrapper { position: relative; margin: 1.5rem 0; }
+.code-block-wrapper pre { margin: 0; }
 .copy-btn {
-  position: absolute;
-  top: 0.5rem;
-  right: 0.5rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 2rem;
-  height: 2rem;
-  padding: 0;
-  color: #7d6a57;
-  background: transparent;
-  border: 1px solid #c8b293;
-  border-radius: 6px;
-  cursor: pointer;
-  opacity: 0;
-  transition: opacity 0.2s ease, background 0.2s ease, color 0.2s ease;
-  z-index: 1;
+  position: absolute; top: 0.5rem; right: 0.5rem;
+  display: flex; align-items: center; justify-content: center;
+  width: 2rem; height: 2rem; padding: 0;
+  color: var(--muted-foreground); background: var(--background);
+  border: 1px solid var(--border); border-radius: 6px; cursor: pointer;
+  opacity: 0; transition: opacity 0.2s ease, background 0.2s ease, color 0.2s ease; z-index: 1;
 }
-
-.code-block-wrapper:hover .copy-btn {
-  opacity: 1;
-}
-
-.copy-btn:hover {
-  background: #e9d7c3;
-  color: #4d4138;
-}
-
-.copy-btn.copied {
-  color: #16a34a;
-  border-color: #16a34a;
-}
-
-/* Dark mode code blocks */
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) .prose pre {
-    background: #29211b;
-    color: #f5ecdf;
-    border-color: #49382d;
-  }
-
-  :root:not([data-theme="light"]) .copy-btn {
-    color: #cfb8a0;
-    border-color: #695244;
-    background: transparent;
-  }
-
-  :root:not([data-theme="light"]) .copy-btn:hover {
-    background: #3c3027;
-    color: #f5ecdf;
-  }
-
-  :root:not([data-theme="light"]) .copy-btn.copied {
-    color: #68d391;
-    border-color: #68d391;
-  }
-}
+.code-block-wrapper:hover .copy-btn, .copy-btn:focus-visible { opacity: 1; }
+.copy-btn:hover { color: var(--foreground); border-color: var(--foreground); }
+.copy-btn.copied { color: var(--accent); border-color: var(--accent); }
 
 .prose img {
   max-width: 100%;
   height: auto;
-  margin: 2rem 0;
-  border-radius: 4px;
+  margin: 1.5rem 0 .5rem;
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  background: var(--card);
 }
+.prose figure { margin: 2rem 0; }
+.prose figcaption, .prose img + em { display: block; font-family: var(--font-sans); font-size: 14px; color: var(--muted-foreground); margin-top: .5rem; }
 
 
 /* Dark mode prose - now handled by CSS variables */
 
-/* Smooth transitions */
-a, button {
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+a, button { transition: color .15s ease, background-color .15s ease, border-color .15s ease, opacity .15s ease; }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { transition: none !important; animation: none !important; }
 }
+html { scroll-behavior: auto; scroll-padding-top: 72px; }
+/* Pages with a second sticky bar under the header land anchors below both. */
+html:has(.record-bar) { scroll-padding-top: 124px; }
+@media (min-width: 761px) { html:has(.qnav) { scroll-padding-top: 116px; } }
 
 /* Link styling */
-a {
-  text-decoration: none;
+/* Base layer for the same reason: unlayered, it stripped the underline from every
+   link given Tailwind's `underline` class. */
+@layer base {
+  a {
+    text-decoration: none;
+  }
 }
 
 /* Focus visible for accessibility */
@@ -420,3 +469,65 @@ a {
 #lightbox-image {
   transition: opacity 0.15s ease;
 }
+
+/* Respect people who ask their system for less motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* The two-ground offer block, used on the homepage and the services page. */
+/* working with me */
+.offer { display: grid; grid-template-columns: 1fr 1fr; }
+.offer > div { padding: 52px var(--gutter) 60px; min-width: 0; }
+.offer h2 { font-size: clamp(1.8rem, 3vw, 2.6rem); font-weight: 500; margin: 0 0 12px; }
+.offer p { max-width: var(--measure); font-family: var(--font-serif); font-optical-sizing: auto; font-size: 1.1rem; line-height: 1.5; }
+.offer .note { font-family: var(--font-sans); font-size: 14.5px; color: var(--muted-foreground); }
+/* Spacing by relationship (design guide §5): paragraph, then its list or note, then the actions. */
+.offer > div > p:not(.offer-actions):not(.go) { margin: 0 0 14px; }
+.offer > div > .prices { margin: 6px 0 20px; }
+.offer > div > .prices + .note { margin-top: -10px; }
+.offer > div > .note { margin: 0 0 20px; }
+.offer > div > .go { margin: 4px 0 0; }
+.offer .button { margin: 8px 12px 8px 0; }
+
+@media (max-width: 760px) {
+  .offer { grid-template-columns: 1fr; }
+  .offer > div { padding: 40px var(--gutter) 44px; }
+}
+
+/* Light/dark toggle in the header: show the moon in light mode, the sun in dark. */
+.theme-toggle { display: inline-flex; align-items: center; justify-content: center; min-width: 44px; min-height: 44px; border-radius: 999px; color: var(--foreground); background: transparent; border: 1px solid transparent; cursor: pointer; }
+.theme-toggle:hover { border-color: var(--border); }
+.theme-toggle .icon-sun { display: none; }
+[data-theme="dark"] .theme-toggle .icon-sun { display: block; }
+[data-theme="dark"] .theme-toggle .icon-moon { display: none; }
+
+/* Embedded video (case studies): 16:9, captioned like a figure. */
+.prose figure.video { margin: 2rem 0; }
+.prose figure.video iframe { display: block; width: 100%; aspect-ratio: 16 / 9; height: auto; margin: 0; border: 1px solid var(--border); border-radius: 2px; background: var(--ink-deep); }
+.prose figure.video figcaption a { color: inherit; text-decoration: underline; }
+
+/* services, 4 Nov 2026: a proof figure under each offer */
+/* Services: the pricing section sits in the same 1180px column as the rest of the page (design guide §30). */
+.svc-offer { max-width: 1180px; margin: 0 auto; }
+.svc-offer > div { padding-top: 44px; }
+.svc-proof { margin: 26px 0 0; max-width: 520px; }
+.svc-proof img { width: 100%; height: auto; display: block; border-radius: var(--radius, 16px); background: var(--card); box-shadow: 0 24px 48px -32px rgba(13,30,44,.5); }
+.svc-proof figcaption { font-size: 14.5px; color: var(--muted-foreground); margin-top: 10px; }
+.svc-proof figcaption a { text-decoration: underline; text-underline-offset: 3px; }
+.offer-actions { display: flex; flex-wrap: wrap; gap: 10px; margin: 8px 0 0; }
+.svc-offer .note { margin: 0 0 10px; }
+
+/* Evidence remains readable on phones and accessible without a pointer. */
+.prose img[role="button"] { cursor: zoom-in; }
+.image-viewer { position: fixed; inset: 0; width: min(96vw, 1600px); max-width: 96vw; max-height: 96dvh; margin: auto; padding: 16px; border: 1px solid var(--control-border); border-radius: 16px; background: var(--background); color: var(--foreground); }
+.image-viewer::backdrop { background: rgb(13 30 44 / 88%); }
+.image-viewer > img { display: block; max-width: 100%; max-height: 75dvh; width: auto; height: auto; margin: 12px auto; object-fit: contain; }
+.image-viewer-toolbar, .image-viewer-controls { display: flex; justify-content: space-between; align-items: center; gap: 16px; }
+.image-viewer-controls[hidden] { display: none; }
+.image-viewer button, .image-viewer a { min-height: 44px; display: inline-flex; align-items: center; padding: 8px 12px; border: 1px solid var(--control-border); border-radius: 24px; font-size: 16px; }

@@ -1,109 +1,96 @@
 import type { Metadata, Viewport } from "next";
-import { Syne, DM_Sans } from "next/font/google";
+import localFont from "next/font/local";
+import { DM_Sans } from "next/font/google";
 import "./globals.css";
+import "./informal.css";
 import { ThemeProvider } from "./providers";
 import { AppChrome } from "@/components/AppChrome";
+import { GoogleAnalytics } from "@/components/GoogleAnalytics";
+import { SITE_URL, LINKEDIN_URL, X_URL } from "@/lib/site";
 
-const syne = Syne({
-  subsets: ["latin"],
-  variable: "--font-heading",
+// Display: Fraunces (Undercase Type, OFL 1.1; licence and NOTE.md beside the files).
+// Variable: opsz 9–144, wght 100–900, SOFT, WONK, plus the italic. Chosen 4 Nov 2026
+// to replace Sprat and Newsreader; everything that is not a display heading is DM Sans.
+const fraunces = localFont({
+  src: [
+    { path: "./fonts/fraunces/Fraunces-Variable.woff2", style: "normal" },
+    { path: "./fonts/fraunces/Fraunces-Variable-Italic.woff2", style: "italic" },
+  ],
+  variable: "--font-display",
   display: "swap",
-  weight: ["400", "600", "700", "800"],
+  weight: "100 900",
+  fallback: ["Georgia", "Times New Roman", "serif"],
+  adjustFontFallback: false,
 });
 
+// Interface and long-form: DM Sans, self-hosted at build time by next/font.
 const dmSans = DM_Sans({
   subsets: ["latin"],
-  variable: "--font-body",
+  variable: "--font-sans",
   display: "swap",
   weight: ["400", "500", "600", "700"],
+  // Real italics for captions and emphasis; the browser's slanted fake is turned off in globals.css.
+  style: ["normal", "italic"],
 });
-import { GoogleAnalytics } from "@/components/GoogleAnalytics";
 
 const structuredData = {
   "@context": "https://schema.org",
   "@graph": [
     {
       "@type": "Person",
-      "@id": "https://peaceakinwale.com/#person",
+      "@id": `${SITE_URL}/#person`,
       name: "Peace Akinwale",
-      url: "https://peaceakinwale.com",
-      jobTitle: "B2B SaaS content writer",
+      url: SITE_URL,
+      jobTitle: "B2B SaaS writer and AI workflow builder",
       description:
-        "B2B SaaS content writer specializing in product-led articles, content refreshes, and AI-search-friendly content for software companies.",
+        "Peace Akinwale writes bottom-of-funnel content for B2B SaaS companies and agencies, and builds AI workflows for content teams.",
       knowsAbout: [
         "B2B SaaS content writing",
-        "Product-led content",
-        "Content refresh strategy",
-        "SEO content",
-        "AI search optimization",
+        "Bottom-of-funnel content",
+        "SEO",
+        "Answer engine optimization (AEO)",
+        "Content strategy",
+        "AI search",
+        "AI workflows for content teams",
       ],
-      sameAs: [
-        "https://www.linkedin.com/in/peaceakinwale/",
-        "https://x.com/PeaceAkinwaleA",
-        "https://github.com/Peace-Akinwale",
-      ],
-    },
-    {
-      "@type": "ProfessionalService",
-      "@id": "https://peaceakinwale.com/#service",
-      name: "Peace Akinwale",
-      url: "https://peaceakinwale.com/services",
-      description:
-        "B2B SaaS content writer services including product-led blog posts, content refreshes, BOFU articles, and AI-supported editorial systems.",
-      areaServed: "Worldwide",
-      provider: {
-        "@id": "https://peaceakinwale.com/#person",
-      },
-      serviceType: [
-        "B2B SaaS content writing",
-        "Product-led content writing",
-        "Content refresh services",
-        "SEO content writing",
-      ],
+      sameAs: [LINKEDIN_URL, X_URL],
     },
     {
       "@type": "WebSite",
-      "@id": "https://peaceakinwale.com/#website",
-      url: "https://peaceakinwale.com",
+      "@id": `${SITE_URL}/#website`,
+      url: SITE_URL,
       name: "Peace Akinwale",
-      description: "Portfolio and services for a B2B SaaS content writer.",
-      publisher: {
-        "@id": "https://peaceakinwale.com/#person",
-      },
+      description: "The work of Peace Akinwale: articles for B2B SaaS companies and agencies, and AI workflows for content teams.",
+      publisher: { "@id": `${SITE_URL}/#person` },
     },
   ],
 };
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://peaceakinwale.com"),
-  title: "Peace Akinwale | B2B SaaS Content Writer",
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: "Peace Akinwale",
+    template: "%s | Peace Akinwale",
+  },
   description:
-    "B2B SaaS content writer for product-led software companies. I write articles, refresh existing content, and build AI-supported systems that improve search visibility and conversions.",
-  keywords: [
-    "B2B SaaS content writer",
-    "product-led content writer",
-    "B2B SaaS writer",
-    "SaaS content writer",
-    "content refresh services",
-    "AI search optimization",
-  ],
+    "I write bottom-of-funnel content for B2B SaaS companies and agencies, and I build AI workflows for content teams. Most of the work is deciding what's worth making and checking that it's true.",
   verification: {
     google: "JAyf5aaXTbM7ev_a1fFUGsiZ6yYgoAa5QNEFngUjllQ",
   },
   openGraph: {
-    title: "Peace Akinwale | B2B SaaS Content Writer",
+    title: "Peace Akinwale",
     description:
-      "B2B SaaS content writer for product-led software companies. Articles, content refreshes, and AI-search-friendly content systems.",
-    url: "https://peaceakinwale.com",
+      "Articles for B2B SaaS companies and agencies, and AI workflows for content teams.",
+    url: SITE_URL,
     siteName: "Peace Akinwale",
     locale: "en_US",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Peace Akinwale | B2B SaaS Content Writer",
+    title: "Peace Akinwale",
     description:
-      "B2B SaaS content writer for product-led software companies. Articles, content refreshes, and AI-search-friendly content systems.",
+      "Articles for B2B SaaS companies and agencies, and AI workflows for content teams.",
   },
 };
 
@@ -119,7 +106,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${syne.variable} ${dmSans.variable}`} suppressHydrationWarning>
+    <html lang="en" className={`${fraunces.variable} ${dmSans.variable}`} suppressHydrationWarning>
+      <head>
+        {/* The feed stays discoverable by feed readers without a footer link (Peace, 4 Nov 2026). */}
+        <link rel="alternate" type="application/rss+xml" title="Peace Akinwale" href="/rss.xml" />
+      </head>
       <body className="antialiased">
         <GoogleAnalytics />
         <script

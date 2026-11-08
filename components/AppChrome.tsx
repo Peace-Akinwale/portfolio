@@ -15,12 +15,12 @@ export function AppChrome({ children }: { children: React.ReactNode }) {
     return <main className="flex-1">{children}</main>;
   }
 
+  const isHome = pathname === '/';
   return (
-    <>
+    <div className="flex flex-1 flex-col theme-dated">
       <Header />
-      <main className="flex-1 pt-[88px] sm:pt-[96px]">{children}</main>
-      <Footer />
-    </>
+      <main id="main" className="flex-1">{children}</main>
+      <Footer compact={isHome} />
+    </div>
   );
 }
-
