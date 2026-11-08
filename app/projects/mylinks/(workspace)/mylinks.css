@@ -52,8 +52,10 @@
   line-height: 1.5;
 }
 
-@media (prefers-color-scheme: dark) {
-  .ml-root {
+/* Dark follows the site theme (data-theme on <html>), not the OS: since 8 Nov
+   2026 the site defaults to light and ignores the OS, so an OS-dark rule here
+   painted pale MyLinks text on the light site background (contrast 1.06). */
+:root[data-theme="dark"] .ml-root {
     --ml-bg: #141311;
     --ml-bg-elevated: #1c1b18;
     --ml-bg-subtle: #252420;
@@ -73,7 +75,6 @@
     --ml-success-bg: #1a2e22;
     --ml-info: #89b4d8;
     --ml-info-bg: #1b2a3a;
-  }
 }
 
 /* Kill Tailwind preflight losses on headings inside the app */
