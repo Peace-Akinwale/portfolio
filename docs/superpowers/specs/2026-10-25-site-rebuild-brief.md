@@ -52,14 +52,14 @@ https://app.notion.com/p/403992da7a57818bbbc3f25d0514ca8e
 Use the current Notion pages as the main source for case-study prose and prepared images. They contain later edits than the initial research drafts. The homepage copy below overrides older homepage descriptions.
 Useful existing local material, if present on this Mac:
 
-* /Users/akinwale/AKINWALE/portfolio/case-studies/drafts/2026-10-24-notion-ready/
-* /Users/akinwale/AKINWALE/portfolio/testimonials/2026-10-24/images/
+* case-studies/drafts/2026-10-24-notion-ready/
+* testimonials/2026-10-24/images/
 
 There is also a separate copy preview:
 https://peace-questions-copy-preview.akindayopeaceakinwal.chatgpt.site
 Important: its hosted version does NOT yet contain all my latest corrections. The corrected copy was prepared and tested locally on the MacBook Pro, but its upload was blocked. Do not use the hosted preview as the final copy source.
 That separate Pro checkout was:
-/Users/akinwale/Documents/Codex/2026-10-25/task/peace-questions-copy-preview/dist/index.html
+(a local Codex preview, not in this repo)
 Do not assume that Pro-only file exists on the Air. Use the explicit corrections in this brief and the accessible source documents. If an essential image or source is missing, identify exactly what is needed rather than inventing it.
 
 ## 5. Build real case-study pages and connect them properly
