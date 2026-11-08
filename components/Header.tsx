@@ -35,13 +35,15 @@ export function Header() {
           Peace Akinwale
         </Link>
 
-        <nav aria-label="Site" className="hidden items-center gap-6 lg:flex xl:gap-7">
-          {NAV_LINKS.map((item) => (
+        {/* Full menu from 840px (was 1024px), so narrower desktop windows keep it (8 Nov 2026).
+            Contact is left out here because "Let’s chat" does that job; the phone menu and footer keep it. */}
+        <nav aria-label="Site" className="hidden items-center gap-[18px] min-[840px]:flex lg:gap-6 xl:gap-7">
+          {NAV_LINKS.filter((item) => item.href !== '/contact').map((item) => (
             <Link
               key={item.href}
               href={item.href}
               aria-current={isCurrent(item.href) ? 'page' : undefined}
-              className="nav-link whitespace-nowrap text-[15px] font-medium text-muted-foreground hover:text-foreground"
+              className="nav-link whitespace-nowrap text-[14.5px] font-medium text-muted-foreground hover:text-foreground lg:text-[15px]"
             >
               {item.label}
             </Link>
@@ -52,7 +54,7 @@ export function Header() {
           </a>
         </nav>
 
-        <div className="flex items-center gap-1 lg:hidden">
+        <div className="flex items-center gap-1 min-[840px]:hidden">
         {/* Under 360px the header cannot hold the name, this button, the theme toggle and the menu; the menu repeats "Let’s chat". */}
         <a href={CALENDLY_URL} target="_blank" rel="noopener" className="button button-ink min-h-9 shrink-0 whitespace-nowrap px-3 py-1.5 text-[12.5px] header-book">
           Let’s chat
@@ -81,7 +83,7 @@ export function Header() {
       </div>
 
       {open && (
-        <nav id={menuId} aria-label="Site" className="gutter border-t border-border pb-4 pt-2 lg:hidden">
+        <nav id={menuId} aria-label="Site" className="gutter border-t border-border pb-4 pt-2 min-[840px]:hidden">
           <ul className="flex flex-col">
             {NAV_LINKS.map((item) => (
               <li key={item.href}>

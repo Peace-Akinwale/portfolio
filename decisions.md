@@ -416,3 +416,7 @@ Peace approved fixing the six before-launch findings (report: three agents plus 
 ## 8 November 2026 — browser icon
 
 Peace chose round-1 design A over five round-2 variations: a tight "PA" in Fraunces (wght 760, opsz 144) in #E6EEF4 on a #0F2334 rounded tile, drawn as vector paths from the site's own font (source: `public/brand/pa-monogram.svg`). Rendered to `app/favicon.ico` (16, 32, 48, 256), `app/icon.png` (32) and `app/apple-icon.png` (180, full-bleed square because iOS rounds it). Replaces the Feb 2026 PA-on-navy icon.
+
+## 8 November 2026 — header menu
+
+Full desktop menu now shows from 840px (was 1024px), so narrower desktop windows keep it instead of folding into the menu button (Peace, after comparing with a colleague's site). Contact is left out of the desktop menu because "Let’s chat" does that job; the phone menu and the footer still link Contact. Between 840 and 1023px the links are 14.5px with 18px gaps. Checked at 390, 600, 839, 840, 900, 1024 and 1280px: no overflow.
