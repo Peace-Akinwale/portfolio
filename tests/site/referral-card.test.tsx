@@ -37,6 +37,9 @@ it('copies the complete referral with its usable booking URL, without the surrou
   expect(document.querySelector(`a[href="${LINKEDIN_URL}"]`)?.textContent).toBe('Peace Akinwale on LinkedIn');
   expect(document.querySelector(`a[href="${CALENDLY_URL}"]`)?.textContent).toBe('Book a call');
   expect(copied.endsWith(CALENDLY_URL)).toBe(true);
+  expect(copied).toContain(`Book a call: ${CALENDLY_URL}`);
+  expect(copied).not.toContain('and you can book a call here:');
+  expect(document.querySelector('.referral-message')?.textContent).not.toContain('and you can book a call here:');
   expect(copied).not.toContain('Want to recommend me?');
   expect(copied).not.toContain('Copy introduction');
   expect(document.querySelector('[role="status"]')?.textContent).toBe('Ready to paste into a message.');

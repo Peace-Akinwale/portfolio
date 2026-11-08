@@ -5,13 +5,13 @@ import { CALENDLY_URL, LINKEDIN_URL } from '@/lib/site';
 import './referral-card.css';
 
 const introduction = [
-  'Peace Akinwale writes B2B SaaS content and builds AI workflows for marketing teams and agencies. He writes BOFU content optimized for AI search and intentionally mentions your product capabilities so human readers and AI tools can tie your brand to the relevant use cases.',
-  'He has designed a browser extension to record AI search activity, and can help with automation with AI where your team needs one.',
+  'Peace Akinwale writes B2B SaaS content and builds AI workflows for marketing teams and agencies. He writes bottom-of-funnel content optimized for AI search and explains how your product addresses specific use cases so human readers and AI tools can tie your brand to those needs.',
+  'He has designed a browser extension to record AI search activity and can help teams automate parts of their marketing workflow with AI.',
 ];
 const introductionText = [
   ...introduction,
-  `He’s Peace Akinwale on LinkedIn (${LINKEDIN_URL}) and you can book a call here:`,
-  CALENDLY_URL,
+  `He’s Peace Akinwale on LinkedIn (${LINKEDIN_URL}).`,
+  `Book a call: ${CALENDLY_URL}`,
 ].join('\n\n');
 
 export function ReferralCard() {
@@ -43,7 +43,7 @@ export function ReferralCard() {
       <div className="referral-card">
         <div className="referral-message">
           {introduction.map(paragraph => <p key={paragraph}>{paragraph}</p>)}
-          <p>He’s <a href={LINKEDIN_URL}>Peace Akinwale on LinkedIn</a> and you can book a call here:</p>
+          <p>He’s <a href={LINKEDIN_URL}>Peace Akinwale on LinkedIn</a>.</p>
           <p><a href={CALENDLY_URL}>Book a call</a></p>
         </div>
         {status === 'error' && <textarea ref={manualCopy} className="referral-manual-copy" aria-label="Introduction with full links for manual copying" readOnly value={introductionText} />}
