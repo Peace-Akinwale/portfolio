@@ -1,6 +1,7 @@
 // The informal rewrites change the voice, never the facts: every number,
 // every quoted phrase and every screenshot from Peace's Notion original must
-// still be in the informal version the site shows.
+// still be in the historical informal version. Website copy was superseded by
+// Peace’s selected drafts on 7 November; its assets are checked in case-studies.test.ts.
 import { describe, it, expect } from 'vitest';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -26,7 +27,6 @@ const BASELINE: Record<string, string> = JSON.parse(fs.readFileSync(path.join(RO
 const lastEdited = (p: string) => fs.readFileSync(path.join(ROOT, p), 'utf8').match(/^notion_last_edited: (\S+)/m)?.[1] ?? '';
 const numbers = (s: string) => (s.replace(/!\[[^\]]*\]\([^)]*\)/g, '').match(/\d[\d,.]*\d|\d/g) ?? []).map((n) => n.replace(/[.,]$/, '')).sort();
 const quotes = (s: string) => [...s.matchAll(/["“]([^"”\n]{3,}?)["”]/g)].map((m) => m[1].replace(/[.,]$/, ''));
-const images = (s: string) => [...s.matchAll(/!\[[^\]]*\]\(images\/[^/]+\/([^)]+)\)/g)].map((m) => m[1].replace(/^\d+-/, '').replace(/\.[a-z]+$/, ''));
 
 describe('informal drafts behind Notion', () => {
   it('lists every draft whose Notion page was edited after the draft (merge pending, fact checks skipped)', () => {
@@ -40,7 +40,6 @@ describe('informal case studies keep every fact', () => {
   for (const [slug, exportName] of Object.entries(PAIRS)) {
     const original = read(`content/notion-export/${exportName}.md`);
     const informal = read(`content/informal/${slug}.md`);
-    const site = read(`content/case-studies/${slug}.md`);
     const notionNewer = lastEdited(`content/notion-export/${exportName}.md`) > (BASELINE[slug] ?? '');
 
     it.skipIf(notionNewer)(`${slug}: every number in the original is still there`, () => {
@@ -53,9 +52,7 @@ describe('informal case studies keep every fact', () => {
       for (const q of quotes(original)) expect(flat, `${slug} lost the quote "${q}"`).toContain(q.replace(/[“”]/g, '"'));
     });
 
-    it(`${slug}: the site page carries the original screenshots in the original order`, () => {
-      expect(images(site)).toEqual(images(original).filter((name) => fs.existsSync(path.join(ROOT, 'public/case-studies', slug)) && fs.readdirSync(path.join(ROOT, 'public/case-studies', slug)).some((f) => f.startsWith(name))));
-    });
+
 
     it(`${slug}: no em dashes, colons or semicolons in the informal prose`, () => {
       const prose = informal.replace(/^!\[.*$/gm, '').replace(/^\*.*\*$/gm, '').replace(/<[^>]+>/g, '');

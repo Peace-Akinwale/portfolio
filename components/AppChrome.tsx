@@ -15,13 +15,12 @@ export function AppChrome({ children }: { children: React.ReactNode }) {
     return <main className="flex-1">{children}</main>;
   }
 
-  // The homepage keeps Seam's paper and indigo; every other page uses Dated's stone and green.
   const isHome = pathname === '/';
   return (
-    <div className={`flex flex-1 flex-col ${isHome ? 'theme-seam' : 'theme-dated'}`}>
+    <div className="flex flex-1 flex-col theme-dated">
       <Header />
       <main id="main" className="flex-1">{children}</main>
-      <Footer night={isHome} />
+      <Footer compact={isHome} />
     </div>
   );
 }

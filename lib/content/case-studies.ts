@@ -72,7 +72,7 @@ export function readCaseStudyFile(file: string): CaseStudy {
     related: asList(data.related),
     body,
     html: renderMarkdown(body, { imageBase }),
-    images: imageRefs(body).map((p) => `${imageBase}/${p.replace(/^(\.\/)?images\/[^/]+\//, '').replace(/^\.\//, '')}`),
+    images: imageRefs(body).map((p) => /^(https?:\/\/|\/)/.test(p) ? p : `${imageBase}/${p.replace(/^(\.\/)?images\/[^/]+\//, '').replace(/^\.\//, '')}`),
     readingMinutes: readingMinutes(body),
   };
 }

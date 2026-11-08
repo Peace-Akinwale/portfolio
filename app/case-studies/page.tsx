@@ -3,95 +3,72 @@ import Image from 'next/image';
 import Link from 'next/link';
 import type { Metadata } from 'next';
 import '@/components/case-study/case-study.css';
-import { firstImage, listCaseStudies, type CaseStudy } from '@/lib/content/case-studies';
-import { CASE_STUDY_LINES } from '@/lib/content/case-study-lines';
-import { MANYREQUESTS_ARTICLE_COUNT, MANYREQUESTS_SINCE } from '@/lib/portfolio/manyrequests';
+import { firstImage, listCaseStudies } from '@/lib/content/case-studies';
+import { readPage } from '@/lib/content/pages';
+import descriptions from '@/lib/content/page-descriptions.json';
 import { SITE_URL } from '@/lib/site';
 import { WorkWithMe } from '@/components/WorkWithMe';
 
 export const metadata: Metadata = withOg({
-  title: 'Case studies, AI workflows for content and SEO teams',
-  description:
-    'AI workflows I built for content and SEO teams, and the decisions that shaped each one. Plus one long writing engagement. Each case study comes from the project’s own records.',
-  alternates: { canonical: `${SITE_URL}/case-studies` },
+  title: 'B2B SaaS content & AI workflow case studies · Peace Akinwale',
+  description: descriptions['Case studies'],
+  alternates: { canonical: SITE_URL + '/case-studies' },
 }, { key: 'case-studies', path: '/case-studies', alt: 'Case studies by Peace Akinwale' });
 
-// One row per case study, laid out like the blog index (Peace, 4 Nov 2026):
-// the case study's own screenshot on the left, then the name, the problem and the
-// decision. No status or meta lines (Peace, 4 Nov 2026).
-function Row({ cs }: { cs: CaseStudy }) {
-  const shot = firstImage(cs);
-  const lines = CASE_STUDY_LINES[cs.slug];
-  const href = `/case-studies/${cs.slug}`;
+type Entry = { title: string; href: string; summary: string; image?: { src: string; alt: string } };
+function Row({ entry }: { entry: Entry }) {
   return (
-    <li className="cs-row">
-      <Link href={href} className="cs-row-shot" tabIndex={-1} aria-hidden="true">
-        {shot && <Image src={shot.src} alt="" fill sizes="(max-width: 700px) 100vw, 260px" loading="lazy" />}
-      </Link>
+    <li className={entry.image ? "cs-row" : "cs-row cs-row-text-only"}>
+      {entry.image && <Link href={entry.href} className="cs-row-shot" tabIndex={-1} aria-hidden="true">
+        {entry.image && <Image src={entry.image.src} alt="" fill style={entry.image.src.endsWith("/course-portal-cover-blue.png") || entry.image.src.endsWith("/lateef-research-feedback.png") ? { objectFit: "contain" } : undefined} sizes="(max-width: 700px) 100vw, 260px" />}
+      </Link>}
       <div>
-        <h3><Link href={href}>{cs.name}</Link></h3>
-        {cs.published && <p className="cs-row-date"><time dateTime={cs.published}>{new Date(cs.published + 'T00:00:00Z').toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' })}</time></p>}
-        {lines ? (
-          <>
-            <p>{lines.problem}</p>
-            <p>{lines.decision}</p>
-          </>
-        ) : (
-          <p>{cs.blurb}</p>
-        )}
+        <h3><Link href={entry.href}>{entry.title}</Link></h3>
+        <p>{entry.summary}</p>
+        <Link href={entry.href} className="underline underline-offset-4">Read the case study</Link>
       </div>
     </li>
   );
 }
 
-// Grouped by who the tool is for. Reach is a developer tool and sits in one line
-// under the products rather than as a card (page plan, 4 Nov 2026).
-const FOR_TEAMS = ['fanout-query-analysis-tool', 'ai-docs-watch', 'reading-app', 'okf', 'what-ai-search-apps-do-before-they-answer', 'quality-rater'];
-const MY_OWN = ['contentdb', 'aloud'];
-
 export default function CaseStudiesPage() {
   const studies = listCaseStudies();
-  const bySlug = (slugs: string[]) => slugs.map((s) => studies.find((cs) => cs.slug === s)).filter((cs): cs is CaseStudy => !!cs);
-  const forTeams = bySlug(FOR_TEAMS);
-  const myOwn = bySlug(MY_OWN);
-  const reach = studies.find((cs) => cs.slug === 'reach');
-
+  const entries = (slugs: string[]) => slugs.flatMap((slug) => {
+    const cs = studies.find((s) => s.slug === slug);
+    return cs ? [{ title: cs.name, href: '/case-studies/' + cs.slug, summary: cs.blurb, image: firstImage(cs) ?? undefined }] : [];
+  });
+  const writing = {
+    title: readPage('manyrequests').title,
+    href: '/case-studies/manyrequests',
+    summary: '51 articles since 2024 that explain how agency owners can use the product, with examples from the published work and dated search results.',
+    image: { src: '/images/case-studies/manyrequests/wrike-vs-clickup-product.png', alt: 'ManyRequests used inside a product comparison' },
+  };
+  const mylinks = {
+    title: 'MyLinks',
+    href: '/projects/mylinks',
+    summary: 'I built MyLinks to help me find relevant pages on a client’s site without repeating the same searches for every article.',
+    image: { src: 'https://res.cloudinary.com/cloud-blog-publisher/image/upload/v1772468764/mylinks_app_sitemap_tw3zld.png', alt: 'MyLinks site inventory' },
+  };
   return (
     <div className="gutter mx-auto max-w-[1180px] cs-page">
-      <header className="cs-index">
-        <h1>Case studies</h1>
-      </header>
-
+      <header className="cs-index"><h1>What I’ve written and built</h1></header>
+      <section className="cs-group" aria-labelledby="writing-h">
+        <h2 id="writing-h">Content writing</h2>
+        <ul className="cs-rows"><Row entry={writing} />{entries(['exceed-seo']).map((entry) => <Row key={entry.href} entry={entry} />)}</ul>
+      </section>
       <section className="cs-group" aria-labelledby="teams-h">
-        <h2 id="teams-h">AI workflows for content and SEO teams</h2>
-        <ul className="cs-rows">
-          {forTeams.map((cs) => <Row key={cs.slug} cs={cs} />)}
-        </ul>
+        <h2 id="teams-h">AI workflows for marketing teams</h2>
+        <ul className="cs-rows">{entries(['fanout-query-analysis-tool', 'ai-docs-watch', 'okf']).map((entry) => <Row key={entry.href} entry={entry} />)}</ul>
       </section>
-
+      <section className="cs-group" aria-labelledby="learning-h">
+        <h2 id="learning-h">Teaching and learning</h2>
+        <ul className="cs-rows">{entries(['build-a-course-portal-around-the-instructors-workflow']).map((entry) => <Row key={entry.href} entry={entry} />)}</ul>
+      </section>
       <section className="cs-group" aria-labelledby="own-h">
-        <h2 id="own-h">Products of my own</h2>
-        <ul className="cs-rows">
-          {myOwn.map((cs) => <Row key={cs.slug} cs={cs} />)}
-        </ul>
-        {reach && (
-          <p className="cs-also">
-            Also built: <Link href={`/case-studies/${reach.slug}`}>{reach.name}</Link>, for when an AI coding session needs my Mac’s screen. It hands the step to a session on the right Mac and sends the result back. Passwords stay with me.
-          </p>
-        )}
+        <h2 id="own-h">Tools I built for my own work</h2>
+        <ul className="cs-rows">{[...entries(['contentdb', 'aloud']), mylinks].map((entry) => <Row key={entry.href} entry={entry} />)}</ul>
       </section>
-
-      <section className="cs-group" aria-labelledby="wrote-h">
-        <h2 id="wrote-h">Writing</h2>
-        <p>
-          <Link href="/case-studies/manyrequests">{MANYREQUESTS_ARTICLE_COUNT} product-led articles for ManyRequests since {MANYREQUESTS_SINCE}</Link>.
-        </p>
-      </section>
-      <WorkWithMe
-        heading="Want something like this for your team?"
-        body="Tell me about the work your team repeats every week, or the articles you need. On a 30-minute call I’ll say whether an AI workflow or an article would help."
-        secondary={{ label: 'How building with me works', href: '/services#building' }}
-      />
+      <WorkWithMe heading="Have something in mind?" body="Have an idea you haven’t had time to build, or a process you’d like to automate? Tell me what the team does now and what you’d like the tool to handle." secondary={{ label: 'Tell me about it', href: '/contact' }} />
     </div>
   );
 }

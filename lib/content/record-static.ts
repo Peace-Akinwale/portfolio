@@ -30,7 +30,7 @@ export const STATIC_ENTRIES: RecordEntry[] = [
     body: [
       'The members’ site for an eight-week course lets people in from a list of email addresses. A form that accepts a password from whoever is at the keyboard proves nothing about who is typing. So I left out password sign-up. You get an emailed link, then you set a password.',
     ],
-    links: [{ label: 'The course portal, in an article', href: '/build-a-course-portal-around-the-instructors-workflow' }],
+    links: [{ label: 'The course portal, in an article', href: '/blog/build-a-course-portal-around-the-instructors-workflow' }],
   },
   {
     id: 'aeo',
@@ -39,7 +39,7 @@ export const STATIC_ENTRIES: RecordEntry[] = [
     dateLabel: '14 Apr 2026',
     month: '2026-04',
     title: 'What AEO checklists leave out.',
-    href: '/how-to-optimize-for-aeo',
+    href: '/blog/how-to-optimize-for-aeo',
     context: 'on my blog',
     quote: {
       text: 'The challenge with this is that everyone’s running the same checklist on a Claude Project or custom GPT. And the content coming out of it is starting to look identical.',
@@ -54,7 +54,7 @@ export const STATIC_ENTRIES: RecordEntry[] = [
         'For a client’s section titled “What is regression testing?” I opened with the definition. “Regression testing ensures that previously developed features or actions perform as expected after developers made changes to the code.” No preamble about why QA teams do it. The editor kept it that way, because it’s what you expect to see under that heading.',
       ],
     },
-    links: [{ label: 'Read the article', href: '/how-to-optimize-for-aeo' }],
+    links: [{ label: 'Read the article', href: '/blog/how-to-optimize-for-aeo' }],
   },
   {
     id: 'regine',

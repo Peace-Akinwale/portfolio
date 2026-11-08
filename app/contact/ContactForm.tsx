@@ -7,37 +7,28 @@ import { useState } from 'react';
 // vague option and no honest answer to the stage question).
 const PROJECT_TYPES = [
   'Select a type',
-  'One article, new or refreshed',
-  'Articles every month',
-  'SEO and AEO strategy for our content',
-  'An AI workflow for our team',
-  'Other',
+  'A new article or an article refresh',
+  'Articles each month',
+  'SEO or AEO consulting',
+  'An AI workflow or automation',
+  'Something else',
 ];
 
 const BUDGETS = [
   'Select a range',
   'Under $1,000',
-  '$1,000 to $3,000',
-  '$3,000 to $8,000',
-  '$8,000 and up',
+  '$1,000–$3,000',
+  '$3,000–$8,000',
+  '$8,000 or more',
 ];
 
-const BUILDING_TYPE = 'An AI workflow for our team';
+const BUILDING_TYPE = 'An AI workflow or automation';
 
 // The stage options follow the service picked: a building client was being asked
 // about content strategy (review, 29 Oct 2026).
-const WRITING_STAGES = [
-  'We have a content strategy and clear topics. All we need is someone to write.',
-  'We have a content strategy but aren\'t confident about the keywords and topics to prioritize.',
-  'We don\'t have a content strategy yet and need help building one.',
-];
+const WRITING_STAGES = ["We have a brief and need a writer.", "We have a strategy and need help choosing topics.", "We need help developing the strategy."];
 
-const BUILDING_STAGES = [
-  'We know the task we want an AI workflow for.',
-  'We repeat a process every week and want to know whether an AI workflow would help.',
-  'We have a tool that doesn\'t work the way the team needs.',
-  'We want to offer AI-assisted work to our clients and need the system behind it.',
-];
+const BUILDING_STAGES = ["We know the task we want to automate.", "We have an idea and need help developing it.", "We want help finding what we could automate."];
 
 // Design guide, 4 Nov 2026: inputs need a 3:1 edge (--control-border), 16px text, and a visible focus ring;
 // labels use one cue (weight), not capitals, tracking, weight and grey at once.
@@ -61,10 +52,12 @@ export default function ContactForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (status === 'sending') return;
     setStatus('sending');
     try {
       const res = await fetch('/api/contact', {
         method: 'POST',
+        signal: AbortSignal.timeout(15000),
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(form),
       });
@@ -81,13 +74,13 @@ export default function ContactForm() {
       {/* ── Header ─────────────────────────────────── */}
       <div className="mb-10">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <h1 className="text-foreground">Book a call, or write to me.</h1>
+          <h1 className="text-foreground">Tell me what you’re working on</h1>
         </div>
         <p className="text-sm leading-relaxed text-muted-foreground mt-4 max-w-lg">
-          Thirty minutes. You describe the article or the task, and I tell you whether I&rsquo;m the right person for it.
+          Tell me about the content you need, something you want to automate, or an idea you haven’t had time to develop. You don’t need a finished brief to start the conversation.
         </p>
         <p className="text-sm leading-relaxed text-muted-foreground mt-2 max-w-lg">
-          Or email me at <a href="mailto:akindayopeaceakinwale@gmail.com" className="underline underline-offset-2 text-foreground">akindayopeaceakinwale@gmail.com</a>
+          The first 30-minute call is free. Further calls are paid consultations, with the fee agreed before booking. You can also email me at <a href="mailto:akindayopeaceakinwale@gmail.com" className="underline underline-offset-2 text-foreground">akindayopeaceakinwale@gmail.com</a>
         </p>
       </div>
 
@@ -104,6 +97,10 @@ export default function ContactForm() {
         Pick a time on Calendly
       </a>
       <div className="hidden sm:block rounded-xl border border-border overflow-hidden mb-16" style={{ background: 'var(--muted)' }}>
+        <p className="px-4 py-3 text-[14px] text-muted-foreground">
+          If the calendar doesn’t load,{' '}
+          <a href="https://calendly.com/akindayopeaceakinwale/30min" target="_blank" rel="noopener noreferrer" className="underline underline-offset-4">open it on Calendly</a>.
+        </p>
         <iframe
           loading="lazy"
           src="https://calendly.com/akindayopeaceakinwale/30min?embed_domain=peaceakinwale.com&embed_type=Inline"
@@ -113,17 +110,13 @@ export default function ContactForm() {
           title="Book a 30-minute call with Peace on Calendly"
           className="w-full"
         />
-        <p className="px-4 py-3 text-[14px] text-muted-foreground">
-          If the calendar doesn’t load,{' '}
-          <a href="https://calendly.com/akindayopeaceakinwale/30min" target="_blank" rel="noopener noreferrer" className="underline underline-offset-4">open it on Calendly</a>.
-        </p>
       </div>
 
       {/* ── Divider ────────────────────────────────── */}
       <div className="flex items-center gap-4 mb-12">
         <span className="flex-1 h-px bg-border" />
         <p className="text-xs font-bold uppercase tracking-[0.15em] text-muted-foreground whitespace-nowrap">
-          Or write to me
+          Send a message
         </p>
         <span className="flex-1 h-px bg-border" />
       </div>
@@ -132,7 +125,7 @@ export default function ContactForm() {
       {status === 'sent' ? (
         <div className="flex flex-col gap-4 py-10">
           <p role="status" className="text-2xl font-semibold text-foreground">Message sent.</p>
-          <p className="text-sm text-muted-foreground leading-relaxed">Thanks for writing. I&rsquo;ll get back to you within a business day.</p>
+          <p className="text-sm text-muted-foreground leading-relaxed">Thanks for writing. I’ll reply within a business day.</p>
           <button
             onClick={() => { setStatus('idle'); setForm({ name: '', email: '', company: '', projectType: '', stage: '', about: '', message: '', budget: '' }); }}
             className="button button-line mt-2 self-start"
@@ -145,11 +138,11 @@ export default function ContactForm() {
           <p className="text-[14px] text-muted-foreground">Fields marked * are required.</p>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
             <div>
-              <label htmlFor="contact-name" className={labelClass}>Full name <span aria-hidden="true">*</span></label>
+              <label htmlFor="contact-name" className={labelClass}>Name <span aria-hidden="true">*</span></label>
               <input id="contact-name" name="name" autoComplete="name" required value={form.name} onChange={handleChange} placeholder="Your name" className={inputClass} />
             </div>
             <div>
-              <label htmlFor="contact-email" className={labelClass}>Work email <span aria-hidden="true">*</span></label>
+              <label htmlFor="contact-email" className={labelClass}>Email <span aria-hidden="true">*</span></label>
               <input id="contact-email" name="email" type="email" autoComplete="email" required value={form.email} onChange={handleChange} placeholder="you@company.com" className={inputClass} />
             </div>
           </div>
@@ -161,7 +154,7 @@ export default function ContactForm() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
             <div>
-              <label htmlFor="contact-project-type" className={labelClass}>Type of project <span aria-hidden="true">*</span></label>
+              <label htmlFor="contact-project-type" className={labelClass}>What do you need? <span aria-hidden="true">*</span></label>
               <select id="contact-project-type" name="projectType" required value={form.projectType} onChange={handleChange} className={inputClass}>
                 {PROJECT_TYPES.map((t) => (
                   <option key={t} value={t === 'Select a type' ? '' : t}>{t}</option>
@@ -169,7 +162,7 @@ export default function ContactForm() {
               </select>
             </div>
             <div>
-              <label htmlFor="contact-budget" className={labelClass}>Budget, per article or per project</label>
+              <label htmlFor="contact-budget" className={labelClass}>Budget in USD, per article or project</label>
               <select id="contact-budget" name="budget" value={form.budget} onChange={handleChange} className={inputClass}>
                 {BUDGETS.map((b) => (
                   <option key={b} value={b === 'Select a range' ? '' : b}>{b}</option>
@@ -179,7 +172,7 @@ export default function ContactForm() {
           </div>
 
           <div>
-            <label htmlFor="contact-stage" className={labelClass}>Where are you in the process?</label>
+            <label htmlFor="contact-stage" className={labelClass}>Where are you with the work?</label>
             <select id="contact-stage" name="stage" value={form.stage} onChange={handleChange} className={inputClass}>
               <option value="">Select a stage</option>
               {(form.projectType === BUILDING_TYPE ? BUILDING_STAGES : WRITING_STAGES).map((s) => (
@@ -189,17 +182,17 @@ export default function ContactForm() {
           </div>
 
           <div>
-            <label htmlFor="contact-about" className={labelClass}>Tell me about the work, and who it is for <span aria-hidden="true">*</span></label>
+            <label htmlFor="contact-about" className={labelClass}>What would you like to write, automate or build? <span aria-hidden="true">*</span></label>
             <textarea id="contact-about" name="about" required value={form.about} onChange={handleChange} rows={3} placeholder="The product or the task, and who it is for" className={inputClass + ' resize-none'} />
           </div>
 
           <div>
-            <label htmlFor="contact-message" className={labelClass}>Anything else</label>
+            <label htmlFor="contact-message" className={labelClass}>Anything else I should know?</label>
             <textarea id="contact-message" name="message" value={form.message} onChange={handleChange} rows={3} placeholder="Anything else you'd like me to know..." className={inputClass + ' resize-none'} />
           </div>
 
           {status === 'error' && (
-            <p role="alert" className="text-[15px]" style={{ color: 'var(--danger)' }}>Your message didn&rsquo;t send. What you typed is still here, so you can try again, or email me at <a href="mailto:akindayopeaceakinwale@gmail.com" className="underline">akindayopeaceakinwale@gmail.com</a>.</p>
+            <p role="alert" className="text-[15px]" style={{ color: 'var(--danger)' }}>Your message didn&rsquo;t send. What you typed is still here. Try again, or email me at <a href="mailto:akindayopeaceakinwale@gmail.com" className="underline">akindayopeaceakinwale@gmail.com</a>.</p>
           )}
 
           <button

@@ -19,8 +19,8 @@ export function BlogClient({ initialPosts, wordpressDown }: { initialPosts: Hash
   return (
     <div className="gutter mx-auto max-w-[1100px]">
       <header className="posts-head">
-        <h1>Notes on writing and building.</h1>
-        <p className="lead">How I write for B2B SaaS companies, and what I’ve learned from the tools I’ve built.</p>
+        <h1>Notes on content and AI workflows</h1>
+        <p className="lead">I write about the decisions behind my content and AI workflows: how I check research before using it in an article, decide what to automate, and test whether a tool finishes the job.</p>
         <SearchBar onSearch={setQuery} />
         {query && (
           <p className="mt-3 text-[14px] text-muted-foreground" aria-live="polite">
@@ -38,7 +38,7 @@ export function BlogClient({ initialPosts, wordpressDown }: { initialPosts: Hash
           {posts.map((post) => <ArticleCard key={post.id} post={post} />)}
         </ul>
       ) : (
-        <p className="posts-empty">{query ? `Nothing matches “${query}” yet. Try another word?` : 'Nothing here yet.'}</p>
+        <p className="posts-empty">{query ? `No articles match that search. Try another word.` : 'Nothing here yet.'}</p>
       )}
     </div>
   );

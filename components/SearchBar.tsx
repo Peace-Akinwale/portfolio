@@ -7,7 +7,7 @@ interface SearchBarProps {
   placeholder?: string;
 }
 
-export function SearchBar({ onSearch, placeholder = 'Looking for something? Search the posts' }: SearchBarProps) {
+export function SearchBar({ onSearch, placeholder = 'Search articles' }: SearchBarProps) {
   const [query, setQuery] = useState('');
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -26,15 +26,16 @@ export function SearchBar({ onSearch, placeholder = 'Looking for something? Sear
     <form onSubmit={handleSubmit} className="w-full max-w-2xl">
       <div className="relative">
         <input
-          type="text"
+          type="search"
+          aria-label={placeholder}
           value={query}
           onChange={handleChange}
           placeholder={placeholder}
-          className="w-full px-6 py-4 bg-muted border border-[var(--control-border)] focus:border-foreground focus:outline-none transition-colors"
+          className="w-full pl-6 pr-16 py-4 bg-muted border border-[var(--control-border)] focus:border-foreground focus:outline-none transition-colors"
         />
         <button
           type="submit"
-          className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+          className="absolute right-2 min-h-11 min-w-11 inline-flex items-center justify-center top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
           aria-label="Search"
         >
           <svg

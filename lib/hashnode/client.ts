@@ -174,7 +174,7 @@ function buildPostFromWordPress(raw: WordPressPublicPost): HashnodePost {
       title,
       description: summary,
     },
-    url: `${CUSTOM_SITE_URL}/${raw.slug}`,
+    url: `${CUSTOM_SITE_URL}/blog/${raw.slug}`,
   };
 }
 

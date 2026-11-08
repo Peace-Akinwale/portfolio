@@ -19,8 +19,9 @@ export default function NotFound() {
     <div className="gutter mx-auto max-w-[1180px] py-20">
       <div className="max-w-[60ch]">
         <p className="eyebrow mb-4">404</p>
-        <h1>Hmm, there’s nothing here.</h1>
-        <p className="serif mt-4 text-[1.15rem]">Maybe the link is old, or I moved something. Here’s where most people are headed.</p>
+        <h1>I couldn’t find that page</h1>
+        <p className="serif mt-4 text-[1.15rem]">The link may have changed. You can browse my work or head back to the homepage.</p>
+        <p className="mt-6 flex gap-6"><Link href="/portfolio">See my work</Link><Link href="/">Go to homepage</Link></p>
         <ul className="mt-10 border-t border-border">
           {PLACES.map((place) => (
             <li key={place.href} className="border-b border-border">

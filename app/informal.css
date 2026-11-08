@@ -5,23 +5,20 @@
    all-caps tracked labels; pill buttons and tags; soft-cornered screenshots.
    ─────────────────────────────────────────────────────────────────────────── */
 :root { --sun: var(--marigold); --sun-wash: #F7DFA3; --clay-wash: var(--sky-3); --card: #F3F7FA; --radius: 16px; }
-/* Colour roles (design guide, 4 Nov 2026). Control edges and link underlines
-   must reach 3:1 against their ground; the hairline --border (1.3:1) is for
-   dividers only. Marigold itself is 1.4:1 on sky, so light grounds underline
-   links with a deeper marigold from the same hue. Error and success text reach
-   4.5:1 on every ground. */
-:root { --control-border: #5C7A93; --link-rule: #9C6207; --danger: #A3241B; --success: #1F6B3A; }
-[data-theme="dark"] { --control-border: #6A8AA6; --link-rule: var(--marigold); --danger: #F2A39B; --success: #8FD3A6; }
-@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --control-border: #6A8AA6; --link-rule: var(--marigold); --danger: #F2A39B; --success: #8FD3A6; } }
-.theme-seam, .ground-paper { --control-border: #5C7A93; --link-rule: #9C6207; --danger: #A3241B; --success: #1F6B3A; }
-[data-theme="dark"] .theme-seam, [data-theme="dark"] .ground-paper { --control-border: #6A8AA6; --link-rule: var(--marigold); --danger: #F2A39B; --success: #8FD3A6; }
-@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .theme-seam, :root:not([data-theme="light"]) .ground-paper { --control-border: #6A8AA6; --link-rule: var(--marigold); --danger: #F2A39B; --success: #8FD3A6; } }
-.ground-night, [data-theme="dark"] .ground-night { --control-border: #88A6BF; --link-rule: var(--marigold); --danger: #F2A39B; --success: #8FD3A6; }
+/* Control edges contrast with their ground; the hairline --border is for
+   dividers only. Link underlines follow their text colour in every theme. */
+:root { --control-border: #5C7A93; --link-rule: currentColor; --danger: #A3241B; --success: #1F6B3A; }
+[data-theme="dark"] { --control-border: #6A8AA6; --link-rule: currentColor; --danger: #F2A39B; --success: #8FD3A6; }
+
+.theme-seam, .ground-paper { --control-border: #5C7A93; --link-rule: currentColor; --danger: #A3241B; --success: #1F6B3A; }
+[data-theme="dark"] .theme-seam, [data-theme="dark"] .ground-paper { --control-border: #6A8AA6; --link-rule: currentColor; --danger: #F2A39B; --success: #8FD3A6; }
+
+.ground-night, [data-theme="dark"] .ground-night { --control-border: #88A6BF; --link-rule: currentColor; --danger: #F2A39B; --success: #8FD3A6; }
 [data-theme="dark"] { --sun-wash: #4A3A12; --clay-wash: var(--ink-3); --card: var(--ink-deep); }
-@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --sun-wash: #4A3A12; --clay-wash: var(--ink-3); --card: var(--ink-deep); } }
+
 .theme-seam, .ground-paper { --card: #F3F7FA; }
 [data-theme="dark"] .theme-seam, [data-theme="dark"] .ground-paper { --card: var(--ink-deep); }
-@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .theme-seam, :root:not([data-theme="light"]) .ground-paper { --card: var(--ink-deep); } }
+
 .ground-night, [data-theme="dark"] .ground-night { --card: var(--ink-2); --sun-wash: #4A3A12; }
 
 /* No shouting labels anywhere on the site's own pages. */
@@ -37,7 +34,7 @@ figure.shot img, .prose img, .prose figure.video iframe, .record-open img, .hero
 }
 figure.shot img, .prose img { box-shadow: 0 1px 0 rgba(13,30,44,.04), 0 18px 36px -24px rgba(13,30,44,.45); border-color: transparent; }
 
-/* Links underline in marigold, thicker on hover. */
+/* Links underline in their text colour, thicker on hover. */
 .prose a, .go a { text-decoration-color: var(--link-rule); text-decoration-thickness: 2px; text-underline-offset: 4px; }
 .prose a:hover, .go a:hover { text-decoration-thickness: 4px; color: inherit; }
 
@@ -61,7 +58,9 @@ figure.shot img, .prose img { box-shadow: 0 1px 0 rgba(13,30,44,.04), 0 18px 36p
 .cta-card .button-line:hover { border-color: var(--accent-foreground); }
 [data-theme="dark"] .cta-card { background: var(--ink-3); color: var(--ink-text); }
 [data-theme="dark"] .cta-card .button-line { color: var(--ink-text); border-color: color-mix(in srgb, var(--ink-text) 40%, transparent); }
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) .cta-card { background: var(--ink-3); color: var(--ink-text); }
-  :root:not([data-theme="light"]) .cta-card .button-line { color: var(--ink-text); border-color: color-mix(in srgb, var(--ink-text) 40%, transparent); }
-}
+
+/* Reviewer portraits stay beside the attribution, at the same size on every page. */
+.reviewer-attribution { display: flex; align-items: center; gap: 14px; margin-block: 16px; }
+.reviewer-attribution > div { min-width: 0; }
+.reviewer-attribution > div > strong, .reviewer-attribution > div > span { display: block; }
+.reviewer-attribution img, .prose .reviewer-attribution img { width: 56px; height: 56px; min-width: 56px; flex: 0 0 56px; object-fit: cover; border-radius: 50%; margin: 0; border: 1px solid var(--border); box-shadow: none; }

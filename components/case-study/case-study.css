@@ -6,9 +6,9 @@
 .cs-page { --accent: var(--foreground); --accent-foreground: var(--background); --accent-wash: var(--card); }
 
 /* cover: a plain card on the page ground, ink type */
-.cs-cover { background: var(--card); color: var(--foreground); padding: 22px 0 40px; margin: 10px clamp(8px, 1.4vw, 20px) 0; border-radius: 28px; }
+.cs-cover { background: var(--card); color: var(--foreground); padding: 22px 0 28px; margin: 10px clamp(8px, 1.4vw, 20px) 0; border-radius: 28px; }
 .cs-cover a { color: inherit; }
-.cs-crumbs { font-size: 14px; margin: 0 0 40px; color: var(--muted-foreground); }
+.cs-crumbs { font-size: 14px; margin: 0 0 24px; color: var(--muted-foreground); }
 .cs-crumbs a { text-decoration: underline; text-underline-offset: 3px; text-decoration-color: var(--link-rule); }
 .cs-cover h1 { color: var(--foreground); max-width: 16ch; margin: 0 0 18px;  }
 .cs-point { font-size: clamp(1.15rem, 1.6vw, 1.35rem); line-height: 1.4; max-width: 40ch; margin: 0 0 28px; color: var(--foreground); }
@@ -35,14 +35,14 @@
 @media (max-width: 900px) { .cs-cover-grid { grid-template-columns: 1fr; gap: 24px; } .cs-cover-shot { max-width: 520px; } .cs-cover-shot.is-portrait { max-width: 220px; justify-self: start; } }
 
 /* lede: the summary, as the first paragraph of the page */
-.cs-lede { max-width: 66ch; margin: 44px 0 8px; font-size: clamp(1.2rem, 1.7vw, 1.4rem); line-height: 1.45; }
+.cs-lede { max-width: 66ch; margin: 28px 0 8px; font-size: clamp(1.2rem, 1.7vw, 1.4rem); line-height: 1.45; }
 
 /* chapters: one column, a rule between them */
-.cs-chapter { max-width: 760px; border-top: 1px solid var(--border); padding: 40px 0 8px; }
+.cs-chapter { max-width: 760px; border-top: 1px solid var(--border); padding: 28px 0 8px; }
 .cs-chapter:first-of-type { border-top: 0; }
 .cs-chapter h2 { font-size: clamp(1.5rem, 2.3vw, 2rem); font-weight: 500; max-width: 26ch; margin: 0 0 16px; }
 .cs-chapter .prose { max-width: 66ch; }
-.cs-chapter .prose figure { margin: 1.5rem 0 2rem; }
+.cs-chapter .prose figure { margin: 1.25rem 0 1.5rem; }
 .cs-chapter .prose figure img { width: 100%; }
 html:has(.cs-chapter) { scroll-padding-top: 80px; }
 
@@ -58,10 +58,10 @@ html:has(.cs-chapter) { scroll-padding-top: 80px; }
 .cs-next li span { font-family: var(--font-serif); font-size: 1rem; line-height: 1.45; color: var(--muted-foreground); display: block; }
 
 /* index */
-.cs-index { padding: 48px 0 32px; }
+.cs-index { padding: 32px 0 24px; }
 .cs-index h1 { max-width: 16ch; margin: 0 0 14px;  }
 .cs-index .lead { font-family: var(--font-serif); font-optical-sizing: auto; font-size: 1.2rem; max-width: var(--measure); margin: 0; }
-.cs-group { padding: 36px 0 8px; }
+.cs-group { padding: 24px 0 8px; }
 .cs-group h2 { font-size: 1.2rem; font-family: var(--font-sans); font-weight: 600; margin: 0 0 6px; letter-spacing: 0; }
 .cs-group > p { font-size: 15px; color: var(--muted-foreground); max-width: var(--measure); margin: 0 0 20px; }
 
@@ -85,12 +85,12 @@ html:has(.cs-chapter) { scroll-padding-top: 80px; }
 
 @media (max-width: 900px) {
   .cs-index-nav ul { grid-template-columns: 1fr; }
-  .cs-chapter { padding-top: 32px; }
+  .cs-chapter { padding-top: 24px; }
 }
 @media (max-width: 640px) {
   .cs-index-nav { display: none; }
-  .cs-cover { padding: 16px 0 32px; }
-  .cs-crumbs { margin-bottom: 28px; }
+  .cs-cover { padding: 16px 0 24px; }
+  .cs-crumbs { margin-bottom: 20px; }
   .cs-row.has-shot { grid-template-columns: 1fr; gap: 18px; }
   .cs-shot { order: -1; width: 100%; }
   .cs-row { padding: 22px 0 26px; }
@@ -135,3 +135,5 @@ html:has(.cs-chapter) { scroll-padding-top: 80px; }
 /* Publication date under the case-study blurb (Peace, 4 Nov 2026). Same treatment as the blog's date. */
 .cs-date { font-family: var(--font-sans); font-size: 14.5px; color: var(--muted-foreground); margin: -6px 0 18px; font-variant-numeric: tabular-nums; }
 .cs-row .cs-row-date { font-family: var(--font-sans); font-size: 14px; color: var(--muted-foreground); margin: -2px 0 10px; font-variant-numeric: tabular-nums; }
+
+.cs-row.cs-row-text-only { grid-template-columns: 1fr; }

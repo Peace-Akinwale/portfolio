@@ -21,12 +21,13 @@ export const FIXED_PAGES: { path: string; sources: string[] }[] = [
   { path: '', sources: ['app/page.tsx', 'lib/content/home-copy.ts'] },
   { path: '/portfolio', sources: ['app/portfolio/page.tsx', 'lib/content/record.ts', 'lib/content/record-static.ts'] },
   { path: '/case-studies', sources: ['app/case-studies/page.tsx', 'content/case-studies'] },
+  { path: '/projects/mylinks', sources: ['app/projects/mylinks/page.tsx', 'content/pages/mylinks.md'] },
   { path: '/blog', sources: ['app/blog/page.tsx', 'content/articles'] },
-  { path: '/services', sources: ['app/services/page.tsx'] },
-  { path: '/about', sources: ['app/about/page.tsx'] },
+  { path: '/services', sources: ['app/services/page.tsx', 'content/pages/services.md'] },
+  { path: '/about', sources: ['app/about/page.tsx', 'content/pages/about.md'] },
   { path: '/contact', sources: ['app/contact/page.tsx'] },
   { path: '/testimonials', sources: ['app/testimonials/page.tsx'] },
-  { path: '/case-studies/manyrequests', sources: ['app/case-studies/manyrequests/page.tsx'] },
+  { path: '/case-studies/manyrequests', sources: ['app/case-studies/manyrequests/page.tsx', 'content/pages/manyrequests.md', 'lib/portfolio/manyrequests.ts'] },
   // Client sample pages: WordPress pages rendered as portfolio grids by app/[slug].
   { path: '/b2b-content-for-manyrequests', sources: ['app/[slug]/page.tsx', 'lib/portfolio/manyrequests.ts'] },
   { path: '/content-for-highervisibility', sources: ['app/[slug]/page.tsx'] },
@@ -87,7 +88,7 @@ export function buildSitemap(input: {
   }));
 
   const posts: MetadataRoute.Sitemap = input.posts.map((post) => ({
-    url: `${SITE_URL}/${post.slug}`,
+    url: `${SITE_URL}/blog/${post.slug}`,
     lastModified: (post.local ? modifiedAt([`content/articles/${post.slug}.md`]) : null) ?? validDate(post.updatedAt) ?? now,
   }));
 

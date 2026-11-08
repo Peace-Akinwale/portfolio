@@ -3,6 +3,16 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   async redirects() {
     return [
+      {
+        source: '/blog/build-a-course-portal-around-the-instructors-workflow',
+        destination: '/case-studies/build-a-course-portal-around-the-instructors-workflow',
+        permanent: true,
+      },
+      {
+        source: '/build-a-course-portal-around-the-instructors-workflow',
+        destination: '/case-studies/build-a-course-portal-around-the-instructors-workflow',
+        permanent: true,
+      },
       // www is served by the same Railway service so https://www links keep
       // working; one permanent hop to the canonical root (29 Oct 2026).
       {
@@ -13,7 +23,7 @@ const nextConfig: NextConfig = {
       },
       {
         source: '/how-to-write-sales-enablement-content',
-        destination: '/sales-enablement-content-strategy',
+        destination: '/blog/sales-enablement-content-strategy',
         permanent: true,
       },
       {

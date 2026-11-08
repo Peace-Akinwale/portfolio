@@ -14,7 +14,7 @@ export function ArticleCard({ post, heading = 'h2' }: { post: HashnodePost; head
         <small>{formatReadingTime(post.readTimeInMinutes)}</small>
       </div>
       <div>
-        <H><Link href={`/${post.slug}`}>{post.title}</Link></H>
+        <H><Link href={`/blog/${post.slug}`}>{post.title}</Link></H>
         {post.brief && <p>{post.brief}</p>}
       </div>
     </li>

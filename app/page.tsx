@@ -1,156 +1,88 @@
-import { withOg } from '@/lib/og';
 import type { Metadata } from 'next';
-import Link from 'next/link';
+import { withOg } from '@/lib/og';
+import descriptions from '@/lib/content/page-descriptions.json';
 import Image from 'next/image';
-import '@/components/home/home.css';
-import { CALENDLY_URL, EMAIL, SITE_URL } from '@/lib/site';
-import { HERO, WRITING, BUILDING, AI_TOOLS, THINKING, OFFER } from '@/lib/content/home-copy';
-import { PriceList } from '@/components/PriceList';
+import Link from 'next/link';
+import { HERO, WRITING, BUILDING, CONTENTDB } from '@/lib/content/home-copy';
+import { CALENDLY_URL, SITE_URL } from '@/lib/site';
+import s from './home.module.css';
 
 export const metadata: Metadata = withOg({
-  title: 'Peace Akinwale, B2B SaaS content writer and AI workflow builder',
-  description:
-    'Articles B2B SaaS buyers read before they choose a product, and AI workflows built for what content and SEO teams need.',
+  title: 'B2B SaaS content writer & AI workflows · Peace Akinwale',
+  description: descriptions.Home,
   alternates: { canonical: SITE_URL },
 }, { key: 'home', path: '/', alt: 'Peace Akinwale, B2B SaaS content writer and AI workflow builder' });
 
-function Ext({ href, children, className }: { href: string; children: React.ReactNode; className?: string }) {
-  return (
-    <a href={href} rel="noopener" target="_blank" className={className}>
-      {children}
-    </a>
-  );
-}
-
-type Shot = { shot: string; shotW: number; shotH: number; shotAlt: string; caption?: string };
-
-function Exhibit({ s, priority = false }: { s: Shot; priority?: boolean }) {
-  return (
-    <figure className="exhibit">
-      <Image
-        src={s.shot}
-        width={s.shotW}
-        height={s.shotH}
-        priority={priority}
-        loading={priority ? undefined : 'lazy'}
-        sizes="(max-width: 900px) 100vw, 60vw"
-        alt={s.shotAlt}
-        // Never upscale a cropped screenshot past its own width: it blurs.
-        style={{ maxWidth: s.shotW }}
-      />
-      {s.caption && <figcaption>{s.caption}</figcaption>}
-    </figure>
-  );
-}
-
-function Links({ links }: { links: { href: string; label: string }[] }) {
-  return (
-    <p className="go">
-      {links.map((l) => (
-        <Link key={l.href} href={l.href}>{l.label}</Link>
-      ))}
-    </p>
-  );
-}
+const clients = [
+  ['manyrequests.svg', 'ManyRequests'], ['exceed.svg', 'Exceed SEO'],
+  ['jabra.svg', 'Jabra'], ['notebook.svg', 'Notebook Agency'],
+  ['marker.svg', 'Marker.io'], ['highervisibility.svg', 'HigherVisibility'],
+  ['pangea.png', 'Pangea.ai'], ['kairos.svg', 'Kairos Labs'],
+];
 
 export default function HomePage() {
-  return (
-    <div className="home">
-      <section className="hero" aria-labelledby="hero-h">
-        <div className="hero-text">
-          <h1 id="hero-h">{HERO.heading}</h1>
-          <p className="hero-line">{HERO.line}</p>
-          <p className="hero-actions">
-            <Ext href={CALENDLY_URL} className="button button-accent">{HERO.cta}</Ext>
-            <Link href="/case-studies" className="button button-line">See the case studies</Link>
-          </p>
+  return <div className={s.page}>
+    <section className={s.hero} aria-labelledby="home-title">
+      <div>
+        <h1 id="home-title">{HERO.heading}</h1>
+        <p className={s.intro}>{HERO.line}</p>
+        <div className={s.actions}>
+          <a className={s.primary} href={CALENDLY_URL} target="_blank" rel="noopener noreferrer">{HERO.cta} <span aria-hidden="true">↗</span></a>
+          <Link className={s.secondary} href="#selected-work">See my work <span aria-hidden="true">↓</span></Link>
+          <Link className={s.serviceLink} href="/services">Services and prices</Link>
         </div>
-        <figure className="hero-portrait">
-          <Image
-            src="/images/home/peace-portrait.jpg"
-            width={1400}
-            height={2097}
-            priority
-            sizes="(max-width: 900px) 60vw, 380px"
-            alt="Peace Akinwale in a pinstriped suit, smiling with arms folded"
-          />
-        </figure>
-      </section>
+      </div>
+      <figure className={s.portrait}>
+        <Image src="/images/home/peace-portrait.jpg" width={1400} height={2097} priority sizes="(max-width: 700px) 130px, 310px" alt="Peace Akinwale in a pinstriped suit, smiling with arms folded" />
+      </figure>
+    </section>
 
-      {/* Writing */}
-      <section className="proof" id="writing" aria-labelledby="writing-h">
-        <div className="proof-text">
-          <h2 id="writing-h">{WRITING.heading}</h2>
-          <p>{WRITING.p1}</p>
-          <p>{WRITING.p2}</p>
-          <Links links={WRITING.links} />
-        </div>
-        <Exhibit s={WRITING} />
-      </section>
+    <section className={s.clients} aria-label="Clients">
+      <p>You’re in good company</p>
+      <div>{clients.map(([file, name]) => <figure key={name}>
+        <Image src={`/images/approved/client-logos/${file}`} width={180} height={60} alt={name} />
+        {name === 'Jabra' && <figcaption>via Spicy Margarita</figcaption>}
+      </figure>)}</div>
+    </section>
 
-      {/* Building */}
-      <section className="proof night ground-night" id="building" aria-labelledby="building-h">
-        <div className="proof-text">
-          <h2 id="building-h">{BUILDING.heading}</h2>
-          <p>{BUILDING.p1}</p>
-          <Links links={BUILDING.links} />
-        </div>
-        <Exhibit s={BUILDING} />
-      </section>
+    <figure className={s.testimonial}>
+      <blockquote>“His top-performing posts are product-led ones, which has led to more traffic and demo requests for ManyRequests.”</blockquote>
+      <figcaption className="reviewer-attribution"><Image src="/images/clients/regine-garcia.png" alt="Regine Garcia" width={56} height={56} sizes="56px" /><span>Regine Garcia, operations and content lead at ManyRequests</span></figcaption>
+    </figure>
+    <section id="selected-work" className={s.work} aria-labelledby="selected-title">
+      <div className={s.sectionHead}><h2 id="selected-title">Selected work</h2><Link href="/case-studies">See all case studies ↗</Link></div>
+      <div className={s.projects}>
+        <article className={s.project}>
+          <h3>Product-led content for ManyRequests</h3>
+          <p>I&apos;ve written 51 BOFU &amp; MOFU articles showing readers how ManyRequests can help manage their agency operations in one place.</p>
+          <Link className={s.projectImage} href="/case-studies/manyrequests" aria-label="Explore the ManyRequests case study"><Image src={WRITING.shot} width={WRITING.shotW} height={WRITING.shotH} sizes="(max-width: 700px) 90vw, 580px" alt={WRITING.shotAlt} /></Link>
+          <Link className={s.read} aria-label="Read the ManyRequests case study" href="/case-studies/manyrequests">Read the case study ↗</Link>
+        </article>
+        <article className={s.project}>
+          <h3>Product-led content for Exceed SEO</h3>
+          <p>Comparison content, listicles and practical how-to guides for two event software clients.</p>
+          <Link className={s.projectImage} href="/case-studies/exceed-seo" aria-label="Explore the Exceed SEO case study"><Image src="/case-studies/exceed-seo/lateef-research-feedback.png" width={1196} height={310} sizes="(max-width: 700px) 90vw, 580px" alt="Lateef Maleek praises the depth, quality and specificity of Peace’s product research" /></Link>
+          <Link className={s.read} href="/case-studies/exceed-seo">Read a bit about my craft ↗</Link>
+        </article>
+        <article className={s.project}>
+          <h3>A tool to analyze fanout queries</h3>
+          <p>Record AI search activity so strategists can analyze citations, brand mentions and why AI platforms choose a client’s competitors.</p>
+          <Link className={s.projectImage} href={BUILDING.links[0].href} aria-label="Explore the fanout case study"><Image src={BUILDING.shot} width={BUILDING.shotW} height={BUILDING.shotH} sizes="(max-width: 700px) 90vw, 580px" alt={BUILDING.shotAlt} /></Link>
+          <Link className={s.read} aria-label="Read the Fanout case study" href={BUILDING.links[0].href}>Read the case study ↗</Link>
+        </article>
+        <article className={s.project}>
+          <h3>ContentDB</h3>
+          <p>Find useful quotes and their original context in your saved research while writing in Claude or ChatGPT.</p>
+          <Link className={s.projectImage} href={CONTENTDB.caseStudy} aria-label="Explore the ContentDB case study"><Image src="/images/approved/contentdb/02-keyword-search-retainer.jpg" width={1440} height={1000} sizes="(max-width: 700px) 90vw, 580px" alt="ContentDB search for retainer, showing multiple sources and their surrounding context" /></Link>
+          <Link className={s.read} href={CONTENTDB.caseStudy}>Explore ContentDB ↗</Link>
+        </article>
 
-      {/* AI Docs Watch, end to end */}
-      <section className="proof" id="ai-tools" aria-labelledby="ai-h">
-        <div className="proof-text">
-          <h2 id="ai-h">{AI_TOOLS.heading}</h2>
-          <p>{AI_TOOLS.p1}</p>
-          <p className="go">
-            <Ext href={AI_TOOLS.site}>Open AI Docs Watch</Ext>
-            {AI_TOOLS.links.map((l) => <Link key={l.href} href={l.href}>{l.label}</Link>)}
-          </p>
-        </div>
-        <Exhibit s={AI_TOOLS} />
-      </section>
-
-      {/* Thinking */}
-      <section className="proof night ground-night" id="thinking" aria-labelledby="thinking-h">
-        <div className="proof-text">
-          <h2 id="thinking-h">{THINKING.heading}</h2>
-          <dl className="questions">
-            {THINKING.questions.map((row) => (
-              <div key={row.q}>
-                <dt>{row.q}</dt>
-                <dd>{row.a}</dd>
-              </div>
-            ))}
-          </dl>
-          <p className="catch">{THINKING.how}</p>
-          <Links links={THINKING.links} />
-        </div>
-        <Exhibit s={THINKING} />
-      </section>
-
-      <section className="offer" id="work-with-me" aria-label="Working with me">
-        <div>
-          <h2>Writing</h2>
-          <p>{OFFER.writing}</p>
-          <PriceList rows={OFFER.priceRows} label="Writing prices" />
-          <p className="note">Prices in US dollars.</p>
-          <p className="offer-actions">
-            <Ext href={CALENDLY_URL} className="button button-ink">Book a 30-minute call</Ext>
-            <a className="button button-line" href={`mailto:${EMAIL}?subject=An%20article`}>Email about an article</a>
-          </p>
-          <p className="go"><Link href="/services#includes">What every article includes</Link></p>
-        </div>
-        <div>
-          <h2>AI workflows</h2>
-          <p>{OFFER.building}</p>
-          <PriceList rows={[OFFER.workflowRow]} label="AI workflow pricing" />
-          <p className="offer-actions">
-            <Ext href={CALENDLY_URL} className="button button-ink">Book a 30-minute call</Ext>
-            <Link className="button button-line" href="/contact">Describe the task</Link>
-          </p>
-        </div>
-      </section>
-    </div>
-  );
+      </div>
+      <p className={s.otherWork}>More projects: <Link href="/case-studies/aloud">Aloud</Link> · <Link href="/case-studies/ai-docs-watch">AI Docs Watch</Link> · <Link href="/projects/mylinks">MyLinks</Link></p>
+    </section>
+    <section className={s.contact} aria-labelledby="contact-title">
+      <div><h2 id="contact-title">Have something in mind?</h2><p>Tell me about your product, the article you need, or the task your team keeps repeating.</p></div>
+      <div className={s.actions}><a className={s.primary} href={CALENDLY_URL} target="_blank" rel="noopener noreferrer">Book a 30-minute call ↗</a><Link className={s.secondary} href="/services">See services and prices ↗</Link></div>
+    </section>
+  </div>;
 }

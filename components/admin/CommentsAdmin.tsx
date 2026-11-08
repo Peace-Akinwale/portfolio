@@ -246,7 +246,7 @@ export function CommentsAdmin({ initialAuthenticated, hasPassword }: CommentsAdm
                     </a>
                   ) : null}
                   <p className="mt-3 text-sm text-muted-foreground">
-                    On <a href={`/${comment.post_slug}`} className="hover:text-accent transition-colors">{comment.post_title || comment.post_slug}</a>
+                    On <a href={`/blog/${comment.post_slug}`} className="hover:text-accent transition-colors">{comment.post_title || comment.post_slug}</a>
                   </p>
                   {comment.parent_id ? (
                     <p className="text-xs text-muted-foreground mt-1">Reply to comment {comment.parent_id.slice(0, 8)}</p>

@@ -1,14 +1,14 @@
 /* Reading pages (blog posts and local articles) and the blog index. */
 
 .article { max-width: 1100px; margin: 0 auto; }
-.article-head { padding: 48px 0 28px; border-bottom: 1px solid var(--border); max-width: 60ch; }
+.article-head { padding: 32px 0 24px; border-bottom: 1px solid var(--border); max-width: 60ch; }
 .article-head .kicker { font-size: 14px; color: var(--muted-foreground); margin: 0 0 14px; }
 .article-head .kicker a { text-decoration: none; }
 .article-head .kicker a:hover { text-decoration: underline; color: var(--accent); }
 .article-head h1 { margin: 0 0 16px;  }
 .article-head .standfirst { font-family: var(--font-serif); font-optical-sizing: auto; font-size: clamp(1.15rem, 1.5vw, 1.3rem); line-height: 1.45; margin: 0 0 18px; }
 .article-head .meta { font-size: 14.5px; color: var(--muted-foreground); display: flex; flex-wrap: wrap; gap: 6px 14px; margin: 0; }
-.article-cover { margin: 28px 0 0; }
+.article-cover { margin: 20px 0 0; }
 .article-cover img { border-radius: var(--radius); }
 .article-layout { display: grid; grid-template-columns: minmax(0, 66ch) minmax(0, 1fr); gap: 40px 64px; padding: 32px 0 48px; }
 .article-layout .prose { max-width: 66ch; }
@@ -27,7 +27,7 @@
 .related h2 { font-size: 1.5rem; font-weight: 520; margin: 0 0 8px; }
 
 /* index */
-.posts-head { padding: 48px 0 24px; }
+.posts-head { padding: 32px 0 24px; }
 .posts-head h1 { max-width: 16ch; margin: 0 0 14px;  }
 .posts-head .lead { font-family: var(--font-serif); font-optical-sizing: auto; font-size: 1.2rem; max-width: var(--measure); margin: 0 0 24px; }
 .posts { list-style: none; margin: 0; padding: 0; }

@@ -3,7 +3,7 @@
 import { useTheme } from 'next-themes';
 
 // Light or dark, remembered by next-themes in localStorage. Until someone
-// picks, the site follows the device setting. Both icons render and CSS shows
+// picks, the site starts in light mode. Both icons render and CSS shows
 // the right one from [data-theme], so the server markup never guesses.
 export function ThemeToggle() {
   const { resolvedTheme, setTheme } = useTheme();

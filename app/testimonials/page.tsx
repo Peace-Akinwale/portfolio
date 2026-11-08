@@ -1,7 +1,7 @@
+import descriptions from '@/lib/content/page-descriptions.json';
 import { WorkWithMe } from '@/components/WorkWithMe';
 import { withOg } from '@/lib/og';
 import type { Metadata } from 'next';
-import Link from 'next/link';
 import Image from 'next/image';
 import { Fragment } from 'react';
 import fs from 'node:fs';
@@ -24,6 +24,7 @@ type LinkedInTestimonial = {
 
 type ScreenshotTestimonial = {
   name: string;
+  photo?: string;
   role: string;
   company: string;
   note: string;
@@ -189,18 +190,18 @@ const screenshotTestimonials: ScreenshotTestimonial[] = [
   },
   {
     name: 'Lateef Maleek',
+    photo: '/images/clients/lateef-maleek.png',
     role: 'Agency owner',
     company: 'Exceed SEO',
     note: 'A message from 21 September 2026 about the depth and specificity of the research, with my reply',
-    image: '/images/testimonials/lateef-research-depth.png',
-    alt: 'Screenshot of a message from Lateef Maleek on Monday 21 September praising the depth and specificity of the research in an article, followed by Peace’s reply.',
+    image: '/case-studies/exceed-seo/lateef-research-feedback.png',
+    alt: 'Screenshot of Lateef Maleek praising the depth and specificity of Peace’s product research.',
   },
 ].filter((t) => fs.existsSync(path.join(process.cwd(), 'public', t.image)));
 
 export const metadata: Metadata = withOg({
   title: 'What clients say',
-  description:
-    'What editors and agency owners said about working with me, in their own words and screenshots.',
+  description: descriptions.Testimonials,
   alternates: {
     canonical: 'https://peaceakinwale.com/testimonials',
   },
@@ -246,6 +247,7 @@ export default function TestimonialsPage() {
         <div className="mx-auto max-w-7xl px-6 pb-10 pt-12 sm:pb-12 sm:pt-16">
           <div className="max-w-3xl">
             <h1 className="mb-4 text-foreground">What clients say</h1>
+            <p>Clients and editors describe the product research, deadlines and revisions involved in working with me, so you can see what to expect when you send a brief.</p>
           </div>
         </div>
       </section>
@@ -311,7 +313,7 @@ export default function TestimonialsPage() {
           </div>
 
           <div className="mt-16">
-            <h2 className="mb-8 text-[1.5rem] text-foreground">Comments on the work itself</h2>
+            <h2 className="mb-8 text-[1.5rem] text-foreground">Feedback on individual articles</h2>
             <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
               {screenshotTestimonials.map((testimonial) => (
                 <article
@@ -329,11 +331,13 @@ export default function TestimonialsPage() {
                       sizes="(min-width: 1024px) 46vw, 92vw"
                     />
                   </div>
-                  <div className="mt-5">
-                    <p className="text-base font-bold text-foreground">{testimonial.name}</p>
+                  <div className="mt-5 reviewer-attribution">
+                    {testimonial.photo && <Image src={testimonial.photo} alt={testimonial.name} width={56} height={56} sizes="56px" />}
+                    <div><p className="text-base font-bold text-foreground">{testimonial.name}</p>
                     <p className="mt-1 text-sm text-muted-foreground">
                       {testimonial.role} · {testimonial.company}
                     </p>
+                    </div>
                   </div>
                 </article>
               ))}
@@ -345,8 +349,8 @@ export default function TestimonialsPage() {
       <section className="border-t border-border bg-background">
         <div className="mx-auto max-w-7xl px-6 py-16 sm:py-20">
           <WorkWithMe
-            heading="Work with me"
-            body="Book a 30-minute call and tell me what you’re working on. If I’m not the right person for it, I’ll say so."
+            heading="Have something in mind?"
+            body="Tell me about your product, an article you need, or an idea you’d like to develop for your team."
             secondary={{ label: 'Send a message', href: '/contact' }}
           />
         </div>

@@ -48,17 +48,17 @@ const RETIRED_SAMPLE_PATHS = new Set([
   '/blog/project-management-software-with-client-portal',
 ]);
 
-// Google page-one results on 3 Nov 2026 (built-in browser, gl=us, hl=en, pws=0;
-// organic positions only). Full table: docs/case-studies/manyrequests-rankings-2026-11-03.md.
+// Google page-one results on 7 Nov 2026 (Chrome, signed in, gl=us, hl=en, pws=0;
+// organic positions only). Full table: docs/case-studies/manyrequests-rankings-2026-11-07.md.
 // Left out of this list: the branded query "manyrequests alternatives".
 export const MANYREQUESTS_RANKINGS: { query: string; position: number; title: string; url: string; shot: string }[] = [
-  { query: 'marketing agency business plan template', position: 2, title: 'The Productized Marketing Agency Business Plan Template', url: 'https://www.manyrequests.com/blog/marketing-agency-business-plan-template', shot: '/images/case-studies/manyrequests/serp-2026-11/marketing-agency-business-plan-template.png' },
-  { query: 'business to start with 5k', position: 2, title: '25 Businesses You Can Start With $5K or Less', url: 'https://www.manyrequests.com/blog/business-to-start-with-5k', shot: '/images/case-studies/manyrequests/serp-2026-11/business-to-start-with-5k.png' },
-  { query: 'how to get retainer clients', position: 4, title: 'How to Get Retainer Clients', url: 'https://www.manyrequests.com/blog/how-to-get-retainer-clients', shot: '/images/case-studies/manyrequests/serp-2026-11/how-to-get-retainer-clients.png' },
-  { query: 'retainer management software', position: 4, title: 'Top 6 Retainer Management Software for Creative Agencies', url: 'https://www.manyrequests.com/blog/retainer-management-software', shot: '/images/case-studies/manyrequests/serp-2026-11/retainer-management-software.png' },
-  { query: 'agency pricing models', position: 5, title: 'Agency Pricing Models: Which One Scales a Productized Agency', url: 'https://www.manyrequests.com/blog/agency-pricing-models', shot: '/images/case-studies/manyrequests/serp-2026-11/agency-pricing-models.png' },
-  { query: '17hats vs honeybook', position: 5, title: '17Hats vs. Honeybook vs. ManyRequests', url: 'https://www.manyrequests.com/blog/17hats-vs-honeybook', shot: '/images/case-studies/manyrequests/serp-2026-11/17hats-vs-honeybook.png' },
-  { query: 'bloom alternatives', position: 5, title: '6 Bloom Alternatives Worth Considering if You Run an Agency', url: 'https://www.manyrequests.com/blog/bloom-alternatives', shot: '/images/case-studies/manyrequests/serp-2026-11/bloom-alternatives.png' },
+  { query: 'marketing agency business plan template', position: 1, title: 'The Productized Marketing Agency Business Plan Template', url: 'https://www.manyrequests.com/blog/marketing-agency-business-plan-template', shot: '/images/case-studies/manyrequests/serp-2026-11-07/marketing-agency-business-plan-template-annotated.png' },
+  { query: 'business to start with 5k', position: 2, title: '25 Businesses You Can Start With $5K or Less', url: 'https://www.manyrequests.com/blog/business-to-start-with-5k', shot: '/images/case-studies/manyrequests/serp-2026-11-07/business-to-start-with-5k-annotated.png' },
+  { query: 'how to get retainer clients', position: 5, title: 'How to Get Retainer Clients', url: 'https://www.manyrequests.com/blog/how-to-get-retainer-clients', shot: '/images/case-studies/manyrequests/serp-2026-11-07/how-to-get-retainer-clients-annotated.png' },
+  { query: 'retainer management software', position: 4, title: 'Top 6 Retainer Management Software for Creative Agencies', url: 'https://www.manyrequests.com/blog/retainer-management-software', shot: '/images/case-studies/manyrequests/serp-2026-11-07/retainer-management-software-annotated.png' },
+  { query: 'agency pricing models', position: 8, title: 'Agency Pricing Models: Which One Scales a Productized Agency', url: 'https://www.manyrequests.com/blog/agency-pricing-models', shot: '/images/case-studies/manyrequests/serp-2026-11-07/agency-pricing-models-annotated.png' },
+  { query: '17hats vs honeybook', position: 6, title: '17Hats vs. Honeybook vs. ManyRequests', url: 'https://www.manyrequests.com/blog/17hats-vs-honeybook', shot: '/images/case-studies/manyrequests/serp-2026-11-07/17hats-vs-honeybook-annotated.png' },
+  { query: 'bloom alternatives', position: 8, title: '6 Bloom Alternatives Worth Considering if You Run an Agency', url: 'https://www.manyrequests.com/blog/bloom-alternatives', shot: '/images/case-studies/manyrequests/serp-2026-11-07/bloom-alternatives-annotated.png' },
 ];
 
 function samplePath(link?: string): string | null {

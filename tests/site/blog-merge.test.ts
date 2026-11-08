@@ -12,16 +12,18 @@ describe('the blog with WordPress down', () => {
   it('still lists the local articles and says WordPress was down', async () => {
     const { posts, wordpressDown } = await loadAllPosts();
     expect(wordpressDown).toBe(true);
-    expect(posts.map((p) => p.slug)).toContain('the-success-message-was-the-bug');
+    expect(posts.map((p) => p.slug)).not.toContain('the-success-message-was-the-bug');
+    expect(posts.map((p) => p.slug)).not.toContain('build-a-course-portal-around-the-instructors-workflow');
     expect(posts.every((p) => isLocalArticle(p))).toBe(true);
   });
 
-  it('serves a local article first and a WordPress post otherwise', async () => {
-    const local = await loadPost('the-success-message-was-the-bug');
-    expect(local && isLocalArticle(local)).toBe(true);
+  it('does not serve the moved course portal as an article and still serves WordPress posts', async () => {
+    const local = await loadPost('build-a-course-portal-around-the-instructors-workflow');
+    expect(local).toBeNull();
     const wp = await loadPost('how-to-optimize-for-aeo');
     expect(wp?.slug).toBe('how-to-optimize-for-aeo');
     expect(await loadPost('nope')).toBeNull();
+    expect(await loadPost('the-success-message-was-the-bug')).toBeNull();
   });
 });
 

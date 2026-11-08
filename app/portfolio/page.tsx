@@ -8,15 +8,15 @@ import { getStaticPage } from '@/lib/hashnode/client';
 import { parsePortfolioHtml } from '@/lib/hashnode/parsePortfolio';
 import { FEATURED_MANYREQUESTS_ARTICLES, MANYREQUESTS_ARTICLE_COUNT, MANYREQUESTS_SINCE, withCurrentManyRequestsSamples } from '@/lib/portfolio/manyrequests';
 import { WritingSamples } from '@/components/record/WritingSamples';
+import descriptions from '@/lib/content/page-descriptions.json';
 import { SITE_URL } from '@/lib/site';
 import { INVITEDESK_SECTION, LINEUPR_SECTION } from '@/lib/portfolio/exceed';
 
 export const revalidate = 300;
 
 export const metadata: Metadata = withOg({
-  title: 'Writing samples by client',
-  description:
-    'Bottom-of-funnel articles for B2B SaaS companies and agencies, listed by client, with what their editors said about the drafts.',
+  title: 'B2B SaaS content writing portfolio · Peace Akinwale',
+  description: descriptions.Writing,
   alternates: { canonical: `${SITE_URL}/portfolio` },
 }, { key: 'portfolio', path: '/portfolio', alt: 'Writing samples by Peace Akinwale' });
 
@@ -64,11 +64,29 @@ async function loadSamples() {
 export default async function PortfolioPage() {
   const samples = (await loadSamples()) ?? { sections: [LINEUPR_SECTION, INVITEDESK_SECTION, MARKERIO_SECTION, JABRA_SECTION] };
 
+  const descriptionsByClient = {
+  "ManyRequests": "Comparisons and guides that show agency owners how to manage client requests, approvals, retainers and billing. The product appears where it helps explain how to do the work.",
+  "LineUpr, through Exceed SEO": "Articles that help event organisers choose an app for their event, from comparing pricing to understanding what will encourage attendees to use it.",
+  "InviteDesk, through Exceed SEO": "Software comparisons and practical guides for teams managing B2B events, guest relationships and the follow-up that turns an event conversation into a sales opportunity.",
+  "Marker.io": "Ghostwritten software-testing and website-QA guides that explain how to perform the work, report problems and give developers the context they need to fix them.",
+  "Jabra, through Spicy Margarita": "Articles that explain how meeting-room design and communication tools affect the people trying to hear, speak and work together in a meeting.",
+  "HigherVisibility": "Ghostwritten articles that explain SEO, content strategy and lead generation through decisions a business needs to make.",
+  "Pangea.ai": "Articles that help readers understand software-development work and compare the tools available to them.",
+  "Earlier essays and journalism": "Some of my writing before I specialised in B2B SaaS."
+};
+  samples.sections = samples.sections.map((section) => {
+    const key = Object.keys(descriptionsByClient).find((name) => {
+      const client = name.split(',')[0];
+      return (section.clientName ?? section.heading).toLowerCase().includes(client.toLowerCase());
+    }) as keyof typeof descriptionsByClient | undefined;
+    return key ? { ...section, heading: key, introHtml: '<p>' + descriptionsByClient[key] + '</p>' } : section;
+  });
+
   return (
     <div className="gutter mx-auto max-w-[1180px]">
       <header className="writing-head">
-        <h1>Writing</h1>
-        <p className="lede">Comparisons, alternatives pages and buying guides for B2B SaaS companies and the agencies that serve them. I research every article from the product and the buyer’s own words, and check it against its sources before you see it.</p>
+        <h1>Content that helps your prospects understand the product</h1>
+        <p className="lede">I write B2B SaaS content for companies and agencies, including bottom-of-funnel (BOFU) comparisons and alternatives pages for readers choosing a product. I research the job your prospect needs to do, then explain the capabilities, examples and limitations that matter to that decision. This gives the reader enough context to understand why they might need your product, and gives AI search tools clear material to connect your brand with those use cases.</p>
       </header>
 
       <section className="writing-proof" aria-label="Evidence">
@@ -89,13 +107,13 @@ export default async function PortfolioPage() {
       <section className="border-t border-border pt-10" aria-label="More">
         <p className="go">
           <Link href="/testimonials">What clients say</Link>
-          <Link href="/how-to-optimize-for-aeo">How I approach AEO</Link>
+          <Link href="/blog/how-to-optimize-for-aeo">How I approach AEO</Link>
         </p>
       </section>
       <WorkWithMe
-        heading="Need articles like these?"
-        body="Tell me about the product and the readers you want to reach. On a 30-minute call I’ll say whether I’m the right writer for it."
-        secondary={{ label: 'See my prices', href: '/services' }}
+        heading="Have an article in mind?"
+        body="Send me the topic and a little about your product. I can help you find the use cases and context that will make the piece useful to the people you want to reach."
+        secondary={{ label: 'See services and prices', href: '/services' }}
       />
     </div>
   );

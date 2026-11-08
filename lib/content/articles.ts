@@ -44,9 +44,9 @@ export function readArticleFile(file: string): LocalArticle {
     tags,
     author: { name: 'Peace Akinwale' },
     seo: { title: asString(data.title, slug), description: asString(data.standfirst) },
-    url: `https://peaceakinwale.com/${slug}`,
+    url: `https://peaceakinwale.com/blog/${slug}`,
     review: data.review ? asString(data.review) : undefined,
-    images: imageRefs(body).map((p) => `${imageBase}/${p.replace(/^(\.\/)?images\/[^/]+\//, '').replace(/^\.\//, '')}`),
+    images: imageRefs(body).map((p) => /^(https?:\/\/|\/)/.test(p) ? p : `${imageBase}/${p.replace(/^(\.\/)?images\/[^/]+\//, '').replace(/^\.\//, '')}`),
   };
 }
 

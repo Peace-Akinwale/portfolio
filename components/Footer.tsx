@@ -5,7 +5,7 @@ import { NAV_LINKS, EMAIL, LINKEDIN_URL, X_URL, CALENDLY_URL } from '@/lib/site'
 // One closing action instead of three link lists that repeated the header:
 // who she is and the call on top, the site in one line beneath, then the year.
 // The RSS feed is linked from <head> in app/layout.tsx, not from here.
-export function Footer({ night = false }: { night?: boolean }) {
+export function Footer({ night = false, compact = false }: { night?: boolean; compact?: boolean }) {
   const year = new Date().getFullYear();
 
   return (
@@ -13,12 +13,12 @@ export function Footer({ night = false }: { night?: boolean }) {
       <div className="gutter footer-top">
         <div>
           <p className="footer-name display">Peace Akinwale</p>
-          <p className="footer-line">
-            I write the articles B2B SaaS buyers read before they choose a product, and I build AI workflows for content and SEO teams.
-          </p>
+          {!compact && <p className="footer-line">
+            B2B SaaS content that explains your product’s use cases, and AI workflows configured to the way your marketing team works.
+          </p>}
         </div>
         <div className="footer-cta">
-          <a href={CALENDLY_URL} target="_blank" rel="noopener" className="button button-ink">Book a 30-minute call</a>
+          {!compact && <a href={CALENDLY_URL} target="_blank" rel="noopener" className="button button-ink">Book a 30-minute call</a>}
           <a href={`mailto:${EMAIL}`} className="footer-email">{EMAIL}</a>
         </div>
       </div>

@@ -8,7 +8,9 @@ export async function GET() {
 
   const items = posts
     .map((post) => {
-      const url = `${baseUrl}/${post.slug}`;
+      const url = `${baseUrl}/blog/${post.slug}`;
+      // Keep item identity stable for existing subscribers after the URL move.
+      const guid = `${baseUrl}/${post.slug}`;
       const pubDate = new Date(post.publishedAt).toUTCString();
       const description = post.seo?.description || post.brief || '';
       const escapedDesc = description.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
@@ -16,7 +18,7 @@ export async function GET() {
       return `    <item>
       <title>${escapedTitle}</title>
       <link>${url}</link>
-      <guid isPermaLink="true">${url}</guid>
+      <guid isPermaLink="true">${guid}</guid>
       <pubDate>${pubDate}</pubDate>
       <description>${escapedDesc}</description>
     </item>`;

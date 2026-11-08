@@ -1,17 +1,13 @@
 import { ogImagePath, DEFAULT_OG } from '@/lib/og';
-import { JsonLdScript } from '@/components/JsonLdScript';
-import { articleJsonLd, breadcrumbList } from '@/lib/seo/jsonld';
 import { getAllPostSlugs, getStaticPage, getAllStaticPageSlugs } from '@/lib/hashnode/client';
 import '@/components/article/article.css';
-import { loadPost, loadAllPosts, isLocalArticle, relatedTo } from '@/lib/content/posts';
+import { loadPost, isLocalArticle } from '@/lib/content/posts';
 import { listLocalArticles } from '@/lib/content/articles';
-import { formatDate, formatReadingTime } from '@/lib/hashnode/utils';
 import { parsePortfolioHtml } from '@/lib/hashnode/parsePortfolio';
-import { notFound } from 'next/navigation';
+import { notFound, permanentRedirect } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
 import type { Metadata } from 'next';
-import { ArticleCard } from '@/components/ArticleCard';
 import { PortfolioGrid } from '@/components/PortfolioGrid';
 import { fetchOgImagesForPortfolio } from '@/lib/fetchOgImages';
 import { ShareButtons } from '@/components/ShareButtons';
@@ -19,8 +15,6 @@ import { ReadingProgress } from '@/components/ReadingProgress';
 import { TableOfContents } from '@/components/TableOfContents';
 import { ImageLightbox } from '@/components/ImageLightbox';
 import { CodeBlockEnhancer } from '@/components/CodeBlockEnhancer';
-import { ArticleEndCta } from '@/components/ArticleEndCta';
-import { Comments } from '@/components/Comments';
 import { NEW_MANYREQUESTS_ARTICLES, withCurrentManyRequestsSamples } from '@/lib/portfolio/manyrequests';
 
 interface ArticlePageProps {
@@ -82,15 +76,6 @@ function stripLeadingDuplicateCoverImage(html: string, coverUrl?: string): strin
   return html;
 }
 
-// Posts whose body repeats the cover image under a different file name, so the
-// stem comparison above cannot catch it (review, 29 Oct 2026). slug -> the body
-// copy's file stem.
-const DUPLICATE_COVER: Record<string, string> = { 'how-to-optimize-for-aeo': 'image-6' };
-function stripImageByStem(html: string, stem: string): string {
-  const img = new RegExp(`(?:<figure\\b[^>]*>\\s*)?<img\\b[^>]*src=["'][^"']*\\/${stem}\\.[a-z0-9]+(?:\\?[^"']*)?["'][^>]*>\\s*(?:<figcaption[^>]*>.*?<\\/figcaption>\\s*)?(?:<\\/figure>)?`, 'is');
-  return html.replace(img, '');
-}
-
 // Allow dynamic generation for slugs not pre-rendered at build time
 export const dynamicParams = true;
 
@@ -119,7 +104,7 @@ export async function generateMetadata({ params }: ArticlePageProps): Promise<Me
       title: post.seo?.title || post.title,
       description: post.seo?.description || post.brief,
       alternates: {
-        canonical: `https://peaceakinwale.com/${slug}`,
+        canonical: `https://peaceakinwale.com/blog/${slug}`,
       },
       openGraph: {
         title: post.seo?.title || post.title,
@@ -161,6 +146,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
 
   // A local article first, then a WordPress post
   const post = await loadPost(slug);
+  if (post) permanentRedirect(`/blog/${slug}`);
   let isStaticPage = false;
   let staticPage = null;
 
@@ -320,94 +306,5 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
     );
   }
 
-  // Render the article (a local one or a WordPress post)
-  if (!post) {
-    notFound();
-  }
-
-  const { posts: allPosts } = await loadAllPosts();
-  const relatedPosts = relatedTo(post, allPosts);
-  const local = isLocalArticle(post);
-  const renderedPostHtml = local
-    ? post.content.html
-    : DUPLICATE_COVER[post.slug]
-      ? stripImageByStem(post.content.html, DUPLICATE_COVER[post.slug])
-      : stripLeadingDuplicateCoverImage(post.content.html, post.coverImage?.url);
-  const showReview = local && post.review && process.env.NODE_ENV !== 'production';
-
-  const articleLd = articleJsonLd({
-    title: post.title,
-    description: post.brief || post.title,
-    url: `/${post.slug}`,
-    datePublished: post.publishedAt,
-    dateModified: post.updatedAt || post.publishedAt,
-    image: post.coverImage?.url,
-  });
-
-  return (
-    <div className="reading-light">
-      <JsonLdScript data={[articleLd, breadcrumbList([{ name: 'Blog', url: '/blog' }, { name: post.title, url: `/${post.slug}` }])]} />
-      <ReadingProgress />
-      <TableOfContents />
-      <ImageLightbox />
-      <CodeBlockEnhancer />
-
-      <article className="article gutter">
-        <header className="article-head">
-          <p className="kicker">
-            <Link href="/blog">Blog</Link>
-          </p>
-          <h1>{post.title}</h1>
-          {post.brief && <p className="standfirst">{post.brief}</p>}
-          <p className="meta">
-            <span>By <Link href="/about" className="underline underline-offset-4 hover:text-accent" rel="author">{post.author.name}</Link></span>
-            <time dateTime={post.publishedAt}>{formatDate(post.publishedAt, 'd MMMM yyyy')}</time>
-            <span>{formatReadingTime(post.readTimeInMinutes)}</span>
-          </p>
-          {post.coverImage?.url && (
-            <figure className="article-cover">
-              <Image src={post.coverImage.url} alt="" width={1200} height={675} sizes="(max-width: 960px) 100vw, 896px" priority />
-            </figure>
-          )}
-        </header>
-
-        <div className="article-layout">
-          <div>
-            {showReview && <p className="review-note"><b>Review note (not shown in production):</b> {post.review}</p>}
-            <div className="prose" dangerouslySetInnerHTML={{ __html: renderedPostHtml }} />
-
-            <footer className="article-foot">
-              {post.tags && post.tags.length > 0 && (
-                <>
-                  <h2>Filed under</h2>
-                  <ul className="article-tags">
-                    {post.tags.map((tag) => (
-                      <li key={tag.id}>{local ? <span>{tag.name}</span> : <Link href={`/tag/${tag.slug}`}>{tag.name}</Link>}</li>
-                    ))}
-                  </ul>
-                </>
-              )}
-              <h2>Know someone who’d like this?</h2>
-              <ShareButtons url={post.url} title={post.title} />
-              <ArticleEndCta />
-            </footer>
-          </div>
-          <div aria-hidden="true" />
-        </div>
-
-        {relatedPosts.length > 0 && (
-          <section className="related" aria-labelledby="related-h">
-            <h2 id="related-h">Read this next</h2>
-            <ul className="posts">
-              {relatedPosts.map((relatedPost) => (
-                <ArticleCard key={relatedPost.id} post={relatedPost} heading="h3" />
-              ))}
-            </ul>
-          </section>
-        )}
-
-        <Comments postSlug={post.slug} postTitle={post.title} />
-      </article>
-    </div>
-  );
+  notFound();
 }

@@ -13,7 +13,7 @@
    - Dated, the default for every page: sky ground, ink-blue text, deep blue accent.
    - Seam, the homepage only (.theme-seam on the chrome wrapper): the sky half for
      writing and the ink half for building, switched with .ground-paper / .ground-night.
-   Dark mode (the header toggle, or the system setting until someone picks) uses
+   Dark mode (selected with the header toggle) uses
    the two darkest values of the family. */
 
 :root {
@@ -67,12 +67,7 @@
   --background: var(--ink); --foreground: var(--ink-text); --muted: var(--ink-2); --muted-foreground: var(--ink-soft);
   --border: var(--ink-rule); --border-strong: var(--ink-rule-strong); --accent: var(--ink-accent); --accent-foreground: var(--sky-ink); --accent-wash: var(--ink-wash);
 }
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --background: var(--ink); --foreground: var(--ink-text); --muted: var(--ink-2); --muted-foreground: var(--ink-soft);
-    --border: var(--ink-rule); --border-strong: var(--ink-rule-strong); --accent: var(--ink-accent); --accent-foreground: var(--sky-ink); --accent-wash: var(--ink-wash);
-  }
-}
+
 
 /* The homepage's chrome and its sky halves: the same values as every other page. */
 .theme-seam, .ground-paper {
@@ -84,12 +79,7 @@
   --background: var(--ink); --foreground: var(--ink-text); --muted: var(--ink-2); --muted-foreground: var(--ink-soft);
   --border: var(--ink-rule); --border-strong: var(--ink-rule-strong); --accent: var(--ink-accent); --accent-foreground: var(--sky-ink); --accent-wash: var(--ink-wash);
 }
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) .theme-seam, :root:not([data-theme="light"]) .ground-paper {
-    --background: var(--ink); --foreground: var(--ink-text); --muted: var(--ink-2); --muted-foreground: var(--ink-soft);
-    --border: var(--ink-rule); --border-strong: var(--ink-rule-strong); --accent: var(--ink-accent); --accent-foreground: var(--sky-ink); --accent-wash: var(--ink-wash);
-  }
-}
+
 /* The homepage's night half: the deep blue of the family (not the near-black
    ink, which read as black on a phone). The same in both modes: in dark mode
    the sky half becomes ink, so the halves still read as two. Marigold is the
@@ -177,7 +167,7 @@ h4, h5, h6 { font-family: var(--font-sans); font-weight: 600; line-height: 1.3; 
 @media (max-width: 359px) { .header-book { display: none; } }
 
 .nav-link { text-decoration: none; }
-.nav-link[aria-current="page"] { color: var(--foreground); text-decoration: underline; text-decoration-color: var(--accent); text-decoration-thickness: 2px; text-underline-offset: 6px; }
+.nav-link[aria-current="page"] { color: var(--foreground); text-decoration: underline; text-decoration-color: currentColor; text-decoration-thickness: 2px; text-underline-offset: 6px; }
 /* Price table (design guide §9, §29; 4 Nov 2026). Name left, price on the right
    edge in tabular figures, unit beneath the name. One hairline per row carries the
    eye from the service to its price; the last row closes with a hairline. */
@@ -286,7 +276,7 @@ figure.shot figcaption { font-family: var(--font-sans); font-size: 14px; color: 
 .prose a {
   color: var(--accent);
   text-decoration: underline;
-  text-decoration-color: var(--accent);
+  text-decoration-color: currentColor;
   text-underline-offset: 3px;
   transition: all 0.2s ease;
 }
@@ -402,7 +392,7 @@ a, button { transition: color .15s ease, background-color .15s ease, border-colo
   html { scroll-behavior: auto; }
   *, *::before, *::after { transition: none !important; animation: none !important; }
 }
-html { scroll-behavior: smooth; scroll-padding-top: 72px; }
+html { scroll-behavior: auto; scroll-padding-top: 72px; }
 /* Pages with a second sticky bar under the header land anchors below both. */
 html:has(.record-bar) { scroll-padding-top: 124px; }
 @media (min-width: 761px) { html:has(.qnav) { scroll-padding-top: 116px; } }
@@ -532,3 +522,12 @@ html:has(.record-bar) { scroll-padding-top: 124px; }
 .svc-proof figcaption a { text-decoration: underline; text-underline-offset: 3px; }
 .offer-actions { display: flex; flex-wrap: wrap; gap: 10px; margin: 8px 0 0; }
 .svc-offer .note { margin: 0 0 10px; }
+
+/* Evidence remains readable on phones and accessible without a pointer. */
+.prose img[role="button"] { cursor: zoom-in; }
+.image-viewer { position: fixed; inset: 0; width: min(96vw, 1600px); max-width: 96vw; max-height: 96dvh; margin: auto; padding: 16px; border: 1px solid var(--control-border); border-radius: 16px; background: var(--background); color: var(--foreground); }
+.image-viewer::backdrop { background: rgb(13 30 44 / 88%); }
+.image-viewer > img { display: block; max-width: 100%; max-height: 75dvh; width: auto; height: auto; margin: 12px auto; object-fit: contain; }
+.image-viewer-toolbar, .image-viewer-controls { display: flex; justify-content: space-between; align-items: center; gap: 16px; }
+.image-viewer-controls[hidden] { display: none; }
+.image-viewer button, .image-viewer a { min-height: 44px; display: inline-flex; align-items: center; padding: 8px 12px; border: 1px solid var(--control-border); border-radius: 24px; font-size: 16px; }

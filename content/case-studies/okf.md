@@ -1,71 +1,54 @@
 ---
-title: "Building an OKF that a team can ask for guidance"
-name: "An OKF a team can ask"
-blurb: "A founder’s notes turned into linked notes the team can ask, and every answer cites where it came from."
+title: "I built an OKF"
+name: "I built an OKF"
+blurb: "A founder’s expertise organised into searchable notes, so the team can find and use relevant explanations without working through the whole archive."
 kind: built
 status: "An SEO agency’s team"
 date: 2026-07-02
 published: 2026-10-25
-summary: "An OKF a team can ask. I turned an SEO agency founder's archive, about 1.23 million words across 534 Notion pages, into a knowledge base of linked notes in Google's Open Knowledge Format. The team can ask it questions and every answer cites the note and the source behind it. The hard part was trust, so a person's review and a scripted source check carry different labels."
+summary: "Turning a founder’s archive into a searchable knowledge base, with source links and records of how extracted notes were checked."
 voice: informal
 notion_url: https://app.notion.com/p/403992da7a578116ae4ee9a53710f316
 notion_last_edited: 2026-10-30T23:40:13.813Z
-links:
-  - "Google’s OKF specification on GitHub | https://github.com/GoogleCloudPlatform/knowledge-catalog/blob/main/okf/SPEC.md"
-  - "Marie Haynes on building an OKF brain | https://www.youtube.com/watch?v=esYAIA6lU-s"
 tags:
   - "knowledge"
   - "OKF"
 related:
   - "contentdb"
-  - "quality-rater"
 ---
 
-### An OKF is a set of short linked notes that remember their sources
+A founder can spend years explaining their ideas and approach to operations in articles, newsletters, and even via Slack DMs and emails. That knowledge is valuable to the team, but they won’t necessarily be able to replicate the founder’s thought process or POV when the founder is absent.
 
-An OKF is a set of short notes, one idea each, linked to each other and to the source they came from. Google published the format, and its specification says how a note records where it came from, when it was last checked and who checked it. An AI tool can answer from those notes instead of guessing across whole documents.
+I built a knowledge base using Google’s Open Knowledge Format (OKF) to organize the founder’s material into linked notes the team can search and ask questions about. Someone working on a brief can find relevant context from this OKF and check its source before relying on it.
 
-<figure class="video"><iframe src="https://www.youtube-nocookie.com/embed/esYAIA6lU-s" title="Build an OKF brain like mine! (Marie Haynes, YouTube)" loading="lazy" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture; fullscreen" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe><figcaption>Marie Haynes walks through the OKF brain she built for her own SEO work. She shows how a note is structured and how it differs from retrieval over whole documents. 23 minutes, June 2026. The format itself is Google’s, and its <a href="https://github.com/GoogleCloudPlatform/knowledge-catalog/blob/main/okf/SPEC.md">specification is on GitHub</a>.</figcaption></figure>
+## What is an OKF?
 
+An [OKF bundle](https://github.com/GoogleCloudPlatform/knowledge-catalog/blob/main/okf/SPEC.md) is a folder of linked Markdown files, which are text files that people and AI tools can read. Each note explains a concept or process and can record where the information came from, whether it has been reviewed, and when it needs checking again. This gives an AI tool a way to find relevant knowledge and see what supports it before using it in an answer.
 
-### 1.23 million words the team couldn't tell whether to trust
+[Marie Haynes’ article and walkthrough](https://www.mariehaynes.com/okf/) first put OKF on our radar. My boss shared them with me in June 2026 and asked me to build one. I used his existing SEO and AI notes and newsletters as the source material, so the team could ask questions about ideas he had already explained.
 
-The founder's thinking sat in two Notion archives. The agency asked for a brain the team could query, hosted like a site. I built the first version in two days, with extraction, search, a graph and a Claude connector.
+## How it works
 
-Three weeks later a teammate asked me on a call how we could trust it wasn't making things up. I had to walk him through it at length. That call set the real job. I wrote it down that day. "What makes this fresh? What makes this reliable? Does this still match the reality of today?"
+The [OKF documentation on GitHub](https://github.com/GoogleCloudPlatform/knowledge-catalog/tree/main/okf) has guidance on how to create and use a bundle. I used that guidance to organize the source material into searchable notes that AI tools can read. The approach follows Andrej Karpathy’s [LLM Wiki](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f): extract ideas from the sources, connect related notes, and maintain that knowledge as new material comes in.
 
-![The knowledge map shows connections between notes in different layouts. This is a historical screen; the on-screen totals belong to that capture.](images/okf/okf-06-graph-dark.gif)
+This structure makes it easy to find a specific idea and explore the related material, even when the person searching doesn’t know the exact phrase used in the original.
 
-*The knowledge map shows connections between notes in different layouts. This is a historical screen; the on-screen totals belong to that capture.*
+For example, I made a small demo using my own writing process. Someone can ask, “How do you make a product useful inside an article?” and see an answer that connects how I research the reader’s needs, use the product, and choose examples that explain what the reader can do with it. They can open the supporting notes and read my original wording beside the explanation.
 
-### A person's review and a script's check never share a label
+![Demo using Peace’s own writing notes, with an answer and supporting sources](/case-studies/okf/okf-demo-desktop.png)
 
-**Build to the specification, not a guess at it.** When Google published version 0.2 with trust signals, I read the spec itself and planned field by field. "I think we need to do it right based on what v2 says."
+The source link matters because the context may change how a note should be used. An answer about a particular situation shouldn’t quietly, unintentionally become advice for every situation. Nuances matter.
 
-**Keep who wrote it apart from who checked it.** My first reaction was that everything should count as verified, because the founder wrote all of it. Then the distinction landed. He wrote the notes. An AI wrote the cards from them, and nobody had checked those. So all 470 cards shipped unverified, and I asked for a way to fix that by hand. Each note got a Mark as verified button, and later each row of the list did too. A script was never allowed to write a person's name into the verified field, because that would forge a review in something the team relies on.
+I kept source references and quotations with the notes and made the answerer distinguish the founder’s own views from outside material. I also added a review step for new notes that conflict with an established position. Those notes are held out of answers until someone resolves the conflict, so new material doesn’t silently replace the founder’s existing guidance.
 
-![Source and human-review information on an individual note.](images/okf/okf-02-note-trust.png)
+## Record what has been checked
 
-*Source and human-review information on an individual note.*
+Extracting a note and checking it are separate tasks. I manually reviewed all 500 notes in my client's OKF because [OKF v0.2](https://cloud.google.com/blog/products/data-analytics/okf-v0-2-adds-trust-signals/) adds fields for recording who created a note and who verified it, so an AI-generated note (because AI is behind organizing it) won't be treated as though a person has checked and approved it.
 
-**Don't show it to the founder before I trust it.** Before the release I stopped. "No need to show Steve. I, myself, haven't seen it. I don't know what to trust here." I asked for a full check against the specification first. It found 43 clauses met and two small failures, and both were fixed before I shipped it.
+AI tools can hallucinate, including when they turn source material into notes. I designed the answerer to use the notes it had read, cite them, and say when the knowledge base didn’t cover a question. That doesn’t make errors impossible, but it gives the team something specific to check instead of an answer with no source behind it.
 
-**Review before anything lands.** New material goes through plan-then-approve. The tool screens it for secrets and personal data, then shows the notes it would create and the links it would add, and a person approves the plan. The weekly import of the founder's own new posts is the one exception, and it still runs the screening.
+And you may ask, how is this different from asking an LLM to explain your SOP based on what you’ve fed it before?
 
-**Clients host their own.** When the agency wanted to offer OKFs to clients, the first plan was to host them. I changed it the same day. The client takes away a self-contained kit and hosts it, and the agency pays nothing for their usage after the build. The export refuses any file that carries the agency's servers or keys. Each run states up front how much it will read, about 400,000 words, and reads exactly that.
+An LLM can explain an SOP you upload. The difference here is that the team has a shared set of linked notes they can inspect, correct, and reuse across different needs and questions (and AI tools). The sources and review records stay with those notes, rather than depending on what someone supplied in a particular chat.
 
-### Ask with citations, plus a kit clients host themselves
-
-The OKF app has Ask with citations, Browse, a Graph, note pages with their trust badge and source link, an approval queue, and single and batch verify. A Claude connector lets the team ask from Claude. The client kit turns a client's own files into a hosted bundle. A demo kit read 101 documents into 331 notes for $4.60 in 48 minutes.
-
-![The client-kit input screen, where a build starts with the client’s own source files.](images/okf/okf-05-build-kit.png)
-
-*The client-kit input screen, where a build starts with the client’s own source files.*
-
-### 683 linked notes, with 382 checked against their source
-
-The archive became 683 linked notes with 2,939 links. A source check against the original Notion pages confirmed 382 of the first 470 cards, challenged 61 and flagged 20 as out of date. Those 381 confirmed cards carry a separate "Fact checked and confirmed" label from that check. The verified label stays for notes a person has reviewed.
-
-I found several faults myself by using it. Badges I couldn't see turned out to be a cached old build. A note written in 2023 showed a 2024 date, because the importer stored Notion's last-edited time. The field was renamed to say what it is. 255 index files were counting as concepts, and removing them took the graph from 726 nodes to 470. Later, approvals started failing in silence. There were three causes, and 15 wrongly rejected items were recovered.
-
-When I caught myself redesigning screens to my own taste, I stopped. "Let's not do this based on what I say. What's a good way to handle this?" Each screen now has a one-sentence job and five rules for changing it.
+This allows the team to use the founder’s thinking while preparing a brief or working through a problem, check the reasoning behind an answer, and ask a more specific follow-up when they need the founder’s input.

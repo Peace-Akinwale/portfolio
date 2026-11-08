@@ -46,6 +46,10 @@ describe('POST /api/contact', () => {
   it('rejects missing or invalid fields without calling Resend', async () => {
     expect((await post({})).status).toBe(400);
     expect((await post({ ...validBody, email: 'not-an-email' })).status).toBe(400);
+    expect((await post({ ...validBody, name: '   ' })).status).toBe(400);
+    expect((await post({ ...validBody, about: { unexpected: 'object' } })).status).toBe(400);
+    expect((await post(null)).status).toBe(400);
+    expect((await post({ ...validBody, message: 'x'.repeat(10001) })).status).toBe(400);
     expect(send).not.toHaveBeenCalled();
   });
 });

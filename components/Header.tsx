@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useEffect, useId, useState } from 'react';
+import { useEffect, useId, useRef, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import { CALENDLY_URL, NAV_LINKS } from '@/lib/site';
 import { ThemeToggle } from '@/components/ThemeToggle';
@@ -13,11 +13,12 @@ export function Header() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const menuId = useId();
+  const menuButton = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     if (!open) return;
     function onKey(event: KeyboardEvent) {
-      if (event.key === 'Escape') setOpen(false);
+      if (event.key === 'Escape') { setOpen(false); menuButton.current?.focus(); }
     }
     document.addEventListener('keydown', onKey);
     return () => document.removeEventListener('keydown', onKey);
@@ -30,7 +31,7 @@ export function Header() {
     <header className="site-header sticky top-0 z-40 border-b border-border bg-background/95 backdrop-blur-sm">
       <a href="#main" className="skip-link">Skip to content</a>
       <div className="gutter flex min-h-[56px] items-center justify-between gap-3 lg:gap-6">
-        <Link href="/" className="display shrink-0 whitespace-nowrap text-[18px] font-[560] tracking-[-0.01em] text-foreground no-underline lg:text-[20px]">
+        <Link href="/" onClick={() => setOpen(false)} className="display shrink-0 whitespace-nowrap text-[18px] font-[560] tracking-[-0.01em] text-foreground no-underline lg:text-[20px]">
           Peace Akinwale
         </Link>
 
@@ -59,6 +60,7 @@ export function Header() {
         <ThemeToggle />
         <button
           type="button"
+          ref={menuButton}
           onClick={() => setOpen((v) => !v)}
           className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-full text-foreground"
           aria-label={open ? 'Close menu' : 'Open menu'}

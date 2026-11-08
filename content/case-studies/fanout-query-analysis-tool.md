@@ -1,13 +1,13 @@
 ---
-title: "Fanout query analysis tool, the searches behind AI answers"
-name: "Fanout query analysis tool"
-blurb: "Records the searches behind AI answers, and tells the pages that came back apart from the ones that got cited."
+title: "Connecting AI search activity to a client’s product"
+name: "Fanout query analysis"
+blurb: "A browser extension and dashboard for reviewing the queries, citations and brand mentions in AI answers, so strategists can investigate where competitors appear and which product use cases need more attention."
 kind: built
 status: "An SEO agency’s founder and strategists"
 date: 2026-08-26
 built: "Aug to Sep 2026"
 published: 2026-10-25
-summary: "The fanout query analysis tool records what happens behind an AI answer. It shows the searches ChatGPT, Claude or Perplexity ran, the pages that came back, and the pages that got cited. I built it for an SEO agency's strategists, starting from a teammate's bookmarklet. It became a Chrome extension with a shared dashboard, plus a service that runs whole prompt sets through the API and labels them as simulated."
+summary: "Recording AI searches, citations and mentions so strategists can investigate how answers relate to a client’s product."
 voice: informal
 notion_url: https://app.notion.com/p/403992da7a578155bc78c7d8e436e561
 notion_last_edited: 2026-10-30T23:40:10.376Z
@@ -15,52 +15,43 @@ tags:
   - "AI search"
   - "Chrome extension"
 related:
-  - "what-ai-search-apps-do-before-they-answer"
   - "ai-docs-watch"
 ---
 
-### The searches behind an AI answer explain why a client showed up, or didn't
+If an AI answer recommends a competitor, you need more to work with than what the AI said.
 
-When someone asks ChatGPT which vendor to choose, it may search the web first. If you can see those searches and the pages that came back, you can work out why a client showed up in the answer, or why it didn't.
+You need to understand what the AI platform searched for. The pages it used, how it described the products and came to that conclusion, and which of your client’s capabilities were relevant to the question but weren't cited/referred to.
 
-A teammate had proved it could be recorded. His bookmarklet captured ChatGPT's searches and pages, but every prompt meant switching it on by hand and uploading files to Claude. The agency asked me to lead a Chrome extension built from it. I set two requirements on the first day. It needed a dashboard, not a panel per run, and it had to record while you use the AI tool, with no button to press.
+I designed a browser extension to record AI search activity and a dashboard where an SEO team can analyze that information. The aim was to give strategists enough context to investigate their clients’ visibility and decide what to optimize next and a plausible reason why they should.
 
-### The parser I inherited missed four of ten citations
+## How it works: see which sources and brands appear in AI answers
 
-On day one I ran the bookmarklet's analysis on one capture and read the result against the raw stream. It reported 6 citations. The answer carried 10. It dropped every page ChatGPT reads in full rather than skims. The extension's parser reads both kinds, and I passed the finding back to the teammate.
+The extension records the search activity available from three AI apps. All a user has to do is to ask a query in the LLM and the browser extension will capture the behind-the-scenes activity the AI tool performed to arrive at that answer (which includes web search, websites opened and websites cited/used).
 
-### It records while strategists work, and says what it couldn't record
+The dashboard brings together the queries, citations and brand mentions from those recordings, so a strategist can follow the relationship between a question, the sources the platform found and the products it recommended (or appeared in its answer).
 
-**Record in the browser people already use.** A strategist picks a client and uses ChatGPT, Claude or Perplexity as usual. Each finished answer becomes a run with its searches, pages and citations. There's a private switch for each site, the raw stream stays in the browser, and only the extracted record goes to the shared database.
+The team can look at how a cited page explains a use case, compare it with their client’s content, and investigate whether a relevant capability needs a clearer explanation. Or whether there are edge cases they haven't accounted for that competitors have pages for.
 
 ![A captured answer, with its recorded citations and brand mentions.](images/fanout-query-analysis-tool/fanout-01-one-run.png)
 
-*A captured answer, with its recorded citations and brand mentions.*
+I also separated publishers from competitors so strategists can see whether AI answers cite competing products’ own websites or rely on third-party sites to discuss those products.
 
-**Run whole prompt sets, and say they're simulated.** Strategists needed to track many prompts at once, not one at a time, so I reversed my own earlier rule against paid API calls. Before building it, I tested five real prompts across four model settings. Cheap was the aim, but not at the cost of useless data on a real client. The default became the cheapest setting that still matched the captured runs, and every API run is labelled Simulated so nobody mistakes it for a recording from the consumer app.
+If a competitor’s page gets cited, the strategist can inspect how it explains the use case and compare that with the client’s content. If a publisher gets cited, they can check which brands the article includes, what it says about them, and whether the client is missing.
 
-**Say what wasn't recorded.** Then runs started showing zero searches but eight pages. ChatGPT had stopped streaming the search wording. Zero searches would have been a false claim, because the pages prove a search happened. The label became "searches not recorded".
-
-**A chart that doesn't flatter the client.** Citations show as a running total, with the number of answers asked written beside it. One line, and it still tells the truth. Take a made-up example. If a client is cited in 30 answers out of 130, the chart shows the other 100 beside the 30.
+This helps the team decide whether to improve how the client’s website explains relevant use cases or investigate opportunities to get the product included in the sources AI platforms are already using.
 
 ![The Brands view keeps brand mentions separate from website citations.](images/fanout-query-analysis-tool/fanout-03-brands.png)
 
-*The Brands view keeps brand mentions separate from website citations.*
+## Compare searches and brand recommendations across AI platforms
 
-**Strategists own the judgement calls.** Competitor lists come from the strategist, because I could get them wrong. Sources are split into publishers and competitors and aggregated, so clients don't see the noise the team sees.
+I ran commercial queries across AI platforms and tested different model settings to compare the searches they made, the sources they cited, and which brands they recommended. This helped me assess which settings provided enough research detail for a strategist to investigate how a client appeared in the answer.
 
-### A Chrome extension with a shared dashboard, plus a runner for whole prompt sets
+I also separated API simulations from recordings captured in the browser because API responses don’t always expose the full search activity behind an answer.
 
-A Chrome extension for ChatGPT, Claude and Perplexity with a side panel for the summary, the searches and the sources. A dashboard with a client roster, an overview per client, prompts, sources cited, brands, a review queue and reports. A runner service that sends prompt sets through the API within a monthly cap and emails the strategist when a batch finishes. A one-click send to Claude with the analysis instructions and the recorded material attached, and a client view a strategist can share.
+They can still show whether the model mentions a brand and how it describes it, but the strategist needs to know which search details are available before using the response to explain why that brand appeared.
+
+The dashboard lets the team inspect an individual recording or export the responses to a batch of prompts for further analysis. This lets them compare how the platform describes and recommends a brand across several responses, instead of treating one answer as a complete explanation of how it sees the brand.
+
+The team uses the tool to collect AI search activity. It gives them evidence for questions about AI visibility and helps them know how to optimize a client's brand better for AI search.
 
 ![The review queue identifies captured and simulated runs. Incomplete captures have a separate count.](images/fanout-query-analysis-tool/fanout-05-review.png)
-
-*The review queue identifies captured and simulated runs. Incomplete captures have a separate count.*
-
-### Green tests kept missing what the live app showed
-
-The first live capture found 46 pages and 14 citations, and three defects that 283 passing tests had missed. That kept happening, so I stopped trusting green tests on their own. 117 runner tests passed against database rows that never occur in production. A speed fix kept 2,209 tests green and broke the page in the browser, so I reverted it. Bug hunts before the team got access found that any signed-in account could empty twelve tables, and that the extension dropped answers on Claude and Perplexity. Both were fixed.
-
-Simulated runs cost about $0.04 a prompt, and a client's 100-prompt set about $4 to $6. In a 38-prompt trial the simulated runs agreed with the captured ones on brand mentions 36 times.
-
-It took 309 commits over 24 days. It ended with 28 clients and 141 live captures in the database, and the wider team was given access.

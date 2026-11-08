@@ -28,13 +28,12 @@ describe('the dated record', () => {
   });
 
   it('carries the passages that moved off the homepage, word for word', async () => {
-    const { CONTENTDB, READING_APP, GARDE } = await import('@/lib/content/home-copy');
+    const { CONTENTDB, GARDE } = await import('@/lib/content/home-copy');
     const byId = new Map(entries.map((e) => [e.id, e]));
     expect(byId.get('contentdb')?.body).toEqual([CONTENTDB.p1, CONTENTDB.p2]);
-    expect(byId.get('reading-app')?.body).toEqual([READING_APP.p1]);
-    expect(byId.get('reading-app')?.links.map((l) => l.href)).toContain('/the-success-message-was-the-bug');
+    expect(byId.has('reading-app')).toBe(false);
     // Garde lives on About and in its own essay, not in the writing record (Peace, 3 Nov 2026).
     expect(byId.has('garde')).toBe(false);
-    expect(GARDE.essay).toBe('/what-i-learned-vibe-coding-my-first-app-shutting-it-down');
+    expect(GARDE.essay).toBe('/blog/what-i-learned-vibe-coding-my-first-app-shutting-it-down');
   });
 });

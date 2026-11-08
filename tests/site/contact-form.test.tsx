@@ -1,0 +1,20 @@
+import { act } from 'react';
+import { createRoot } from 'react-dom/client';
+import { afterEach, expect, it, vi } from 'vitest';
+import ContactForm from '@/app/contact/ContactForm';
+let root: ReturnType<typeof createRoot>;
+afterEach(async () => { await act(async () => root?.unmount()); document.body.innerHTML = ''; vi.unstubAllGlobals(); });
+it('keeps the form available after a failed request and supports a successful retry', async () => {
+  const fetchMock = vi.fn().mockRejectedValueOnce(new Error('offline')).mockResolvedValueOnce({ ok: true });
+  vi.stubGlobal('fetch', fetchMock);
+  document.body.innerHTML = '<div id="app"></div>';
+  root = createRoot(document.getElementById('app')!);
+  await act(async () => root.render(<ContactForm />));
+  await act(async () => document.querySelector('form')!.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true })));
+  expect(document.querySelector('[role="alert"]')?.textContent).toContain('What you typed is still here');
+  expect(document.querySelector('form')).not.toBeNull();
+  expect(document.querySelector<HTMLButtonElement>('button[type="submit"]')?.disabled).toBe(false);
+  expect(fetchMock.mock.calls[0][1].signal).toBeInstanceOf(AbortSignal);
+  await act(async () => document.querySelector('form')!.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true })));
+  expect(document.querySelector('[role="status"]')?.textContent).toBe('Message sent.');
+});

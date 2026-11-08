@@ -353,3 +353,25 @@ Checks: 163 tests, tsc, build, behaviour 11/11, the changed pages at 1440 and 39
 
 ## 2026-11-04 (night, correction): dates back, tags gone
 Correction to the previous entry: Peace's "the dates for all publication has been removed" was a report of a regression, not an instruction, and I removed blog dates on the strength of it. Restored: the blog list shows date and read time again (`components/ArticleCard.tsx`) and the post header shows the date (`app/[slug]/page.tsx`). New: every case-study page shows its publication date under the blurb (`.cs-date`), the day it first went onto the site from git history, 25 Oct 2026 for the nine imported studies (`published` in the importer META and front matter) and 25 Apr 2026 for ManyRequests. Build months stay out of the text, as Peace asked. Topic tags ("Building · AI") removed from the blog list and the post kicker: they weren't links and added nothing. Checks: 163 tests, tsc, build, behaviour 11/11, blog, a post and a case study at 1440 and 390 with no overflow.
+
+
+## 7 November 2026 — local prepublication audit
+
+Preserved approved copy and existing dirty work. Added responsive content images, keyboard image viewing, mobile-menu/search accessibility corrections, contact validation/timeout, and MyLinks sitemap coverage. Moved the existing Calendly fallback above its desktop iframe. Production build and 157 tests passed (18 existing skips). Desktop/mobile previews and outstanding live checks are in `docs/qa/prepublication-2026-11-07/AUDIT.md`. Nothing committed, pushed or published.
+
+## 7 November 2026 — ManyRequests evidence and testimonial follow-up
+
+At Peace's request, switched all seven SERP images to complete original captures with surrounding results, removing only the blank canvas outside the captured page. Removed repeated position/date captions, full-screenshot links, screenshot-method paragraph and pre-June transcript source note. Used Peace's attribution "Regine Garcia, operations and content lead at ManyRequests, wrote:" and included all four paragraphs from the testimonial already stored in app/testimonials/page.tsx. Fresh search results varied; retained the original dated captures matching the existing table rather than substituting new rankings. Local development rendering and production build verified; not published. This approved follow-up supersedes the earlier audit's copy baseline for content/pages/manyrequests.md only.
+
+## 8 November 2026 — main-site review and reviewer portraits
+
+Latest user decisions supersede earlier palette and pricing notes:
+
+- The actual homepage uses the accepted compact V2 layout; preview routes redirect to the real pages. Light mode is the default.
+- Services has no discounted monthly article package or volume discount. SEO/AEO consulting uses Peace's supplied copy, links the phrase “AEO is a real channel to optimize for” to the AEO article, and has no Custom pricing line. AI workflows retains Custom pricing.
+- Link underlines match their text colour across themes. The gold link-rule treatment from the November 4 design pass is superseded.
+- Reuse existing reviewer portraits. Use Peace's supplied cap-and-patterned-shirt photo for Lateef, not the newer LinkedIn download. Add small portraits beside the existing testimonial attributions without rewriting quotes.
+- The temporary remote editor was removed after its saved edits were transferred into the actual homepage. Do not recreate it.
+- Services CTA hierarchy changes remain a suggestion, not an approved redesign.
+
+Current state, verification limits, screenshots and restart instructions: `plans/handoffs/HANDOFF_portfolio-review-and-portraits_2026-11-08.md`. Changes are local and uncommitted; the November 7 production build predates the latest edits.

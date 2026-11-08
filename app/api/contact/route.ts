@@ -13,10 +13,20 @@ const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export async function POST(req: Request) {
   try {
-    const body = await req.json();
+    let body: Record<string, unknown>;
+    try { body = await req.json(); } catch {
+      return NextResponse.json({ error: 'Missing or invalid fields.' }, { status: 400 });
+    }
+    if (!body || typeof body !== 'object' || Array.isArray(body)) {
+      return NextResponse.json({ error: 'Missing or invalid fields.' }, { status: 400 });
+    }
     const { name, email, company, projectType, stage, about, message, budget } = body;
 
-    if (!name || !email || !projectType || !about || !EMAIL_PATTERN.test(String(email))) {
+    const required = [name, email, projectType, about];
+    const optional = [company, stage, message, budget];
+    if (required.some((value) => typeof value !== 'string' || !value.trim() || value.length > 10000)
+      || optional.some((value) => value != null && (typeof value !== 'string' || value.length > 10000))
+      || typeof email !== 'string' || email.length > 254 || !EMAIL_PATTERN.test(email)) {
       return NextResponse.json({ error: 'Missing or invalid fields.' }, { status: 400 });
     }
 
