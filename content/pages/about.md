@@ -53,7 +53,3 @@ My research includes:
 Let’s talk about your BOFU content needs or workflows you’d like to automate.
 
 <p class="cta-row"><a class="button button-ink" href="https://calendly.com/akindayopeaceakinwale/30min">Book a 30-minute call ↗</a> <a href="/services">See services and prices</a></p>
-
-## Want to recommend me to someone. Here's a bit about me to tell them:
-
-Peace Akinwale writes B2B SaaS content and builds AI workflows for marketing teams and agencies. He writes BOFU content optimized for AI search and intentionally mentions your product capabilities so human readers and AI tools can tie your brand to the relevant use cases. He has designed a browser extension to record AI search activity, and can help with automation with AI where your team needs one. He's Peace Akinwale on LinkedIn and you can book a call here: <span>https://calendly.com/akindayopeaceakinwale/30min</span>

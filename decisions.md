@@ -426,3 +426,9 @@ Full desktop menu now shows from 840px (was 1024px), so narrower desktop windows
 Peace selected the refined calligraphic PA signature from the Codex mockups and explicitly requested publication. This supersedes the Fraunces monogram selection above. The approved generated source is `public/brand/pa-signature.png`; `scripts/generate-logo-favicon.js` exports the rounded browser icons (ICO 16/32/48/256, PNG 32/192) and square Apple icon (180).
 
 The About portrait no longer sets the height of the entire introduction. It floats beside the text, with a consistent 24px gap from the opening paragraph to “Data-led content strategy”. Corrected the image's intrinsic dimensions to 4016×6016 and used a 4:5 display frame with a closer, subject-centered crop; the source photo is unchanged. Text is unchanged. Checked 320, 390, 640, 641, 889 and 1440px: no horizontal overflow. Existing suite: 157 passed, 18 pre-existing skips.
+
+## 8 November 2026 — copyable referral introduction
+
+Peace wanted the About-page recommendation paragraph to look like an introduction visitors can send to someone and requested a copy button. Moved the existing wording into `components/ReferralCard.tsx`, with paragraph breaks, a short “Want to recommend me?” heading and a separate bordered card using site colours. The copy action includes the full introduction and booking URL, excludes the heading/helper/button text, and confirms success only after clipboard writing resolves. A denied/unavailable clipboard selects the message and offers manual-copy guidance. About-only placement uses the content page's children slot; other page copy is unchanged.
+
+Verified a real browser copy and keyboard paste: the pasted text exactly matches all visible message paragraphs plus the URL (516 characters). Checked desktop and 390px layout; no horizontal overflow. Added success and clipboard-denial tests: 159 tests passed, with 18 existing skips. Production build passed.
