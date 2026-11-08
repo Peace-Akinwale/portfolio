@@ -6,6 +6,7 @@
 .referral-message p { margin: 0 0 16px; }
 .referral-message p:last-child { margin-bottom: 0; }
 .referral-message a { color: inherit; text-decoration: underline; text-underline-offset: 4px; overflow-wrap: anywhere; }
+.referral-manual-copy { display: block; width: 100%; min-height: 12rem; margin-top: 20px; padding: 12px; border: 1px solid var(--border-strong); border-radius: 8px; background: var(--background); color: var(--foreground); font: inherit; line-height: 1.5; resize: vertical; }
 .referral-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 12px 18px; margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--border-strong); }
 .referral-actions .button { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; }
 .referral-actions .button:disabled { opacity: .65; cursor: wait; }

@@ -35,6 +35,7 @@ it('copies the complete referral with its usable booking URL, without the surrou
   expect(copied).toContain('He’s Peace Akinwale on LinkedIn');
   expect(copied).toContain(LINKEDIN_URL);
   expect(document.querySelector(`a[href="${LINKEDIN_URL}"]`)?.textContent).toBe('Peace Akinwale on LinkedIn');
+  expect(document.querySelector(`a[href="${CALENDLY_URL}"]`)?.textContent).toBe('Book a call');
   expect(copied.endsWith(CALENDLY_URL)).toBe(true);
   expect(copied).not.toContain('Want to recommend me?');
   expect(copied).not.toContain('Copy introduction');
@@ -48,6 +49,11 @@ it('never claims success when copying is blocked and selects the full introducti
   expect(button.textContent).toBe('Copy introduction');
   expect(button.disabled).toBe(false);
   expect(document.querySelector('[role="status"]')?.textContent).toContain('Couldn’t copy automatically');
-  expect(window.getSelection()?.toString()).toContain(CALENDLY_URL);
-  expect(window.getSelection()?.toString()).toMatch(/^Peace Akinwale/);
+  const manualCopy = document.querySelector('textarea')!;
+  expect(manualCopy.value).toContain(CALENDLY_URL);
+  expect(manualCopy.value).toContain(LINKEDIN_URL);
+  expect(manualCopy.value).toMatch(/^Peace Akinwale/);
+  expect(document.activeElement).toBe(manualCopy);
+  expect(manualCopy.selectionStart).toBe(0);
+  expect(manualCopy.selectionEnd).toBe(manualCopy.value.length);
 });
