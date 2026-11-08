@@ -1,69 +1,47 @@
+// Export the approved signature artwork to the app's browser and home-screen icons.
 const sharp = require('sharp');
-const path = require('path');
+const fs = require('node:fs/promises');
+const path = require('node:path');
 
+const source = path.join(__dirname, '../public/brand/pa-signature.png');
 const outputDir = path.join(__dirname, '../app');
 
-// Brand colors
-const navy = '#1a1f36';
-const orange = '#e07a5f';
-const white = '#ffffff';
-
-async function generateLogoFavicon() {
-  try {
-    // Create SVG for the logo - PA initials on navy background
-    const svg = `
-      <svg width="512" height="512" xmlns="http://www.w3.org/2000/svg">
-        <rect width="512" height="512" fill="${navy}" rx="64"/>
-        <text
-          x="50%"
-          y="50%"
-          font-family="Georgia, serif"
-          font-size="280"
-          font-weight="bold"
-          fill="${white}"
-          text-anchor="middle"
-          dominant-baseline="central"
-        >PA</text>
-      </svg>
-    `;
-
-    const svgBuffer = Buffer.from(svg);
-
-    // Generate 32x32 favicon
-    await sharp(svgBuffer)
-      .resize(32, 32)
-      .png()
-      .toFile(path.join(outputDir, 'icon.png'));
-
-    console.log('✓ Generated app/icon.png (32x32)');
-
-    // Generate Apple icon (180x180)
-    await sharp(svgBuffer)
-      .resize(180, 180)
-      .png()
-      .toFile(path.join(outputDir, 'apple-icon.png'));
-
-    console.log('✓ Generated app/apple-icon.png (180x180)');
-
-    // Generate larger icon for better quality
-    await sharp(svgBuffer)
-      .resize(192, 192)
-      .png()
-      .toFile(path.join(outputDir, 'icon-192.png'));
-
-    console.log('✓ Generated app/icon-192.png (192x192)');
-
-    // Also save the SVG directly (best for modern browsers)
-    const fs = require('fs');
-    fs.writeFileSync(path.join(outputDir, 'icon.svg'), svg);
-    console.log('✓ Generated app/icon.svg (scalable)');
-
-    console.log('\nLogo favicons generated successfully!');
-    console.log('Design: White "PA" initials on navy blue background');
-  } catch (error) {
-    console.error('Error generating logo favicons:', error);
-    process.exit(1);
-  }
+async function icon(size, rounded = true) {
+  const resized = await sharp(source).resize(size, size).png().toBuffer();
+  if (!rounded) return resized;
+  const mask = Buffer.from(`<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}"><rect width="${size}" height="${size}" rx="${size * 0.18}" fill="white"/></svg>`);
+  return sharp(resized).composite([{ input: mask, blend: 'dest-in' }]).png().toBuffer();
 }
 
-generateLogoFavicon();
+async function generateLogoFavicon() {
+  const sizes = [16, 32, 48, 256];
+  const images = await Promise.all(sizes.map(size => icon(size)));
+  // ICO directory followed by PNG payloads; 0 represents 256 in its byte fields.
+  const directory = Buffer.alloc(6 + sizes.length * 16);
+  directory.writeUInt16LE(1, 2);
+  directory.writeUInt16LE(sizes.length, 4);
+  let offset = directory.length;
+  sizes.forEach((size, i) => {
+    const entry = 6 + i * 16;
+    directory[entry] = size % 256;
+    directory[entry + 1] = size % 256;
+    directory.writeUInt16LE(1, entry + 4);
+    directory.writeUInt16LE(32, entry + 6);
+    directory.writeUInt32LE(images[i].length, entry + 8);
+    directory.writeUInt32LE(offset, entry + 12);
+    offset += images[i].length;
+  });
+  await Promise.all([
+    fs.writeFile(path.join(outputDir, 'favicon.ico'), Buffer.concat([directory, ...images])),
+    fs.writeFile(path.join(outputDir, 'icon.png'), images[1]),
+    icon(192).then(data => fs.writeFile(path.join(outputDir, 'icon-192.png'), data)),
+    // iOS applies its own corner mask.
+    icon(180, false).then(data => fs.writeFile(path.join(outputDir, 'apple-icon.png'), data)),
+  ]);
+  console.log('Exported PA signature: favicon.ico (16/32/48/256), icon.png, icon-192.png, apple-icon.png');
+}
+
+generateLogoFavicon().catch(error => {
+  console.error(error);
+  process.exitCode = 1;
+});

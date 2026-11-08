@@ -420,3 +420,9 @@ Peace chose round-1 design A over five round-2 variations: a tight "PA" in Fraun
 ## 8 November 2026 — header menu
 
 Full desktop menu now shows from 840px (was 1024px), so narrower desktop windows keep it instead of folding into the menu button (Peace, after comparing with a colleague's site). Contact is left out of the desktop menu because "Let’s chat" does that job; the phone menu and the footer still link Contact. Between 840 and 1023px the links are 14.5px with 18px gaps. Checked at 390, 600, 839, 840, 900, 1024 and 1280px: no overflow.
+
+## 8 November 2026 — signature favicon and About spacing
+
+Peace selected the refined calligraphic PA signature from the Codex mockups and explicitly requested publication. This supersedes the Fraunces monogram selection above. The approved generated source is `public/brand/pa-signature.png`; `scripts/generate-logo-favicon.js` exports the rounded browser icons (ICO 16/32/48/256, PNG 32/192) and square Apple icon (180).
+
+The About portrait no longer sets the height of the entire introduction. It floats beside the text, with a consistent 24px gap from the opening paragraph to “Data-led content strategy”. Corrected the image's intrinsic dimensions to 4016×6016 and used a 4:5 display frame with a closer, subject-centered crop; the source photo is unchanged. Text is unchanged. Checked 320, 390, 640, 641, 889 and 1440px: no horizontal overflow. Existing suite: 157 passed, 18 pre-existing skips.
