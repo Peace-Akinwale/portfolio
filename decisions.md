@@ -412,3 +412,7 @@ Peace approved fixing the six before-launch findings (report: three agents plus 
 - /writing: client headings match on aliases (Pangea arrives as "pangea", the essays as "Old Essays"), "All <client> articles" links map to /writing/<client> (`publicHref`) and are underlined, Pangea is "Pangea.ai" on /writing and on its own page's cards (`CLIENT_NAME_OVERRIDES`).
 - Client pages get their own description, Open Graph and Twitter tags (they inherited the homepage's og:url and og:title); descriptions are the approved /writing copy, defined once in `CLIENT_PAGE_DESCRIPTIONS`.
 - ContentDB's "Back to projects" removed (duplicated the page's own "Back to case studies").
+
+## 8 November 2026 — browser icon
+
+Peace chose round-1 design A over five round-2 variations: a tight "PA" in Fraunces (wght 760, opsz 144) in #E6EEF4 on a #0F2334 rounded tile, drawn as vector paths from the site's own font (source: `public/brand/pa-monogram.svg`). Rendered to `app/favicon.ico` (16, 32, 48, 256), `app/icon.png` (32) and `app/apple-icon.png` (180, full-bleed square because iOS rounds it). Replaces the Feb 2026 PA-on-navy icon.
