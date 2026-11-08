@@ -2,7 +2,7 @@ import { act } from 'react';
 import { createRoot } from 'react-dom/client';
 import { afterEach, expect, it, vi } from 'vitest';
 import { ReferralCard } from '@/components/ReferralCard';
-import { CALENDLY_URL } from '@/lib/site';
+import { CALENDLY_URL, LINKEDIN_URL } from '@/lib/site';
 
 let root: ReturnType<typeof createRoot> | undefined;
 const clipboardDescriptor = Object.getOwnPropertyDescriptor(navigator, 'clipboard');
@@ -33,6 +33,8 @@ it('copies the complete referral with its usable booking URL, without the surrou
   expect(copied).toMatch(/^Peace Akinwale writes B2B SaaS content/);
   expect(copied).toContain('He has designed a browser extension to record AI search activity');
   expect(copied).toContain('He’s Peace Akinwale on LinkedIn');
+  expect(copied).toContain(LINKEDIN_URL);
+  expect(document.querySelector(`a[href="${LINKEDIN_URL}"]`)?.textContent).toBe('Peace Akinwale on LinkedIn');
   expect(copied.endsWith(CALENDLY_URL)).toBe(true);
   expect(copied).not.toContain('Want to recommend me?');
   expect(copied).not.toContain('Copy introduction');

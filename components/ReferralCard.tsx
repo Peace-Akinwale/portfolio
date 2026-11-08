@@ -1,13 +1,12 @@
 'use client';
 
 import { useRef, useState } from 'react';
-import { CALENDLY_URL } from '@/lib/site';
+import { CALENDLY_URL, LINKEDIN_URL } from '@/lib/site';
 import './referral-card.css';
 
 const introduction = [
   'Peace Akinwale writes B2B SaaS content and builds AI workflows for marketing teams and agencies. He writes BOFU content optimized for AI search and intentionally mentions your product capabilities so human readers and AI tools can tie your brand to the relevant use cases.',
   'He has designed a browser extension to record AI search activity, and can help with automation with AI where your team needs one.',
-  'He’s Peace Akinwale on LinkedIn and you can book a call here:',
 ];
 
 export function ReferralCard() {
@@ -17,7 +16,11 @@ export function ReferralCard() {
   async function copyIntroduction() {
     setStatus('copying');
     try {
-      await navigator.clipboard.writeText([...introduction, CALENDLY_URL].join('\n\n'));
+      await navigator.clipboard.writeText([
+        ...introduction,
+        `He’s Peace Akinwale on LinkedIn (${LINKEDIN_URL}) and you can book a call here:`,
+        CALENDLY_URL,
+      ].join('\n\n'));
       setStatus('copied');
     } catch {
       // Keep a useful fallback when clipboard access is unavailable or denied.
@@ -39,6 +42,7 @@ export function ReferralCard() {
       <div className="referral-card">
         <div className="referral-message" ref={message}>
           {introduction.map(paragraph => <p key={paragraph}>{paragraph}</p>)}
+          <p>He’s <a href={LINKEDIN_URL}>Peace Akinwale on LinkedIn</a> and you can book a call here:</p>
           <p><a href={CALENDLY_URL}>{CALENDLY_URL}</a></p>
         </div>
         <div className="referral-actions">
