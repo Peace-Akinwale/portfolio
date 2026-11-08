@@ -49,6 +49,11 @@ export default function HomePage() {
       <blockquote>“His top-performing posts are product-led ones, which has led to more traffic and demo requests for ManyRequests.”</blockquote>
       <figcaption className="reviewer-attribution"><Image src="/images/clients/regine-garcia.png" alt="Regine Garcia" width={56} height={56} sizes="56px" /><span>Regine Garcia, operations and content lead at ManyRequests</span></figcaption>
     </figure>
+    {/* Shortened from the Marker.io testimonial on /services and /testimonials (approved 8 Nov 2026). */}
+    <figure className={s.testimonial}>
+      <blockquote>“We never needed more than one round of feedback per article.”</blockquote>
+      <figcaption className="reviewer-attribution"><Image src="/images/clients/nathan-vander-heyden.jpg" alt="Nathan Vander Heyden" width={56} height={56} sizes="56px" /><span>Nathan Vander Heyden, head of marketing at Marker.io</span></figcaption>
+    </figure>
     <section id="selected-work" className={s.work} aria-labelledby="selected-title">
       <div className={s.sectionHead}><h2 id="selected-title">Selected work</h2><Link href="/case-studies">See all case studies ↗</Link></div>
       <div className={s.projects}>
@@ -60,9 +65,9 @@ export default function HomePage() {
         </article>
         <article className={s.project}>
           <h3>Product-led content for Exceed SEO</h3>
-          <p>Comparison content, listicles and practical how-to guides for two event software clients.</p>
+          <p>I&apos;ve written comparison content and how-to guides for two of Exceed SEO&apos;s event software clients.</p>
           <Link className={s.projectImage} href="/case-studies/exceed-seo" aria-label="Explore the Exceed SEO case study"><Image src="/case-studies/exceed-seo/lateef-research-feedback.png" width={1196} height={310} sizes="(max-width: 700px) 90vw, 580px" alt="Lateef Maleek praises the depth, quality and specificity of Peace’s product research" /></Link>
-          <Link className={s.read} href="/case-studies/exceed-seo">Read a bit about my craft ↗</Link>
+          <Link className={s.read} aria-label="Read the Exceed SEO case study" href="/case-studies/exceed-seo">Read the case study ↗</Link>
         </article>
         <article className={s.project}>
           <h3>A tool to analyze fanout queries</h3>
@@ -74,14 +79,14 @@ export default function HomePage() {
           <h3>ContentDB</h3>
           <p>Find useful quotes and their original context in your saved research while writing in Claude or ChatGPT.</p>
           <Link className={s.projectImage} href={CONTENTDB.caseStudy} aria-label="Explore the ContentDB case study"><Image src="/images/approved/contentdb/02-keyword-search-retainer.jpg" width={1440} height={1000} sizes="(max-width: 700px) 90vw, 580px" alt="ContentDB search for retainer, showing multiple sources and their surrounding context" /></Link>
-          <Link className={s.read} href={CONTENTDB.caseStudy}>Explore ContentDB ↗</Link>
+          <Link className={s.read} aria-label="Read the ContentDB case study" href={CONTENTDB.caseStudy}>Read the case study ↗</Link>
         </article>
 
       </div>
       <p className={s.otherWork}>More projects: <Link href="/case-studies/aloud">Aloud</Link> · <Link href="/case-studies/ai-docs-watch">AI Docs Watch</Link> · <Link href="/projects/mylinks">MyLinks</Link></p>
     </section>
     <section className={s.contact} aria-labelledby="contact-title">
-      <div><h2 id="contact-title">Have something in mind?</h2><p>Tell me about your product, the article you need, or the task your team keeps repeating.</p></div>
+      <div><h2 id="contact-title">Have something in mind?</h2><p>Let’s talk about your BOFU content needs or workflows you’d like to automate.</p></div>
       <div className={s.actions}><a className={s.primary} href={CALENDLY_URL} target="_blank" rel="noopener noreferrer">Book a 30-minute call ↗</a><Link className={s.secondary} href="/services">See services and prices ↗</Link></div>
     </section>
   </div>;

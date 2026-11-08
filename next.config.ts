@@ -26,6 +26,16 @@ const nextConfig: NextConfig = {
         destination: '/blog/sales-enablement-content-strategy',
         permanent: true,
       },
+      // 8 Nov 2026: the client writing pages moved under /writing.
+      { source: '/b2b-content-for-manyrequests', destination: '/writing/manyrequests', permanent: true },
+      { source: '/content-for-highervisibility', destination: '/writing/highervisibility', permanent: true },
+      { source: '/content-for-pangea', destination: '/writing/pangea', permanent: true },
+      // 8 Nov 2026: the writing samples page moved from /portfolio to /writing.
+      {
+        source: '/portfolio',
+        destination: '/writing',
+        permanent: true,
+      },
       {
         source: '/page/about',
         destination: '/about',
@@ -33,7 +43,7 @@ const nextConfig: NextConfig = {
       },
       {
         source: '/page/portfolio',
-        destination: '/portfolio',
+        destination: '/writing',
         permanent: true,
       },
       // The projects index and the contentDB project page moved to the case
@@ -52,7 +62,7 @@ const nextConfig: NextConfig = {
       {
         // 4 Nov 2026: the Marker.io samples now sit on the writing page.
         source: '/b2b-content-for-marker.io',
-        destination: '/portfolio',
+        destination: '/writing',
         permanent: true,
       },
       {

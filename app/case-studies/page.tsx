@@ -16,11 +16,21 @@ export const metadata: Metadata = withOg({
 }, { key: 'case-studies', path: '/case-studies', alt: 'Case studies by Peace Akinwale' });
 
 type Entry = { title: string; href: string; summary: string; image?: { src: string; alt: string } };
+
+// Images whose shape differs from the 16:10 card are shown whole, centred on a
+// mat in the image's own edge colour, so no white strip shows beside them (8 Nov 2026).
+const MATS: Record<string, string> = {
+  '/course-portal-cover-blue.png': '#d0e0eb',
+  '/lateef-research-feedback.png': '#1b1d21',
+};
+function matFor(src: string): string | undefined {
+  return Object.entries(MATS).find(([end]) => src.endsWith(end))?.[1];
+}
 function Row({ entry }: { entry: Entry }) {
   return (
     <li className={entry.image ? "cs-row" : "cs-row cs-row-text-only"}>
-      {entry.image && <Link href={entry.href} className="cs-row-shot" tabIndex={-1} aria-hidden="true">
-        {entry.image && <Image src={entry.image.src} alt="" fill style={entry.image.src.endsWith("/course-portal-cover-blue.png") || entry.image.src.endsWith("/lateef-research-feedback.png") ? { objectFit: "contain" } : undefined} sizes="(max-width: 700px) 100vw, 260px" />}
+      {entry.image && <Link href={entry.href} className="cs-row-shot" tabIndex={-1} aria-hidden="true" style={matFor(entry.image.src) ? { background: matFor(entry.image.src)! } : undefined}>
+        {entry.image && <Image src={entry.image.src} alt="" fill style={matFor(entry.image.src) ? { objectFit: "contain", objectPosition: "center" } : undefined} sizes="(max-width: 700px) 100vw, 260px" />}
       </Link>}
       <div>
         <h3><Link href={entry.href}>{entry.title}</Link></h3>

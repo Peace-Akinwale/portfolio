@@ -9,7 +9,7 @@ const APPROVED_BODY: Record<string, string[]> = {
 };
 
 
-// The dated record on /portfolio: everything Peace built, wrote and decided,
+// The dated record on /writing: everything Peace built, wrote and decided,
 // newest first, in one list. Built entries come from the case studies, article
 // entries from the local articles, and the rest (writing samples with evidence,
 // what clients said, dated decisions) from record-static.ts.

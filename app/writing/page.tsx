@@ -17,8 +17,8 @@ export const revalidate = 300;
 export const metadata: Metadata = withOg({
   title: 'B2B SaaS content writing portfolio · Peace Akinwale',
   description: descriptions.Writing,
-  alternates: { canonical: `${SITE_URL}/portfolio` },
-}, { key: 'portfolio', path: '/portfolio', alt: 'Writing samples by Peace Akinwale' });
+  alternates: { canonical: `${SITE_URL}/writing` },
+}, { key: 'portfolio', path: '/writing', alt: 'Writing samples by Peace Akinwale' });
 
 // 4 Nov 2026: the writing page leads with proof and then every sample by client.
 // The dated record and its month rail are gone (page plan); the Marker.io page
@@ -86,7 +86,13 @@ export default async function PortfolioPage() {
     <div className="gutter mx-auto max-w-[1180px]">
       <header className="writing-head">
         <h1>Content that helps your prospects understand the product</h1>
-        <p className="lede">I write B2B SaaS content for companies and agencies, including bottom-of-funnel (BOFU) comparisons and alternatives pages for readers choosing a product. I research the job your prospect needs to do, then explain the capabilities, examples and limitations that matter to that decision. This gives the reader enough context to understand why they might need your product, and gives AI search tools clear material to connect your brand with those use cases.</p>
+        <p className="lede">I write B2B SaaS content for companies and agencies, including bottom-of-funnel (BOFU) comparisons and alternatives pages for readers choosing a product.</p>
+        {/* The intro split by job: how, what the reader gets, what AI tools get (approved 8 Nov 2026). */}
+        <dl className="writing-how">
+          <div><dt>How I write it</dt><dd>I research the job your prospect needs to do, then explain the capabilities, examples and limitations that matter to that decision.</dd></div>
+          <div><dt>What your reader gets</dt><dd>Enough context to understand why they might need your product.</dd></div>
+          <div><dt>What AI tools get</dt><dd>Clear context to connect your brand with those use cases.</dd></div>
+        </dl>
       </header>
 
       <section className="writing-proof" aria-label="Evidence">
@@ -104,7 +110,7 @@ export default async function PortfolioPage() {
 
       <WritingSamples parsed={samples} />
 
-      <section className="border-t border-border pt-10" aria-label="More">
+      <section className="writing-more border-t border-border pt-10" aria-label="More">
         <p className="go">
           <Link href="/testimonials">What clients say</Link>
           <Link href="/blog/how-to-optimize-for-aeo">How I approach AEO</Link>

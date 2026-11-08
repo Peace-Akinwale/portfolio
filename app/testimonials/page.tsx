@@ -191,7 +191,7 @@ const screenshotTestimonials: ScreenshotTestimonial[] = [
   {
     name: 'Lateef Maleek',
     photo: '/images/clients/lateef-maleek.png',
-    role: 'Agency owner',
+    role: 'Senior Content Strategist',
     company: 'Exceed SEO',
     note: 'A message from 21 September 2026 about the depth and specificity of the research, with my reply',
     image: '/case-studies/exceed-seo/lateef-research-feedback.png',

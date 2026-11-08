@@ -65,7 +65,7 @@ html:has(.cs-chapter) { scroll-padding-top: 80px; }
 .cs-group h2 { font-size: 1.2rem; font-family: var(--font-sans); font-weight: 600; margin: 0 0 6px; letter-spacing: 0; }
 .cs-group > p { font-size: 15px; color: var(--muted-foreground); max-width: var(--measure); margin: 0 0 20px; }
 
-/* index list, 29 Oct 2026: one dated column after /portfolio's record rows. Date
+/* index list, 29 Oct 2026: one dated column after /writing's record rows. Date
    and kind on the meta line, the name as the heading, one line under it, and a
    thumbnail slot on the right when the case study has a screenshot. */
 .cs-list { list-style: none; margin: 0; padding: 0; max-width: 980px; }

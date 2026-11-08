@@ -89,7 +89,10 @@ export function listCaseStudies(): CaseStudy[] {
 // The first screenshot in a case study's rendered HTML, for an index thumbnail.
 // Null when the study has no image, so the index leaves the slot out.
 export function firstImage(cs: Pick<CaseStudy, 'html'>): { src: string; alt: string; portrait: boolean } | null {
-  const tag = cs.html.match(/<img\b[^>]*>/i)?.[0];
+  // Reviewer portraits (small attribution photos in /images/clients/) are never
+  // the card image: on 8 Nov 2026 Lateef Maleek's photo became the Exceed SEO card.
+  const tag = [...cs.html.matchAll(/<img\b[^>]*>/gi)].map((m) => m[0])
+    .find((t) => !/\bsrc="\/images\/clients\//i.test(t));
   if (!tag) return null;
   const src = tag.match(/\bsrc="([^"]+)"/i)?.[1];
   if (!src) return null;

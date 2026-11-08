@@ -11,7 +11,7 @@ export const X_URL = 'https://x.com/PeaceAkinwaleA';
 export const NAV_LINKS: { href: string; label: string }[] = [
   { href: '/services', label: 'Services' },
   { href: '/case-studies', label: 'Case studies' },
-  { href: '/portfolio', label: 'Writing' },
+  { href: '/writing', label: 'Writing samples' },
   { href: '/blog', label: 'Blog' },
   { href: '/about', label: 'About' },
   { href: '/contact', label: 'Contact' },

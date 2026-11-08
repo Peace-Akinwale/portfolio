@@ -24,7 +24,7 @@ export const NEW_MANYREQUESTS_ARTICLES: PortfolioProject[] = [
   { title: 'How to Keep Track of Invoices Like a Pro [Creative Agency Guide]', link: 'https://www.manyrequests.com/blog/how-to-keep-track-of-invoices-and-payments' },
 ];
 
-// Shown at the top of /portfolio's short ManyRequests list.
+// Shown at the top of /writing's short ManyRequests list.
 const FEATURED_PATHS = ['/blog/wrike-vs-clickup', '/blog/agency-retainer-model', '/blog/agency-pricing-models'];
 export const FEATURED_MANYREQUESTS_ARTICLES = NEW_MANYREQUESTS_ARTICLES.filter((article) =>
   FEATURED_PATHS.some((path) => article.link?.endsWith(path)),

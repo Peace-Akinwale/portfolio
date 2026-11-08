@@ -64,3 +64,8 @@ figure.shot img, .prose img { box-shadow: 0 1px 0 rgba(13,30,44,.04), 0 18px 36p
 .reviewer-attribution > div { min-width: 0; }
 .reviewer-attribution > div > strong, .reviewer-attribution > div > span { display: block; }
 .reviewer-attribution img, .prose .reviewer-attribution img { width: 56px; height: 56px; min-width: 56px; flex: 0 0 56px; object-fit: cover; border-radius: 50%; margin: 0; border: 1px solid var(--border); box-shadow: none; }
+
+/* Primary action as a button, secondary as a plain link, replacing "A · B" link
+   pairs in Markdown pages (8 Nov 2026). Beats .prose a / .approved-prose a. */
+.cta-row { display: flex; flex-wrap: wrap; align-items: center; gap: 14px 24px; margin: 20px 0 8px; }
+.prose .cta-row a.button, .approved-prose .cta-row a.button, .cta-row a.button { color: var(--background); text-decoration: none; opacity: 1; }

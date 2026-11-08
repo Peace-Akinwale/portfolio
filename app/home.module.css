@@ -36,6 +36,9 @@
 .projectImage img { width: 100%; height: 100%; object-fit: contain; display: block; }
 .read { justify-self: start; font-size: 15px; text-decoration: underline; padding: 14px 0 8px; min-height: 44px; }
 .testimonial { margin: 0; padding: 32px 0; border-bottom: 1px solid var(--border-strong); }
+/* Two quotes in a row share one rule underneath. */
+.testimonial:has(+ .testimonial) { border-bottom: 0; padding-bottom: 8px; }
+.testimonial + .testimonial { padding-top: 24px; }
 .testimonial blockquote { font-family: var(--font-display-stack); font-size: 30px; line-height: 1.4; max-width: 940px; margin: 0 0 18px; padding: 0; border: none; font-style: normal; color: var(--foreground); }
 .testimonial figcaption { font-size: 14px; color: var(--muted-foreground); }
 .contact { display: grid; grid-template-columns: 1fr 1fr; align-items: center; gap: 50px; padding: 40px 0 50px; }

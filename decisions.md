@@ -375,3 +375,31 @@ Latest user decisions supersede earlier palette and pricing notes:
 - Services CTA hierarchy changes remain a suggestion, not an approved redesign.
 
 Current state, verification limits, screenshots and restart instructions: `plans/handoffs/HANDOFF_portfolio-review-and-portraits_2026-11-08.md`. Changes are local and uncommitted; the November 7 production build predates the latest edits.
+
+## 8 November 2026 — homepage edits after the hiring council
+
+Peace reviewed real before/after screenshots of four proposals from the 8 Nov council (`docs/qa/council/2026-11-08-home.md`) and decided:
+
+- No dated ranking on the homepage. The April 2026 "design annotation tools" position stays in the screenshot's alt text only; neither a caption nor a sentence in the card.
+- Closing line, Peace's own wording: "Let’s talk about your BOFU content needs or workflows you’d like to automate." under "Have something in mind?". Replaces "Tell me about your product, the article you need, or the task your team keeps repeating." on the homepage and on About. No agency sentences.
+- All four "Selected work" links say "Read the case study ↗" (Exceed SEO and ContentDB changed, with matching aria-labels).
+- Exceed SEO card: "I've written comparison content and how-to guides for two of Exceed SEO's event software clients." Homepage only; the case-study blurb is unchanged.
+- Nathan Vander Heyden's line, shortened from the Marker.io testimonial already on Services and Testimonials, sits under Regine's quote: "We never needed more than one round of feedback per article."
+
+Checks: 157 tests passed (18 skipped), tsc clean, served text verified on / and /about, both sections viewed at 1440 and 390 with no overflow. Not committed.
+
+- Services, SEO and AEO consulting: "say is a distraction" now links to https://www.mariehaynes.com/geo-is-a-distraction/ (Peace, 8 Nov).
+- About: opening restored from the live peaceakinwale.com/about (heading "B2B content that delivers revenue", the data-led strategy section, the 233% result and the portfolio link), replacing "I’m Peace Akinwale" + the orphaned "That’s why…" paragraph that came in with V2. Headings set in sentence case; wording otherwise as live (Peace, 8 Nov).
+- About: removed the "By the way, I write on familiar topics…" paragraph and its 💡 callout icon (Peace, 8 Nov).
+- Services AI workflows section: leave as it is for now (Peace, 8 Nov). The callout mockups were not applied.
+- Contact: the two intro paragraphs now match the About and Services intros (1.15rem, normal text colour) instead of 14px grey; the sent message uses 17px. Form labels and helper notes stay small (Peace, 8 Nov).
+- Testimonials: Lateef Maleek’s role corrected from "Agency owner" to "Senior Content Strategist", matching About and the Exceed case study (Peace, 8 Nov).
+- Case-study cards: reviewer portraits (/images/clients/) are never used as a card image (lib/content/case-studies.ts firstImage); the Exceed card now shows the Slack feedback screenshot. Images that do not fit 16:10 sit centred on a mat in their own edge colour (course portal #d0e0eb, Slack #1b1d21) instead of leaving a white strip (Peace, 8 Nov).
+- Services payment line: "Wise and other major legal mediums" (Peace, 8 Nov); services-copy test updated to match.
+- "Email me" link labels changed to "Send an email" (Services twice, WorkWithMe default on testimonials, case studies and portfolio) (Peace, 8 Nov).
+- CTA pairs: the five "A · B" link pairs (Services x2, About, ManyRequests, ContentDB) are now a dark button for the main action plus a plain link (.cta-row in app/informal.css). Booking is the button everywhere except ContentDB ("Ask about a similar build"). ManyRequests order swapped so booking comes first (Peace, 8 Nov).
+- Navigation: "Writing" renamed "Writing samples" (lib/site.ts, not-found page, nav test) (Peace, 8 Nov).
+- Writing samples intro split by job: one intro sentence, then "How I write it", "What your reader gets" and "What AI tools get" ("Clear context to connect your brand with those use cases."), all in the normal text colour (Peace, 8 Nov).
+- Writing samples page text set to the site scale: 17px body in the text colour, client names as h3 (1.35rem Fraunces), lede 1.15rem, grey only for image captions (15px) (Peace, 8 Nov).
+- Writing samples page moved from /portfolio to /writing (app/writing). /portfolio, /page/portfolio and /b2b-content-for-marker.io redirect permanently to /writing; nav, not-found, homepage copy, About, record links, sitemap and tests updated. The retired feed stays at /portfolio/rss.xml (410), unchanged (Peace, 8 Nov).
+- URL audit (Peace, 8 Nov): client writing pages moved under /writing (/writing/manyrequests, /writing/highervisibility, /writing/pangea), rendered by app/[slug] through app/writing/[client] with the slug map in lib/content/client-pages.ts; old root addresses redirect permanently and canonicals point to the new paths. Short blog addresses (/<slug>) already redirect permanently to /blog/<slug>; verified, no change. Codex preview routes (/preview-v2, /preview-v2/exceed-seo) removed. MyLinks stays at /projects/mylinks because its Google sign-in callback is registered to that path.

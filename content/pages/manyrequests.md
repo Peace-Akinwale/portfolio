@@ -84,5 +84,5 @@ The work has produced 51 published articles, and the retainer is ongoing. In a s
 
 Tell me about the product and the decisions your buyers are trying to make.
 
-[See services and prices](/services) · [Book a 30-minute call](https://calendly.com/akindayopeaceakinwale/30min)
+<p class="cta-row"><a class="button button-ink" href="https://calendly.com/akindayopeaceakinwale/30min">Book a 30-minute call ↗</a> <a href="/services">See services and prices</a></p>
 

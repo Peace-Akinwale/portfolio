@@ -19,7 +19,7 @@ export type ModifiedAt = (sources: string[]) => Date | null;
 // renders content from another module lists that module too.
 export const FIXED_PAGES: { path: string; sources: string[] }[] = [
   { path: '', sources: ['app/page.tsx', 'lib/content/home-copy.ts'] },
-  { path: '/portfolio', sources: ['app/portfolio/page.tsx', 'lib/content/record.ts', 'lib/content/record-static.ts'] },
+  { path: '/writing', sources: ['app/writing/page.tsx', 'lib/content/record.ts', 'lib/content/record-static.ts'] },
   { path: '/case-studies', sources: ['app/case-studies/page.tsx', 'content/case-studies'] },
   { path: '/projects/mylinks', sources: ['app/projects/mylinks/page.tsx', 'content/pages/mylinks.md'] },
   { path: '/blog', sources: ['app/blog/page.tsx', 'content/articles'] },
@@ -29,9 +29,9 @@ export const FIXED_PAGES: { path: string; sources: string[] }[] = [
   { path: '/testimonials', sources: ['app/testimonials/page.tsx'] },
   { path: '/case-studies/manyrequests', sources: ['app/case-studies/manyrequests/page.tsx', 'content/pages/manyrequests.md', 'lib/portfolio/manyrequests.ts'] },
   // Client sample pages: WordPress pages rendered as portfolio grids by app/[slug].
-  { path: '/b2b-content-for-manyrequests', sources: ['app/[slug]/page.tsx', 'lib/portfolio/manyrequests.ts'] },
-  { path: '/content-for-highervisibility', sources: ['app/[slug]/page.tsx'] },
-  { path: '/content-for-pangea', sources: ['app/[slug]/page.tsx'] },
+  { path: '/writing/manyrequests', sources: ['app/writing/[client]/page.tsx', 'app/[slug]/page.tsx', 'lib/portfolio/manyrequests.ts'] },
+  { path: '/writing/highervisibility', sources: ['app/writing/[client]/page.tsx', 'app/[slug]/page.tsx'] },
+  { path: '/writing/pangea', sources: ['app/writing/[client]/page.tsx', 'app/[slug]/page.tsx'] },
 ];
 
 const gitDates = new Map<string, Date | null>();

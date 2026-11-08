@@ -103,7 +103,7 @@ export const STATIC_ENTRIES: RecordEntry[] = [
       by: 'Nathan Vander Heyden, Head of Marketing at Marker.io, on LinkedIn',
     },
     body: [],
-    links: [{ label: 'The Marker.io samples', href: '/portfolio' }],
+    links: [{ label: 'The Marker.io samples', href: '/writing' }],
   },
   {
     id: 'editor',

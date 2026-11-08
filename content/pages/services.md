@@ -29,7 +29,7 @@ I spend time with your product to really understand how it works, tie the topic 
 - Refresh an existing article, 2,000–2,500 words: **$400 USD**
 - Write a new article, 2,000–3,000 words: **$600 USD**
 
-[Book a 30-minute call](https://calendly.com/akindayopeaceakinwale/30min) · [Email me about an article](mailto:akindayopeaceakinwale@gmail.com?subject=An%20article)
+<p class="cta-row"><a class="button button-ink" href="https://calendly.com/akindayopeaceakinwale/30min">Book a 30-minute call ↗</a> <a href="mailto:akindayopeaceakinwale@gmail.com?subject=An%20article">Send an email about an article</a></p>
 
 [See the ManyRequests work](/case-studies/manyrequests)
 
@@ -46,9 +46,9 @@ I spend time with your product to really understand how it works, tie the topic 
 
 ### SEO and AEO consulting
 
-AEO is a subject many SEOs say is a distraction, and that there isn't an "optimize for AEO" tactic. I understand it. But I also know [AEO is a real channel to optimize for](/blog/how-to-optimize-for-aeo) in a slightly different way from SEO, because just as Google has crawl budgets, AI tools have crawl limits and there are specific things they look for on pages.
+AEO is a subject many SEOs [say is a distraction](https://www.mariehaynes.com/geo-is-a-distraction/), and that there isn't an "optimize for AEO" tactic. I understand it. But I also know [AEO is a real channel to optimize for](/blog/how-to-optimize-for-aeo) in a slightly different way from SEO, because just as Google has crawl budgets, AI tools have crawl limits and there are specific things they look for on your web pages.
 
-I have helped brands and agencies that took AEO seriously, and I can help you choose topics and review how your content explains the use cases you want your brand associated with. This includes identifying questions a buyer may still have after reading the page, so you know where the content needs more context for both readers and AI search tools.
+I have helped brands and agencies that took AEO seriously, and I can help you choose topics and review how your content explains the use cases you want your brand associated with. This includes identifying questions a buyer may still have after reading the page, so you know where the content needs more context for both readers and AI tools.
 
 [Let's talk about how I can help](/contact).
 
@@ -91,7 +91,7 @@ I provide one round of revisions for all articles.
 
 ### How does payment work?
 
-For an article or bundle, 50% is due upfront and 50% on completion. I accept payment through American Banks.
+For an article or bundle, 50% is due upfront and 50% on completion. I accept payment through Wise and other major legal mediums.
 
 ### Can we sign an NDA?
 
@@ -101,4 +101,4 @@ Yes. We can arrange a mutual NDA before the discovery call if you need to discus
 
 Send the topic or describe the task. I’ll reply within a business day.
 
-[Book a 30-minute call](https://calendly.com/akindayopeaceakinwale/30min) · [Email me](mailto:akindayopeaceakinwale@gmail.com)
+<p class="cta-row"><a class="button button-ink" href="https://calendly.com/akindayopeaceakinwale/30min">Book a 30-minute call ↗</a> <a href="mailto:akindayopeaceakinwale@gmail.com">Send an email</a></p>

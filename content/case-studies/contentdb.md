@@ -95,4 +95,4 @@ Use the web app to add and search your sources, then connect contentDB to your A
 
 [Visit contentDB](https://contentdb.peaceakinwale.com)
 
-[Back to projects](/case-studies) · [Ask about a similar build](/contact)
+<p class="cta-row"><a class="button button-ink" href="/contact">Ask about a similar build</a> <a href="/case-studies">Back to projects</a></p>

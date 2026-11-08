@@ -21,7 +21,7 @@ export const WRITING = {
       "label": "Read the ManyRequests case study"
     },
     {
-      "href": "/portfolio",
+      "href": "/writing",
       "label": "Browse writing samples"
     }
   ]

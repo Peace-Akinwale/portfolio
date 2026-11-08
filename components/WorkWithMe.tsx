@@ -7,7 +7,7 @@ import { CALENDLY_URL, EMAIL } from '@/lib/site';
 export function WorkWithMe({
   heading,
   body,
-  secondary = { label: 'Email me', href: `mailto:${EMAIL}` },
+  secondary = { label: 'Send an email', href: `mailto:${EMAIL}` },
 }: {
   heading: string;
   body: string;

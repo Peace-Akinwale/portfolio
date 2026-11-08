@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 const PLACES = [
   { href: '/services', label: 'Services', note: 'What I write and build, and what it costs' },
   { href: '/case-studies', label: 'Case studies', note: 'One page per project, with the whole story' },
-  { href: '/portfolio', label: 'Writing', note: 'Every writing sample by client, and what clients said' },
+  { href: '/writing', label: 'Writing samples', note: 'Every writing sample by client, and what clients said' },
   { href: '/blog', label: 'The blog', note: 'Posts about writing for B2B SaaS and directing AI coding agents through a build' },
   { href: '/contact', label: 'Contact', note: 'Book a call or send a message' },
 ];
@@ -21,7 +21,7 @@ export default function NotFound() {
         <p className="eyebrow mb-4">404</p>
         <h1>I couldn’t find that page</h1>
         <p className="serif mt-4 text-[1.15rem]">The link may have changed. You can browse my work or head back to the homepage.</p>
-        <p className="mt-6 flex gap-6"><Link href="/portfolio">See my work</Link><Link href="/">Go to homepage</Link></p>
+        <p className="mt-6 flex gap-6"><Link href="/writing">See my work</Link><Link href="/">Go to homepage</Link></p>
         <ul className="mt-10 border-t border-border">
           {PLACES.map((place) => (
             <li key={place.href} className="border-b border-border">

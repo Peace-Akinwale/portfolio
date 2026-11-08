@@ -1,6 +1,16 @@
-# I’m Peace Akinwale
+# B2B content that delivers revenue
 
-That's why I write B2B SaaS content and build AI workflows, so potential buyers, whether they're reading from your blog or are asking an AI tool, can get all the information about how your product works and why they may need it.
+I write content that actually works for B2B SaaS companies and marketing agencies— companies that tie every piece to a specific result. My approach:
+
+## Data-led content strategy
+
+I combine keyword research with SERP analysis to identify high-intent opportunities your competitors miss. This helps you rank for terms your ideal customers actually search for.
+
+Result? A 233% increase in organic traffic in 6 months for a client by syncing long-tail keywords in the content.
+
+The contract started in July 2023, and it increased to almost 35k/m in January 2024.
+
+Want to see my portfolio first? [Click here](/writing)
 
 ## Here’s my research process to create product-led content
 
@@ -21,10 +31,6 @@ My research includes:
 - I use **LinkedIn**, **YouTube**, **Twitter**, and **podcasts** to find expert insights when I don’t have an SME to speak to or a tight deadline. I paste a keyword (it doesn’t have to be my primary keyword) into the social platform’s search bar to find context for my topic, and I give credit to the expert when I copy-paste their words.
 - For podcasts, I use [Listennotes](https://www.listennotes.com/?srsltid=AfmBOopSSfiXQmbENGMk9dCqurMT_ZijiMxI0382m4FvdDUPO2XG4OB5) to find pods related to my topic.
 
-💡
-
-By the way, I write on familiar topics and often check my social media and Chrome bookmarks while writing. This makes my writing clearer as I consume more than I create.
-
 - I use my notes and existing research to build an outline.
 - If I need to feature product use cases, I would use the product and jot down features relevant to the article I am writing. I’ll also save some screenshots.
 - I keep my 20+ other tabs open so I can write and double-check if I misinterpreted a statement, idea, or framework.
@@ -44,9 +50,9 @@ By the way, I write on familiar topics and often check my social media and Chrom
 
 ## Have something in mind?
 
-Tell me about your product, the article you need, or the task your team keeps repeating.
+Let’s talk about your BOFU content needs or workflows you’d like to automate.
 
-[Book a 30-minute call](https://calendly.com/akindayopeaceakinwale/30min) · [See services and prices](/services)
+<p class="cta-row"><a class="button button-ink" href="https://calendly.com/akindayopeaceakinwale/30min">Book a 30-minute call ↗</a> <a href="/services">See services and prices</a></p>
 
 ## Want to recommend me to someone. Here's a bit about me to tell them:
 

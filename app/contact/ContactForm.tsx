@@ -76,10 +76,11 @@ export default function ContactForm() {
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <h1 className="text-foreground">Tell me what you’re working on</h1>
         </div>
-        <p className="text-sm leading-relaxed text-muted-foreground mt-4 max-w-lg">
+        {/* Intro matches the About and Services intros (1.15rem, foreground), 8 Nov 2026. */}
+        <p className="text-[1.15rem] leading-[1.6] text-foreground mt-6 max-w-[62ch]">
           Tell me about the content you need, something you want to automate, or an idea you haven’t had time to develop. You don’t need a finished brief to start the conversation.
         </p>
-        <p className="text-sm leading-relaxed text-muted-foreground mt-2 max-w-lg">
+        <p className="text-[1.15rem] leading-[1.6] text-foreground mt-4 max-w-[62ch]">
           The first 30-minute call is free. Further calls are paid consultations, with the fee agreed before booking. You can also email me at <a href="mailto:akindayopeaceakinwale@gmail.com" className="underline underline-offset-2 text-foreground">akindayopeaceakinwale@gmail.com</a>
         </p>
       </div>
@@ -125,7 +126,7 @@ export default function ContactForm() {
       {status === 'sent' ? (
         <div className="flex flex-col gap-4 py-10">
           <p role="status" className="text-2xl font-semibold text-foreground">Message sent.</p>
-          <p className="text-sm text-muted-foreground leading-relaxed">Thanks for writing. I’ll reply within a business day.</p>
+          <p className="text-[17px] text-foreground leading-relaxed">Thanks for writing. I’ll reply within a business day.</p>
           <button
             onClick={() => { setStatus('idle'); setForm({ name: '', email: '', company: '', projectType: '', stage: '', about: '', message: '', budget: '' }); }}
             className="button button-line mt-2 self-start"

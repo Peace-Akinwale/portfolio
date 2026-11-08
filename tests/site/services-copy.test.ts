@@ -7,7 +7,7 @@ describe('selected services copy', () => {
     const figures = [...html.matchAll(/\$([\d,]+)/g)].map((m) => m[1]);
     expect(new Set(figures)).toEqual(new Set(['400', '600', '20', '700']));
     expect(html).toContain('50% is due upfront and 50% on completion');
-    expect(html).toContain('American Banks');
+    expect(html).toContain('Wise and other major legal mediums');
     expect(html).not.toContain('net-15');
     expect(html).not.toContain('Prices in US dollars');
   });

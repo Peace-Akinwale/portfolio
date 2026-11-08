@@ -15,6 +15,7 @@ import { ReadingProgress } from '@/components/ReadingProgress';
 import { TableOfContents } from '@/components/TableOfContents';
 import { ImageLightbox } from '@/components/ImageLightbox';
 import { CodeBlockEnhancer } from '@/components/CodeBlockEnhancer';
+import { publicPathForSlug, withTitleOverride } from '@/lib/content/client-pages';
 import { NEW_MANYREQUESTS_ARTICLES, withCurrentManyRequestsSamples } from '@/lib/portfolio/manyrequests';
 
 interface ArticlePageProps {
@@ -124,14 +125,14 @@ export async function generateMetadata({ params }: ArticlePageProps): Promise<Me
   }
 
   // If not a post, try fetching as a static page
-  const staticPage = await getStaticPage(slug);
+  const staticPage = withTitleOverride(slug, await getStaticPage(slug));
 
   if (staticPage) {
     return {
       title: staticPage.title,
       description: staticPage.title,
       alternates: {
-        canonical: `https://peaceakinwale.com/${slug}`,
+        canonical: `https://peaceakinwale.com${publicPathForSlug(slug)}`,
       },
     };
   }
@@ -152,7 +153,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
 
   // If not a post, try fetching as a static page
   if (!post) {
-    staticPage = await getStaticPage(slug);
+    staticPage = withTitleOverride(slug, await getStaticPage(slug));
     isStaticPage = !!staticPage;
   }
 
@@ -187,7 +188,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
       const coverImage = projectCoverImages[slug];
       const wordCount = staticPage.content.html.replace(/<[^>]+>/g, '').split(/\s+/).filter(Boolean).length;
       const readTime = Math.max(1, Math.round(wordCount / 200));
-      const pageUrl = `https://peaceakinwale.com/${slug}`;
+      const pageUrl = `https://peaceakinwale.com${publicPathForSlug(slug)}`;
       const renderedStaticHtml = stripLeadingDuplicateCoverImage(staticPage.content.html, coverImage);
 
       return (
@@ -262,7 +263,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
           <PortfolioGrid parsed={parsed} pageTitle={staticPage.title} ogImages={ogImages} />
           <div className="max-w-4xl mx-auto px-6 pb-16 text-center">
             <Link
-              href="/portfolio"
+              href="/writing"
               className="inline-block text-sm uppercase tracking-wide border-b-2 border-foreground hover:border-muted-foreground hover:text-muted-foreground transition-colors"
             >
               ← Back to Portfolio

@@ -1,4 +1,4 @@
-/* The dated record (/portfolio), after prototypes/…/dated.html: one column of
+/* The dated record (/writing), after prototypes/…/dated.html: one column of
    entries newest first, a sticky filter bar, a month rail on wide screens. */
 
 .record-open { display: grid; grid-template-columns: minmax(0, 1fr) 220px; gap: 40px; align-items: end; padding: 56px 0 40px; }
@@ -60,17 +60,19 @@
 
 .samples { border-top: 1px solid var(--border); padding: 56px 0 24px; }
 .samples h2 { font-size: clamp(1.8rem, 3vw, 2.6rem); font-weight: 520; margin: 0 0 8px; }
-.samples > p { max-width: var(--measure); color: var(--muted-foreground); margin: 0 0 32px; }
+.samples > p { max-width: var(--measure); color: var(--foreground); font-size: 17px; margin: 0 0 32px; }
 .samples-section { border-top: 1px solid var(--border); padding: 24px 0 28px; display: grid; grid-template-columns: 240px minmax(0, 1fr); gap: 12px 40px; }
-.samples-section h3 { font-family: var(--font-sans); font-size: 15px; font-weight: 600; margin: 0; line-height: 1.4; }
-.samples-section .intro { font-size: 15px; color: var(--muted-foreground); margin: 8px 0 0; max-width: 32ch; }
+/* Text on the Writing samples page follows the site scale (8 Nov 2026): 17px body in the
+   text colour, headings like other pages' h3, grey only for image captions. */
+.samples-section h3 { font-size: 1.35rem; font-weight: 520; margin: 0; line-height: 1.3; }
+.samples-section .intro { font-size: 17px; line-height: 1.55; color: var(--foreground); margin: 8px 0 0; max-width: 32ch; }
 .samples-section .intro p { margin: 0 0 .5em; }
 .samples-section ul { list-style: none; margin: 0; padding: 0; columns: 2; column-gap: 32px; }
-.samples-section li { break-inside: avoid; margin: 0 0 10px; font-size: 15.5px; line-height: 1.4; }
+.samples-section li { break-inside: avoid; margin: 0 0 10px; font-size: 17px; line-height: 1.45; }
 /* Titles are links, so they look like links (council, 4 Nov 2026). */
 .samples-section li a { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; text-decoration-color: color-mix(in srgb, currentColor 35%, transparent); }
 .samples-section li a:hover { text-decoration: underline; color: var(--accent); }
-.samples-section .more { font-size: 14.5px; margin: 8px 0 0; }
+.samples-section .more { font-size: 17px; margin: 8px 0 0; }
 
 @media (max-width: 900px) {
   .record-open { grid-template-columns: minmax(0, 1fr) 150px; gap: 24px; }
@@ -99,12 +101,19 @@
 @media (max-width: 340px) { .record-filters button { padding: 5px 8px; font-size: 13px; } }
 
 /* writing page, 4 Nov 2026: a plain header, two pieces of evidence, then every sample by client. */
-.writing-head { padding: 48px 0 28px; max-width: 64ch; }
+.writing-head { padding: 48px 0 28px; max-width: 980px; }
+.writing-head .lede { max-width: 64ch; }
+.writing-how { display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: 16px 28px; margin: 26px 0 0; }
+.writing-how > div { border-top: 2px solid var(--foreground); padding-top: 12px; min-width: 0; }
+.writing-how dt { font-weight: 600; font-size: 17px; margin: 0 0 6px; }
+.writing-how dd { margin: 0; font-size: 17px; line-height: 1.55; color: var(--foreground); }
+@media (max-width: 760px) { .writing-how { grid-template-columns: 1fr; } }
 .writing-head h1 { margin: 0 0 14px;  }
-.writing-head .lede { font-size: clamp(1.1rem, 1.5vw, 1.3rem); line-height: 1.45; margin: 0; }
+.writing-head .lede { font-size: 1.15rem; line-height: 1.6; margin: 0; }
 .writing-proof { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 40px; align-items: start; padding: 8px 0 48px; }
 .writing-proof figure { margin: 0; }
 .writing-proof img { width: 100%; height: auto; display: block; border-radius: var(--radius, 16px); background: var(--card); box-shadow: 0 24px 48px -32px rgba(13,30,44,.5); }
-.writing-proof figcaption { font-size: 14.5px; color: var(--muted-foreground); margin-top: 10px; }
+.writing-proof figcaption { font-size: 15px; color: var(--muted-foreground); margin-top: 10px; }
 .writing-proof figcaption a { text-decoration: underline; text-underline-offset: 3px; }
 @media (max-width: 800px) { .writing-proof { grid-template-columns: 1fr; } .writing-proof .narrow { max-width: 300px; } }
+.writing-more .go { font-size: 17px; font-weight: 400; }
