@@ -5676,3 +5676,35 @@ Peace continued reviewing the local app after a separate implementation and inde
 - Reviewing the actual onboarding exposed a mismatch that an implementation checklist had not resolved.
 
 ---
+
+## 2026-11-09, Steve's Slack asks shipped in a day, and the LinkedIn digest's missing Saturdays traced to one unescaped quote
+
+Steve asked on Slack (Nov 7 to 8) for Docs Watch titles written as plain statements, a filter for "updates that impact marketing", and a summary of his own posts. Peace turned the last one into a Saturday team email. Everything was built, reviewed twice by bug hunts and adversarial reviewers, and deployed the same day.
+
+### What shipped
+
+- **Docs Watch titles in Steve's pattern** on docswatch.stevetoth.ai: "Winning bids now set your price in ChatGPT ads | What Changed Nov 7, 2026", and the compare page adds "| Compare the before and after". One title rule now sits in both writers' prompts, with a code check that rejects a lead-in phrase. 181 existing titles reviewed by hand in the session (no API spend): 41 rewritten, 3 of the helpers' rewrites corrected against their source.
+- **A "For marketers" view.** Every change carries a yes/no label (the write-up answers it, unsure means yes, an admin can override on Radar). The site shows marketers' changes by default behind a switch, nothing removed: 104 of 176 high and medium changes. The Docs Watch emails now send only those, which also fixed emails that had grown to 60 changes.
+- **The Saturday team email**, live for 24 @seonotebook.com addresses from radar@notebookers.com: the LinkedIn digest and the Industry News digest (8 items plus 3 each, held in code), then Steve's posts of the week with what people said under each post, all with Radar's audio. Four samples went to Peace only before it went live, and each round changed the layout.
+- **Steve's Slack** now gets only high-impact changes that matter to marketers.
+- Radar 1,894 tests and a real production build passing; the site 181 tests. Four database migrations (087 to 090).
+
+### Decisions worth recording
+
+- **Filter what readers see first, never what the system collects.** Peace's history: an earlier filter on which pages were watched is how Docs Watch missed Google's spam update. Pruning watched pages to save money was rejected with a number: 358 of 504 pages never changed, and a page that never changes costs a free fetch. Money goes on write-ups, which only happen when something changes.
+- **Hold the digest size in code, not only in the prompt.** The prompt already said 6 to 8 items and the writer returned 13 items and 19 links on a real week.
+- **The Saturday job answers at once and finishes in the background, over a fixed week,** so a slow run cannot lose its own result and a re-run the next day reuses the same digests instead of writing a shifted duplicate.
+
+### Frictions and course corrections
+
+- **The first theory for the missing LinkedIn digests was wrong.** It looked like replies cut off at a word limit; a paid replay of the failed week came back whole. The real cause turned up while building a sample: the writer answered in JSON, and one quoted phrase inside the digest (`"social" sources`) made the reply unreadable. LinkedIn posts quote people far more than news articles, which is why only LinkedIn skipped 5 of 8 Saturdays while the job reported success. The fix asks for plain text and sets the title in code.
+- **Green tests, broken build.** The first review found the new email code would have failed the production build: a server-only import that unit tests and type checks accept. Caught before deploy by running the real build.
+- **The first review's fixes needed a second review.** It found a case that would have printed "No comments yet" under a post with 91 comments if Saturday's comment read failed, and a size cut that dropped the whole AEO section whenever SEO had 8 items. Both fixed and checked against nine real past digests.
+- **Peace corrected the scope three times mid-build:** Steve's summary must cover only that week's posts, only his marketing posts, and pages with only developer changes must stay in Google.
+
+### Why this matters for the portfolio
+
+- A silent weekly failure was found by building the next feature with real data, not by more retries; the alert that now fires on a skip names the cause.
+- Review is a loop, not a step: two rounds of adversarial review on work that already passed its tests found a build break and a misleading line that would have gone to 24 people.
+
+---
