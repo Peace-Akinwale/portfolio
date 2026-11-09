@@ -47,3 +47,32 @@ Written the same day, from the git logs of `ops-dashboard`, `telegram-agent` and
 - Data changed the plan. Zero subscribers turned a port into a deletion, and a docs-only `main` branch changed which branch goes live.
 
 ---
+
+## 2026-11-09, a Disk IO warning traced to a job queue logging in again on every poll
+
+Written the same day, from `telegram-agent` commit `a769089`, Blue's decisions log (D64), Railway's deployment records and Supabase's connection logs read in the session. It started as a Supabase email warning that the shared database was running out of its Disk IO budget.
+
+### What shipped
+
+- **The cause, found in the connection logs.** Blue's job queue (pg-boss 12) builds its own Postgres pool and kept the driver's 10-second idle default. Its workers poll every 120 seconds, so both connections closed between polls and every poll logged in again through Supabase's session pooler: about 150 queue logins an hour on the smallest free instance (0.5 GB of memory), shared by five apps. From about 13:40 UTC the database stopped answering logins.
+- **The fix, one setting.** `src/jobs/boss.ts` now holds pooled connections for 5 minutes, above the 120-second poll, with a comment tying the two numbers together. pg-boss forwards extra options to the pool, but its TypeScript type omits them, so the option rides on a widened type rather than a cast.
+- **Measured after the deploy** (Supabase pooler logs, per 5 minutes, 15:25 to 15:40 UTC): queue logins went from 6 to 22 down to 0; all logins from 10 to 35 down to 4 to 6; login timeouts from 7 to 29 down to 0.
+
+### Decisions worth recording
+
+- **Only Blue was changed.** The investigation also found Reach polling the same database every 30 seconds. The owner approved the Blue fix alone, so Reach was left as it was.
+- **No plan upgrade.** The decisions log already records that the owner won't pay for a bigger instance (D59), so the fix had to come from using the free one better.
+
+### Frictions and course corrections
+
+- **The first deploy of the fix failed.** The database was so starved that Blue's startup could not get a connection. The project had to be restarted from the Supabase dashboard before a redeploy of the same commit succeeded.
+- **The browser kept landing on the wrong Mac.** The Chrome extension is installed on two machines under one device ID, and only one was signed in to Supabase, so actions randomly hit a sign-in page until retried.
+- **Disk IO itself is not yet confirmed.** The dashboard's Disk IO charts would not load after the restart. Fewer logins should mean less IO, but that is an inference until the daily chart shows it.
+
+### Why this matters for the portfolio
+
+- A vague platform warning was traced to one line by reading the provider's own logs, not by guessing at queries or upgrading the plan.
+- Library defaults are part of the design. A sensible driver default became the main load on a small database once it met a slow poll.
+- The report separates what was measured (logins, timeouts) from what is still expected (the Disk IO budget).
+
+---
