@@ -5708,3 +5708,62 @@ Steve asked on Slack (Nov 7 to 8) for Docs Watch titles written as plain stateme
 - Review is a loop, not a step: two rounds of adversarial review on work that already passed its tests found a build break and a misleading line that would have gone to 24 people.
 
 ---
+
+## 2026-11-09, LLM Desk completion pass: trust before looks, then the app made to tie together
+
+The same day's review (entry above) said LLM Desk looked connected but could reach untrustworthy conclusions. This session fixed that first, then took Peace's live design feedback in his own browser. It ended with every check green, and an honest no-go on the next day's public rollout.
+
+### What shipped (all local, nothing committed or deployed)
+
+- **Evidence trust.**
+  - A page edit now needs an inspected page the client owns (by registered domain), supported by a whole sentence from its current capture.
+  - A negated sentence ("does not include video visits") can no longer count as support.
+  - The same gate runs in the screens and in the Claude/ChatGPT connection, and it refuses rather than allows if it errors.
+- **Results that mean what they say.**
+  - Each conversation is compared on its final answer, and turn-by-turn counts became a separate, labeled view.
+  - "Recommended with a caveat" is its own measure.
+  - An unjudged ending is unknown, never a loss.
+  - Repeat uploads are caught file by file.
+- **Release safety.**
+  - The Django admin has no password form.
+  - Production refuses to boot without a public address, Google sign-in and durable storage.
+  - The job worker survives a dropped database connection.
+- **Peace's design asks, built the same evening:**
+  - red buttons as the coaching portal uses them;
+  - a visible close button on the phone menu;
+  - controls that cannot be confused;
+  - brands and cited domains shown in full instead of truncated chips;
+  - platform chips that open their own conversation, with the judge's stored reasoning.
+- **"How it ties together", four proposals Peace approved:**
+  - a sidebar grouped by stage (Collect, Understand, Act, Measure);
+  - a trail across connected pages (Question, answer, Investigation, Fix, Results);
+  - a "what this is for / what to do here" line on every page;
+  - five pages moved to where they belong, with redirects.
+- **Checks, run this session on the final code:**
+  - 1,973 tests pass (1,717 that morning).
+  - The review's own reproduction suite passes 54 of 54 (29 failed that morning).
+  - Builder-reported, not re-run by me: a click sweep of 299 page views and a layout audit of 71 screens at four widths in both themes.
+
+### Decisions worth recording
+
+- **Trust first, presentation second.** The order was evidence gates and the counting rules, then navigation, then visuals. A polished screen over a wrong number is the expensive failure.
+- **Learn the approach, never copy the look.** Peace pointed at Fanout Notebook and the coaching portal. I copied Fanout's dark sidebar, and he stopped it: take the principle (information easy to see in little space), not the skin. He named a Fanout page that does it badly. The sidebar was reverted the same hour.
+- **A deliberate accessibility trade, written down.** Peace chose the portal's white label on brand red (3.74:1) over the stricter 4.5:1. It is recorded as a choice and pinned by a test, not left as an oversight.
+- **No-go stated plainly.** No production environment existed, and neither assistant host had connected. The report says so rather than calling the app ready.
+
+### Frictions and course corrections
+
+- **Reported defects first.**
+  - A browser walk by a fresh agent found 11 failures after the first build passed its tests.
+  - The bug hunt found that my own new gate trusted a free-text field, so an assistant could label a page edit something else and skip the check.
+  - An adversarial reviewer found the negated-quote hole.
+- **Peace's own browser was serving a stale stylesheet.** Local static files had no cache header, so a day of fixes looked missing to him. The cause was found by comparing the loaded stylesheet with the file on disk.
+- **A fix of mine hid useful links.** It dropped the "back" link wherever the new trail appeared, including back links that carried filters. The tests caught it; the rule now hides a back link only when the trail holds the identical link.
+- **"Explain it, don't change it."** Peace asked what a screen meant. I had already handed changes to a builder, and retracted them when he said so. Two messages later he asked for the changes himself, and they were built to his words.
+
+### Why this matters for the portfolio
+
+- A green suite was treated as a floor, not a finish line: browser walks, a bug hunt and an adversarial review each found real defects after the tests passed.
+- The release call was made on evidence and stated plainly, even though the deadline was the next day.
+
+---
