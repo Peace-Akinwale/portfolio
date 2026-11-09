@@ -5649,3 +5649,30 @@ Same day as the entries above, a different product. The app Peace had built the 
 - **A rule that can be misread will be.** "Not boxy" produced the opposite of what was meant until it carried radii and contrast ratios.
 
 ---
+
+## 2026-11-09, LLM Desk review separates a connected interface from trustworthy conclusions
+
+Peace continued reviewing the local app after a separate implementation and independent review. This entry records review decisions, not a deployment or a claim that the reported defects are fixed.
+
+### What shipped
+
+- Local review continuity documents under `llm-desk/docs/reviews/2026-11-09-independent-review/` and `llm-desk/plans/handoffs/`, preserving original intent, implementation claims, the independent report and live walkthrough feedback.
+- No application change, production release or paid provider run was made in this review session.
+
+### Decisions worth recording
+
+- **Start new-client onboarding with collected answers.** The live walkthrough showed client creation landing on Settings. Peace wants an upload-focused first step, with supporting context introduced naturally afterward.
+- **Use the logo red consistently.** Peace reversed the earlier softer-button-red request after comparing the actual logo and buttons. Button sizes should remain unchanged.
+- **Separate discovered URLs from inspected evidence.** The screen called itself Saved pages in navigation and Pages read in its heading. A URL record, fetched content and a checked passage need distinct meanings.
+
+### Frictions and course corrections
+
+- The independent report identifies unsupported page edits, distorted conversation comparisons and duplicate counts despite a passing existing suite. This session read that report but did not independently rerun its reproduction tests.
+- A connected interface can still make users reconstruct context. The next review continues the strategist journey before authorizing another implementation pass.
+
+### Why this matters for the portfolio
+
+- Product acceptance includes the meaning of evidence and measurements, not only working navigation and visual consistency.
+- Reviewing the actual onboarding exposed a mismatch that an implementation checklist had not resolved.
+
+---
