@@ -58,6 +58,8 @@
 }
 
 .serviceLink { font-size: 14px; text-decoration: underline; padding-block: 12px; }
+.heroActions { flex-direction: column; align-items: flex-start; gap: 10px; }
+.heroLinks { display: flex; flex-wrap: wrap; align-items: center; gap: 0 24px; }
 .clients img[alt="ManyRequests"],.clients img[alt="HigherVisibility"] { transform: scale(1.1); }
 .clients img[alt="Exceed SEO"],.clients img[alt="Kairos Labs"] { transform: scale(.88); }
 

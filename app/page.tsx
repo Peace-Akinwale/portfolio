@@ -26,10 +26,13 @@ export default function HomePage() {
       <div>
         <h1 id="home-title">{HERO.heading}</h1>
         <p className={s.intro}>{HERO.line}</p>
-        <div className={s.actions}>
+        <div className={`${s.actions} ${s.heroActions}`}>
           <a className={s.primary} href={CALENDLY_URL} target="_blank" rel="noopener noreferrer">{HERO.cta} <span aria-hidden="true">↗</span></a>
-          <Link className={s.secondary} href="#selected-work">See my work <span aria-hidden="true">↓</span></Link>
-          <Link className={s.serviceLink} href="/services">Services and prices</Link>
+          {/* The two text links sit on their own line under the booking button (Peace, 9 Nov 2026). */}
+          <div className={s.heroLinks}>
+            <Link className={s.secondary} href="/writing">See my work</Link>
+            <Link className={s.serviceLink} href="/services">Services and prices</Link>
+          </div>
         </div>
       </div>
       <figure className={s.portrait}>
