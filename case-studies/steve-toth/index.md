@@ -5767,3 +5767,34 @@ The same day's review (entry above) said LLM Desk looked connected but could rea
 - The release call was made on evidence and stated plainly, even though the deadline was the next day.
 
 ---
+
+## 2026-11-10, Docs Watch's "for marketers" filter tightened, and a failed write-up can no longer go public
+
+A routine check ("anything waiting on me?") found nothing held, then Peace questioned a live change page: how does a Cloudflare bot-allowlisting update matter to marketers? Answering it uncovered a looser problem: a change whose AI write-up had failed was published anyway and sent to Steve's Slack as high impact with no advice.
+
+### What shipped
+
+- **The audience rule** (`radar/lib/docwatch/brief.ts`): yes only when a marketer, SEO or ads team would act on the change; the old closing line "when in doubt, answer true" is gone. Technical SEO stays in by name (robots.txt, crawler user agents, bot and agent access to a site, Search Console); API details, model support lists and watermarking are out.
+- **No write-up, no publish** (`radar/lib/docwatch/run.ts`): a failed brief stores the change held; a failed article takes a just-published change back. Publish on the change page writes the missing parts. Two new tests force each failure.
+- **Data:** two changes relabeled, one title fixed, the hollow Gemini change taken off the site and held. A query confirmed 0 published high-or-medium changes without a write-up.
+- Deployed in order (crawler, then the push, then a site rebuild) and checked on the live pages: labels on four change pages matched, the held change was gone, and the email job reported nothing due. 1,904 tests pass.
+
+### Decisions worth recording
+
+- **Filter by who would act, not by topic.** "Crawling" read as marketing let an IT setting through; the question is now whether a marketer or technical SEO would do something this week.
+- **A missing answer is not a yes.** The label helper read a failed write-up (no output at all) the same as an unclear one (output without an answer) and showed it. Now only the second defaults to yes.
+- **Hold, don't delete.** A change with a failed write-up keeps its record and waits for Peace's Publish or Discard.
+
+### Frictions and course corrections
+
+- **I overcorrected first.** My first tightening marked bot allowlisting as IT-only. Peace pushed back ("you can allow some things for technical marketers as well. or backend SEOs"), so technical SEO went back in, and the Cloudflare change I had relabeled was restored.
+- **Peace raised the stronger rule himself.** I had made a failed write-up merely "not for marketers"; he said such a change "should not be published at all", which closes the hole instead of hiding it.
+- **A confusing button.** I offered "Wait for tomorrow" against shipping now; Peace asked whether that meant an automatic deploy. Nothing deploys itself. Buttons now name the real effect.
+- **Mid-deploy check:** Peace asked whether the tighter rule would still catch OpenAI's Nov 7 ad-auction pricing change. It does (bidding is named), and that change stayed published and marked for marketers.
+
+### Why this matters for the portfolio
+
+- A user's one-line doubt about a single page was traced to two mechanisms (an over-broad prompt rule and a fail-open default), and both were fixed at the source the same afternoon, not patched per page.
+- The client's corrections were taken as input, not friction: each one moved the rule closer to the real audience.
+
+---
