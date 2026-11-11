@@ -39,3 +39,35 @@ Written the same day, from the audit report and its evidence folder in the AI OS
 - Findings from delegated agents are hypotheses. The two corrections above came from checking them against the source before reporting.
 
 ---
+
+## 2026-11-10 to 2026-11-11, a design method for agent-built screens that starts from what the screen is for, not how it looks
+
+Written the day after, from the skill folder and its decisions log, the research folder and its test record, and the skills repo's commits.
+
+Peace asked for one dependable system so that agents building apps, tools and marketing pages produce work that reads like a pre-AI top team made it, on the first build: understood without explanation, simple to move through, every word earning its place. He asked for it to be researched from reliable authorities, talks and real screens.
+
+### What shipped
+
+- **A skill, `structure-first`, with nine steps in a fixed order:** the job the screen does, the things it shows, the map between screens, the screen type, the words, the states, a grey clickable skeleton, then the look, then a check. Each project gets one written blueprint that every later session reads before changing a screen.
+- **A research base behind every rule:** published guidance from platform and design-system authors, recorded talks, and screenshots of 117 app screens and 46 marketing pages from products people called intuitive.
+- **A screen checker** that loads a page in a browser and fails it on measurable faults: tap sizes, contrast, line length, type sizes, overflow, unlabeled controls. It accepts the owner's deliberate exceptions from a file, each with its reason, instead of silencing the check.
+- **A first test, one brief built twice:** 52 checker failures without the method, 0 with it. A fresh agent that saw only screenshots understood one of three screens clearly better. Recorded as one run, not as proof.
+- Published to Peace's skills repo on GitHub, with later commits adding the checker fixes and three lessons from the first real use.
+
+### Decisions worth recording
+
+- **Structure before style.** An audit found about 20 installed design skills, all working on looks and contradicting each other, while Peace's recorded complaints were about understanding ("i need to click around"). The method puts every decision about looks after the job, the words and the states.
+- **The owner sees a grey skeleton, not a styled draft.** It is the one point where work is shown before it is finished, so structure is judged before color can distract from it.
+- **Exceptions are data, not code.** A deliberate choice such as a white label on the brand red is written into an accepted-findings file with its reason, so the checker stays strict for everyone else.
+
+### Frictions and course corrections
+
+- **The first real use exposed checker false positives:** closed disclosure panels, disabled controls, a file input inside its label, gradients on form controls and hairline shadows were all flagged. Each was fixed in the checker and pushed.
+- **Three of its own rules were missing** and were added after that use: say why background work is not moving, state the coverage of any number built from partial data, and make tables answer to their container at half a laptop screen.
+- **Peace stopped a report that came while agents were still running:** "Finish what you started before you tell me." Reporting now waits until the work is checked.
+
+### Why this matters for the portfolio
+
+- The useful constraint on AI-built interfaces is not taste but order: settle what the screen is for and what it says, then style it, then measure it.
+
+---

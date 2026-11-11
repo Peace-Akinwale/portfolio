@@ -5830,5 +5830,37 @@ Peace set the bar on 2026-11-10: the internal AI-answers app had to compete with
 
 - A design bar was turned into checks (a gut check per screen, width scans, test counts), so "it looks better" became measurable.
 - The most valuable finding was not visual: asking "does the app really do this itself?" exposed that it had not yet, and the proof cost under a dollar.
+## 2026-11-11, LLM Desk rebuilt from a written blueprint after five restyles had failed, then handed back with its proof
+
+Written the same day, from the app's decisions log, its design blueprint and checks folder, the handoff, and test and check runs in the session. It continues the entry above (the same app, after it was moved to the MacBook Air) and supersedes the section names in the 2026-11-06 entry.
+
+Peace's verdict on the app before this pass: "The entire app is confusing ... It looks like a foreign language to me." Five earlier passes had changed the surface of the same screens. He asked for the new design method (logged under AI OS the same days) to be applied, in the agency's brand, so that a strategist understands every page without anyone explaining it, with the real marks of each AI platform, and with tests run and shown before anything is called done.
+
+### What shipped
+
+- **A blueprint first:** the job in one sentence, the things a strategist deals with, a binding list of on-screen words, the navigation, and one job sentence per screen. Every later session reads it before changing a screen.
+- **Navigation in three clusters instead of four stage labels:** the working loop first (Overview, Answers, Buying reasons, Recommendations, Results), then tools, then setup. URLs, stored values and the chat connector were left unchanged.
+- **Words a strategist would use.** "Buying claims" became "buying reasons" (a client in the dataset processes insurance claims, so the old name misread), "verdict" became "result", "review queue" became "results to confirm".
+- **One stylesheet and one short list of allowed parts**, replacing four stylesheets and ten page-specific ones.
+- **Half-screen and dark-mode fixes** after Peace's screenshots: tables answer to their container (wrap, then drop optional columns, then scroll, and only fold into stacked records on a phone), and dark mode became a true dark scheme rather than an inverted light one.
+- **Proof, all run on the final code:** 2,001 tests pass (9 skipped). The screen checker reports 0 failures and 0 warnings across 84 page views (42 pages at desktop and phone width). At half a laptop screen, 0 of 42 pages scroll sideways in either theme. From an empty database, a client was added, a batch uploaded and 31 answers read by the paid model for $0.46 against a $0.50 cap, which stopped the job. The chat connector passed sign-in, refused a call without a token, listed 35 tools and stored a confirmation.
+- Handed back as a folder that is the source of truth from here, with the tests passing from inside it. Nothing committed or deployed: deploying is not this team's job.
+
+### Decisions worth recording
+
+- **Change what the screens say and how they connect, not how they look.** The five restyles had left no file saying what each screen was for; the blueprint is that file.
+- **A headline number says how much of the data it rests on.** The Overview had said a share "of conversations" when 19 of 240 had been read. It now says "that have a result so far (238 of 240)".
+- **Confirmation is explained where it is asked for.** Peace did not understand "medium and low confidence". The page now says in one line that the AI reader rates its own certainty, that high-confidence results were left unchanged when a person checked 66 of them, and that about 1 in 4 medium ones did change.
+
+### Frictions and course corrections
+
+- **Half screen looked bad and dark mode looked "basic"**, both caught by Peace, not by the checker, which ran only at desktop and phone widths. A 1000px check now runs on every page.
+- **An upload stalled silently** because the background worker was not running. A start script was added that refuses to run while invented sample jobs are queued, and the page now says when the worker is not running.
+- **Usage:** Peace said the work was "blowing my session limits". The rest ran one agent at a time with few screenshots.
+- **Not fixed and recorded:** follow-up turns shown twice in one case, machine words in some stored error text, and one wrong recommendation in the real data, left for Peace because real records were not to be changed.
+
+### Why this matters for the portfolio
+
+- When restyling keeps failing, the missing piece is usually a written statement of what each screen is for. Once it existed, the redesign could be checked against it, and so could every later change.
 
 ---
