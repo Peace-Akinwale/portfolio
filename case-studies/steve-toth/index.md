@@ -5830,6 +5830,9 @@ Peace set the bar on 2026-11-10: the internal AI-answers app had to compete with
 
 - A design bar was turned into checks (a gut check per screen, width scans, test counts), so "it looks better" became measurable.
 - The most valuable finding was not visual: asking "does the app really do this itself?" exposed that it had not yet, and the proof cost under a dollar.
+
+---
+
 ## 2026-11-11, LLM Desk rebuilt from a written blueprint after five restyles had failed, then handed back with its proof
 
 Written the same day, from the app's decisions log, its design blueprint and checks folder, the handoff, and test and check runs in the session. It continues the entry above (the same app, after it was moved to the MacBook Air) and supersedes the section names in the 2026-11-06 entry.
