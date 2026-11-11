@@ -5798,3 +5798,37 @@ A routine check ("anything waiting on me?") found nothing held, then Peace quest
 - The client's corrections were taken as input, not friction: each one moved the rule closer to the real audience.
 
 ---
+
+## 2026-11-10 to 2026-11-11, LLM Desk held to an Ahrefs and Peec bar, and a check on what the app could really do on its own
+
+Peace set the bar on 2026-11-10: the internal AI-answers app had to compete with Ahrefs and Peec AI on UI/UX, judged on working screens, not proposals. Over two days the whole app was rebuilt to that bar, walked on video, reviewed by Peace, and checked for whether its analysis came from the app itself.
+
+### What shipped
+
+- **Answers rebuilt**, then a question's own page: what each AI platform answered, how it treated the client in the answer's own words, which rivals it recommended, the sites it cited. The Answers counts now equal the Overview's (they had pooled branded and unbranded questions).
+- **A page-by-page walkthrough video** of 53 screens (8 min 16 s, rendered with HyperFrames, narrated with a free on-device voice) with a gut check on each screen: 5 of 53 met the bar.
+- **The other 48 pages rebuilt**: one shared stylesheet restyled the parts every older page used, then four parallel builders fixed each section's own problems (each on its own test database, no git). One screen was removed as a duplicate, every fix got its own page, and setting names and "PLACEHOLDER" text left the screens.
+- **Peace's review, built the same day**: result colours (green, amber, blue, red), each platform's own colour on its bars, layouts that hold on half a screen, whole rows that open their page, AI answers set off as quoted passages, and follow-up chats shown turn by turn on their question's page instead of a separate screen.
+- **The app's own judge run for real for the first time**: 18 calls on Jane App's follow-up chats, 33 verdicts, none rejected by its checks, $0.697 against a $0.70 estimate.
+- 2,010 tests pass, plus 54 of 54 checks from an earlier independent review. Nothing committed or deployed (Peace's call).
+
+### Decisions worth recording
+
+- **One sentence under every title, reversing an approved choice.** Peace had approved two explanation lines on every page on 11-09; the 11-10 bar opens on data, so the lines went, and the reversal was flagged to him rather than slipped in.
+- **Colour that means one thing.** Peace asked for colour after a monochrome pass. Result colours mark how an answer treated the client; when he pointed out that platform bars looked random, those bars took each platform's own colour instead, so no colour means two things on one screen.
+- **A screen that repeated another was removed in whole**, with its old address redirected, rather than rebuilt.
+- **One paid run, scoped and capped.** The judge ran as a single job with paid calls switched on for that one command and a $2 cap, because the queue held two older jobs that must never run.
+
+### Frictions and course corrections
+
+- **The analysis was not the app's own.** Asked whether an upload of his own would get the same analysis, I checked instead of assuming: the client's 1,132 recommendation verdicts had been made by an earlier script outside the app, and the app's judge had never run on real answers. That answer was "not yet", and the proof run above followed with his yes.
+- **The half-screen breakage came from measuring the window, not the space.** With the sidebar open, tables crushed to one word per line. Layouts now switch on their container's width, and every page was scanned at three widths.
+- **One of my scripted edits deleted a function it should not have** (a decorator sat between two functions). Caught by reading the file, restored from git, and the tests passed again.
+- **A builder's report is a claim.** Each of the four builders' pages was opened and checked in the browser before being called done, and their shared-file requests were applied by me.
+
+### Why this matters for the portfolio
+
+- A design bar was turned into checks (a gut check per screen, width scans, test counts), so "it looks better" became measurable.
+- The most valuable finding was not visual: asking "does the app really do this itself?" exposed that it had not yet, and the proof cost under a dollar.
+
+---
