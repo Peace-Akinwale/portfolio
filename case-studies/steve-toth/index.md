@@ -5866,4 +5866,32 @@ Peace's verdict on the app before this pass: "The entire app is confusing ... It
 
 - When restyling keeps failing, the missing piece is usually a written statement of what each screen is for. Once it existed, the redesign could be checked against it, and so could every later change.
 
+## 2026-11-11, Docs Watch write-ups made unable to come back as broken JSON
+
+Two Gemini changes were held back from the public site because the AI write-up for each came back as invalid JSON. A third had been held the day before for the same reason. Peace asked to check for others and fix it.
+
+### What shipped
+
+- **A check of every held change, all-time:** three, all Gemini, all a failed write-up. None was held because the page looked fake.
+- **Write-ups now ask the API for a fixed JSON shape.** The change brief, the public article and the first "real change or cosmetic" check each send a schema, so the API returns parseable JSON. Length limits stay enforced in our own code, since the API takes none.
+- **When a reply still fails to parse, the log shows the text around the break** (or the start and end of a cut-off reply). Before, only the error message was kept.
+- **Proven on live code twice:** a read-only run on one held change before deploy (about $0.20, all three calls valid), then after deploy Peace had the three held changes published and each wrote a brief and an article from valid JSON (published 14:36 to 14:38 UTC).
+- 1,914 tests and the typecheck pass. Deployed to the crawler, the web app and the video worker in that order, from a clean checkout of the commit.
+
+### Decisions worth recording
+
+- **Fix the contract, not the parser.** The old reader already tolerated prose around the JSON; it cannot repair a quote inside a string. Asking the API to enforce the shape removes the failure class. The other loose parsers (roundup, LinkedIn posts, newsletter) were left alone because several run on a model that does not support schemas.
+- **A test ties each schema to its prompt.** The prompt still shows a JSON example, and an admin can edit it, so a test fails if the two disagree on field names, and the editor's note says the fields are fixed in code.
+
+### Frictions and course corrections
+
+- **The exact cause is inferred, not proven.** The raw reply was never logged, so "a quote broke the string" is the likely mechanism (both pages are full of quoted plan names), not a verified one. The log added here is how it would be proven next time.
+- **A review before deploy found three gaps:** a script that swaps the model on outgoing requests would have failed on a model without schema support; the editable prompt implied fields it no longer controls; and the new log showed the wrong end of a cut-off reply. All three were fixed before the push.
+- **Held changes are published by a person, not by the next check**, so the fix was only proven end to end after Peace chose to publish them.
+
+### Why this matters for the portfolio
+
+- A recurring "AI returned bad JSON" incident was closed at its mechanism (constrain the output) instead of by retrying, and the diagnosis was labeled as inferred until a log can prove it.
+- The pre-deploy review caught the side effects a green test suite could not: a tool that rewrites requests, and a prompt editor that no longer matched the code.
+
 ---
