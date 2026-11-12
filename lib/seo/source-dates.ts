@@ -3,7 +3,7 @@
 // time. Regenerate with: git log -1 --format=%cI -- <path>
 
 export const SOURCE_DATES: Record<string, string> = {
-  'app/page.tsx': '2026-11-12T19:36:26+00:00',
+  'app/page.tsx': '2026-11-12T19:50:54+00:00',
   'lib/content/home-copy.ts': '2026-11-08T20:57:03+01:00',
   'app/writing/page.tsx': '2026-11-12T19:40:51+00:00',
   'lib/content/record.ts': '2026-11-08T20:57:03+01:00',
