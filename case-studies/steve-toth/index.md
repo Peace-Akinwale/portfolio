@@ -5895,3 +5895,34 @@ Two Gemini changes were held back from the public site because the AI write-up f
 - The pre-deploy review caught the side effects a green test suite could not: a tool that rewrites requests, and a prompt editor that no longer matched the code.
 
 ---
+
+## 2026-11-10 to 2026-11-11, Lens stores one session per chat, and claude.ai account data stops reaching the team's copy
+
+A strategist (Patricia) wanted to run batches of AI Mode prompts with the Claude extension. Claude in Chrome cannot press record and stop between journeys, so Lens, the team's AI-search recorder, saved a whole batch as one session nobody could compare. Peace took it on in #engineering on Nov 10, and the head engineer (Gregory) merged the PR the next day.
+
+### What shipped
+
+- **One session per chat.** Add-on 0.2.4 splits a batch at upload ("One session per chat", on by default); a "Split into N sessions" button splits older recordings. Each chat is named after its opening question. Merged as notebookagency/Lens#19 and live on lens.stevetoth.ai (checked 2026-11-12: the served app carries the new buttons).
+- **Claude recordings read again.** claude.ai had moved its answers to a binary (protobuf) stream, so Claude sessions came out empty. Lens now decodes it.
+- **Account data out of the shared copy.** Claude recordings had stored the account's connector list, its whole chat list and its settings in the copy every teammate can read. Lens now keeps only what its Claude reader uses: on a real recording the stored copy went from 6.7 MB to 140 KB, and the connector name from 6,559 mentions to none.
+- **A Markdown export** of every session's turns, so a strategist can read a client's answers without an AI or a JSON viewer.
+- Tested live on six engines (AI Mode, ChatGPT, Perplexity, Gemini, Brave, Claude) and against a local copy of production's database engine (ClickHouse 24.8): each chat's stored events matched its own requests (35 and 79), and a second reingest did not double them.
+
+### Decisions worth recording
+
+- **A cut is kept only if every part reads back as its own chat.** Lens re-reads each piece the way its session will be read and compares questions and answers; if no safe cut exists, the recording stays whole and the page says why. A wrong split would be worse than none.
+- **Keep only what a reader reads, instead of hunting for secrets.** Field-name rules cannot see inside a binary stream, so the privacy fix is an allow-list per endpoint, with everything else dropped and marked.
+- **Chats are queued only when the recording's own commit lands,** so a split that stops part way never leaves half its chats in the Library; a retry finishes it without duplicates.
+
+### Frictions and course corrections
+
+- **Three reviews before the PR** found 15 more problems after the first pass looked done, among them a stopped split that left half its chats visible, a status note that would have shown internal file paths to the whole team, and events that doubled when a delete failed. Each was fixed with a test that fails without the fix.
+- **The same day, a deploy went to the wrong service.** Deploying the Fanout dashboard (to ship a related AI Mode fix), the folder's saved link pointed at the background runner, which ran the wrong code for about four minutes before a live check caught it and it was rolled back. Deploys now resolve the service by name and domain and are checked on the live site.
+- **Other engines leak account data too** (ChatGPT, Perplexity, Gemini, AI Mode). Found while checking, left for a follow-up at the head engineer's call rather than widening the PR.
+
+### Why this matters for the portfolio
+
+- A workflow request ("let a strategist batch prompts") was traced to the data model under it, and the fix shipped with the privacy hole it uncovered closed in the same change.
+- The work was tested against a copy of the production stack, not only unit tests, and the one operational slip was caught by checking the live result rather than trusting a green deploy.
+
+---
