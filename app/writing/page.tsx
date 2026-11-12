@@ -16,7 +16,7 @@ import { publicHref, CLIENT_PAGE_DESCRIPTIONS } from '@/lib/content/client-pages
 export const revalidate = 300;
 
 export const metadata: Metadata = withOg({
-  title: 'B2B SaaS content writing portfolio · Peace Akinwale',
+  title: 'B2B SaaS content writing portfolio',
   description: descriptions.Writing,
   alternates: { canonical: `${SITE_URL}/writing` },
 }, { key: 'portfolio', path: '/writing', alt: 'Writing samples by Peace Akinwale' });

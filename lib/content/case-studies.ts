@@ -77,6 +77,12 @@ export function readCaseStudyFile(file: string): CaseStudy {
   };
 }
 
+// The date under the title. `date` is the study's own date. `published` was
+// stamped 2026-10-25 on the imported studies and is only a fallback.
+export function shownDate(cs: Pick<CaseStudy, 'date' | 'published'>): string | undefined {
+  return cs.date || cs.published || undefined;
+}
+
 export function listCaseStudies(): CaseStudy[] {
   if (!fs.existsSync(CASE_STUDY_DIR)) return [];
   return fs

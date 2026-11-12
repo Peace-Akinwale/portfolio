@@ -7,7 +7,8 @@ import { CALENDLY_URL, NAV_LINKS } from '@/lib/site';
 import { ThemeToggle } from '@/components/ThemeToggle';
 
 // One top bar for every page: the name on the left, the six sections on the
-// right, "Let’s chat" last (Peace, 4 Nov 2026: an invitation to talk; it opens the same Calendly page as every body button). Sticky, on the page's own ground, with a hairline.
+// right, "Let’s chat" last (Peace, 4 Nov 2026: an invitation to talk; it opens the same Calendly page as every body button).
+// On the homepage it is a nav link, so the hero's booking button is the one primary action. Sticky, on the page's own ground, with a hairline.
 // Under 1024px the sections sit behind a disclosure button, so a label never wraps.
 export function Header() {
   const pathname = usePathname();
@@ -49,14 +50,15 @@ export function Header() {
             </Link>
           ))}
           <ThemeToggle />
-          <a href={CALENDLY_URL} target="_blank" rel="noopener" className="button button-ink whitespace-nowrap text-[14px]">
+          {/* On the homepage the hero button is the one primary action, so this stays a nav link. */}
+          <a href={CALENDLY_URL} target="_blank" rel="noopener" className={pathname === '/' ? 'nav-link whitespace-nowrap text-[14.5px] font-medium text-muted-foreground hover:text-foreground lg:text-[15px]' : 'button button-ink whitespace-nowrap text-[14px]'}>
             Let’s chat
           </a>
         </nav>
 
         <div className="flex items-center gap-1 min-[840px]:hidden">
-        {/* Under 360px the header cannot hold the name, this button, the theme toggle and the menu; the menu repeats "Let’s chat". */}
-        <a href={CALENDLY_URL} target="_blank" rel="noopener" className="button button-ink min-h-9 shrink-0 whitespace-nowrap px-3 py-1.5 text-[12.5px] header-book">
+        {/* Under 360px the header cannot hold the name, this link, the theme toggle and the menu; the menu repeats "Let’s chat". */}
+        <a href={CALENDLY_URL} target="_blank" rel="noopener" className={pathname === '/' ? 'nav-link header-book inline-flex min-h-11 items-center whitespace-nowrap px-2 text-[14px] font-medium text-foreground' : 'button button-ink min-h-9 shrink-0 whitespace-nowrap px-3 py-1.5 text-[12.5px] header-book'}>
           Let’s chat
         </a>
         <ThemeToggle />

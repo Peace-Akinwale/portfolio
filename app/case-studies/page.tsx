@@ -10,7 +10,7 @@ import { SITE_URL } from '@/lib/site';
 import { WorkWithMe } from '@/components/WorkWithMe';
 
 export const metadata: Metadata = withOg({
-  title: 'B2B SaaS content & AI workflow case studies · Peace Akinwale',
+  title: 'B2B SaaS content & AI workflow case studies',
   description: descriptions['Case studies'],
   alternates: { canonical: SITE_URL + '/case-studies' },
 }, { key: 'case-studies', path: '/case-studies', alt: 'Case studies by Peace Akinwale' });

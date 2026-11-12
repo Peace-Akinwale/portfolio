@@ -1,6 +1,15 @@
 // app/career-pathway/layout.tsx
+import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
 import Link from 'next/link';
+
+// Emailed result links still open these routes (4 Nov 2026). They stay
+// unlinked. The saved-result page was already noindex; the landing page was
+// only disallowed in robots.txt, which left it with a canonical and no
+// noindex tag. noindex is the signal that was intended.
+export const metadata: Metadata = {
+  robots: { index: false, follow: false },
+};
 
 export default function CareerPathwayLayout({ children }: { children: ReactNode }) {
   return (

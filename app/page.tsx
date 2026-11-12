@@ -23,21 +23,17 @@ const clients = [
 export default function HomePage() {
   return <div className={s.page}>
     <section className={s.hero} aria-labelledby="home-title">
-      <div>
+      <figure className={s.portrait}>
+        <Image src="/images/home/peace-portrait.jpg" width={1400} height={2097} priority quality={90} sizes="(max-width: 700px) 168px, (max-width: 1000px) 250px, 360px" alt="Peace Akinwale in a pinstriped suit, smiling with arms folded" />
+      </figure>
+      <div className={s.heroCopy}>
         <h1 id="home-title">{HERO.heading}</h1>
         <p className={s.intro}>{HERO.line}</p>
-        <div className={`${s.actions} ${s.heroActions}`}>
+        <div className={s.actions}>
           <a className={s.primary} href={CALENDLY_URL} target="_blank" rel="noopener noreferrer">{HERO.cta} <span aria-hidden="true">↗</span></a>
-          {/* The two text links sit on their own line under the booking button (Peace, 9 Nov 2026). */}
-          <div className={s.heroLinks}>
-            <Link className={s.secondary} href="/writing">See my work</Link>
-            <Link className={s.serviceLink} href="/services">Services and prices</Link>
-          </div>
         </div>
+        <p className={s.proof}>“We never needed more than one round of feedback per article.” <cite>Nathan Vander Heyden, head of marketing at Marker.io</cite></p>
       </div>
-      <figure className={s.portrait}>
-        <Image src="/images/home/peace-portrait.jpg" width={1400} height={2097} priority sizes="(max-width: 700px) 130px, 310px" alt="Peace Akinwale in a pinstriped suit, smiling with arms folded" />
-      </figure>
     </section>
 
     <section className={s.clients} aria-label="Clients">

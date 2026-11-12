@@ -10,7 +10,7 @@ Result? A 233% increase in organic traffic in 6 months for a client by syncing l
 
 The contract started in July 2023, and it increased to almost 35k/m in January 2024.
 
-Want to see my portfolio first? [Click here](/writing)
+Want to see my portfolio first? [See my writing samples](/writing)
 
 ## Here’s my research process to create product-led content
 

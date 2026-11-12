@@ -31,9 +31,7 @@ export async function generateMetadata({ params }: ProjectPageProps): Promise<Me
   if (slug === 'career-pathway') {
     return {
       title: 'Career Pathway Assessment',
-      alternates: {
-        canonical: 'https://peaceakinwale.com/projects/career-pathway',
-      },
+      robots: { index: false, follow: false },
     };
   }
 

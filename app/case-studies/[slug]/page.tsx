@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { getCaseStudy, listCaseStudies } from '@/lib/content/case-studies';
+import { getCaseStudy, listCaseStudies, shownDate } from '@/lib/content/case-studies';
 import { ContentPage } from '@/components/ContentPage';
 import { SITE_URL } from '@/lib/site';
 import { withOg } from '@/lib/og';
@@ -35,7 +35,7 @@ export default async function CaseStudyPage({ params }: { params: Promise<{ slug
   return (
     <>
       <JsonLdScript data={jsonLd} />
-      <ContentPage title={cs.title} html={cs.html} published={cs.published} caseStudy />
+      <ContentPage title={cs.title} html={cs.html} published={shownDate(cs)} caseStudy />
     </>
   );
 }

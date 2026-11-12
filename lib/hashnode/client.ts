@@ -146,6 +146,38 @@ export function relativizeSiteLinks(html: string): string {
   );
 }
 
+// WordPress turns a bare tool name into a link: "Next.js" becomes
+// <a href="http://next.js">Next.js</a>, and the same for Node.js and Sanity.io.
+// A real link has a path (https://www.sanity.io/headless-cms) and is left alone.
+const BARE_TOOL_NAME = /^(?:next\.js|node\.js|sanity(?:\.io)?)$/i;
+
+export function unwrapBareToolLinks(html: string): string {
+  return html.replace(/<a\b([^>]*?)>([\s\S]*?)<\/a>/gi, (full, attrs: string, inner: string) => {
+    const href = attrs.match(/\bhref\s*=\s*(?:"([^"]*)"|'([^']*)')/i);
+    const raw = href?.[1] ?? href?.[2];
+    if (!raw) return full;
+    let host = '';
+    let pathName = '';
+    try {
+      const url = new URL(raw);
+      host = url.hostname.replace(/^www\./i, '').toLowerCase();
+      pathName = url.pathname.replace(/\/+$/, '');
+      if (url.search || url.hash) return full;
+    } catch {
+      return full;
+    }
+    if (host !== 'next.js' && host !== 'node.js' && host !== 'sanity.io') return full;
+    if (pathName) return full;
+    const text = inner.replace(/<[^>]+>/g, '').replace(/&nbsp;/gi, ' ').replace(/\s+/g, ' ').trim();
+    if (!BARE_TOOL_NAME.test(text)) return full;
+    return text;
+  });
+}
+
+function prepareWordPressHtml(html: string): string {
+  return unwrapBareToolLinks(relativizeSiteLinks(html));
+}
+
 function buildPostFromWordPress(raw: WordPressPublicPost): HashnodePost {
   const excerptSource = raw.excerpt?.trim() ? raw.excerpt : raw.content;
   const summary = normalizePlainText(stripHtml(excerptSource)).slice(0, 240).trim();
@@ -162,7 +194,7 @@ function buildPostFromWordPress(raw: WordPressPublicPost): HashnodePost {
     slug: raw.slug,
     content: {
       markdown: '',
-      html: relativizeSiteLinks(raw.content),
+      html: prepareWordPressHtml(raw.content),
     },
     coverImage: coverUrl ? { url: coverUrl } : undefined,
     publishedAt: raw.date,
@@ -185,7 +217,7 @@ function buildPageFromWordPress(raw: WordPressPublicPage): HashnodeStaticPage {
     slug: raw.slug,
     content: {
       markdown: '',
-      html: relativizeSiteLinks(raw.content),
+      html: prepareWordPressHtml(raw.content),
     },
   };
 }
