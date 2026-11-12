@@ -1,4 +1,4 @@
-import type { PortfolioProject } from '@/lib/hashnode/parsePortfolio';
+import type { PortfolioProject } from '@/lib/wordpress/parsePortfolio';
 
 // Articles Peace ghostwrote for Exceed SEO's clients LineUpr and InviteDesk,
 // May to October 2026 (Peace, 3 Nov 2026: use them as ghostwritten samples for

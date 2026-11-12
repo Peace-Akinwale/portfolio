@@ -1,4 +1,6 @@
-﻿const fs = require('fs');
+﻿// One-time WordPress.com cleanup. It can still read the old Hashnode publication
+// for excerpts and covers. The live site does not call Hashnode.
+const fs = require('fs');
 const path = require('path');
 
 const LOCAL_POST_COVER_FILES = {

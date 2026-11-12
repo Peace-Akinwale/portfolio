@@ -1,3 +1,5 @@
+// One-time copy from the old Hashnode publication into WordPress.com.
+// Already run. The live site does not call Hashnode.
 import { existsSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import {
@@ -5,7 +7,7 @@ import {
   getAllWordPressPosts,
   getWordPressAccessToken,
   getWordPressSiteInfo,
-} from '../lib/wordpress/client';
+} from '../lib/wordpress/management';
 
 function loadEnvFile(filePath: string) {
   if (!existsSync(filePath)) {

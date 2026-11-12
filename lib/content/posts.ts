@@ -1,5 +1,5 @@
-import { getPosts, getPostBySlug } from '@/lib/hashnode/client';
-import type { HashnodePost } from '@/lib/hashnode/types';
+import { getPosts, getPostBySlug } from '@/lib/wordpress/client';
+import type { WordPressPost } from '@/lib/wordpress/types';
 import { listLocalArticles, getLocalArticle, mergePosts, type LocalArticle } from './articles';
 
 // One list of posts for the blog index, the tag pages, RSS and the sitemap:
@@ -7,8 +7,8 @@ import { listLocalArticles, getLocalArticle, mergePosts, type LocalArticle } fro
 // reached the local articles still appear, so the index never renders empty
 // placeholders because a remote call failed.
 
-export async function loadWordPressPosts(): Promise<HashnodePost[]> {
-  const all: HashnodePost[] = [];
+export async function loadWordPressPosts(): Promise<WordPressPost[]> {
+  const all: WordPressPost[] = [];
   let hasNextPage = true;
   let after: string | undefined;
   while (hasNextPage) {
@@ -21,7 +21,7 @@ export async function loadWordPressPosts(): Promise<HashnodePost[]> {
   return all;
 }
 
-export async function loadAllPosts(): Promise<{ posts: HashnodePost[]; wordpressDown: boolean }> {
+export async function loadAllPosts(): Promise<{ posts: WordPressPost[]; wordpressDown: boolean }> {
   const local = listLocalArticles();
   try {
     const wp = await loadWordPressPosts();
@@ -31,13 +31,13 @@ export async function loadAllPosts(): Promise<{ posts: HashnodePost[]; wordpress
   }
 }
 
-export async function loadPost(slug: string): Promise<HashnodePost | LocalArticle | null> {
+export async function loadPost(slug: string): Promise<WordPressPost | LocalArticle | null> {
   const local = getLocalArticle(slug);
   if (local) return local;
   return getPostBySlug(slug);
 }
 
-export function isLocalArticle(post: HashnodePost | LocalArticle): post is LocalArticle {
+export function isLocalArticle(post: WordPressPost | LocalArticle): post is LocalArticle {
   return (post as LocalArticle).local === true;
 }
 
@@ -53,7 +53,7 @@ export const HIDDEN_FROM_LIST = new Set([
 ]);
 export const HIDDEN_FROM_RELATED = HIDDEN_FROM_LIST;
 
-export function relatedTo(post: HashnodePost, all: HashnodePost[], n = 3): HashnodePost[] {
+export function relatedTo(post: WordPressPost, all: WordPressPost[], n = 3): WordPressPost[] {
   const tags = new Set(post.tags?.map((t) => t.slug.toLowerCase()) ?? []);
   return all
     .filter((c) => c.slug !== post.slug && !HIDDEN_FROM_RELATED.has(c.slug))

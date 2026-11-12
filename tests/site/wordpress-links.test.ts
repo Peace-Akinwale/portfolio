@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { relativizeSiteLinks, unwrapBareToolLinks } from '@/lib/hashnode/client';
+import { relativizeSiteLinks, unwrapBareToolLinks } from '@/lib/wordpress/client';
 import robots from '@/app/robots';
 
 describe('WordPress bare tool links', () => {

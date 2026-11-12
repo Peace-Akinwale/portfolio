@@ -2,16 +2,16 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { parseFrontMatter, asString, asList } from './frontmatter';
 import { renderMarkdown, readingMinutes, imageRefs } from './markdown';
-import type { HashnodePost } from '@/lib/hashnode/types';
+import type { WordPressPost } from '@/lib/wordpress/types';
 
 // Articles written here rather than on WordPress live in content/articles/<slug>.md
 // with images in public/articles/<slug>/. They appear in the blog index and at
-// /<slug> beside the WordPress posts, in the same shape (HashnodePost), so the
+// /<slug> beside the WordPress posts, in the same shape (WordPressPost), so the
 // index, RSS and article page need no second code path. Front matter:
 //   title, date (YYYY-MM-DD), standfirst (the index summary), tags (list),
 //   cover (file name), cover_alt, review (optional note shown only in dev).
 
-export interface LocalArticle extends HashnodePost {
+export interface LocalArticle extends WordPressPost {
   local: true;
   review?: string;
   images: string[];
@@ -67,7 +67,7 @@ export function getLocalArticle(slug: string): LocalArticle | null {
 
 // WordPress posts and local articles in one list, newest first. A local slug
 // that also exists on WordPress wins, so a piece moved here never shows twice.
-export function mergePosts(wordpress: HashnodePost[], local: LocalArticle[]): HashnodePost[] {
+export function mergePosts(wordpress: WordPressPost[], local: LocalArticle[]): WordPressPost[] {
   const localSlugs = new Set(local.map((a) => a.slug));
   const rest = wordpress.filter((p) => !localSlugs.has(p.slug));
   return [...local, ...rest].sort((a, b) => (a.publishedAt < b.publishedAt ? 1 : a.publishedAt > b.publishedAt ? -1 : 0));

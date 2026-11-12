@@ -1,5 +1,5 @@
 import { getOgImage } from '@/lib/ogImage';
-import type { ParsedPortfolio } from '@/lib/hashnode/parsePortfolio';
+import type { ParsedPortfolio } from '@/lib/wordpress/parsePortfolio';
 
 export async function fetchOgImagesForPortfolio(
   parsed: ParsedPortfolio
