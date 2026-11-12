@@ -21,37 +21,46 @@ const clients = [
 ];
 
 export default function HomePage() {
-  return <div className={s.page}>
+  return <>
     <section className={s.hero} aria-labelledby="home-title">
-      <figure className={s.portrait}>
-        <Image src="/images/home/peace-portrait.jpg" width={1400} height={2097} priority quality={90} sizes="(max-width: 700px) 168px, (max-width: 1000px) 250px, 360px" alt="Peace Akinwale in a pinstriped suit, smiling with arms folded" />
-      </figure>
       <div className={s.heroCopy}>
-        <h1 id="home-title">{HERO.heading}</h1>
+        <p className={s.eyebrow}>B2B SaaS content writer · AI workflow builder</p>
+        <h1 id="home-title">I write BOFU content for B2B SaaS companies &amp; build <em>AI marketing workflows.</em></h1>
         <p className={s.intro}>{HERO.line}</p>
         <div className={s.actions}>
           <a className={s.primary} href={CALENDLY_URL} target="_blank" rel="noopener noreferrer">{HERO.cta} <span aria-hidden="true">↗</span></a>
+          <Link className={s.secondary} href="/writing">See my work</Link>
         </div>
-        <p className={s.proof}>“We never needed more than one round of feedback per article.” <cite>Nathan Vander Heyden, head of marketing at Marker.io</cite></p>
+        <p className={s.note}>New articles $600. Refreshes $400. I’ll reply within a business day.</p>
+        <dl className={s.facts}>
+          <div><dt>51</dt><dd>BOFU &amp; MOFU articles for ManyRequests</dd></div>
+          <div><dt>1</dt><dd>round of feedback per article at Marker.io</dd></div>
+          <div><dt>3–5</dt><dd>business days to a first draft</dd></div>
+        </dl>
+      </div>
+      <div className={s.frame}>
+        <figure className={s.portrait}>
+          <Image src="/images/home/peace-portrait.jpg" width={1400} height={2097} priority quality={90} sizes="(max-width: 700px) 92vw, 480px" alt="Peace Akinwale in a pinstriped suit, smiling with arms folded" />
+        </figure>
+        <blockquote className={s.tag}>
+          <p>“We never needed more than one round of feedback per article.”</p>
+          <cite>Nathan Vander Heyden, head of marketing at Marker.io</cite>
+        </blockquote>
+        <p className={s.caption}><b>Peace Akinwale</b><span>B2B SaaS content writer</span></p>
       </div>
     </section>
 
-    <section className={s.clients} aria-label="Clients">
+    <section className={s.band} aria-label="Clients">
       <p>You’re in good company</p>
-      <div>{clients.map(([file, name]) => <figure key={name}>
-        <Image src={`/images/approved/client-logos/${file}`} width={180} height={60} alt={name} />
-        {name === 'Jabra' && <figcaption>via Spicy Margarita</figcaption>}
+      <div className={s.logos}>{clients.map(([file, name]) => <figure key={name} className={name === 'Notebook Agency' ? s.notebook : undefined}>
+        <Image src={`/images/approved/client-logos/${file}`} width={180} height={60} alt={name === 'Jabra' ? 'Jabra, via Spicy Margarita' : name} />
       </figure>)}</div>
     </section>
 
+    <div className={s.page}>
     <figure className={s.testimonial}>
       <blockquote>“His top-performing posts are product-led ones, which has led to more traffic and demo requests for ManyRequests.”</blockquote>
       <figcaption className="reviewer-attribution"><Image src="/images/clients/regine-garcia.png" alt="Regine Garcia" width={56} height={56} sizes="56px" /><span>Regine Garcia, operations and content lead at ManyRequests</span></figcaption>
-    </figure>
-    {/* Shortened from the Marker.io testimonial on /services and /testimonials (approved 8 Nov 2026). */}
-    <figure className={s.testimonial}>
-      <blockquote>“We never needed more than one round of feedback per article.”</blockquote>
-      <figcaption className="reviewer-attribution"><Image src="/images/clients/nathan-vander-heyden.jpg" alt="Nathan Vander Heyden" width={56} height={56} sizes="56px" /><span>Nathan Vander Heyden, head of marketing at Marker.io</span></figcaption>
     </figure>
     <section id="selected-work" className={s.work} aria-labelledby="selected-title">
       <div className={s.sectionHead}><h2 id="selected-title">Selected work</h2><Link href="/case-studies">See all case studies ↗</Link></div>
@@ -88,5 +97,6 @@ export default function HomePage() {
       <div><h2 id="contact-title">Have something in mind?</h2><p>Let’s talk about your BOFU content needs or workflows you’d like to automate.</p></div>
       <div className={s.actions}><a className={s.primary} href={CALENDLY_URL} target="_blank" rel="noopener noreferrer">Book a 30-minute call ↗</a><Link className={s.secondary} href="/services">See services and prices ↗</Link></div>
     </section>
-  </div>;
+    </div>
+  </>;
 }

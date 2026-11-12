@@ -6,10 +6,14 @@ import { usePathname } from 'next/navigation';
 import { CALENDLY_URL, NAV_LINKS } from '@/lib/site';
 import { ThemeToggle } from '@/components/ThemeToggle';
 
-// One top bar for every page: the name on the left, the six sections on the
-// right, "Let’s chat" last (Peace, 4 Nov 2026: an invitation to talk; it opens the same Calendly page as every body button).
-// On the homepage it is a nav link, so the hero's booking button is the one primary action. Sticky, on the page's own ground, with a hairline.
-// Under 1024px the sections sit behind a disclosure button, so a label never wraps.
+// First-screen nav (Peace, 12 Nov 2026). Blog and Contact stay in the footer
+// and in the phone menu. The pill says "Book a call" and opens Calendly.
+const HEADER_LINKS = [
+  { href: '/writing', label: 'Writing samples' },
+  { href: '/case-studies', label: 'Case studies' },
+  { href: '/services', label: 'Services and prices' },
+  { href: '/about', label: 'About' },
+];
 export function Header() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
@@ -36,10 +40,8 @@ export function Header() {
           Peace Akinwale
         </Link>
 
-        {/* Full menu from 840px (was 1024px), so narrower desktop windows keep it (8 Nov 2026).
-            Contact is left out here because "Let’s chat" does that job; the phone menu and footer keep it. */}
-        <nav aria-label="Site" className="hidden items-center gap-[18px] min-[840px]:flex lg:gap-6 xl:gap-7">
-          {NAV_LINKS.filter((item) => item.href !== '/contact').map((item) => (
+        <nav aria-label="Site" className="hidden items-center gap-5 min-[840px]:flex lg:gap-6">
+          {HEADER_LINKS.map((item) => (
             <Link
               key={item.href}
               href={item.href}
@@ -50,16 +52,14 @@ export function Header() {
             </Link>
           ))}
           <ThemeToggle />
-          {/* On the homepage the hero button is the one primary action, so this stays a nav link. */}
-          <a href={CALENDLY_URL} target="_blank" rel="noopener" className={pathname === '/' ? 'nav-link whitespace-nowrap text-[14.5px] font-medium text-muted-foreground hover:text-foreground lg:text-[15px]' : 'button button-ink whitespace-nowrap text-[14px]'}>
-            Let’s chat
+          <a href={CALENDLY_URL} target="_blank" rel="noopener" className="button button-ink whitespace-nowrap text-[14px]">
+            Book a call
           </a>
         </nav>
 
         <div className="flex items-center gap-1 min-[840px]:hidden">
-        {/* Under 360px the header cannot hold the name, this link, the theme toggle and the menu; the menu repeats "Let’s chat". */}
-        <a href={CALENDLY_URL} target="_blank" rel="noopener" className={pathname === '/' ? 'nav-link header-book inline-flex min-h-11 items-center whitespace-nowrap px-2 text-[14px] font-medium text-foreground' : 'button button-ink min-h-9 shrink-0 whitespace-nowrap px-3 py-1.5 text-[12.5px] header-book'}>
-          Let’s chat
+        <a href={CALENDLY_URL} target="_blank" rel="noopener" className="button button-ink header-book min-h-9 shrink-0 whitespace-nowrap px-3 py-1.5 text-[12.5px]">
+          Book a call
         </a>
         <ThemeToggle />
         <button
@@ -101,10 +101,22 @@ export function Header() {
             ))}
           </ul>
           <a href={CALENDLY_URL} target="_blank" rel="noopener" className="button button-ink mt-2 inline-flex" onClick={() => setOpen(false)}>
-            Let’s chat
+            Book a call
           </a>
         </nav>
       )}
+      <nav aria-label="Sections" className="flex gap-5 overflow-x-auto border-t border-border px-[var(--gutter)] py-1 text-[14.5px] min-[840px]:hidden">
+        {HEADER_LINKS.map((item) => (
+          <Link
+            key={item.href}
+            href={item.href}
+            aria-current={isCurrent(item.href) ? 'page' : undefined}
+            className="nav-link inline-flex min-h-11 shrink-0 items-center whitespace-nowrap font-medium text-muted-foreground"
+          >
+            {item.label}
+          </Link>
+        ))}
+      </nav>
     </header>
   );
 }
