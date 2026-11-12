@@ -5,7 +5,7 @@
 export const SOURCE_DATES: Record<string, string> = {
   'app/page.tsx': '2026-11-12T19:36:26+00:00',
   'lib/content/home-copy.ts': '2026-11-08T20:57:03+01:00',
-  'app/writing/page.tsx': '2026-11-12T19:36:26+00:00',
+  'app/writing/page.tsx': '2026-11-12T19:40:51+00:00',
   'lib/content/record.ts': '2026-11-08T20:57:03+01:00',
   'lib/content/record-static.ts': '2026-11-08T20:57:03+01:00',
   'app/case-studies/page.tsx': '2026-11-12T19:36:26+00:00',
@@ -21,9 +21,9 @@ export const SOURCE_DATES: Record<string, string> = {
   'app/testimonials/page.tsx': '2026-11-08T20:57:03+01:00',
   'app/case-studies/manyrequests/page.tsx': '2026-11-08T18:10:53+01:00',
   'content/pages/manyrequests.md': '2026-11-08T20:57:03+01:00',
-  'lib/portfolio/manyrequests.ts': '2026-11-08T20:57:03+01:00',
+  'lib/portfolio/manyrequests.ts': '2026-11-12T19:40:51+00:00',
   'app/writing/[client]/page.tsx': '2026-11-08T20:57:03+01:00',
-  'app/[slug]/page.tsx': '2026-11-08T21:20:55+01:00',
+  'app/[slug]/page.tsx': '2026-11-12T19:40:51+00:00',
 };
 
 export function committedLastModified(sources: string[]): Date | null {
