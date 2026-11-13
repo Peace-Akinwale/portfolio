@@ -31,7 +31,7 @@ const CTA_PATTERNS = [
 ];
 
 /**
- * Parse Hashnode static page HTML into structured portfolio data.
+ * Parse a WordPress page's HTML into structured portfolio data.
  * Splits by headings, extracts list items with links.
  */
 export function parsePortfolioHtml(html: string, pageTitle?: string): ParsedPortfolio {

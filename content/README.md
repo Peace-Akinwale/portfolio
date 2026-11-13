@@ -1,6 +1,6 @@
 # Site content that lives in this repo
 
-Blog posts, the About page and the ManyRequests sample lists still come from WordPress.com (`lib/hashnode/client.ts`, env `WORDPRESS_SITE`). Everything below is edited here and deploys with the site.
+Blog posts, the About page and the ManyRequests sample lists still come from WordPress.com (`lib/wordpress/client.ts`, env `WORDPRESS_SITE`). Everything below is edited here and deploys with the site. Hosting is Railway. Hashnode is not used.
 
 | Folder | What | Shown at |
 |---|---|---|

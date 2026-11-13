@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getPosts } from '@/lib/hashnode/client';
+import { getPosts } from '@/lib/wordpress/client';
 
 export async function GET() {
   try {

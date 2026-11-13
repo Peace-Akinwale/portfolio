@@ -2,7 +2,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { notFound, redirect } from 'next/navigation';
 import type { Metadata } from 'next';
-import { getStaticPage } from '@/lib/hashnode/client';
+import { getStaticPage } from '@/lib/wordpress/client';
 
 interface ProjectPageProps {
   params: Promise<{ slug: string }>;
@@ -31,9 +31,7 @@ export async function generateMetadata({ params }: ProjectPageProps): Promise<Me
   if (slug === 'career-pathway') {
     return {
       title: 'Career Pathway Assessment',
-      alternates: {
-        canonical: 'https://peaceakinwale.com/projects/career-pathway',
-      },
+      robots: { index: false, follow: false },
     };
   }
 

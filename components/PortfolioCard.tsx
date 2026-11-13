@@ -1,6 +1,6 @@
 'use client';
 
-import type { PortfolioProject } from '@/lib/hashnode/parsePortfolio';
+import type { PortfolioProject } from '@/lib/wordpress/parsePortfolio';
 
 interface PortfolioCardProps {
   project: PortfolioProject;

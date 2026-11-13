@@ -1,4 +1,4 @@
-import type { ParsedPortfolio } from '@/lib/hashnode/parsePortfolio';
+import type { ParsedPortfolio } from '@/lib/wordpress/parsePortfolio';
 import { PortfolioCard } from '@/components/PortfolioCard';
 import { getDomain, getFaviconUrl } from '@/lib/ogImage';
 

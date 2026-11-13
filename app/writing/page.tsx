@@ -4,8 +4,8 @@ import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
 import '@/components/record/record.css';
-import { getStaticPage } from '@/lib/hashnode/client';
-import { parsePortfolioHtml } from '@/lib/hashnode/parsePortfolio';
+import { getStaticPage } from '@/lib/wordpress/client';
+import { parsePortfolioHtml } from '@/lib/wordpress/parsePortfolio';
 import { FEATURED_MANYREQUESTS_ARTICLES, MANYREQUESTS_ARTICLE_COUNT, MANYREQUESTS_SINCE, withCurrentManyRequestsSamples } from '@/lib/portfolio/manyrequests';
 import { WritingSamples } from '@/components/record/WritingSamples';
 import descriptions from '@/lib/content/page-descriptions.json';
@@ -16,7 +16,7 @@ import { publicHref, CLIENT_PAGE_DESCRIPTIONS } from '@/lib/content/client-pages
 export const revalidate = 300;
 
 export const metadata: Metadata = withOg({
-  title: 'B2B SaaS content writing portfolio · Peace Akinwale',
+  title: 'B2B SaaS content writing portfolio',
   description: descriptions.Writing,
   alternates: { canonical: `${SITE_URL}/writing` },
 }, { key: 'portfolio', path: '/writing', alt: 'Writing samples by Peace Akinwale' });

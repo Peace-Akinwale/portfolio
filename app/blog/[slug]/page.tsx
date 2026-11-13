@@ -1,11 +1,11 @@
 import { ogImagePath, DEFAULT_OG } from '@/lib/og';
 import { JsonLdScript } from '@/components/JsonLdScript';
 import { articleJsonLd, breadcrumbList } from '@/lib/seo/jsonld';
-import { getAllPostSlugs } from '@/lib/hashnode/client';
+import { getAllPostSlugs } from '@/lib/wordpress/client';
 import '@/components/article/article.css';
 import { loadPost, loadAllPosts, isLocalArticle, relatedTo } from '@/lib/content/posts';
 import { listLocalArticles } from '@/lib/content/articles';
-import { formatDate, formatReadingTime } from '@/lib/hashnode/utils';
+import { formatDate, formatReadingTime } from '@/lib/wordpress/utils';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';

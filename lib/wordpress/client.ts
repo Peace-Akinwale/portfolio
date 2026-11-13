@@ -1,186 +1,351 @@
-type Nullable<T> = T | null;
+import type { WordPressPage, WordPressPost } from './types';
 
-export interface WordPressAuthConfig {
-  clientId: string;
-  clientSecret: string;
-  username: string;
-  appPassword: string;
-}
+const WORDPRESS_SITE = process.env.WORDPRESS_SITE;
+const CUSTOM_SITE_URL = 'https://peaceakinwale.com';
 
-export interface WordPressSiteConfig extends WordPressAuthConfig {
-  site: string;
-}
+const DEFAULT_AUTHOR: WordPressPost['author'] = {
+  name: 'Peace Akinwale',
+  profilePicture: undefined,
+  bio: {
+    text: 'B2B SaaS content writer for product-led software companies. I write articles that rank, refresh content with business potential, and help brands show up in AI search.',
+  },
+};
 
-export interface WordPressTokenResponse {
-  access_token: string;
-  token_type: string;
-  blog_id?: string;
-  blog_url?: string;
-  scope?: string;
-}
+const LOCAL_COVER_IMAGE_OVERRIDES: Record<string, string> = {
+  'what-i-learned-vibe-coding-my-first-app-shutting-it-down': '/images/blog/garde-logo.jpg',
+  'how-to-build-portfolio-website-claude-code': '/images/blog/second-thorough-prompt.png',
+};
 
-export interface WordPressSiteInfo {
-  ID: number;
-  slug: string;
+interface WordPressTag {
+  ID?: number;
   name: string;
-  URL: string;
-  capabilities?: Record<string, boolean>;
+  slug?: string;
 }
 
-export interface WordPressPostSummary {
+interface WordPressAuthor {
+  name?: string;
+  avatar_URL?: string;
+  bio?: string;
+}
+
+interface WordPressPublicPost {
   ID: number;
-  slug: string;
+  date: string;
+  modified: string;
   title: string;
   URL: string;
-  status: string;
-  date: string;
+  content: string;
+  excerpt?: string;
+  slug: string;
+  featured_image?: string;
+  tags?: Record<string, WordPressTag>;
+  author?: WordPressAuthor;
 }
 
-export interface WordPressPostsResponse {
-  found: number;
-  posts: WordPressPostSummary[];
+interface WordPressPublicPage {
+  ID: number;
+  title: string;
+  slug: string;
+  content: string;
+}
+
+interface WordPressCollectionResponse<T> {
+  posts: T[];
   meta?: {
     next_page?: string;
   };
 }
 
-export interface WordPressCreatePostInput {
-  title: string;
-  content: string;
-  excerpt?: string;
-  slug: string;
-  date: string;
-  status: 'publish' | 'draft' | 'pending' | 'private' | 'future';
-  tags?: string[];
-  categories?: string[];
-}
+let wordpressPostsPromise: Promise<WordPressPost[]> | null = null;
+let wordpressPagesPromise: Promise<WordPressPage[]> | null = null;
 
-export interface WordPressCreatePostResponse {
-  ID: number;
-  slug: string;
-  status: string;
-  date: string;
-  URL: string;
-  title: string;
-}
+function decodeHtmlEntities(input: string): string {
+  const namedEntities: Record<string, string> = {
+    amp: '&',
+    lt: '<',
+    gt: '>',
+    quot: '"',
+    apos: "'",
+    nbsp: ' ',
+    rsquo: "'",
+    lsquo: "'",
+    rdquo: '"',
+    ldquo: '"',
+    mdash: '-',
+    ndash: '-',
+    hellip: '...',
+  };
 
-const OAUTH_TOKEN_URL = 'https://public-api.wordpress.com/oauth2/token';
-const API_BASE = 'https://public-api.wordpress.com/rest/v1.1';
+  return input.replace(/&(#x?[0-9a-fA-F]+|\w+);/g, (_, entity: string) => {
+    if (entity.startsWith('#x')) {
+      return String.fromCodePoint(parseInt(entity.slice(2), 16));
+    }
 
-async function readJson<T>(response: Response): Promise<T> {
-  const text = await response.text();
+    if (entity.startsWith('#')) {
+      return String.fromCodePoint(parseInt(entity.slice(1), 10));
+    }
 
-  try {
-    return JSON.parse(text) as T;
-  } catch {
-    throw new Error(`Expected JSON response but received: ${text.slice(0, 300)}`);
-  }
-}
-
-async function requestJson<T>(url: string, init?: RequestInit): Promise<T> {
-  const response = await fetch(url, init);
-
-  if (!response.ok) {
-    const body = await response.text();
-    throw new Error(`WordPress request failed (${response.status} ${response.statusText}): ${body.slice(0, 500)}`);
-  }
-
-  return readJson<T>(response);
-}
-
-export async function getWordPressAccessToken(config: WordPressAuthConfig): Promise<WordPressTokenResponse> {
-  const params = new URLSearchParams({
-    client_id: config.clientId,
-    client_secret: config.clientSecret,
-    grant_type: 'password',
-    username: config.username,
-    password: config.appPassword,
-  });
-
-  return requestJson<WordPressTokenResponse>(OAUTH_TOKEN_URL, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
-    },
-    body: params.toString(),
+    return namedEntities[entity] ?? `&${entity};`;
   });
 }
 
-function authHeaders(token: string): HeadersInit {
+function stripHtml(html: string): string {
+  return decodeHtmlEntities(html.replace(/<[^>]+>/g, ' '))
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function normalizePlainText(input?: string): string {
+  return decodeHtmlEntities(input ?? '')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function estimateReadingTime(html: string): number {
+  const wordCount = stripHtml(html).split(/\s+/).filter(Boolean).length;
+  return Math.max(1, Math.round(wordCount / 200));
+}
+
+function extractFirstImageUrl(html: string): string | undefined {
+  const match = html.match(/<img[^>]+src=["']([^"']+)["']/i);
+  return match?.[1];
+}
+
+function mapWordPressTags(tags?: Record<string, WordPressTag>) {
+  return Object.values(tags ?? {}).map((tag) => ({
+    id: String(tag.ID ?? tag.slug ?? tag.name),
+    name: decodeHtmlEntities(tag.name),
+    slug: (tag.slug ?? tag.name.toLowerCase().replace(/\s+/g, '-')).toLowerCase(),
+  }));
+}
+
+function mapWordPressAuthor(author?: WordPressAuthor): WordPressPost['author'] {
+  if (!author?.name) {
+    return DEFAULT_AUTHOR;
+  }
+
   return {
-    Authorization: `Bearer ${token}`,
-    'Content-Type': 'application/x-www-form-urlencoded',
+    name: decodeHtmlEntities(author.name),
+    profilePicture: author.avatar_URL,
+    bio: author.bio ? { text: normalizePlainText(author.bio) } : DEFAULT_AUTHOR.bio,
   };
 }
 
-export async function getWordPressSiteInfo(site: string): Promise<WordPressSiteInfo> {
-  const url = `${API_BASE}/sites/${encodeURIComponent(site)}`;
-  return requestJson<WordPressSiteInfo>(url);
+// WordPress bodies link to the site by its absolute URL, some over http and some
+// through www (e.g. http://peaceakinwale.com/services, https://www.peaceakinwale.com/portfolio/).
+// Rewrite those hrefs to root-relative paths so every internal link resolves on
+// the current origin over https and points at the one canonical URL.
+export function relativizeSiteLinks(html: string): string {
+  return html.replace(
+    /(\bhref=)(["'])https?:\/\/(?:www\.)?peaceakinwale\.com(\/[^"']*)?\2/gi,
+    (_m, attr: string, quote: string, rest: string | undefined) => `${attr}${quote}${rest || '/'}${quote}`,
+  );
 }
 
-export async function getAllWordPressPosts(
-  site: string,
-  token: string,
-  status: string = 'any'
-): Promise<WordPressPostSummary[]> {
-  const posts: WordPressPostSummary[] = [];
-  let pageHandle: Nullable<string> = null;
+// WordPress turns a bare tool name into a link: "Next.js" becomes
+// <a href="http://next.js">Next.js</a>, and the same for Node.js and Sanity.io.
+// A real link has a path (https://www.sanity.io/headless-cms) and is left alone.
+const BARE_TOOL_NAME = /^(?:next\.js|node\.js|sanity(?:\.io)?)$/i;
 
-  do {
-    const params = new URLSearchParams({
-      number: '100',
-      order_by: 'date',
-      order: 'ASC',
-      status,
-      fields: 'ID,slug,title,URL,status,date',
-    });
-
-    if (pageHandle) {
-      params.set('page_handle', pageHandle);
+export function unwrapBareToolLinks(html: string): string {
+  return html.replace(/<a\b([^>]*?)>([\s\S]*?)<\/a>/gi, (full, attrs: string, inner: string) => {
+    const href = attrs.match(/\bhref\s*=\s*(?:"([^"]*)"|'([^']*)')/i);
+    const raw = href?.[1] ?? href?.[2];
+    if (!raw) return full;
+    let host = '';
+    let pathName = '';
+    try {
+      const url = new URL(raw);
+      host = url.hostname.replace(/^www\./i, '').toLowerCase();
+      pathName = url.pathname.replace(/\/+$/, '');
+      if (url.search || url.hash) return full;
+    } catch {
+      return full;
     }
-
-    const url = `${API_BASE}/sites/${encodeURIComponent(site)}/posts/?${params.toString()}`;
-    const data = await requestJson<WordPressPostsResponse>(url, {
-      headers: authHeaders(token),
-    });
-
-    posts.push(...data.posts);
-    pageHandle = data.meta?.next_page ?? null;
-  } while (pageHandle);
-
-  return posts;
+    if (host !== 'next.js' && host !== 'node.js' && host !== 'sanity.io') return full;
+    if (pathName) return full;
+    const text = inner.replace(/<[^>]+>/g, '').replace(/&nbsp;/gi, ' ').replace(/\s+/g, ' ').trim();
+    if (!BARE_TOOL_NAME.test(text)) return full;
+    return text;
+  });
 }
 
-export async function createWordPressPost(
-  site: string,
-  token: string,
-  input: WordPressCreatePostInput
-): Promise<WordPressCreatePostResponse> {
-  const params = new URLSearchParams({
-    title: input.title,
-    content: input.content,
-    slug: input.slug,
-    date: input.date,
-    status: input.status,
-    publicize: 'false',
-  });
+function prepareWordPressHtml(html: string): string {
+  return unwrapBareToolLinks(relativizeSiteLinks(html));
+}
 
-  if (input.excerpt) {
-    params.set('excerpt', input.excerpt);
+function buildPostFromWordPress(raw: WordPressPublicPost): WordPressPost {
+  const excerptSource = raw.excerpt?.trim() ? raw.excerpt : raw.content;
+  const summary = normalizePlainText(stripHtml(excerptSource)).slice(0, 240).trim();
+  const title = normalizePlainText(raw.title);
+  const coverUrl =
+    LOCAL_COVER_IMAGE_OVERRIDES[raw.slug] ||
+    raw.featured_image ||
+    extractFirstImageUrl(raw.content);
+
+  return {
+    id: String(raw.ID),
+    title,
+    brief: summary,
+    slug: raw.slug,
+    content: {
+      markdown: '',
+      html: prepareWordPressHtml(raw.content),
+    },
+    coverImage: coverUrl ? { url: coverUrl } : undefined,
+    publishedAt: raw.date,
+    updatedAt: raw.modified,
+    readTimeInMinutes: estimateReadingTime(raw.content),
+    tags: mapWordPressTags(raw.tags),
+    author: mapWordPressAuthor(raw.author),
+    seo: {
+      title,
+      description: summary,
+    },
+    url: `${CUSTOM_SITE_URL}/blog/${raw.slug}`,
+  };
+}
+
+function buildPageFromWordPress(raw: WordPressPublicPage): WordPressPage {
+  return {
+    id: String(raw.ID),
+    title: decodeHtmlEntities(raw.title),
+    slug: raw.slug,
+    content: {
+      markdown: '',
+      html: prepareWordPressHtml(raw.content),
+    },
+  };
+}
+
+async function requestWordPressCollection<T>(path: string, params: URLSearchParams): Promise<WordPressCollectionResponse<T>> {
+  if (!WORDPRESS_SITE) {
+    return { posts: [] };
   }
 
-  if (input.tags?.length) {
-    params.set('tags', input.tags.join(','));
+  const response = await fetch(
+    `https://public-api.wordpress.com/rest/v1.1/sites/${encodeURIComponent(WORDPRESS_SITE)}/${path}?${params.toString()}`,
+    {
+      next: { revalidate: 300 },
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error(`WordPress request failed with status ${response.status}`);
   }
 
-  if (input.categories?.length) {
-    params.set('categories', input.categories.join(','));
+  return (await response.json()) as WordPressCollectionResponse<T>;
+}
+
+async function fetchWordPressPosts(): Promise<WordPressPost[]> {
+  if (!WORDPRESS_SITE) {
+    return [];
   }
 
-  const url = `${API_BASE}/sites/${encodeURIComponent(site)}/posts/new`;
-  return requestJson<WordPressCreatePostResponse>(url, {
-    method: 'POST',
-    headers: authHeaders(token),
-    body: params.toString(),
-  });
+  if (!wordpressPostsPromise) {
+    wordpressPostsPromise = (async () => {
+      const allPosts: WordPressPublicPost[] = [];
+      let nextPage: string | undefined;
+
+      do {
+        const params = new URLSearchParams({
+          number: '100',
+          order_by: 'date',
+          order: 'DESC',
+          fields: 'ID,date,modified,title,URL,content,excerpt,slug,featured_image,tags,author',
+        });
+
+        if (nextPage) {
+          params.set('page_handle', nextPage);
+        }
+
+        const data = await requestWordPressCollection<WordPressPublicPost>('posts/', params);
+        allPosts.push(...data.posts);
+        nextPage = data.meta?.next_page;
+      } while (nextPage);
+
+      return allPosts.map(buildPostFromWordPress);
+    })().catch((error) => {
+      wordpressPostsPromise = null;
+      console.error('Error fetching WordPress posts:', error);
+      return [];
+    });
+  }
+
+  return wordpressPostsPromise;
+}
+
+async function fetchWordPressPages(): Promise<WordPressPage[]> {
+  if (!WORDPRESS_SITE) {
+    return [];
+  }
+
+  if (!wordpressPagesPromise) {
+    wordpressPagesPromise = (async () => {
+      const allPages: WordPressPublicPage[] = [];
+      let nextPage: string | undefined;
+
+      do {
+        const params = new URLSearchParams({
+          type: 'page',
+          number: '100',
+          order_by: 'title',
+          order: 'ASC',
+          fields: 'ID,title,slug,content',
+        });
+
+        if (nextPage) {
+          params.set('page_handle', nextPage);
+        }
+
+        const data = await requestWordPressCollection<WordPressPublicPage>('posts/', params);
+        allPages.push(...data.posts);
+        nextPage = data.meta?.next_page;
+      } while (nextPage);
+
+      return allPages.map(buildPageFromWordPress);
+    })().catch((error) => {
+      wordpressPagesPromise = null;
+      console.error('Error fetching WordPress pages:', error);
+      return [];
+    });
+  }
+
+  return wordpressPagesPromise;
+}
+
+export async function getPosts(
+  first: number = 10,
+  after?: string
+): Promise<{ posts: WordPressPost[]; hasNextPage: boolean; endCursor?: string }> {
+  const allPosts = await fetchWordPressPosts();
+  const startIndex = after ? Number(after) : 0;
+  const posts = allPosts.slice(startIndex, startIndex + first);
+  const endIndex = startIndex + posts.length;
+
+  return {
+    posts,
+    hasNextPage: endIndex < allPosts.length,
+    endCursor: endIndex < allPosts.length ? String(endIndex) : undefined,
+  };
+}
+
+export async function getPostBySlug(slug: string): Promise<WordPressPost | null> {
+  const posts = await fetchWordPressPosts();
+  return posts.find((post) => post.slug === slug) ?? null;
+}
+
+export async function getAllPostSlugs(): Promise<string[]> {
+  const posts = await fetchWordPressPosts();
+  return posts.map((post) => post.slug);
+}
+
+export async function getStaticPage(slug: string): Promise<WordPressPage | null> {
+  const pages = await fetchWordPressPages();
+  return pages.find((page) => page.slug === slug) ?? null;
+}
+
+export async function getAllStaticPageSlugs(): Promise<string[]> {
+  const pages = await fetchWordPressPages();
+  return pages.map((page) => page.slug);
 }

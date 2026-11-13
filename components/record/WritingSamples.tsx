@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import type { ParsedPortfolio } from '@/lib/hashnode/parsePortfolio';
+import type { ParsedPortfolio } from '@/lib/wordpress/parsePortfolio';
 
 // Every writing sample, by client: the WordPress portfolio page's sections plus
 // the Marker.io and Jabra sections the site adds. Compact list, one block per

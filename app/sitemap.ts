@@ -2,16 +2,17 @@ import { MetadataRoute } from 'next';
 import { execFileSync } from 'node:child_process';
 import { loadAllPosts } from '@/lib/content/posts';
 import { listCaseStudies } from '@/lib/content/case-studies';
+import { committedLastModified } from '@/lib/seo/source-dates';
 import { SITE_URL } from '@/lib/site';
 
 // Every indexable route with a real last-modified date: the fixed pages (dated
-// by the last commit to their source), the case studies and local articles
-// (dated by the last commit to their markdown), the WordPress posts (dated by
-// WordPress) and the three client sample pages WordPress serves through
-// app/[slug]. Left out on purpose (3 Nov 2026 SEO audit): the /tag/* pages
-// (thin), /projects and its tree (redirected or an app), /career-pathway (an
-// old tool) and /services-v2 (a noindex mockup). changeFrequency and priority
-// are gone because Google ignores them.
+// by the last commit to their source, or by lib/seo/source-dates.ts when the
+// build has no git history), the case studies (dated by the `date` in the
+// file, which is also the date on the page), the WordPress posts (dated by
+// WordPress) and the three client sample pages. Left out on purpose (3 Nov
+// 2026 SEO audit): the /tag/* pages (thin), /projects except the MyLinks
+// landing page, /career-pathway and /services-v2. changeFrequency and priority
+// are gone because Google ignores them. The deploy clock is never a lastmod.
 
 export type ModifiedAt = (sources: string[]) => Date | null;
 
@@ -38,6 +39,8 @@ const gitDates = new Map<string, Date | null>();
 
 // The commit date of the last commit that touched any of the paths, or null when
 // git has nothing (an untracked file, or a build without a .git directory).
+// Railway's production build has no git history, so callers fall back to
+// committedLastModified instead of the deploy clock.
 export function gitLastModified(sources: string[]): Date | null {
   let newest: Date | null = null;
   for (const source of sources) {
@@ -68,29 +71,39 @@ function validDate(value: string | undefined): Date | null {
   return Number.isNaN(d.getTime()) ? null : d;
 }
 
+function withLastModified(url: string, lastModified: Date | null): MetadataRoute.Sitemap[number] {
+  return lastModified ? { url, lastModified } : { url };
+}
+
 export function buildSitemap(input: {
   posts: { slug: string; updatedAt: string; local?: boolean }[];
   caseStudies: { slug: string; date: string }[];
   modifiedAt?: ModifiedAt;
   now?: Date;
 }): MetadataRoute.Sitemap {
-  const now = input.now ?? new Date();
   const modifiedAt = input.modifiedAt ?? gitLastModified;
+  // `now` is accepted so older callers still type-check. It is not a lastmod:
+  // a deploy must not stamp every URL with the build clock.
 
-  const fixed: MetadataRoute.Sitemap = FIXED_PAGES.map((page) => ({
-    url: `${SITE_URL}${page.path}`,
-    lastModified: modifiedAt(page.sources) ?? now,
-  }));
+  const fixed: MetadataRoute.Sitemap = FIXED_PAGES.map((page) =>
+    withLastModified(`${SITE_URL}${page.path}`, modifiedAt(page.sources) ?? committedLastModified(page.sources)),
+  );
 
-  const studies: MetadataRoute.Sitemap = input.caseStudies.map((cs) => ({
-    url: `${SITE_URL}/case-studies/${cs.slug}`,
-    lastModified: modifiedAt([`content/case-studies/${cs.slug}.md`]) ?? validDate(cs.date) ?? now,
-  }));
+  // A case study's lastmod is its own `date`, the same date the page shows.
+  // That date lives in the file, so a build without git still has it.
+  const studies: MetadataRoute.Sitemap = input.caseStudies.map((cs) =>
+    withLastModified(
+      `${SITE_URL}/case-studies/${cs.slug}`,
+      validDate(cs.date) ?? modifiedAt([`content/case-studies/${cs.slug}.md`]) ?? committedLastModified([`content/case-studies/${cs.slug}.md`]),
+    ),
+  );
 
-  const posts: MetadataRoute.Sitemap = input.posts.map((post) => ({
-    url: `${SITE_URL}/blog/${post.slug}`,
-    lastModified: (post.local ? modifiedAt([`content/articles/${post.slug}.md`]) : null) ?? validDate(post.updatedAt) ?? now,
-  }));
+  const posts: MetadataRoute.Sitemap = input.posts.map((post) =>
+    withLastModified(
+      `${SITE_URL}/blog/${post.slug}`,
+      (post.local ? modifiedAt([`content/articles/${post.slug}.md`]) ?? committedLastModified([`content/articles/${post.slug}.md`]) : null) ?? validDate(post.updatedAt),
+    ),
+  );
 
   const seen = new Set<string>();
   return [...fixed, ...studies, ...posts].filter((e) => (seen.has(e.url) ? false : (seen.add(e.url), true)));

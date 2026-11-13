@@ -7,7 +7,7 @@ import descriptions from '@/lib/content/page-descriptions.json';
 import { SITE_URL } from '@/lib/site';
 
 export const metadata: Metadata = withOg({
-  title: "About Peace Akinwale · B2B SaaS writer & AI workflow builder",
+  title: "About · B2B SaaS writer & AI workflow builder",
   description: descriptions["About"],
   alternates: { canonical: SITE_URL + "/about" },
 }, { key: "about", path: "/about", alt: "About Peace Akinwale · B2B SaaS writer & AI workflow builder" });

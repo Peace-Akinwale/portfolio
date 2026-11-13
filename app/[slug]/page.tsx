@@ -1,9 +1,9 @@
 import { ogImagePath, DEFAULT_OG } from '@/lib/og';
-import { getAllPostSlugs, getStaticPage, getAllStaticPageSlugs } from '@/lib/hashnode/client';
+import { getAllPostSlugs, getStaticPage, getAllStaticPageSlugs } from '@/lib/wordpress/client';
 import '@/components/article/article.css';
 import { loadPost, isLocalArticle } from '@/lib/content/posts';
 import { listLocalArticles } from '@/lib/content/articles';
-import { parsePortfolioHtml } from '@/lib/hashnode/parsePortfolio';
+import { parsePortfolioHtml } from '@/lib/wordpress/parsePortfolio';
 import { notFound, permanentRedirect } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';

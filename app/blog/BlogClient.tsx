@@ -3,9 +3,9 @@
 import { useMemo, useState } from 'react';
 import { SearchBar } from '@/components/SearchBar';
 import { ArticleCard } from '@/components/ArticleCard';
-import type { HashnodePost } from '@/lib/hashnode/types';
+import type { WordPressPost } from '@/lib/wordpress/types';
 
-export function BlogClient({ initialPosts, wordpressDown }: { initialPosts: HashnodePost[]; wordpressDown: boolean }) {
+export function BlogClient({ initialPosts, wordpressDown }: { initialPosts: WordPressPost[]; wordpressDown: boolean }) {
   const [query, setQuery] = useState('');
 
   const posts = useMemo(() => {

@@ -1,4 +1,4 @@
-import type { ParsedPortfolio, PortfolioProject } from '@/lib/hashnode/parsePortfolio';
+import type { ParsedPortfolio, PortfolioProject } from '@/lib/wordpress/parsePortfolio';
 
 // The number of articles Peace wrote for ManyRequests (Peace, 3 Nov 2026: use 51).
 // 51 were under her byline on 2026-09-27. On 2026-11-03 ManyRequests had re-credited

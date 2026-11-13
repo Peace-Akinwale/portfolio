@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { parseFrontMatter, asList } from '@/lib/content/frontmatter';
 import { renderMarkdown, imageRefs } from '@/lib/content/markdown';
 import { mergePosts } from '@/lib/content/articles';
-import type { HashnodePost } from '@/lib/hashnode/types';
+import type { WordPressPost } from '@/lib/wordpress/types';
 
 describe('front matter', () => {
   it('reads scalars, quoted values and lists, and leaves the body untouched', () => {
@@ -35,7 +35,7 @@ describe('markdown rendering', () => {
 });
 
 describe('merging local articles with WordPress posts', () => {
-  const wp = (slug: string, publishedAt: string) => ({ slug, publishedAt, title: slug } as HashnodePost);
+  const wp = (slug: string, publishedAt: string) => ({ slug, publishedAt, title: slug } as WordPressPost);
   it('sorts newest first and lets a local slug win over a WordPress duplicate', () => {
     const local = [{ ...wp('the-success-message-was-the-bug', '2026-10-24T09:00:00.000Z'), local: true as const, images: [] }];
     const merged = mergePosts([wp('older', '2026-01-01T00:00:00.000Z'), wp('the-success-message-was-the-bug', '2025-01-01T00:00:00.000Z'), wp('newest', '2026-11-01T00:00:00.000Z')], local);

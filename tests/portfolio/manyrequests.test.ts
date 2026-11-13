@@ -4,7 +4,7 @@ import {
   isRetiredSample,
   withCurrentManyRequestsSamples,
 } from '@/lib/portfolio/manyrequests';
-import type { ParsedPortfolio } from '@/lib/hashnode/parsePortfolio';
+import type { ParsedPortfolio } from '@/lib/wordpress/parsePortfolio';
 
 const portfolio = (links: string[]): ParsedPortfolio => ({
   sections: [

@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { buildSitemap } from '@/app/sitemap';
-import { listCaseStudies } from '@/lib/content/case-studies';
+import { getCaseStudy, listCaseStudies, shownDate } from '@/lib/content/case-studies';
 import { listLocalArticles } from '@/lib/content/articles';
 
 describe('sitemap', () => {
@@ -38,9 +38,30 @@ describe('sitemap', () => {
   });
 
   it('dates entries from their sources, not one build time for all', () => {
-    const fixed = buildSitemap({ posts: [], caseStudies: [], modifiedAt: (src) => (src.includes('app/about/page.tsx') ? new Date('2026-10-01T00:00:00Z') : null), now: new Date('2026-11-03T00:00:00Z') });
+    const now = new Date('2026-11-03T00:00:00Z');
+    const fixed = buildSitemap({ posts: [], caseStudies: [], modifiedAt: (src) => (src.includes('app/about/page.tsx') ? new Date('2026-10-01T00:00:00Z') : null), now });
     const about = fixed.find((e) => e.url === 'https://peaceakinwale.com/about');
     expect(about?.lastModified).toEqual(new Date('2026-10-01T00:00:00Z'));
+    expect(fixed.every((e) => !e.lastModified || +new Date(e.lastModified) !== +now)).toBe(true);
     expect(fixed.every((e) => !('changeFrequency' in e) && !('priority' in e))).toBe(true);
+  });
+
+  it('dates each case study from its own date, the date the page shows', () => {
+    const studies = listCaseStudies();
+    const entries = buildSitemap({
+      posts: [],
+      caseStudies: studies,
+      modifiedAt: () => new Date('2030-01-01T00:00:00Z'),
+      now: new Date('2030-01-01T00:00:00Z'),
+    });
+    expect(new Set(studies.map((cs) => cs.date)).size).toBeGreaterThan(1);
+    for (const cs of studies) {
+      const entry = entries.find((e) => e.url === `https://peaceakinwale.com/case-studies/${cs.slug}`);
+      expect(entry?.lastModified).toEqual(new Date(cs.date));
+      expect(shownDate(cs)).toBe(cs.date);
+    }
+    const docs = getCaseStudy('ai-docs-watch');
+    expect(docs?.published).toBe('2026-10-25');
+    expect(shownDate(docs!)).toBe('2026-07-22');
   });
 });
