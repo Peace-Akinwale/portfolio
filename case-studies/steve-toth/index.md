@@ -5926,3 +5926,29 @@ A strategist (Patricia) wanted to run batches of AI Mode prompts with the Claude
 - The work was tested against a copy of the production stack, not only unit tests, and the one operational slip was caught by checking the live result rather than trusting a green deploy.
 
 ---
+
+## 2026-11-16, OpenAI rebuilt its commerce docs and Docs Watch held 13 alarms for one event
+
+Docs Watch holds a change for review when it looks like a page broke rather than an edit (most of a page rewritten, a page gone tiny, text swapped back to an older copy). The Nov 14 and Nov 16 checks held 18 changes. Peace asked for each to be checked before anything went public.
+
+### What shipped
+
+- **18 holds checked against the live pages** (fetched from the Mac, not from the stored copy). 13 came from one real event: OpenAI rebuilt its commerce developer docs, replacing Instant Checkout with ChatGPT Wallet and the REST feed API with file uploads through Business Hub, and redirected 9 old addresses into 3 new pages.
+- **Published 4, discarded 14.** One change per rebuilt page plus the OpenAI deep research guide (its deep research models replaced by gpt-6-astra). Each write-up ran on publish; 0 holds left after.
+- **The watch list followed the move.** Two watched pages now point at the new addresses (`/commerce/guides/accept-payments`, `/commerce/guides/submit-product-feeds`) and 8 duplicates were switched off, in the database with no deploy. The stored copies already matched the new pages, so the move fires no false change.
+
+### Decisions worth recording
+
+- **One public change per page that changed, not per address that pointed at it.** The 13 holds collapsed to 3 pages once redirects and identical content fingerprints were checked; publishing all 13 would have put the same news on the public site and in Steve's Slack ten extra times.
+- **A held headline is a claim to check, not a summary to trust.** The Perplexity hold said a "Budget Control" feature was removed. The live page still links to it on another page, so it was discarded rather than published as news.
+
+### Frictions and course corrections
+
+- Three Google holds were judged on the hold rule ("the same words moved around") without a live check, and the record says so.
+- One watched page (`/commerce/guides/best-practices`) fails on the crawler but answers normally from the Mac. Logged, not chased.
+
+### Why this matters for the portfolio
+
+- A monitoring tool that pages people is only as good as its triage. The review turned 18 alerts into 4 true stories by checking the source, not the alert text.
+
+---
