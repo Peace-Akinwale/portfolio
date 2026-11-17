@@ -6007,3 +6007,34 @@ A Speechify contact told Peace about their new Simba 3.5 model. Reading the API 
 - Answering a small vendor question by reading the primary docs found an outage with a date on it. The fix shipped with evidence from the live service, not from a local run.
 
 ---
+
+## 2026-11-17, the weekly post writer rebuilt three times on review, link previews on seven apps, and a bug hunt that found the retry that shipped broken drafts
+
+Peace tested the DocsWatch weekly LinkedIn post on live and found it unreadable: updates ran into each other, technical terms went unexplained, and three of eight ticked updates were dropped. The same evening he asked for link previews on every app he has built.
+
+### What shipped
+
+- The weekly post writer, rebuilt in three rounds, each judged by Peace on a pasted dry run (4 dry runs, $5.12 in model calls). Ticked updates are now the writer's pool and up to 3 starred updates must be in; posts aim for 1,500 to 1,700 characters; a short connector marks each new change; "before and now" appears only when the old documentation shows it; an arrow starts each change. The last reviewed dry run: 1,588 characters, 5 of 8 updates, review clean.
+- A delete button on each post card, with Undo.
+- Link previews live on Radar, its new /watch and /listen note pages, the DocsWatch site, the coaching portal, OKF, Fanout and the SEO IRL recordings pages. All six card images checked at 200; each mocked up and approved before it was built. Signed-in apps show only the page's name, never its content.
+- 16 bug-hunt findings fixed and deployed (Radar `89dd1681`, DocsWatch `11dfa042`). Radar suite 2,739 tests and DocsWatch 186, re-run for this entry.
+
+### Decisions worth recording
+
+- **Ticks became a pool, stars became the guarantee.** "Ticked means in" was built first, then reversed within the hour: at 1,700 characters only five or six updates fit, so ten required updates could not all be written well. Stars (at most three) keep Steve's wish to prioritize without breaking the length.
+- **Private apps preview their name, not their content.** A link bot is never signed in, so naming a page means telling anyone with the link. The line: a section name, a weekly post's week, or a published change's headline, never draft text or client names. Peace agreed.
+- **Old note pages were left without a preview** by Peace's call; only pages rendered from now on carry one.
+
+### Frictions and course corrections
+
+- The second round's dry run claimed a "before" that turned out to be supported by the old page ("Upload your catalog over SFTP"); it was first called invented, then corrected on reading the source diff.
+- The bug hunt (three independent reviewers plus Claude, every finding verified against code or the live site) found that the short-post retry, added that night, could replace a valid draft with the retry's broken reply and save it with no fact review. A probe saved a post with a link in it. The fix keeps the passing draft as a fallback; the regression test fails on the old code. The lesson went into the bug-hunt library as pattern B82.
+- The recordings portal's sign-in page answered 401, so unfurlers would have ignored its new card; it now answers 200 on that one page only.
+
+### Why this matters for the portfolio
+
+- Copy for a founder was iterated in public with him, one approved sample at a time, and each of his corrections became a rule the writer follows.
+- A feature added late in a session (the retry) carried the worst bug; an independent adversarial read, not the author's own tests, found it before Thursday's first automatic post.
+
+---
+
