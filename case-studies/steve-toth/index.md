@@ -6070,3 +6070,24 @@ Steve's theory: when someone asks an AI tool a follow-up ("is it safe", "how muc
 - The deliverable separates what was observed from what was inferred on every screen, which is what makes 1,153 suggested prompts usable rather than a guess list.
 
 ---
+## 2026-11-17, 1,153 suggested prompts cut to a run list of 175, plus 43 conversations run as chats
+
+A follow-on to the same day's Search Console study. Peace asked which of the 1,153 page prompts are worth tracking in AI tools.
+
+### What shipped
+
+- `prompts-worth-tracking.md`: 160 prompts to track and 15 brand checks (at most 20 and 3 per client), each with its page, impressions and best Google position, plus all 43 conversations (177 turns) with instructions to run each as one chat.
+- `all-prompts.md`: the full 1,376-prompt archive, kept alongside it.
+
+### Decisions worth recording
+
+- **Writing requests were dropped.** Prompts like "Write a birthday message for my boss" carry huge search volume but an AI tool answers them by writing, not by citing anyone, so tracking them measures nothing. That one rule removed most of one client's biggest prompts.
+- **Unbranded buying questions rank first.** "What is the best electric dab rig?" is where an AI tool chooses which brands to name; a branded question only checks that it describes the client correctly, so those were capped at three per client.
+- **The rules picked wrong at first, and a hand read fixed it.** The first rule-based pass kept 726 prompts, including a law firm's "best state to raise a family" and a supplement brand's Adderall-ban post. Every client's list was read, and off-topic pages were excluded with a written reason.
+- **Peace overruled a recommendation, on the record.** I advised against tracking the reconstructed conversations, since their opening turn is inferred and each follow-up depends on the AI's last answer. Peace chose to run them anyway, to see what AI tools say deeper into a conversation. The file says how to run them so the follow-ups keep their meaning.
+
+### Why this matters for the portfolio
+
+- A long list was turned into a short one with stated rules a strategist can argue with, not a ranking by gut.
+
+---
