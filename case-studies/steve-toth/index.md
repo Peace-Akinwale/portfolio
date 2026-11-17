@@ -6038,3 +6038,35 @@ Peace tested the DocsWatch weekly LinkedIn post on live and found it unreadable:
 
 ---
 
+## 2026-11-16 to 2026-11-17, Steve's "AI follow-ups leak into Search Console" theory tested on 8 clients, turned into 1,153 prompts to track
+
+Steve's theory: when someone asks an AI tool a follow-up ("is it safe", "how much is it"), the follow-up reaches Google and lands in Search Console. Peace wanted it tested, and wanted prompts to track in AI tools for every client out of it.
+
+### What shipped
+
+- Every Search Console query containing it, this, they, them, these or those for 8 clients (Puffco, Gray Matter, Alosim, Lido Advisors, Botpress, CA Short, Birth Injury Lawyer, Fortra), Jul 17, 2025 to Nov 14, 2026, pulled one day at a time: 3,888 day pages. 1,274 follow-ups found.
+- The answer for Steve, measured: Puffco went from 3.4 follow-ups a day in August 2026 to 12.3 in October; Gray Matter from about 1 a day in spring to 4 to 6 a day since July.
+- 502 follow-ups matched to the page Google showed for them; 43 multi-turn conversations rebuilt from those pages (turn 1 inferred and labelled, every later turn a real follow-up word for word).
+- A fresh full-period pull for each of the 385 pages Google showed, with 1,153 page prompts written from what each page says and the searches it already gets.
+- One branded file holding all of it (9 pages, light and dark mode, works with scripts off and prints in full), a Markdown twin, and per-client CSVs of every search per page. The builders were saved so both files rebuild byte for byte.
+
+### Decisions worth recording
+
+- **Same-day stitching was built and thrown out.** Pairing a follow-up with the query typed just before it looked like the obvious method, but Search Console only reports daily totals, so the shared words were generic and the output was noise. The landing page Google showed became the evidence of what "it" meant, and the page says that is the topic, not the exact earlier question.
+- **Likely tool prompts were tagged, not counted.** Some clients' data is full of persona prompts ("I am a 35-44 year old director...") and "evaluate the ... company" queries that read like an AI-visibility tool's test runs. They are labelled as inferred, kept visible, and left out of every count.
+- **A guessed note is marked as a guess.** Puffco blocked our fetch of 33 of its pages, so notes on those pages carry "unverified" rather than reading as fact.
+
+### Frictions and course corrections
+
+- An independent audit of the finished page caught that its own copy said the Chinese and Korean "IT" queries were left out while they still sat in the lists and totals. 10 rows were removed and every total recomputed (1,284 became 1,274; 512 mapped became 502).
+- The same audit found the main finding, the "Google showed" column, cut off on phones and tablets; tables became stacked cards below 900 pixels.
+- A reveal animation never fired on a 546-row table: an observer that waits for 12% of an element to be visible can never see it once the element is taller than about eight screens. The fix and the lesson went into the html-skill library.
+- Search Console answered 400 then 429 after about 330 page pulls in an hour; the puller backs off and finished on its own.
+- The first time estimate was wrong (6 seconds a page, actually about 15); Peace was told the new finish time as soon as it showed.
+
+### Why this matters for the portfolio
+
+- A founder's hunch was turned into a measured answer and a working list, with the method that failed written down next to the one that worked.
+- The deliverable separates what was observed from what was inferred on every screen, which is what makes 1,153 suggested prompts usable rather than a guess list.
+
+---
