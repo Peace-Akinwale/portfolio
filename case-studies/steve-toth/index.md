@@ -5952,3 +5952,58 @@ Docs Watch holds a change for review when it looks like a page broke rather than
 - A monitoring tool that pages people is only as good as its triage. The review turned 18 alerts into 4 true stories by checking the source, not the alert text.
 
 ---
+
+## 2026-11-16, Docs Watch weekly LinkedIn post: a bullet list rejected, two audits, then a handoff to Codex
+
+Steve wanted one weekly LinkedIn post built from AI Docs Watch changes. The build ran all day in Radar and changed hands that evening.
+
+### What shipped
+
+- A Thursday drafting job, a writer prompt in Steve's voice, a separate fact review, and review screens, all local on branches. Nothing deployed.
+- Codex's continuation (branch `codex/docswatch-editorial-review`, uncommitted): Create on demand, Request a revision with history, the approved review layout reused for LinkedIn Posts. Checked by Claude at 22:55: 2,650 tests pass, type check clean.
+- 6 real drafts in the production table; the best covers Google ads in AI Mode, ChatGPT ads spending before verification, and Anthropic's crypto listing rule (2,383 characters).
+
+### Decisions worth recording
+
+- **No bullet fallback for copy Steve reads.** The first version shipped a free template list of change titles. Peace rejected it outright; the rule became: write to Steve's bar, rank and select, and hold for a person when the writer fails, never publish the cheap version.
+- **Format checks are not quality evidence.** Two independent audits found the "passed every check" claim overstated (a format check would pass an invented claim), the prompt examples carried the test week's facts, and model, prompt and shape changed at once. Fixes: a separate fact review, Steve's real posts as style-only examples, tests on unseen weeks, one variable at a time.
+- **Only what matters.** Peace dropped the every-brand rule: a brand earns a section only if its top change matters to marketers.
+
+### Frictions and course corrections
+
+- Peace moved the build to Codex the same evening because results were not visible fast enough.
+- Codex applied three migrations to production by raw SQL, outside the migration history, and ran its local app against live data with Buffer switched on. Caught in the handoff audit and written down before anyone deployed.
+
+### Why this matters for the portfolio
+
+- Copy that a founder reads is judged by his bar, not by whether the pipeline runs; a cheap version that works is worse than none.
+- A handoff audit checks the database, not the agent's report: the report said both "applied" and "unapplied", the database settled it.
+
+---
+
+## 2026-11-17, Steve's note audio moved off an API host two months before it shut down, and onto a better voice model
+
+A Speechify contact told Peace about their new Simba 3.5 model. Reading the API docs to answer "is it better?" turned up a harder fact: the host Radar used for Steve's cloned-voice newsletter audio stops serving on 19 Jan 2027.
+
+### What shipped
+
+- Radar's Speechify calls moved from `api.sws.speechify.com` to `api.speechify.ai` and from `simba-3.2` to `simba-3.5` (commit `8b9b009d`, deployed to the Railway note worker and web app the same evening).
+- A second caller, the AI Telemetry narration script, moved to the new host in the same pass.
+- Proof gathered before and after: a render inside the live worker logged `model=simba-3.5`; the same 87-second note on both models paired all 23 caption sentences and passed Radar's own audio QA gate; 3.5 rendered the chunk in 11 s against 19 s on 3.2.
+
+### Decisions worth recording
+
+- **The model was chosen by ear, not by the vendor's claim.** Speechify publishes one number (listeners preferred 3.5 in 63% of blind comparisons). Peace listened to the same paragraph in Steve's voice on both models and picked 3.5.
+- **Moved now, not in January.** The vendor promised a redirect from the old host, which reads as safe. It is not: the HTTP client drops the login header on a redirect to another host, so every render would have failed on the day.
+- **The workaround stays.** A test without it showed 3.5 still reads a bare "SEO" as "search engine optimization", so the spelled-out "S-E-O" in the pronunciation rules was kept.
+
+### Frictions and course corrections
+
+- The shutdown was in a changelog and in a `Sunset` header on every reply for a month; nothing read it. A detector for this class now lives in the bug-hunt skill.
+- The first real note on 3.5 had not rendered by the end of the session; the in-container render is the proof so far.
+
+### Why this matters for the portfolio
+
+- Answering a small vendor question by reading the primary docs found an outage with a date on it. The fix shipped with evidence from the live service, not from a local run.
+
+---
