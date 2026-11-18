@@ -71,3 +71,38 @@ Peace asked for one dependable system so that agents building apps, tools and ma
 - The useful constraint on AI-built interfaces is not taste but order: settle what the screen is for and what it says, then style it, then measure it.
 
 ---
+
+## 2026-11-18, a draft scorer that says what to change, why the data supports it, and writes the fix on request
+
+Written at the end of the session, from the AI Search Lab repo's commits (`04045be` to `9e41753`), its decisions log (D41 to D45) and its status log.
+
+The AI Search Lab scores an article draft against what ChatGPT, Claude, Perplexity and Google AI Mode cited in about 1,800 recorded sessions. A score alone left Peace asking "what do i do with what i got?" This session turned the score into a list of actions, each one traceable to the recordings, and added a way to have the missing pieces written.
+
+### What shipped
+
+- **What to do next, in four groups:** edit the draft, fix when you publish, needs a different page, and not worth changing. Each fix shows the points it would add on each AI tool, worked out by re-scoring the draft with that one thing changed. Checked against a real re-score of a client draft: within 1 point on every tool.
+- **"Why, and what instead" on every fix:** what the recordings showed, how sure we are (Strong, Some or Weak evidence), what cited pages of the same kind had, and a reason labelled as a guess. "How sure" compares like with like: pages of the same type in the same answer, with the dominant sites removed.
+- **Write it for me:** one paid model call writes a meta description, title, URL, intro, summary or a comparison table, from the draft's own facts only. The price is on the button and the real cost is shown after.
+- **Suggested title, meta description and URL,** written against today's top Google results for the draft's main searches and the recorded patterns for that field. Each comes with a "why this" line and the Google results it competed with. Use it, which scores a new version and shows each tool's score before and after, or dismiss it, with undo.
+- **Real tests cost about 13 US cents in all.** A meta description suggestion took about 45 seconds and 4 cents. Layout checks passed with 0 failures on 12 views. A fresh reader's findings were fixed before the work was called done.
+
+### Decisions worth recording
+
+- **Every recommendation shows what it rests on.** Peace: "I need to be able to answer all of these things when I'm using the app so that I won't just take what it says for what it says." The check behind this changed the advice. On one rule, the raw gap (3.4% against 12.6%) shrank to 4.0% against 6.1% when pages were compared like for like, and two sites supplied 58% of the pages with the trait.
+- **Weak evidence is not advice.** A fix whose gap disappears among comparable pages moves to "not worth changing" instead of appearing with a low-confidence badge.
+- **One signal for certainty.** An earlier build showed both an asterisk and a badge. A fresh reader could not tell them apart, so the badge stayed and the asterisk went.
+- **The writing model was chosen by the owner's taste, with the alternatives priced.** Newer models were on the key, and one had a strong writing review. Peace kept the one he liked, because the price difference was cents per click.
+
+### Frictions and course corrections
+
+- **Measuring each fix on checked rules only gave numbers a real re-score did not match.** It was switched to the full formula. The less certain part of each estimate moved under "may also move".
+- **A missing meta description was a false alarm.** The client's doc wrote "Meta description:" as a line of text at the top. The scorer now reads those labelled lines, and every saved draft was scored again.
+- **Peace rejected the first explanation panels as unclear:** "be clear, be straight to the point, and leave only information a reader would need." They were cut to four short rows with whole percentages.
+- **Saved advice went stale after code changes.** One test request hit the old server just before its restart and saved stale advice again. The lesson went into the bug-hunt pattern library.
+- **A large score jump is labelled as an estimate.** One suggested meta description moved a tool's predicted score from 38 to 65. That is the formula's estimate, not an observed change in what the tool cites.
+
+### Why this matters for the portfolio
+
+- An AI recommendation is only usable when the person acting on it can see what it rests on and how sure it is. Building that in changed which recommendations survived.
+
+---
