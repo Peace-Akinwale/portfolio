@@ -6091,3 +6091,31 @@ A follow-on to the same day's Search Console study. Peace asked which of the 1,1
 - A long list was turned into a short one with stated rules a strategist can argue with, not a ranking by gut.
 
 ---
+
+## 2026-11-18, the tracked prompts run on ChatGPT with each session proving its own privacy mode, and the conversation list cut mid-run
+
+The 175 prompts and 43 conversations from the Search Console study went into a recorded ChatGPT run: each prompt once with web search and once without, every session in a Temporary Chat with personalization off. Later the same day the list was published for the strategy team and trimmed before its conversations ran.
+
+### What shipped
+
+- A runner and a checker in `outputs/prompt-tracking/`. A session passes only if its own recording shows the exact questions, a finished answer stream, the Temporary Chat flag (`history_and_training_disabled`) and the unpersonalized flag (`temporary_chat_requests_personalization: false`), and, for the no-search pass, no search activity at all.
+- A strategist page, `team-prompt-list.html`: only the prompts being run, a five-step "how these were made" section, and conversations with the inferred opener marked apart from the real follow-ups.
+- One cut list (`tools/removals.py`) that feeds the team page, the Markdown run list and the live run file: 43 conversations became 31 and 177 turns became 117.
+
+### Decisions worth recording
+
+- **Prove the privacy mode from the request, not the screen.** The first manual test ran personalized because a fresh Temporary Chat opened that way, and Peace caught it. From then on a session that does not carry both flags fails, and the proof can be shown on request.
+- **"No search" became a prompt line, not a setting.** The account's Web search switch flipped in the interface, sent no request and reverted on reload, so the no-search pass opens with "Answer from what you already know. Do not search the web." and the checker fails any session that searched anyway.
+- **Pause between sessions, never mid-session.** The cuts landed while the batch was 165 sessions in. The loop was stopped while one session finished on its own, the run file was replaced in one atomic write with a backup, and the resume-safe chain restarted. IDs stayed stable so finished sessions still counted.
+
+### Frictions and course corrections
+
+- Peace read the published list and cut 59 turns that made no sense as a conversation, including every Birth Injury Lawyer thread but one. The grouping heuristic that built them was too generous with one-word follow-ups.
+- A test reported content that never appeared on the page. It was the test's own scrolling fighting the page's smooth scroll; a real click passed. A guard went in anyway, and the lesson went into the HTML skill's log.
+
+### Why this matters for the portfolio
+
+- Measurement work is only as good as its controls. Here every one of hundreds of sessions carries its own evidence that the control held.
+- When the person closest to the clients edits the list, the change reaches every consumer in one pass, including a run already in progress.
+
+---
