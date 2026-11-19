@@ -50,3 +50,7 @@ next-env.d.ts
 # local assistant scratch files
 .claude/
 docs/qa/shots/
+
+# Env and secret files (security cleanup 2026-11-19)
+env.txt
+.vercel-env-audit
