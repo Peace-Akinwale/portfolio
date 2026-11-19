@@ -6119,3 +6119,30 @@ The 175 prompts and 43 conversations from the Search Console study went into a r
 - When the person closest to the clients edits the list, the change reaches every consumer in one pass, including a run already in progress.
 
 ---
+
+## 2026-11-19, a weekly note shipped with last week's number, fixed before it went out, and the cause closed for every note after it
+
+Karla, who sends the AI Notebook newsletter, reported the Week 47 note at 01:15 her time with a Loom: the audio sat on "Generating", the video said "Done" with no video on the page, and every player and link preview said Week 46. It went out at 9:30 EST the same morning.
+
+### What shipped
+
+- The live note, repaired before the send: fresh Week 47 audio and video (4:10 and 4:11), Week 47 on the video frame, both player pages and both link preview cards, "4 min" on every surface, both statuses Done.
+- Three commits to Radar's note-media worker, live on Railway (`b6f3df44`, `838c5451`, `143a4253`): the note title is now part of the reuse check, so a renamed note renders again; a reused render now finishes on Done; a deleted player is put back under its Listen or Watch line instead of being assumed present; the worker corrects "Week N" from the note's Date before rendering; and every surface uses one minutes rule (real length, rounded). 2,747 tests, typecheck, lint and the production build pass after the last change.
+
+### Decisions worth recording
+
+- **The fix is a narrow rule, not a judge.** Peace asked for something simple. The worker only rewrites the week when it is one or two weeks off the Date's ISO week, so a typo gets fixed and a deliberate title is left alone.
+- **The rule only touches current notes.** A bug hunt over the new code found that two already-published SEO notes (Oct 20 "Week 42", Oct 27 "Week 43") sit one week off the ISO rule and would have been renamed the next time anyone re-rendered them. The correction now applies only when the Date is within 14 days of today.
+- **Old notes re-render once, on purpose.** Adding the title to the reuse check means any older note re-renders, and costs a narration, the first time someone asks for it again. That was accepted over keeping a check that lets a wrong title through.
+
+### Frictions and course corrections
+
+- **I blamed the user first, and was wrong.** My first read was that Karla had set "Generating" by hand. The real cause was in our code: the reuse path returned before marking the note Done, and its unit test asserted exactly that behavior. I corrected it to Peace before any reply went to Karla.
+- **Three faults lined up.** The note was rendered while still named "Week 46" (the page was created by hand, not by Radar). Reruns reused that render because the title was not in the reuse check. A leftover "Watch" line made the worker believe the deleted video was still there.
+
+### Why this matters for the portfolio
+
+- A teammate's after-hours report became a same-morning fix and a root fix, with the timeline rebuilt from Notion history and worker logs rather than guessed.
+- The review step earned its place: it stopped the fix from quietly renaming published work.
+
+---
