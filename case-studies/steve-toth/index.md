@@ -6175,3 +6175,31 @@ The ChatGPT and Google AI Mode run of the Search Console prompts finished overni
 - Mistakes in my own reporting were corrected openly, and each fix landed so the same failure cannot recur.
 
 ---
+
+## 2026-11-19, 95 AI Mode sessions re-run from New York after the account's saved home overruled the VPN
+
+The reading of the tracked-prompt run found that Google AI Mode had answered as if the searcher were in Toronto. Peace wanted US answers for the 95 journeys where location could matter, kept in the same Lens client next to the Toronto ones and told apart by title.
+
+### What shipped
+
+- 95 of 95 AI Mode sessions (75 single prompts, 20 conversations) recorded from New York and cleaned into the Lens client "Engineering x Peace's HAR", titled "AI mode signed out US New York ...". The client went from 587 to 682 sessions; the Toronto sessions were not touched.
+- A check run against Lens itself: 0 missing, 0 duplicates, every session ready, all 142 turns matching the run file, no answer under 200 characters. 0 captchas or blocks, and 0 sign-in cookies in any recording.
+- A per-session location check: US and Canadian signs counted in the visible answer, cited sources set apart from the answer text, and a stop on any sign the session ran as Canada. The Lens upload only takes sessions that passed it.
+
+### Decisions worth recording
+
+- **Signed out, because the account's saved home wins.** With the VPN in New York, the signed-in team account still answered as Toronto, even with Google's US country parameter. Google's own footer gave the reason: "Based on your places (Home)". Changing a saved place on a shared account was Peace's call, not the runner's, so he chose to run signed out, the way the September recordings were made, and Google then followed the IP.
+- **Say the comparison is not like for like.** The US set differs from the Toronto set in two ways, sign-in and location, and that is written into the record so the analysis does not credit one to the other.
+- **Stop on location, not on the word "Canada".** Four early stops were false: a VPN country list, a Canadian health site cited for a general health question, a company founded in Quebec. The rule became a stop only for a Canadian place, price or tax term, or a cited Canadian business, on a prompt where location matters; everything else is logged.
+
+### Frictions and course corrections
+
+- The background uploader sent one session to Lens before its location check had run. It was a false alarm, but the uploader now waits for a pass marker the check writes, not for the recording alone.
+- A first sign-in check read zero cookies even on a signed-in file, because the recorder does not keep that header where the check looked. It was rebuilt to count cookie names anywhere in the file and proved on both a signed-in and a signed-out recording.
+
+### Why this matters for the portfolio
+
+- A location test is only as good as the proof of where the answer came from. Each session here carries that proof, and the one setting that broke it was found from the platform's own words, not guessed.
+- Outward and shared-account changes stayed with the person who owns them, even when changing the setting would have been faster.
+
+---
