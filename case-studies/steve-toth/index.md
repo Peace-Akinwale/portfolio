@@ -6146,3 +6146,32 @@ Karla, who sends the AI Notebook newsletter, reported the Week 47 note at 01:15 
 - The review step earned its place: it stopped the fix from quietly renaming published work.
 
 ---
+
+## 2026-11-19, the prompt run finished in Lens, and two checks that passed bad sessions were fixed for good
+
+The ChatGPT and Google AI Mode run of the Search Console prompts finished overnight. On review the next day, one "passed" session turned out to hold no answer, and two re-runs exposed a runner fault, so the checks themselves were tightened before anyone analyzed the data.
+
+### What shipped
+
+- 587 sessions, all ready in the team's Lens client "Engineering x Peace's HAR": ChatGPT with web search on (206), Google AI Mode signed in (206), ChatGPT with web search off (175 single prompts). A full audit through the Lens API read 758 turns with 0 errors.
+- The 14 conversations Peace cut that morning (a conversation is one person, so buyer and owner questions no longer mix) were re-run on both platforms: 28 sessions, 28 passing. The 28 old Lens sessions were deleted one by one, each only after its replacement read ready with every answer filled; the client went from 615 to 587 and every new session's 88 questions match the edited list.
+- A shell helper for the Lens API (`lens-eval.mjs` plus saved queries), so audits and replacements are repeatable instead of hand-clicked.
+
+### Decisions worth recording
+
+- **An answer is text a person can see, not bytes.** The AI Mode check passed any reply over 2,000 bytes. Lido P02 passed with 38,719 bytes that held only the heading "AI Mode reply for <question>". The check now counts visible text and fails under 200 characters; the floor was set from the real data (the lowest real answer was 594 characters). Re-checked across all 206 recordings: 205 pass, only that one fails, and its re-run got a real answer.
+- **Replace by id, never by name.** The upload does not dedupe, so old and new sessions share a name for a while. The old ids were saved before the re-run and only those were deleted.
+- **Ask before deleting, even with a teammate's relay.** The re-run request came through another session; the deletion waited for Peace's own yes.
+
+### Frictions and course corrections
+
+- **I blamed Lens first, and was wrong.** I reported the empty session as Lens's reader failing, without opening the file. The recording showed Google had sent no answer and Lens was right. I corrected it when Peace asked why.
+- **I mislabeled a finding.** I called 8 short answers "AI Mode"; the audit showed 29 short answers, all ChatGPT, all real short replies to date and price questions.
+- **A question typed into the answer.** ChatGPT rendered a Python block as an editable code editor, and the runner's message-box selector matched it first (a selector list returns the first match on the page). A parallel session spotted "Could not save code changes" on Peace's screen. The runner now targets the message box only and proves focus before typing. Separately, Google ignored Enter twice on one AI Mode turn, so the runner now clicks Send as a third try.
+
+### Why this matters for the portfolio
+
+- Data is checked before it is analyzed: a gate that passed an empty session was treated as a bug in the gate, measured against all 206 recordings, and fixed with a floor drawn from the data.
+- Mistakes in my own reporting were corrected openly, and each fix landed so the same failure cannot recur.
+
+---
