@@ -6203,3 +6203,37 @@ The reading of the tracked-prompt run found that Google AI Mode had answered as 
 - Outward and shared-account changes stayed with the person who owns them, even when changing the setting would have been faster.
 
 ---
+
+## 2026-11-19 to 2026-11-20, the recorded AI answers read twice: first for where a brand wins, then for what it should publish
+
+The 682 recorded ChatGPT and Google AI Mode sessions are the research input for Sway, the team's answer intelligence platform. The team needs one thing from them: what a brand should have or publish to get recommended. The first reading answered a different question, so the data was read again.
+
+### What shipped
+
+- A first reading of every session against the raw recordings, in 8 checkpoints, with 42 claims rechecked by 10 fresh verifiers: 21 findings on where a brand wins or loses (what the model already holds, whether a page comes back from search, where it sits in the result list).
+- A second reading of the 73 "which brand" prompts in three modes, 219 answers: every reason the AI gave for every brand quoted word for word (2,324, of which 2,323 passed a script check against the answer text), each tagged with the platform's evidence types, 494 ChatGPT reasons checked against the pages cited next to them, and a proof inventory of 182 pages (1,031 statements).
+- A team write-up that leads with what a brand should publish, with a section on the first build's two brands and a list of what the run cannot show. It is a Notion page with five files attached (two session lists with Lens links, three row tables), so every number can be traced to a session.
+- Blind second reads on each step. Reason tagging: 372 of 407 agreed (91%, kappa 0.87), which passes the plan's gate. Page statement tagging: 119 of 150 (79%, kappa 0.75), which does not, and the write-up says so.
+
+### Decisions worth recording
+
+- **Answer the question the team asked.** The first write-up said what the platform should record. Peace pointed out the team wants to know what a brand should publish. The second reading was built for that, and the write-up now opens with it.
+- **Point to what the reader can open.** The team cannot open local files, so every reference became a Lens session link or an attached file. A local path in a team document is a dead end.
+- **Findings only.** A table comparing the kickoff asks with the results was removed at Peace's word: the gut check belongs in the conversation, the document carries the content.
+- **Counts, not rates, and no claim of cause.** Each prompt ran once per mode. The write-up gives counts like "38 of 53", says no number is a rate, and says publishing these things is not shown to cause a pick. It proposes the repeat runs and the blind test that would show it.
+- **Client data stays out of the product repository.** The detailed report names clients and stays with the team; the team version names only the two brands of the first build.
+
+### Frictions and course corrections
+
+- **A finding withdrawn.** "AI Mode hides the bottom of its list" came from the order the capture tool displays pages in, not from Google. The raw response carries no rank. Two other mid-way beliefs were dropped for counting errors, and all three are listed in the write-up.
+- **A refusal nearly counted as a loss.** Three answers with no brand looked like the client dropping out once search was on. Reading the answer openings showed ChatGPT had declined to recommend any device. They are reported as refusals, the only ones in 219 answers.
+- **39 of 219 answers had no session link at first.** The run's prompt ids and the session titles spell client names differently. Matching on the normalized client name plus prompt number mapped all 219.
+- **Three sentences I added were looser than the counts behind them** and were tightened before the page went up.
+- **The gaps are stated, not hidden.** No prompt in the set is head-to-head, and every answer came from the apps while the first build uses the APIs. Both are in the write-up with a proposed run for each.
+
+### Why this matters for the portfolio
+
+- A large analysis was thrown back at the question it was meant to answer, and redone when it missed, before anything went to the team.
+- Every claim is traceable: quoted reasons checked by script, a second blind reader, and a session link beside each example. Where the agreement fell short of the bar, that is reported as a limit.
+
+---
