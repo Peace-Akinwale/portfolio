@@ -17,11 +17,14 @@ export async function preparePageImages(html: string): Promise<string> {
     try {
       const metadata = await sharp(await fs.readFile(file)).metadata();
       if (!metadata.width || !metadata.height) return;
+      // UI captures already have compact files; preserve small text without a second lossy encode.
+      const productScreenshot = src.startsWith('/images/approved/read-aloud/');
+      if (productScreenshot) img.closest('figure').addClass('product-screenshot');
       const { props } = getImageProps({
         src, alt: img.attr('alt') ?? '', width: metadata.width, height: metadata.height,
         sizes: img.closest('.reviewer-attribution').length ? '56px' : '(max-width: 860px) calc(100vw - 36px), 820px',
         loading: index === 0 ? 'eager' : 'lazy',
-        unoptimized: src.endsWith('.svg') || src.endsWith('.gif'),
+        unoptimized: productScreenshot || src.endsWith('.svg') || src.endsWith('.gif'),
       });
       img.attr('data-original-src', src);
       for (const key of ['src', 'srcSet', 'sizes', 'width', 'height', 'loading', 'decoding'] as const) {
