@@ -6265,3 +6265,33 @@ Peace's weekday 2pm briefing (an unattended Claude routine that reads Slack, Gma
 - Changes were judged by reading the source pages, not by the size of the text change that triggered the hold.
 
 ---
+
+## 2026-11-23, Steve's cloned newsletter voice was measured, traced to a model upgrade, and moved back to the older model
+
+Steve asked why "howdy" did not sound like him on his Nov 22 note video. The audio is made with a Speechify clone of his voice, and the model had moved from simba-3.2 to simba-3.5 six days earlier.
+
+### What shipped
+
+- The cause, measured: simba-3.5 said "Howdy Notebooker!" at 233 to 364 Hz, against about 105 Hz for Steve's real voice and 93 to 177 Hz on simba-3.2. The same opening came out the same on every 3.5 note.
+- A second cause for "parts don't sound like him": on 3.5, every paragraph pause restarted the voice higher. On the same 1,577 characters, 12.9 high-pitch spots a minute with pauses, 5.1 with none, 3.9 on simba-3.2.
+- Back on simba-3.2 (one setting on the audio server, no code change), and only the three notes made on 3.5 re-rendered, audio and video. Measured after: 8.6 high spots a minute down to 5.2 on one note, 4.9 down to 2.0 on another.
+- Shorthand is now said in full (imho, tbh, fyi, YoY and others), from one list in `radar/lib/note-audio/pronounce.ts`. "e.g." and "i.e." are left out on purpose, because their full stops would break the read-along's sentence matching.
+- Commits `01355a86`, `e0a096f8` and `1be5a0dc` on `notebookagency/content-ops`; all 2,821 Radar tests passed before each push.
+
+### Decisions worth recording
+
+- **Go back to the older model instead of patching the newer one.** A splice that rendered each piece unbroken and inserted the pauses afterward halved the pitch jumps on 3.5 (7.1 a minute), but 3.2 was still steadier, had two months without a complaint, and costs a third less per character. The splice stays in the code, off by default.
+- **Measure audio, do not describe it.** Pitch tracking and a voice-match model were run against Steve's own recordings. An audio-capable AI model was also asked to rank the clips, but its ranking flipped every time the clip order changed, so it was not used as evidence.
+
+### Frictions and course corrections
+
+- **My first diagnosis blamed the speed setting and the paragraph chunking.** Peace pointed out that he had chosen the speed in September and that Speechify's own engineer recommended the chunking. Both had been fine for two months, so neither could explain a new complaint. The model change could.
+- **A fix for one model slowed the other.** Writing the greeting with a full stop cured 3.5's squeak, but on 3.2 it made "Howdy Notebooker" 25% slower (0.85 s against 0.68 s on the Nov 11 and 15 notes). Peace heard it before I measured it; the full stop now applies only on 3.5.
+- **"I can't listen to audio" was the wrong answer.** Peace pushed back, and measuring the audio found the cause the same afternoon.
+
+### Why this matters for the portfolio
+
+- A subjective complaint ("doesn't sound like me") was turned into numbers that pointed at one change, then tested against the last version that had worked.
+- The fix that won was a step back. The upgrade was undone on evidence instead of being patched around.
+
+---
