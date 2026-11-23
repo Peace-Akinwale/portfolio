@@ -49,8 +49,8 @@ const nextConfig: NextConfig = {
         permanent: true,
       },
       // The projects index and the contentDB project page moved to the case
-      // studies (3 Nov 2026 SEO audit). The other /projects/<slug> pages and
-      // the MyLinks app under /projects/mylinks stay where they are.
+      // studies. MyLinks moves only its exact overview URL; nested app routes
+      // remain available for existing workspace links and OAuth callbacks.
       {
         source: '/projects',
         destination: '/case-studies',
@@ -72,6 +72,8 @@ const nextConfig: NextConfig = {
         destination: '/case-studies',
         permanent: true,
       },
+      { source: '/projects/mylinks', destination: '/case-studies/mylinks', permanent: true },
+      { source: '/tools/mylinks', destination: '/case-studies/mylinks', permanent: true },
       {
         source: '/tools/mylinks/:path*',
         destination: '/projects/mylinks/:path*',
@@ -91,7 +93,7 @@ const nextConfig: NextConfig = {
       },
       {
         source: '/mylinks',
-        destination: '/projects/mylinks',
+        destination: '/case-studies/mylinks',
         permanent: true,
       },
       {

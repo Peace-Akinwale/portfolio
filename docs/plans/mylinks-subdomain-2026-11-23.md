@@ -7,7 +7,7 @@ Use the existing portfolio Railway web service and Supabase database. Peace decl
 - mylinks.peaceakinwale.com opens the authenticated workspace.
 - Clean workspace paths rewrite to the existing /projects/mylinks route files.
 - Existing app links on the MyLinks host redirect to clean paths; legacy portfolio URLs continue working, including old login callbacks.
-- The public case study remains at peaceakinwale.com/projects/mylinks.
+- The public case study is at peaceakinwale.com/case-studies/mylinks; the old /projects/mylinks URL permanently redirects there.
 - Session cookies stay host-only. The new origin requires signing in again.
 - Add the precise new origin and callback to Google, and the precise email callback to Supabase. Preserve existing allowlist entries.
 - Block indexing on the app host.

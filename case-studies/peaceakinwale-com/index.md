@@ -28,7 +28,7 @@ Written the same day, from the repo's git log (88 commits merged as 9a82167), `d
 
 - **Show the change before making it.** Every copy and design proposal went into one page of real screenshots, current beside proposed, at desktop and phone width, with edits applied only in the browser. The owner approved some, rejected one (a dated ranking caption), rewrote one in their own words, and asked for new rounds where a design did not land.
 - **A buyer council, then restraint.** Five personas scored the homepage 6 to 7, three of five would book. Every buyer seat asked for more words; a seat argued the other side because the owner had chosen this page for being short. The agreed changes added about 40 words, mostly inside lines that already existed.
-- **Leave one address alone.** A side app stays at `/projects/mylinks` because its Google sign-in callback is registered to that path; moving it for consistency would have broken login.
+- **Keep sign-in working through a move.** MyLinks now runs at `mylinks.peaceakinwale.com`, with its case study at `/case-studies/mylinks`. The old sign-in callback paths still work.
 
 ### Frictions and course corrections
 

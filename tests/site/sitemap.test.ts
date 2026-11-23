@@ -19,7 +19,7 @@ describe('sitemap', () => {
   it('lists every case study, local article, the fixed pages and the client sample pages', () => {
     for (const cs of listCaseStudies()) expect(urls).toContain(`https://peaceakinwale.com/case-studies/${cs.slug}`);
     for (const a of listLocalArticles()) expect(urls).toContain(`https://peaceakinwale.com/blog/${a.slug}`);
-    for (const p of ['', '/writing', '/case-studies', '/blog', '/services', '/about', '/contact', '/testimonials', '/projects/mylinks', '/case-studies/manyrequests', '/writing/manyrequests', '/writing/highervisibility', '/writing/pangea']) {
+    for (const p of ['', '/writing', '/case-studies', '/blog', '/services', '/about', '/contact', '/testimonials', '/case-studies/mylinks', '/case-studies/manyrequests', '/writing/manyrequests', '/writing/highervisibility', '/writing/pangea']) {
       expect(urls).toContain(`https://peaceakinwale.com${p}`);
     }
   });
@@ -34,7 +34,7 @@ describe('sitemap', () => {
   // 3 Nov 2026 SEO audit: thin tag pages, the redirected /projects tree, the old
   // career tool and the services mockup stay out of the sitemap.
   it('includes the MyLinks case study but leaves out workspace and retired pages', () => {
-    expect(urls.some((u) => u.includes('/tag/') || (u.includes('/projects') && !u.endsWith('/projects/mylinks')) || u.includes('/career-pathway') || u.includes('/services-v2'))).toBe(false);
+    expect(urls.some((u) => u.includes('/tag/') || u.includes('/projects') || u.includes('/career-pathway') || u.includes('/services-v2'))).toBe(false);
   });
 
   it('dates entries from their sources, not one build time for all', () => {

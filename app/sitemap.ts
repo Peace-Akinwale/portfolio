@@ -10,8 +10,8 @@ import { SITE_URL } from '@/lib/site';
 // build has no git history), the case studies (dated by the `date` in the
 // file, which is also the date on the page), the WordPress posts (dated by
 // WordPress) and the three client sample pages. Left out on purpose (3 Nov
-// 2026 SEO audit): the /tag/* pages (thin), /projects except the MyLinks
-// landing page, /career-pathway and /services-v2. changeFrequency and priority
+// 2026 SEO audit): the /tag/* pages (thin), /projects,
+// /career-pathway and /services-v2. changeFrequency and priority
 // are gone because Google ignores them. The deploy clock is never a lastmod.
 
 export type ModifiedAt = (sources: string[]) => Date | null;
@@ -22,7 +22,7 @@ export const FIXED_PAGES: { path: string; sources: string[] }[] = [
   { path: '', sources: ['app/page.tsx', 'lib/content/home-copy.ts'] },
   { path: '/writing', sources: ['app/writing/page.tsx', 'lib/content/record.ts', 'lib/content/record-static.ts'] },
   { path: '/case-studies', sources: ['app/case-studies/page.tsx', 'content/case-studies'] },
-  { path: '/projects/mylinks', sources: ['app/projects/mylinks/page.tsx', 'content/pages/mylinks.md'] },
+  { path: '/case-studies/mylinks', sources: ['app/case-studies/mylinks/page.tsx', 'content/pages/mylinks.md'] },
   { path: '/blog', sources: ['app/blog/page.tsx', 'content/articles'] },
   { path: '/services', sources: ['app/services/page.tsx', 'content/pages/services.md'] },
   { path: '/about', sources: ['app/about/page.tsx', 'content/pages/about.md'] },

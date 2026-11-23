@@ -10,7 +10,7 @@ export const SOURCE_DATES: Record<string, string> = {
   'lib/content/record-static.ts': '2026-11-08T20:57:03+01:00',
   'app/case-studies/page.tsx': '2026-11-12T19:36:26+00:00',
   'content/case-studies': '2026-11-08T21:20:55+01:00',
-  'app/projects/mylinks/page.tsx': '2026-11-08T18:10:53+01:00',
+  'app/case-studies/mylinks/page.tsx': '2026-11-08T18:10:53+01:00',
   'content/pages/mylinks.md': '2026-11-08T18:10:53+01:00',
   'app/blog/page.tsx': '2026-11-08T18:10:53+01:00',
   'app/services/page.tsx': '2026-11-08T18:10:53+01:00',

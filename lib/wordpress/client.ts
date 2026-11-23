@@ -136,9 +136,13 @@ function mapWordPressAuthor(author?: WordPressAuthor): WordPressPost['author'] {
 // Rewrite those hrefs to root-relative paths so every internal link resolves on
 // the current origin over https and points at the one canonical URL.
 export function relativizeSiteLinks(html: string): string {
-  return html.replace(
+  const relativeHtml = html.replace(
     /(\bhref=)(["'])https?:\/\/(?:www\.)?peaceakinwale\.com(\/[^"']*)?\2/gi,
     (_m, attr: string, quote: string, rest: string | undefined) => `${attr}${quote}${rest || '/'}${quote}`,
+  );
+  return relativeHtml.replace(
+    /(\bhref=)(["'])\/projects\/mylinks\/?([?#][^"']*)?\2/gi,
+    (_m, attr: string, quote: string, suffix: string | undefined) => `${attr}${quote}/case-studies/mylinks${suffix || ''}${quote}`,
   );
 }
 

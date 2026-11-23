@@ -27,7 +27,7 @@ describe('MyLinks subdomain routing', () => {
   });
   it('keeps APIs on the same origin and sends the product overview to the portfolio', () => {
     expect(proxy(request('/api/mylinks/auth/google/callback?code=example')).headers.get('x-middleware-next')).toBe('1');
-    expect(proxy(request('/projects/mylinks')).headers.get('location')).toBe('https://peaceakinwale.com/projects/mylinks');
+    expect(proxy(request('/projects/mylinks')).headers.get('location')).toBe('https://peaceakinwale.com/case-studies/mylinks');
   });
   it('uses the workspace layout for both URL forms, not for portfolio project pages', () => {
     expect(isMylinksWorkspacePath('/dashboard')).toBe(true);

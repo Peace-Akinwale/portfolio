@@ -105,7 +105,7 @@ export default function LoginPage() {
         )}
 
         <div className="mt-8">
-          <Link href="/projects/mylinks" className="text-sm text-muted-foreground transition-colors hover:text-foreground">
+          <Link href="https://peaceakinwale.com/case-studies/mylinks" className="text-sm text-muted-foreground transition-colors hover:text-foreground">
             Back to product overview
           </Link>
         </div>

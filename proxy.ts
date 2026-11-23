@@ -35,7 +35,9 @@ export function proxy(request: NextRequest) {
   if (pathname.startsWith('/api/mylinks/') || pathname.startsWith('/_next/') || /\.[a-z0-9]+$/i.test(pathname)) {
     return NextResponse.next();
   }
-  return NextResponse.redirect(new URL(pathname + search, 'https://peaceakinwale.com'));
+  const portfolioPath = pathname === MYLINKS_INTERNAL_PREFIX || pathname === `${MYLINKS_INTERNAL_PREFIX}/`
+    ? '/case-studies/mylinks' : pathname;
+  return NextResponse.redirect(new URL(portfolioPath + search, 'https://peaceakinwale.com'));
 }
 
 export const config = {
