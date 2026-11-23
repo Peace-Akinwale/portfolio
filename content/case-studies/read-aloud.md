@@ -19,6 +19,8 @@ related:
 
 Read Aloud turns articles, PDFs, ebooks, and documents into audio so you can listen to the things you’ve been meaning to read.
 
+*The screenshots below show the app before its November 2026 rename to Read Aloud.*
+
 ![Read Aloud Library with a Continue listening card and saved articles](/images/approved/read-aloud/00-library.jpg)
 
 ## Why I built it
@@ -57,6 +59,6 @@ You can search those highlights later and return to that point in the recording 
 
 ## Bottom line
 
-Read Aloud gives me a way to get through my bookmarked content and keep the parts I want to return to. If you’d like to try it, ask me for an invitation.
+Read Aloud gives me a way to get through my bookmarked content and keep the parts I want to return to. You can sign up with Google or an email code.
 
 [Open Read Aloud](https://readaloud.peaceakinwale.com/)
