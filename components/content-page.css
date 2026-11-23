@@ -44,3 +44,7 @@
 .approved-intro p { font-size: 1.15rem; line-height: 1.6; }
 
 .client-quote figcaption.reviewer-attribution { flex-direction: row; align-items: center; gap: 14px; }
+
+/* Product marks are sized to the title, outside the article image/lightbox rules. */
+.approved-head h1.approved-title-with-icon { display: flex; align-items: center; gap: .28em; }
+.approved-head .approved-title-icon { width: 1em; height: 1em; flex: 0 0 auto; border-radius: .25em; }

@@ -35,7 +35,7 @@ export default async function CaseStudyPage({ params }: { params: Promise<{ slug
   return (
     <>
       <JsonLdScript data={jsonLd} />
-      <ContentPage title={cs.title} html={cs.html} published={shownDate(cs)} caseStudy />
+      <ContentPage titleIcon={slug === 'read-aloud' ? '/brand/read-aloud-call.svg' : undefined} title={cs.title} html={cs.html} published={shownDate(cs)} caseStudy />
     </>
   );
 }

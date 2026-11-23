@@ -33,7 +33,7 @@ function Row({ entry }: { entry: Entry }) {
         {entry.image && <Image src={entry.image.src} alt="" fill style={matFor(entry.image.src) ? { objectFit: "contain", objectPosition: "center" } : undefined} sizes="(max-width: 700px) 100vw, 260px" />}
       </Link>}
       <div>
-        <h3><Link href={entry.href}>{entry.title}</Link></h3>
+        <h3><Link href={entry.href}>{entry.href === '/case-studies/read-aloud' && <Image src="/brand/read-aloud-call.svg" alt="" width={28} height={28} unoptimized style={{ display: "inline-block", verticalAlign: "-.15em", marginRight: ".35em", width: "1em", height: "1em" }} />}{entry.title}</Link></h3>
         <p>{entry.summary}</p>
         <Link href={entry.href} className="underline underline-offset-4">Read the case study</Link>
       </div>

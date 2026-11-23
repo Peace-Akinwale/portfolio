@@ -6,8 +6,9 @@ import type { ReactNode } from 'react';
 import '@/components/article/article.css';
 import './content-page.css';
 
-export async function ContentPage({ title, html, portrait = false, caseStudy = false, published, children }: {
+export async function ContentPage({ title, html, portrait = false, caseStudy = false, published, children, titleIcon }: {
   title: string;
+  titleIcon?: string;
   html: string;
   portrait?: boolean;
   caseStudy?: boolean;
@@ -24,7 +25,7 @@ export async function ContentPage({ title, html, portrait = false, caseStudy = f
       <header className={portrait ? 'approved-head has-portrait' : 'approved-head'}>
         <div>
           {caseStudy && <p className="approved-back"><Link href="/case-studies">Case studies</Link></p>}
-          <h1>{title}</h1>
+          <h1 className={titleIcon ? "approved-title-with-icon" : undefined}>{titleIcon && <Image className="approved-title-icon" src={titleIcon} alt="" width={64} height={64} unoptimized priority aria-hidden="true" />}{title}</h1>
           {introduction && <div className="prose approved-intro" dangerouslySetInnerHTML={{ __html: introduction }} />}
           {published && <p className="approved-date"><time dateTime={published}>{new Date(published + "T00:00:00Z").toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric", timeZone: "UTC" })}</time></p>}
         </div>
