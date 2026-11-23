@@ -6295,3 +6295,33 @@ Steve asked why "howdy" did not sound like him on his Nov 22 note video. The aud
 - The fix that won was a step back. The upgrade was undone on evidence instead of being patched around.
 
 ---
+
+## 2026-11-23, the team's Saturday email and Steve's weekly digests became one page, one audio and one email
+
+Radar emailed the 24-person team every Saturday with the LinkedIn digest, the Industry News digest and Steve's own posts, each with its own audio. Peace found it long and plain next to the DocsWatch email, and pointed out that Steve was hearing the same week three times.
+
+### What shipped
+
+- One page per week in Radar (`/digests/week/<date>`): the LinkedIn digest, the Industry News digest and Steve's week, with buttons that jump between them and one audio of the whole week. The Digests screen now lists weeks instead of digests, and team readers and coaching students can open it.
+- One audio per week, capped at 15 minutes in code, not only in the prompt. Audio was made for all 22 weeks back to June 23: 273 to 681 seconds each; Nov 21 is 1,617 words and 642 seconds.
+- The team email rebuilt in the DocsWatch email's layout in Notebook red: the week's most important LinkedIn and news items in full, in one labeled list, picked by an AI editor step with a fallback to the digests' own order, then Steve's posts, one "Open in Radar" button and a Listen link.
+- Saturdays now make one audio and send one "the week is ready" notice instead of two of each.
+- Commit `d6dac603` on `notebookagency/content-ops`, migration 095; all 2,851 Radar tests passed on the push, and both Railway services deployed it the same day.
+
+### Decisions worth recording
+
+- **Keep the two digests, change what people read.** Peace asked whether to erase them for the new page. They stay in the database as the week's parts, because Steve's tools live on their pages and the history back to June stays intact. Only the reading surface became one page.
+- **The email's audio link is a Radar address, not a storage link.** The codebase already had a rule from 124 Notion notes with storage links baked in; an email in 24 inboxes is the same trap, so the link goes through Radar and the file can move later.
+
+### Frictions and course corrections
+
+- **The first shorter email was rejected as "thin".** It showed headlines with one clipped line and "And 1 more in Radar". Peace: "include everything that they need to read, but we can reduce the length." The fix was to cut the number of items, not their text.
+- **The logo broke in the test email.** Its address came from the same base as the links, which pointed at the local machine, and Gmail loads images through its own servers. The logo now always comes from the public site.
+- **A bug hunt before shipping, at Peace's request,** found six problems in my own pass and seven more from an independent reviewer, all fixed before the push. The most serious: the email was marked as sent before a two-minute AI step, so a server restart in that window would have lost the week's email with nobody told. Also: a private copy of the digest parser missed list-style items, and re-runs would have sent Steve repeat notices.
+
+### Why this matters for the portfolio
+
+- A complaint about one email was traced to the real cost, the same week read three times, and solved at the product level rather than by restyling a template.
+- The work shipped only after an adversarial review, and the review's findings were fixed rather than argued with, including one that would have silently lost a send.
+
+---
