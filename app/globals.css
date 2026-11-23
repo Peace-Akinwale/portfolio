@@ -455,19 +455,11 @@ html:has(.record-bar) { scroll-padding-top: 124px; }
   animation: zoom-in 0.3s ease-out;
 }
 
-/* Make prose images interactive */
-.prose img {
-  cursor: pointer;
-  transition: transform 0.2s ease, opacity 0.15s ease;
-}
-
-.prose img:hover {
-  transform: scale(1.02);
-}
-
-/* Lightbox image transition */
-#lightbox-image {
-  transition: opacity 0.15s ease;
+/* Only images that open in the viewer advertise zoom and animate on hover. */
+img[data-image-viewer] { cursor: zoom-in; transition: transform 200ms ease; }
+img[data-image-viewer]:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  img[data-image-viewer]:hover { transform: scale(1.02); }
 }
 
 /* Respect people who ask their system for less motion */
@@ -524,10 +516,22 @@ html:has(.record-bar) { scroll-padding-top: 124px; }
 .svc-offer .note { margin: 0 0 10px; }
 
 /* Evidence remains readable on phones and accessible without a pointer. */
-.prose img[role="button"] { cursor: zoom-in; }
 .image-viewer { position: fixed; inset: 0; width: min(96vw, 1600px); max-width: 96vw; max-height: 96dvh; margin: auto; padding: 16px; border: 1px solid var(--control-border); border-radius: 16px; background: var(--background); color: var(--foreground); }
 .image-viewer::backdrop { background: rgb(13 30 44 / 88%); }
 .image-viewer > img { display: block; max-width: 100%; max-height: 75dvh; width: auto; height: auto; margin: 12px auto; object-fit: contain; }
 .image-viewer-toolbar, .image-viewer-controls { display: flex; justify-content: space-between; align-items: center; gap: 16px; }
 .image-viewer-controls[hidden] { display: none; }
 .image-viewer button, .image-viewer a { min-height: 44px; display: inline-flex; align-items: center; padding: 8px 12px; border: 1px solid var(--control-border); border-radius: 24px; font-size: 16px; }
+
+/* The previous viewer faded in and gently enlarged each image. */
+@media (prefers-reduced-motion: no-preference) {
+  .image-viewer[open], .image-viewer[open]::backdrop { animation: fade-in 180ms ease-out; }
+  .image-viewer[open] > img { animation: zoom-in 260ms ease-out; }
+}
+.image-viewer button, .image-viewer a { cursor: pointer; }
+@media (max-width: 480px) {
+  .image-viewer { padding: 12px; }
+  .image-viewer-toolbar, .image-viewer-controls { gap: 8px; }
+  .image-viewer button, .image-viewer a { padding: 8px 10px; font-size: 14px; }
+  .image-viewer > img { max-height: calc(100dvh - 180px); }
+}

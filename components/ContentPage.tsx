@@ -1,5 +1,4 @@
 import { preparePageImages } from '@/lib/content/page-images';
-import { ImageLightbox } from '@/components/ImageLightbox';
 import Link from 'next/link';
 import Image from 'next/image';
 import type { ReactNode } from 'react';
@@ -20,7 +19,6 @@ export async function ContentPage({ title, html, portrait = false, caseStudy = f
   const body = introduction ? html.slice(introduction.length) : html;
   return (
     <article className={`approved-page gutter${portrait ? ' with-portrait' : ''}`}>
-      <ImageLightbox />
       {portrait && <div className="approved-portrait"><Image src="/images/peace-akinwale-about-wedding.jpg" alt="Peace Akinwale" width={4016} height={6016} sizes="(max-width: 640px) 135px, 210px" priority /></div>}
       <header className={portrait ? 'approved-head has-portrait' : 'approved-head'}>
         <div>

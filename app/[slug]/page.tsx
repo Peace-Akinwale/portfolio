@@ -13,7 +13,6 @@ import { fetchOgImagesForPortfolio } from '@/lib/fetchOgImages';
 import { ShareButtons } from '@/components/ShareButtons';
 import { ReadingProgress } from '@/components/ReadingProgress';
 import { TableOfContents } from '@/components/TableOfContents';
-import { ImageLightbox } from '@/components/ImageLightbox';
 import { CodeBlockEnhancer } from '@/components/CodeBlockEnhancer';
 import { publicPathForSlug, withTitleOverride, CLIENT_NAME_OVERRIDES, CLIENT_PAGE_DESCRIPTIONS } from '@/lib/content/client-pages';
 import { NEW_MANYREQUESTS_ARTICLES, withCurrentManyRequestsSamples } from '@/lib/portfolio/manyrequests';
@@ -198,7 +197,6 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
       return (
         <>
           <ReadingProgress />
-          <ImageLightbox />
           <CodeBlockEnhancer />
 
           <article className="max-w-4xl mx-auto px-6 py-16">
@@ -285,7 +283,6 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
       <>
         <ReadingProgress />
         <TableOfContents />
-        <ImageLightbox />
         <CodeBlockEnhancer />
 
         <article className="max-w-4xl mx-auto px-6 py-16">

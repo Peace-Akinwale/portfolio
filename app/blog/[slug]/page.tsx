@@ -14,7 +14,6 @@ import { ArticleCard } from '@/components/ArticleCard';
 import { ShareButtons } from '@/components/ShareButtons';
 import { ReadingProgress } from '@/components/ReadingProgress';
 import { TableOfContents } from '@/components/TableOfContents';
-import { ImageLightbox } from '@/components/ImageLightbox';
 import { CodeBlockEnhancer } from '@/components/CodeBlockEnhancer';
 import { ArticleEndCta } from '@/components/ArticleEndCta';
 import { Comments } from '@/components/Comments';
@@ -165,7 +164,6 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
       <JsonLdScript data={[articleLd, breadcrumbList([{ name: 'Blog', url: '/blog' }, { name: post.title, url: `/blog/${post.slug}` }])]} />
       <ReadingProgress />
       <TableOfContents />
-      <ImageLightbox />
       <CodeBlockEnhancer />
 
       <article className="article gutter">
