@@ -38,4 +38,8 @@ describe('MyLinks subdomain routing', () => {
   it('blocks indexing of the app subdomain', async () => {
     expect(await proxy(request('/robots.txt')).text()).toBe('User-agent: *\nDisallow: /\n');
   });
+  it('redirects unused wildcard hosts to the canonical portfolio', () => {
+    expect(proxy(request('/about?ref=example', 'unused.peaceakinwale.com')).headers.get('location'))
+      .toBe('https://peaceakinwale.com/about?ref=example');
+  });
 });

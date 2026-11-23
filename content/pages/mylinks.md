@@ -4,7 +4,7 @@ I built MyLinks to help me find relevant pages on a client’s site without repe
 
 It collects the pages on a site and suggests places to link to them from a draft. This helps me point a reader towards a related guide or product explanation while keeping control over which links belong in the article.
 
-[Open the beta workspace](/projects/mylinks/login)
+[Open the beta workspace](https://mylinks.peaceakinwale.com)
 
 ## Add the site
 

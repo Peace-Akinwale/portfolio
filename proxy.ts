@@ -3,7 +3,13 @@ import { isMylinksPublicPath, MYLINKS_HOST, MYLINKS_INTERNAL_PREFIX, MYLINKS_ORI
 
 export function proxy(request: NextRequest) {
   const hostname = request.headers.get('host')?.split(':')[0].toLowerCase();
-  if (hostname !== MYLINKS_HOST) return NextResponse.next();
+  if (hostname !== MYLINKS_HOST) {
+    // The wildcard should not create indexable copies on unused subdomains.
+    if (hostname?.endsWith('.peaceakinwale.com') && hostname !== 'www.peaceakinwale.com') {
+      return NextResponse.redirect(new URL(request.nextUrl.pathname + request.nextUrl.search, 'https://peaceakinwale.com'));
+    }
+    return NextResponse.next();
+  }
 
   const { pathname, search } = request.nextUrl;
   const redirectTo = (path: string) => NextResponse.redirect(new URL(path + search, MYLINKS_ORIGIN));
