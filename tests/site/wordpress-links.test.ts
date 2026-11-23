@@ -28,6 +28,12 @@ describe('WordPress bare tool links', () => {
 });
 
 describe('Project case-study links', () => {
+  it('updates old index links and their back-link labels', () => {
+    expect(publicHref('https://peaceakinwale.com/projects/?ref=old')).toBe('/case-studies?ref=old');
+    expect(relativizeSiteLinks('<a href="/projects">← Back to Projects</a>')).toBe('<a href="/case-studies">← Back to case studies</a>');
+    expect(publicHref('/tools')).toBe('/case-studies');
+  });
+
   it('normalizes all old project and short links without losing query strings or fragments', () => {
     for (const slug of PROJECT_CASE_STUDY_SLUGS) {
       expect(publicPathForSlug(slug)).toBe(`/case-studies/${slug}`);

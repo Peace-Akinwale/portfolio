@@ -16,6 +16,8 @@ export function isWordPressCaseStudy(slug: string): boolean {
 }
 
 export function caseStudyHref(href: string): string {
+  const index = href.match(/^(?:https?:\/\/(?:www\.)?peaceakinwale\.com)?\/(?:projects|tools)\/?([?#].*)?$/i);
+  if (index) return `/case-studies${index[1] ?? ''}`;
   const match = href.match(/^(?:https?:\/\/(?:www\.)?peaceakinwale\.com)?\/(?:projects\/)?([^/?#]+)\/?([?#].*)?$/i);
   if (!match || !PROJECT_CASE_STUDY_SLUGS.includes(match[1].toLowerCase())) return href;
   return `/case-studies/${match[1].toLowerCase()}${match[2] ?? ''}`;

@@ -144,6 +144,9 @@ export function relativizeSiteLinks(html: string): string {
   return relativeHtml.replace(
     /(\bhref=)(["'])([^"']*)\2/gi,
     (_m, attr: string, quote: string, href: string) => `${attr}${quote}${caseStudyHref(href)}${quote}`,
+  ).replace(
+    /(<a\b[^>]*href=["']\/case-studies["'][^>]*>)([\s\S]*?)(<\/a>)/gi,
+    (_m, start: string, label: string, end: string) => start + label.replace(/Back to Projects/gi, 'Back to case studies') + end,
   );
 }
 
