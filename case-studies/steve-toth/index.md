@@ -6325,3 +6325,33 @@ Radar emailed the 24-person team every Saturday with the LinkedIn digest, the In
 - The work shipped only after an adversarial review, and the review's findings were fixed rather than argued with, including one that would have silently lost a send.
 
 ---
+
+## 2026-11-23, links the team shares in Slack now reach Radar's feed every day, and two Railway services were saved from a silent Dec 1 break
+
+Peace asked what work he still owed, then asked for a tool that removes a real bottleneck for Steve or the team. The check found no proven bottleneck, so he chose a smaller, honest win: good SEO and AEO links the team drops in Slack were scrolling away instead of reaching Radar, where Steve reads and picks for his newsletters.
+
+### What shipped
+
+- A daily claude.ai routine reads six team channels through Peace's own Slack connection, keeps SEO, AEO and marketing links, skips client documents, Steve's own posts and off-topic tech news, sends each kept link to Radar, and posts one summary line to Peace's alerts channel.
+- A new secret-key endpoint in Radar (`POST /api/feed/slack-share`, migration 096) that reuses the existing "Add to Radar" queue, so short-link resolving, de-duplication and the paid LinkedIn fetch are the same code. Cards say "Shared in Slack by <name>" and link back to the message.
+- Commit `2ddf3dee` on `notebookagency/content-ops`; all 2,856 Radar tests passed on the push. The first live run with the key added 1 link, recognized 1 already in Radar, and skipped 1 off-topic article.
+- Railway: two services (the note video worker and the OKF app) still took their settings from config files that Railway stops reading on 2026-12-01. Their settings were copied onto the services themselves and read back (commit `ae08d91b`).
+
+### Decisions worth recording
+
+- **Feed only, never a roundup.** Peace's rule: an automatic link must never reach Steve's newsletter on its own. Steve's star stays the only way in, and these links are not pinned and send no phone notification.
+- **No Slack app, no admin grant.** Peace did not want to ask for workspace admin access, so the job runs on his existing connection. The cost is a once-a-day delay instead of instant pickup.
+- **No bottleneck was invented.** Three earlier ideas each rested on a single Slack message, and Notion could not say why about 1 in 5 team tasks miss a deadline. That was reported as "not proven" instead of being dressed up as a problem.
+
+### Frictions and course corrections
+
+- **Railway's own migration check was wrong.** `railway config migrate status` said no service read a config file. Each service's last deploy record showed two did. Trusting the tool would have let both break quietly on Dec 1, including losing the rule that stops OKF data commits from redeploying production.
+- **My first design overstated how small it was.** I said only the Slack listener was new. Reading the code showed Radar's add route only lets a signed-in admin in, so a key-protected door was needed too. I corrected it before building.
+- **The secret key had to be pasted by hand.** The coding agent's safety guard would not let it read or print the key, so Peace pasted it into the routine himself while the agent selected the exact spot for him in his browser.
+
+### Why this matters for the portfolio
+
+- When asked to build for a bottleneck, the first output was an honest "none proven" backed by data, followed by a scoped tool the person chose knowingly.
+- A vendor's own status tool was checked against the deploy records instead of trusted, which caught two services that would have broken on a known date.
+
+---
