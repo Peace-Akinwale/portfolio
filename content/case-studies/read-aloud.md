@@ -19,7 +19,7 @@ related:
 
 Read Aloud turns articles, PDFs, ebooks, and documents into audio so you can listen to the things you’ve been meaning to read.
 
-![Read Aloud Library with a Continue listening card and saved articles](/images/approved/read-aloud/desktop/00-library.jpg)
+![Read Aloud Library with a Continue listening card and saved articles](/images/approved/read-aloud/retina/00-library.png)
 
 ## Why I built it
 
@@ -35,7 +35,7 @@ For articles and books, it preserves the author’s wording while cleaning up th
 
 Read Aloud also splits longer pieces into sections for narration. The audio is generated on the server, so you don’t have to keep the browser open while it processes.
 
-![Adding a link to a Kevin Indig article in Read Aloud](/images/approved/read-aloud/desktop/01-add-article.jpg)
+![Adding a link to a Kevin Indig article in Read Aloud](/images/approved/read-aloud/retina/01-add-article.png)
 
 *I added [Kevin Indig’s article on AI search](https://www.kevin-indig.com/talks/winners-losers-ai-search) by pasting its link and choosing Listen now.*
 
@@ -45,15 +45,15 @@ You can change the playback speed, skip through the recording, and resume where 
 
 When you hear something you want to remember, you can save the passage as a highlight.
 
-![Read Aloud reading view showing the selected sentence about search rankings and AI citations, with the Highlight button visible](/images/approved/read-aloud/desktop/03-selected-passage.jpg)
+![Read Aloud reading view showing the selected sentence about search rankings and AI citations, with the Highlight button visible](/images/approved/read-aloud/retina/03-selected-passage.png)
 
 *I saved Indig’s comparison of AI citations for pages ranking first and tenth because I wanted to revisit what his research said about the value of ranking well.*
 
-![Read Aloud’s Marks page showing saved passages from several articles, with Kevin Indig’s passage about AI citations first](/images/approved/read-aloud/desktop/05-marks-collection.jpg)
+![Read Aloud’s Marks page showing saved passages from several articles, with Kevin Indig’s passage about AI citations first](/images/approved/read-aloud/retina/05-marks-collection.png)
 
 You can search those highlights later and return to that point in the recording without listening to the whole piece again.
 
-![Search results in Marks showing a saved passage and a link to its timestamp](/images/approved/read-aloud/desktop/04-search-marks.jpg)
+![Search results in Marks showing a saved passage and a link to its timestamp](/images/approved/read-aloud/retina/04-search-marks.png)
 
 ## Bottom line
 
