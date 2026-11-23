@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { buildSitemap } from '@/app/sitemap';
 import { getCaseStudy, listCaseStudies, shownDate } from '@/lib/content/case-studies';
+import { WORDPRESS_CASE_STUDY_SLUGS } from '@/lib/content/project-routes';
 import { listLocalArticles } from '@/lib/content/articles';
 
 describe('sitemap', () => {
@@ -17,6 +18,7 @@ describe('sitemap', () => {
   });
 
   it('lists every case study, local article, the fixed pages and the client sample pages', () => {
+    for (const slug of WORDPRESS_CASE_STUDY_SLUGS) expect(urls).toContain(`https://peaceakinwale.com/case-studies/${slug}`);
     for (const cs of listCaseStudies()) expect(urls).toContain(`https://peaceakinwale.com/case-studies/${cs.slug}`);
     for (const a of listLocalArticles()) expect(urls).toContain(`https://peaceakinwale.com/blog/${a.slug}`);
     for (const p of ['', '/writing', '/case-studies', '/blog', '/services', '/about', '/contact', '/testimonials', '/case-studies/mylinks', '/case-studies/manyrequests', '/writing/manyrequests', '/writing/highervisibility', '/writing/pangea']) {

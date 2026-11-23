@@ -3,6 +3,7 @@ import { execFileSync } from 'node:child_process';
 import { loadAllPosts } from '@/lib/content/posts';
 import { listCaseStudies } from '@/lib/content/case-studies';
 import { committedLastModified } from '@/lib/seo/source-dates';
+import { WORDPRESS_CASE_STUDY_SLUGS } from '@/lib/content/project-routes';
 import { SITE_URL } from '@/lib/site';
 
 // Every indexable route with a real last-modified date: the fixed pages (dated
@@ -22,6 +23,7 @@ export const FIXED_PAGES: { path: string; sources: string[] }[] = [
   { path: '', sources: ['app/page.tsx', 'lib/content/home-copy.ts'] },
   { path: '/writing', sources: ['app/writing/page.tsx', 'lib/content/record.ts', 'lib/content/record-static.ts'] },
   { path: '/case-studies', sources: ['app/case-studies/page.tsx', 'content/case-studies'] },
+  ...WORDPRESS_CASE_STUDY_SLUGS.map((slug) => ({ path: `/case-studies/${slug}`, sources: ['components/case-study/WordPressCaseStudy.tsx'] })),
   { path: '/case-studies/mylinks', sources: ['app/case-studies/mylinks/page.tsx', 'content/pages/mylinks.md'] },
   { path: '/blog', sources: ['app/blog/page.tsx', 'content/articles'] },
   { path: '/services', sources: ['app/services/page.tsx', 'content/pages/services.md'] },

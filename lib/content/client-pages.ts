@@ -1,3 +1,5 @@
+import { caseStudyHref } from './project-routes';
+
 // Client writing-sample pages. Their content still comes from the CMS under the
 // old slugs, but since 8 Nov 2026 they are published under /writing/<client>
 // (the old root addresses redirect there in next.config.ts).
@@ -7,10 +9,10 @@ export const CLIENT_PAGES: Record<string, string> = {
   pangea: 'content-for-pangea',
 };
 
-// The public path for a CMS slug: /writing/<client> for client pages, /<slug> otherwise.
+// CMS client pages use /writing; project write-ups use /case-studies.
 export function publicPathForSlug(slug: string): string {
   const client = Object.entries(CLIENT_PAGES).find(([, s]) => s === slug)?.[0];
-  return client ? `/writing/${client}` : `/${slug}`;
+  return client ? `/writing/${client}` : caseStudyHref(`/${slug}`);
 }
 
 // Titles fixed here because the CMS copy is wrong. Pangea writes its name
@@ -24,13 +26,13 @@ export function withTitleOverride<T extends { title: string }>(slug: string, pag
   return page && title ? { ...page, title } : page;
 }
 
-// Map a CMS link to a client page (relative or absolute, with or without a
-// trailing slash) to its /writing/<client> address; any other href is unchanged.
+// Normalize CMS links to writing samples and project case studies, preserving
+// query strings and fragments. Unrelated links stay unchanged.
 export function publicHref(href: string): string {
   const m = href.match(/^(?:https?:\/\/(?:www\.)?peaceakinwale\.com)?\/([^/?#]+)\/?([?#].*)?$/i);
-  if (!m) return href;
+  if (!m) return caseStudyHref(href);
   const client = Object.entries(CLIENT_PAGES).find(([, s]) => s === m[1].toLowerCase())?.[0];
-  return client ? `/writing/${client}${m[2] ?? ''}` : href;
+  return client ? `/writing/${client}${m[2] ?? ''}` : caseStudyHref(href);
 }
 
 // Client names as the client writes them, where the CMS headings differ

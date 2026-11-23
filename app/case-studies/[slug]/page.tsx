@@ -7,14 +7,18 @@ import { withOg } from '@/lib/og';
 import { JsonLdScript } from '@/components/JsonLdScript';
 import { breadcrumbList, softwareApplicationJsonLd } from '@/lib/seo/jsonld';
 
+import WordPressCaseStudy, { generateMetadata as wordpressMetadata } from '@/components/case-study/WordPressCaseStudy';
+import { WORDPRESS_CASE_STUDY_SLUGS, isWordPressCaseStudy } from '@/lib/content/project-routes';
+
 export const dynamicParams = false;
 
 export function generateStaticParams() {
-  return listCaseStudies().map((cs) => ({ slug: cs.slug }));
+  return [...listCaseStudies().map((cs) => ({ slug: cs.slug })), ...WORDPRESS_CASE_STUDY_SLUGS.map((slug) => ({ slug }))];
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
+  if (isWordPressCaseStudy(slug)) return wordpressMetadata({ params });
   const cs = getCaseStudy(slug);
   if (!cs) return {};
   return withOg({
@@ -26,6 +30,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
 export default async function CaseStudyPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
+  if (isWordPressCaseStudy(slug)) return <WordPressCaseStudy params={params} />;
   const cs = getCaseStudy(slug);
   if (!cs) notFound();
   const jsonLd = [

@@ -1,19 +1,13 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { notFound, redirect } from 'next/navigation';
+import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import { getStaticPage } from '@/lib/wordpress/client';
+import { isWordPressCaseStudy } from '@/lib/content/project-routes';
 
 interface ProjectPageProps {
   params: Promise<{ slug: string }>;
 }
-
-const PROJECT_ARTICLE_SLUGS = new Set([
-  'linkedin-router',
-  'mystyleguide',
-  'portfolio-project',
-  'editorial-style-guide',
-]);
 
 const PROJECT_COVER_IMAGES: Record<string, string> = {
   'linkedin-router':
@@ -28,17 +22,12 @@ const PROJECT_COVER_IMAGES: Record<string, string> = {
 export async function generateMetadata({ params }: ProjectPageProps): Promise<Metadata> {
   const { slug } = await params;
 
-  if (slug === 'career-pathway') {
-    return {
-      title: 'Career Pathway Assessment',
-      robots: { index: false, follow: false },
-    };
-  }
+  if (!isWordPressCaseStudy(slug)) return {};
 
   const staticPage = await getStaticPage(slug);
   if (!staticPage) {
     return {
-      title: 'Project Not Found',
+      title: 'Case Study Not Found',
     };
   }
 
@@ -46,26 +35,20 @@ export async function generateMetadata({ params }: ProjectPageProps): Promise<Me
     title: staticPage.title,
     description: staticPage.title,
     alternates: {
-      canonical: `https://peaceakinwale.com/projects/${slug}`,
+      canonical: `https://peaceakinwale.com/case-studies/${slug}`,
     },
     openGraph: {
       title: staticPage.title,
-      url: `/projects/${slug}`,
+      url: `/case-studies/${slug}`,
       images: PROJECT_COVER_IMAGES[slug] ? [PROJECT_COVER_IMAGES[slug]] : [],
     },
   };
 }
 
-export default async function ProjectDetailPage({ params }: ProjectPageProps) {
+export default async function WordPressCaseStudy({ params }: ProjectPageProps) {
   const { slug } = await params;
 
-  if (slug === 'career-pathway') {
-    redirect('/career-pathway');
-  }
-
-  if (!PROJECT_ARTICLE_SLUGS.has(slug)) {
-    notFound();
-  }
+  if (!isWordPressCaseStudy(slug)) notFound();
 
   const staticPage = await getStaticPage(slug);
   if (!staticPage) {

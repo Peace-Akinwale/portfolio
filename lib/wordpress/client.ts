@@ -1,3 +1,4 @@
+import { caseStudyHref } from '@/lib/content/project-routes';
 import type { WordPressPage, WordPressPost } from './types';
 
 const WORDPRESS_SITE = process.env.WORDPRESS_SITE;
@@ -141,8 +142,8 @@ export function relativizeSiteLinks(html: string): string {
     (_m, attr: string, quote: string, rest: string | undefined) => `${attr}${quote}${rest || '/'}${quote}`,
   );
   return relativeHtml.replace(
-    /(\bhref=)(["'])\/projects\/mylinks\/?([?#][^"']*)?\2/gi,
-    (_m, attr: string, quote: string, suffix: string | undefined) => `${attr}${quote}/case-studies/mylinks${suffix || ''}${quote}`,
+    /(\bhref=)(["'])([^"']*)\2/gi,
+    (_m, attr: string, quote: string, href: string) => `${attr}${quote}${caseStudyHref(href)}${quote}`,
   );
 }
 

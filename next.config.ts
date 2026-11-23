@@ -1,5 +1,7 @@
 import type { NextConfig } from "next";
 
+import { WORDPRESS_CASE_STUDY_SLUGS } from './lib/content/project-routes';
+
 const nextConfig: NextConfig = {
   async redirects() {
     return [
@@ -96,26 +98,11 @@ const nextConfig: NextConfig = {
         destination: '/case-studies/mylinks',
         permanent: true,
       },
-      {
-        source: '/linkedin-router',
-        destination: '/projects/linkedin-router',
-        permanent: true,
-      },
-      {
-        source: '/mystyleguide',
-        destination: '/projects/mystyleguide',
-        permanent: true,
-      },
-      {
-        source: '/portfolio-project',
-        destination: '/projects/portfolio-project',
-        permanent: true,
-      },
-      {
-        source: '/editorial-style-guide',
-        destination: '/projects/editorial-style-guide',
-        permanent: true,
-      },
+      ...WORDPRESS_CASE_STUDY_SLUGS.flatMap((slug) => [
+        { source: `/projects/${slug}`, destination: `/case-studies/${slug}`, permanent: true },
+        { source: `/${slug}`, destination: `/case-studies/${slug}`, permanent: true },
+      ]),
+      { source: '/projects/career-pathway', destination: '/career-pathway', permanent: true },
     ];
   },
   images: {

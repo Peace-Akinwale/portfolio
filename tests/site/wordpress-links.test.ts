@@ -1,5 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { relativizeSiteLinks, unwrapBareToolLinks } from '@/lib/wordpress/client';
+import { PROJECT_CASE_STUDY_SLUGS } from '@/lib/content/project-routes';
+import { publicHref, publicPathForSlug } from '@/lib/content/client-pages';
 import robots from '@/app/robots';
 
 describe('WordPress bare tool links', () => {
@@ -25,7 +27,20 @@ describe('WordPress bare tool links', () => {
   });
 });
 
-describe('MyLinks case-study links', () => {
+describe('Project case-study links', () => {
+  it('normalizes all old project and short links without losing query strings or fragments', () => {
+    for (const slug of PROJECT_CASE_STUDY_SLUGS) {
+      expect(publicPathForSlug(slug)).toBe(`/case-studies/${slug}`);
+      for (const prefix of ['', 'https://peaceakinwale.com', 'http://www.peaceakinwale.com']) {
+        for (const path of [`/${slug}`, `/projects/${slug}`]) {
+          const href = `${prefix}${path}/?ref=blog#details`;
+          const canonical = `/case-studies/${slug}?ref=blog#details`;
+          expect(publicHref(href)).toBe(canonical);
+          expect(relativizeSiteLinks(`<a href="${href}">Read</a>`)).toBe(`<a href="${canonical}">Read</a>`);
+        }
+      }
+    }
+  });
   it('updates old case-study URLs while preserving app and external URLs', () => {
     for (const prefix of ['', 'https://peaceakinwale.com', 'http://www.peaceakinwale.com']) {
       expect(relativizeSiteLinks(`<a href="${prefix}/projects/mylinks/?ref=blog#examples">MyLinks</a>`))
