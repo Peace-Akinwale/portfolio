@@ -10,7 +10,7 @@ It collects the pages on a site and suggests places to link to them from a draft
 
 Create a project for a domain and crawl its sitemap. MyLinks gathers page information to build the inventory used for suggestions.
 
-![MyLinks sitemap inventory showing the pages collected for a project](https://res.cloudinary.com/cloud-blog-publisher/image/upload/v1772468764/mylinks_app_sitemap_tw3zld.png)
+![MyLinks inventory showing 14 pages collected from my website and a saved AEO article](/images/approved/mylinks/retina/01-page-inventory.png)
 
 ## Add the draft
 
@@ -20,15 +20,15 @@ Paste an article or import a Google Doc. You can also add destination URLs the c
 
 Check the proposed anchor text, destination and explanation. A link should help someone follow the point you’re making or take a useful next step. Keep those and reject the rest.
 
-![MyLinks showing the draft beside the proposed links before review](https://res.cloudinary.com/cloud-blog-publisher/image/upload/v1772457514/mylinks_app_demo_qbdfj7.png)
+![Pending MyLinks suggestions showing anchor text, destinations, explanations, and approve or reject controls](/images/approved/mylinks/retina/02-pending-suggestions.png)
 
-![MyLinks showing the draft after link suggestions are accepted](https://res.cloudinary.com/cloud-blog-publisher/image/upload/v1772457514/Screenshot_2026-03-01_171338_zeyhrf.png)
+![Two previously approved MyLinks suggestions for my AEO article, with their destinations and explanations](/images/approved/mylinks/retina/03-approved-suggestions.png)
 
 ## Use the approved version
 
 Copy the linked HTML, export a Word document, or apply approved links to the connected Google Doc.
 
-![Approved internal links applied to an article in Google Docs](https://res.cloudinary.com/cloud-blog-publisher/image/upload/v1772457513/Screenshot_2026-03-01_171435_iprvx1.png)
+![My AEO article in Google Docs with internal links on ChatGPT or Perplexity AI and checklist on a Claude Project](/images/approved/mylinks/retina/04-linked-google-doc.png)
 
 ## Why I built it
 

@@ -32,23 +32,23 @@ For LinkedIn posts and Reddit threads, paste the text instead of adding the URL.
 
 Add links or pasted text, tag the right client, and make that source available for retrieval across the workspace.
 
-![Adding Harvard Business Review’s B2B Elements of Value article with research tags and ManyRequests selected.](/images/approved/contentdb/01-add-source-hbr.jpg)
+![Adding Harvard Business Review’s B2B Elements of Value article with research tags and ManyRequests selected.](/images/approved/contentdb/retina/01-add-source-hbr.png)
 
 ### Search with quote context
 
 Find exact moments, surrounding context, and client-tagged material instead of isolated snippets.
 
-![A keyword search for retainer returns 15 matching sources; the first six results are shown.](/images/approved/contentdb/02-keyword-search-retainer.jpg)
+![A keyword search for retainer returns 15 matching sources; the first six results are shown.](/images/approved/contentdb/retina/02-keyword-search-retainer.png)
 
 ### Turn that stored research into structured, source-grounded answers you can write from
 
 > I’m writing an article about how agency owners can get retainer clients. Use the contentDB connector to find public sources in my library about the problems founders faced before moving to retainers. Give me two useful examples, the exact supporting quotes with context, and links to the original sources. Use only public articles, interviews or podcasts, not private client material. If the library doesn’t support a claim, say so.
 
-![An actual Claude request uses the ContentDB connector to retrieve public agency research.](/images/approved/contentdb/03-claude-request.jpg)
+![An actual Claude request uses the ContentDB connector to retrieve public agency research.](/images/approved/contentdb/retina/03-claude-request.png)
 
 Claude gives a response from your database first, which helps keep the answer grounded. You can check the source and surrounding context before using it.
 
-![Claude returns a passage about unpaid client requests and explains the surrounding interview context.](/images/approved/contentdb/04-claude-quote-context.jpg)
+![Claude returns a passage about unpaid client requests and explains the surrounding interview context.](/images/approved/contentdb/retina/04-claude-quote-context.png)
 
 [Try contentDB](https://contentdb.peaceakinwale.com)
 

@@ -35,7 +35,7 @@ This structure makes it easy to find a specific idea and explore the related mat
 
 For example, I made a small demo using my own writing process. Someone can ask, “How do you make a product useful inside an article?” and see an answer that connects how I research the reader’s needs, use the product, and choose examples that explain what the reader can do with it. They can open the supporting notes and read my original wording beside the explanation.
 
-![Demo using Peace’s own writing notes, with an answer and supporting sources](/case-studies/okf/okf-demo-desktop.png)
+![Demo using Peace’s own writing notes, with an answer and supporting sources](/case-studies/okf/retina/okf-demo-desktop.png)
 
 The source link matters because the context may change how a note should be used. An answer about a particular situation shouldn’t quietly, unintentionally become advice for every situation. Nuances matter.
 

@@ -17,8 +17,12 @@ export async function preparePageImages(html: string): Promise<string> {
     try {
       const metadata = await sharp(await fs.readFile(file)).metadata();
       if (!metadata.width || !metadata.height) return;
-      // UI captures already have compact files; preserve small text without a second lossy encode.
-      const productScreenshot = src.startsWith('/images/approved/read-aloud/');
+      // Preserve UI text in the source capture instead of applying a second lossy encode.
+      const productScreenshot = [
+        '/images/approved/read-aloud/', '/images/approved/contentdb/', '/images/approved/mylinks/',
+        '/case-studies/okf/', '/case-studies/ai-docs-watch/',
+        '/case-studies/fanout-query-analysis-tool/',
+      ].some((prefix) => src.startsWith(prefix));
       if (productScreenshot) img.closest('figure').addClass('product-screenshot');
       const { props } = getImageProps({
         src, alt: img.attr('alt') ?? '', width: metadata.width, height: metadata.height,

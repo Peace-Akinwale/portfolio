@@ -80,13 +80,13 @@ export default function HomePage() {
         <article className={s.project}>
           <h3>A tool to analyze fanout queries</h3>
           <p>Record AI search activity so strategists can analyze citations, brand mentions and why AI platforms choose a client’s competitors.</p>
-          <Link className={s.projectImage} href={BUILDING.links[0].href} aria-label="Explore the fanout case study"><Image src={BUILDING.shot} width={BUILDING.shotW} height={BUILDING.shotH} sizes="(max-width: 700px) 90vw, 580px" alt={BUILDING.shotAlt} /></Link>
+          <Link className={s.projectImage} href={BUILDING.links[0].href} aria-label="Explore the fanout case study"><Image unoptimized src={BUILDING.shot} width={BUILDING.shotW} height={BUILDING.shotH} sizes="(max-width: 700px) 90vw, 580px" alt={BUILDING.shotAlt} /></Link>
           <Link className={s.read} aria-label="Read the Fanout case study" href={BUILDING.links[0].href}>Read the case study ↗</Link>
         </article>
         <article className={s.project}>
           <h3>ContentDB</h3>
           <p>Find useful quotes and their original context in your saved research while writing in Claude or ChatGPT.</p>
-          <Link className={s.projectImage} href={CONTENTDB.caseStudy} aria-label="Explore the ContentDB case study"><Image src="/images/approved/contentdb/02-keyword-search-retainer.jpg" width={1440} height={1000} sizes="(max-width: 700px) 90vw, 580px" alt="ContentDB search for retainer, showing multiple sources and their surrounding context" /></Link>
+          <Link className={s.projectImage} href={CONTENTDB.caseStudy} aria-label="Explore the ContentDB case study"><Image unoptimized src="/images/approved/contentdb/retina/02-keyword-search-retainer.png" width={1650} height={1230} sizes="(max-width: 700px) 90vw, 580px" alt="ContentDB library search for retainer, showing six of 15 matching sources" /></Link>
           <Link className={s.read} aria-label="Read the ContentDB case study" href={CONTENTDB.caseStudy}>Read the case study ↗</Link>
         </article>
 

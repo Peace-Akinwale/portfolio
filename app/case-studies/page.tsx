@@ -57,7 +57,7 @@ export default function CaseStudiesPage() {
     title: 'MyLinks',
     href: '/projects/mylinks',
     summary: 'I built MyLinks to help me find relevant pages on a client’s site without repeating the same searches for every article.',
-    image: { src: 'https://res.cloudinary.com/cloud-blog-publisher/image/upload/v1772468764/mylinks_app_sitemap_tw3zld.png', alt: 'MyLinks site inventory' },
+    image: { src: '/images/approved/mylinks/retina/01-page-inventory.png', alt: 'MyLinks site inventory' },
   };
   return (
     <div className="gutter mx-auto max-w-[1180px] cs-page">

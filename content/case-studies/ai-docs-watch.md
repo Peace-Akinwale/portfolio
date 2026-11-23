@@ -27,9 +27,9 @@ The monitor I built saves multiple versions of a documentation, compares them an
 
 Every report has a summary that provides enough context to explain a change. And attached to every report is the source of the changes we created so you can confirm its accuracy before you take decisions based on the information.
 
-![AI Docs Watch connects an addition to OpenAI’s crawler documentation with questions marketers can ask about their advertising landing pages.](images/ai-docs-watch/docswatch-adsbot-explanation-actions-2026-10-30.jpg)
+![AI Docs Watch summarizes a change to OpenAI’s advertising policies, identifies who it affects, and links to the source comparison.](/case-studies/ai-docs-watch/retina/change-summary.png)
 
-![Readers can compare the original wording behind an update, rather than relying only on the write-up.](images/ai-docs-watch/docswatch-03-google-before-after.png)
+![Readers can compare the original wording behind an update, rather than relying only on the write-up.](/case-studies/ai-docs-watch/retina/before-after.png)
 
 The system also sends updates to Slack, and now you can subscribe to receive it via email. That brings changes into a place the team already checks, with a route back to the full comparison when something deserves attention.
 
