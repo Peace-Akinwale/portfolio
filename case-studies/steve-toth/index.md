@@ -6237,3 +6237,31 @@ The 682 recorded ChatGPT and Google AI Mode sessions are the research input for 
 - Every claim is traceable: quoted reasons checked by script, a second blind reader, and a session link beside each example. Where the agreement fell short of the bar, that is reported as a limit.
 
 ---
+
+## 2026-11-23, a daily briefing that kept flagging handled work was traced to two causes and rebuilt, and 11 held DocsWatch changes were reviewed against the live pages
+
+Peace's weekday 2pm briefing (an unattended Claude routine that reads Slack, Gmail, the calendar and four repos, then posts to his alerts channel) had stopped being trusted: it listed replies he had already sent. The same day, 11 Perplexity changes sat in DocsWatch's review queue.
+
+### What shipped
+
+- DocsWatch: all 11 held changes checked by comparing the stored before and after text with the live pages. 2 published with their write-ups (Perplexity's search domain filter now takes 200 entries instead of 20 and can mix includes with excludes; PerplexityBot gained 8 IP addresses, confirmed in the live file). 9 discarded. Queue left at 0.
+- The briefing's instructions rebuilt three times in one afternoon and tested twice in production. The final version proves an item open before listing it: it reads the whole conversation after the ask, treats a later "done" as closing an "I'll do it", counts a substantive reply as an answer, closes a shared ask once a teammate answers it, and puts "last word: who, when" on every owed item. Peace can now close an item by replying "done" or "ignore" in the channel.
+
+### Decisions worth recording
+
+- **Big text loss is not the same as a big change.** Six of the holds said a page lost over 90% of its text. The old saved copies were 130 KB because they carried long sample search results; the real docs had been rewritten, not cut. Only the domain filter had a rule change, so only it was published.
+- **The briefing's own channel is output, not a source.** It now reads past posts only for Peace's dismissals, and never copies an item from them.
+- **Leave other monitors' numbers to them.** The briefing no longer repeats DocsWatch or other system statuses it cannot check live; those post on their own.
+
+### Frictions and course corrections
+
+- **The first fix was not enough, and a test run showed it.** After the first rewrite, a test run reported 11 held changes that had been cleared 15 minutes earlier, plus "landed" commits. Its run log showed why: it had started from its own earlier post and rewritten it as a "correction", never checking the source or running git. Peace had guessed the sources were stale; the log showed the stale source was the briefing itself.
+- **Four of five "you owe a reply" items were already answered.** One reply was a normal message just under a threaded ask, which a thread-only read misses; another was a later "done" in the same DM.
+- **The second test still listed a demo request a teammate had answered for the group.** That became the shared-ask rule.
+
+### Why this matters for the portfolio
+
+- An automated report that is wrong in the trusted direction (listing finished work as owed) gets ignored, which is worse than no report. The fix was found by reading the run's own log, not by adding more warnings to the prompt.
+- Changes were judged by reading the source pages, not by the size of the text change that triggered the hold.
+
+---
