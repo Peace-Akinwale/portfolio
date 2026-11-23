@@ -115,7 +115,7 @@ export const CONTENTDB = {
 
 
 export const GARDE = {
-  // brief. This paragraph belongs to Garde, never to Aloud.
+  // brief. This paragraph belongs to Garde, never to Read Aloud.
   p1: 'A few friends liked it, but I couldn\'t find a way to go viral and reach more people. I also found that there were many free, faster alternatives. After four months of building and spending out of pocket, I stopped paying for cloud resources and shut it down. I wrote about that decision.',
   lead: 'Garde turned recipe videos into text so you could cook without rewinding.',
   essay: '/blog/what-i-learned-vibe-coding-my-first-app-shutting-it-down',

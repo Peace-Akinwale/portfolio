@@ -4,7 +4,7 @@
  *
  * Since 2026-10-31 the list is checked by the app on every signed-in page and
  * route (`requireAuthenticatedUser`), not by a trigger on auth.users. The
- * Supabase project is shared with Aloud, so a trigger there refused Aloud's
+ * Supabase project is shared with Read Aloud, so a trigger there refused Read Aloud's
  * new accounts, and it never stopped an account that already existed.
  */
 export class GateNotInstalled extends Error {}

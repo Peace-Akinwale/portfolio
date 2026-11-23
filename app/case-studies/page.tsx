@@ -76,7 +76,7 @@ export default function CaseStudiesPage() {
       </section>
       <section className="cs-group" aria-labelledby="own-h">
         <h2 id="own-h">Tools I built for my own work</h2>
-        <ul className="cs-rows">{[...entries(['contentdb', 'aloud']), mylinks].map((entry) => <Row key={entry.href} entry={entry} />)}</ul>
+        <ul className="cs-rows">{[...entries(['contentdb', 'read-aloud']), mylinks].map((entry) => <Row key={entry.href} entry={entry} />)}</ul>
       </section>
       <WorkWithMe heading="Have something in mind?" body="Have an idea you haven’t had time to build, or a process you’d like to automate? Tell me what the team does now and what you’d like the tool to handle." secondary={{ label: 'Tell me about it', href: '/contact' }} />
     </div>

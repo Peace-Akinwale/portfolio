@@ -91,7 +91,7 @@ export default function HomePage() {
         </article>
 
       </div>
-      <p className={s.otherWork}>More projects: <Link href="/case-studies/aloud">Aloud</Link> · <Link href="/case-studies/ai-docs-watch">AI Docs Watch</Link> · <Link href="/projects/mylinks">MyLinks</Link></p>
+      <p className={s.otherWork}>More projects: <Link href="/case-studies/read-aloud">Read Aloud</Link> · <Link href="/case-studies/ai-docs-watch">AI Docs Watch</Link> · <Link href="/projects/mylinks">MyLinks</Link></p>
     </section>
     <section className={s.contact} aria-labelledby="contact-title">
       <div><h2 id="contact-title">Have something in mind?</h2><p>Let’s talk about your BOFU content needs or workflows you’d like to automate.</p></div>

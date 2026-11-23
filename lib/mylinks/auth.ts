@@ -42,7 +42,7 @@ const isListed = cache(async (email: string) => {
 
 /**
  * The MyLinks gate. A session alone is not enough: the Supabase project is
- * shared with Aloud, so the account must also be on the MyLinks list. New
+ * shared with Read Aloud, so the account must also be on the MyLinks list. New
  * accounts are added on their first visit with a $2 lifetime AI budget; if
  * that fails they are signed out of this browser and sent to the login page.
  */

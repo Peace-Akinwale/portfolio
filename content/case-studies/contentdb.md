@@ -14,7 +14,7 @@ tags:
   - "research"
   - "MCP"
 related:
-  - "aloud"
+  - "read-aloud"
   - "okf"
 ---
 

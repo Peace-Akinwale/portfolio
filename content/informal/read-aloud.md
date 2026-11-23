@@ -1,6 +1,6 @@
 ## Portfolio summary
 
-Aloud is my audio reader. Paste a link or upload a PDF, EPUB or Word file and hear it read, with a reading view and saved passages. I built it for myself and my wife and later opened it to anyone. Three decisions shaped it. Keep the author's words as written, prepare a whole item before you ask for it, and put a ceiling on what each person can spend.
+Read Aloud is my audio reader. Paste a link or upload a PDF, EPUB or Word file and hear it read, with a reading view and saved passages. I built it for myself and my wife and later opened it to anyone. Three decisions shaped it. Keep the author's words as written, prepare a whole item before you ask for it, and put a ceiling on what each person can spend.
 
 ## Case study
 
@@ -18,7 +18,7 @@ It had to work for more than one person from the start. Me and my wife, and anyo
 
 **Prepare the whole item, even when I leave.** A 5,191-word article, about 33 minutes of audio, "finished" at 18 minutes. The player was driving the narration and stopped when I closed it. My instruction was plain. "Fix it so it can process everything in one go. Narration should keep running when I leave." Narration moved to the server. That has a cost I accepted on purpose. Every item is narrated in full the moment you add it, so the allowance is now checked before every segment, not once per batch.
 
-**A ceiling on spend.** Family members get a monthly minutes cap. When I decided to open Aloud to the public, I gave each new account a one-time $2 budget instead, because a monthly $2 puts no ceiling on my total bill. A $5 global daily ceiling sits over all of it, and the app says "Paused until midnight UTC" when it's reached.
+**A ceiling on spend.** Family members get a monthly minutes cap. When I decided to open Read Aloud to the public, I gave each new account a one-time $2 budget instead, because a monthly $2 puts no ceiling on my total bill. A $5 global daily ceiling sits over all of it, and the app says "Paused until midnight UTC" when it's reached.
 
 ### Any link or document becomes audio, with the passages you keep
 
@@ -36,6 +36,6 @@ Not every fault was in my code. One morning I couldn't sign in to two of my apps
 
 Uploads over 10MB failed with "No file uploaded". The first explanation blamed the old host's limit and was wrong. The real cause was the framework's own proxy cap, raised to 64MB, after which 12MB and 24MB PDFs went through. On my phone the library loaded 27MB of cover art per visit. The covers are 23 to 40KB each now.
 
-Two things I didn't catch myself, and I count them too. One commit left nine live items marked ready with no audio. A regression test found it. And for three days a trigger belonging to another app on the shared sign-in refused every new Aloud account. Nobody had tried to sign up, so nothing told me.
+Two things I didn't catch myself, and I count them too. One commit left nine live items marked ready with no audio. A regression test found it. And for three days a trigger belonging to another app on the shared sign-in refused every new Read Aloud account. Nobody had tried to sign up, so nothing told me.
 
-Aloud runs on Railway and is open to anyone. The users I can prove from the usage ledger are me and one family member. The test suite went from none to 48.
+Read Aloud runs on Railway and is open to anyone. The users I can prove from the usage ledger are me and one family member. The test suite went from none to 48.

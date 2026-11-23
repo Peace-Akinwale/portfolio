@@ -5,7 +5,7 @@ import { marked } from 'marked';
 // paragraph that is only an image followed by an italic line becomes a figure
 // with a caption, so the prose styles can lay captions out.
 export interface RenderOptions {
-  imageBase: string; // e.g. "/case-studies/aloud"
+  imageBase: string; // e.g. "/case-studies/read-aloud"
 }
 
 export function renderMarkdown(md: string, opts: RenderOptions): string {

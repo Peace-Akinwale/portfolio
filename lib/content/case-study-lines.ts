@@ -18,7 +18,7 @@ export const CASE_STUDY_LINES: Record<string, { problem: string; decision: strin
     decision: '683 linked notes in Google’s Open Knowledge Format, with every answer citing its source. A scripted source check and a person’s review carry different labels.',
     use: 'An SEO agency’s team, since July 2026',
   },
-  aloud: {
+  'read-aloud': {
     problem: 'Articles I meant to read stayed unread.',
     decision: 'Narrate the author’s wording as written. The cleanup pass only touches text I paste myself, because rewriting someone’s book is scraping away its integrity.',
     use: 'My own app, open to anyone who signs up',

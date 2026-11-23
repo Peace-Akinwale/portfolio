@@ -3,6 +3,8 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   async redirects() {
     return [
+      { source: '/case-studies/aloud', destination: '/case-studies/read-aloud', permanent: true },
+      { source: '/images/approved/aloud/:path*', destination: '/images/approved/read-aloud/:path*', permanent: true },
       {
         source: '/blog/build-a-course-portal-around-the-instructors-workflow',
         destination: '/case-studies/build-a-course-portal-around-the-instructors-workflow',

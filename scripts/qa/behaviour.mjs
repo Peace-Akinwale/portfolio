@@ -65,7 +65,7 @@ for (const [route, hash, w] of [['/', '#building', 1440], ['/', '#thinking', 390
 // 5. dark mode tokens on the homepage shell and a case study
 {
   const p = await page(1440, 900, { dark: true });
-  await p.goto(base + '/case-studies/aloud', { waitUntil: 'networkidle0' });
+  await p.goto(base + '/case-studies/read-aloud', { waitUntil: 'networkidle0' });
   const r = await p.evaluate(() => ({ bg: getComputedStyle(document.body).backgroundColor, fg: getComputedStyle(document.body).color, h1: getComputedStyle(document.querySelector('.cs-lede')).color }));
   const main = await p.evaluate(() => getComputedStyle(document.querySelector('.theme-dated')).backgroundColor);
   ok('dark mode (system): ink ground with light text, same family as light', main === 'rgb(15, 35, 52)' && r.h1 === 'rgb(230, 238, 244)', JSON.stringify({ ...r, main }));

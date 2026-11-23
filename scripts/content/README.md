@@ -61,7 +61,7 @@ command, stays inside the five-minute window comfortably.
 |---|---|---|
 | `ai-docs-watch` | `403992da7a57817c8a0ad5105de78b0e` | /case-studies/ai-docs-watch |
 | `contentdb-collect-research-and-question-your-sources` | `403992da7a5781cfaff1de30c9c49f2f` | /case-studies/contentdb |
-| `aloud-listen-to-saved-articles-and-return-to-useful-passages` | `403992da7a578174ba0dea8a39cb42fc` | /case-studies/aloud |
+| `aloud-listen-to-saved-articles-and-return-to-useful-passages` | `403992da7a578174ba0dea8a39cb42fc` | /case-studies/read-aloud |
 | `quality-rater-reviewing-pages-using-googles-quality-guidelines` | `403992da7a5781f583bef06d8253072c` | /case-studies/quality-rater |
 | `fanout-query-analysis-tool` | `403992da7a578155bc78c7d8e436e561` | /case-studies/fanout-query-analysis-tool |
 | `what-ai-search-apps-do-before-they-answer-a-public-reference` | `403992da7a5781549c62ef65f6569916` | /case-studies/what-ai-search-apps-do-before-they-answer |
