@@ -156,14 +156,14 @@ The draft scorer's "Outline a new page" screen hands a writer an outline before 
 ### Decisions worth recording
 
 - **Show the AI's inputs on the screen, not only in the code.** A writer judging an outline needs to know whether its structure came from evidence or from the model. The page says which, per outline, including the old one that predates the change.
-- **Ground structure in the recordings, not a new paid search.** The cited pages and their saved copies already existed from the research phase, so grounding costs nothing per outline. The writing call grew by about 0.3 cents; the 15-cent cap held.
+- **Ground structure in the recordings, not a new paid search.** The cited pages and their saved copies already existed from the research phase, so grounding costs nothing per outline. The writing call is now priced at about 3.3 cents typical, measured on the outline on screen; the 15-cent cap held.
 - **A paid call is never made to test this.** No outline was rewritten with the new grounding; that first real call was left to Peace.
 
 ### Frictions and course corrections
 
 - **The tests had been paying.** A morning feature asks an AI model for a new client's competitors the moment a name is typed. An older end-to-end walk types a client name, so roughly nine full test runs each made one or two real paid calls. It surfaced only because the new one-at-a-time lock refused the second call and the error tripped the page-error check. Every test context now fakes that endpoint, and the suite was re-run against a server with no keys at all, where any paid call would fail: 325 of 325 passed.
 - **The first-run walk found a click that never landed.** Typing a client's name and clicking Save at once did nothing: leaving the name box started the suggestion, and its progress line pushed the button down mid-click. The suggestion now waits to see where the focus went.
-- **The server tests had been failing silently for an hour.** They copied the real database and named four drafts that the owner had just cleared. They now run on a kept test database.
+- **The server tests had been failing since the owner cleared the app.** They copied the real database and named four drafts that the owner had just cleared. They now run on a kept test database.
 
 ### Why this matters for the portfolio
 
