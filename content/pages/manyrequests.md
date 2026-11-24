@@ -56,20 +56,6 @@ The work has produced 51 published articles, and the retainer is ongoing. In a s
 | 17hats vs honeybook | 6 |
 | bloom alternatives | 8 |
 
-![Google results for “marketing agency business plan template”, with the ManyRequests article in position 1](/images/case-studies/manyrequests/serp-2026-11-07/marketing-agency-business-plan-template-complete.webp)
-
-![Google results for “business to start with 5k”, with the ManyRequests article in position 2](/images/case-studies/manyrequests/serp-2026-11-07/business-to-start-with-5k-complete.webp)
-
-![Google results for “how to get retainer clients”, with the ManyRequests article in position 5](/images/case-studies/manyrequests/serp-2026-11-07/how-to-get-retainer-clients-complete.webp)
-
-![Google results for “retainer management software”, with the ManyRequests article in position 4](/images/case-studies/manyrequests/serp-2026-11-07/retainer-management-software-complete.webp)
-
-![Google results for “agency pricing models”, with the ManyRequests article in position 8](/images/case-studies/manyrequests/serp-2026-11-07/agency-pricing-models-complete.webp)
-
-![Google results for “17hats vs honeybook”, with the ManyRequests article in position 6](/images/case-studies/manyrequests/serp-2026-11-07/17hats-vs-honeybook-complete.webp)
-
-![Google results for “bloom alternatives”, with the ManyRequests article in position 8](/images/case-studies/manyrequests/serp-2026-11-07/bloom-alternatives-complete.webp)
-
 <div class="reviewer-attribution"><img src="/images/clients/regine-garcia.png" alt="Regine Garcia" width="56" height="56"><span>Regine Garcia, operations and content lead at ManyRequests, wrote:</span></div>
 
 > I've worked with Peace on content for ManyRequests, and he's one of the most thoughtful B2B SaaS content marketers I've collaborated with.
@@ -85,4 +71,3 @@ The work has produced 51 published articles, and the retainer is ongoing. In a s
 Tell me about the product and the decisions your buyers are trying to make.
 
 <p class="cta-row"><a class="button button-ink" href="https://calendly.com/akindayopeaceakinwale/30min">Book a 30-minute call ↗</a> <a href="/services">See services and prices</a></p>
-

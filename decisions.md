@@ -448,3 +448,7 @@ Peace approved these from a before/after review (desktop 1440 and phone 390, rea
 - **HigherVisibility section** gets "Read the HigherVisibility case study" under "All HigherVisibility articles" (`PortfolioSection.caseStudyLink`).
 - **ManyRequests case study.** The topic research spreadsheet showed eight columns squeezed into 820px, so its text rendered about 7px tall. It is now `manyrequests-topic-scores.png`, a crop of the same capture: the keyword column plus funnel stage, business potential, score bucket, can explain and can show product, rows 1–12, with a thin grey seam where slug and URL were removed. Some headers are cut off in the original capture; a fresh export would fix that. The old file stays for `scripts/wp_update_images.py`.
 - Proposed and not yet approved: removing the seven full-page Google screenshots from the ManyRequests case study, cropping its three article screenshots, retaking the OKF demo screenshot (the site's sticky menu is captured in it) and fixing the blurry Melissa image on /testimonials.
+
+## 24 November 2026 — ManyRequests case study: Google screenshots removed
+
+Peace asked to remove every image after "The results so far" table. The seven full-page Google results screenshots (`serp-2026-11-07/*-complete.webp`) are gone from `content/pages/manyrequests.md`; together they ran about 13,000px and repeated the table. The table, Regine Garcia's testimonial and the call to action are unchanged. The image files stay in `public/` unused, as does `MANYREQUESTS_RANKINGS[].shot` in `lib/portfolio/manyrequests.ts`.

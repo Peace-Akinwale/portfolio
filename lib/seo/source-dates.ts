@@ -20,7 +20,7 @@ export const SOURCE_DATES: Record<string, string> = {
   'app/contact/page.tsx': '2026-11-08T18:10:53+01:00',
   'app/testimonials/page.tsx': '2026-11-08T20:57:03+01:00',
   'app/case-studies/manyrequests/page.tsx': '2026-11-08T18:10:53+01:00',
-  'content/pages/manyrequests.md': '2026-11-24T11:57:56+00:00',
+  'content/pages/manyrequests.md': '2026-11-24T12:09:31+00:00',
   'lib/portfolio/manyrequests.ts': '2026-11-12T19:40:51+00:00',
   'app/writing/[client]/page.tsx': '2026-11-08T20:57:03+01:00',
   'app/[slug]/page.tsx': '2026-11-12T19:40:51+00:00',
