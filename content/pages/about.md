@@ -1,14 +1,20 @@
 # B2B content that delivers revenue
 
-I write content that actually works for B2B SaaS companies and marketing agencies— companies that tie every piece to a specific result. My approach:
+I’m a B2B SaaS content writer who also builds tools for content and SEO teams.
+
+## Writing content and building the tools around it
+
+I helped HigherVisibility grow from roughly 14,000 to 35,000 estimated monthly organic visits between July 2023 and January 2024, as its only content writer during that period. Our writing partnership continued for more than two years. [See the content I created](/case-studies/highervisibility).
+
+I’ve also written 51 BOFU and MOFU articles for ManyRequests, helping readers understand how the product supports their agency’s work. [Read the case study](/case-studies/manyrequests).
+
+For Steve Toth, I’ve built tools that bring relevant industry posts into one reading workspace, track AI documentation changes, and record available fan-out queries and cited sources. They help the team examine what’s changing, where clients are missing from AI answers, and what to investigate next.
+
+[Explore the research workflows](/case-studies/seo-aeo-research-workflows) · [See the AI search analysis tool](/case-studies/fanout-query-analysis-tool)
 
 ## Data-led content strategy
 
 I combine keyword research with SERP analysis to identify high-intent opportunities your competitors miss. This helps you rank for terms your ideal customers actually search for.
-
-Result? A 233% increase in organic traffic in 6 months for a client by syncing long-tail keywords in the content.
-
-The contract started in July 2023, and it increased to almost 35k/m in January 2024.
 
 Want to see my portfolio first? [See my writing samples](/writing)
 

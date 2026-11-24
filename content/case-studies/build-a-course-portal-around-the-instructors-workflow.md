@@ -18,10 +18,6 @@ tags:
 
 I built a learning platform where students can follow their weekly lessons and find the resources for each session. The instructor can update the course content without needing a developer for routine changes.
 
-The platform needed to support changes while the course was running. If a session needed a fuller explanation or an extra resource, the instructor had to be able to add it without changing when students could access the lessons.
-
-I separated the controls for updating course content from those for student access. That way, the instructor can revise a lesson without changing each week’s release date. Students only open the content when it becomes available.
-
 ## Why I built it this way
 
 The instructor wanted students to see the entire syllabus, with each week’s course content available from its scheduled release date. That gives students an overview of the program while keeping access aligned with the teaching schedule.
@@ -33,8 +29,6 @@ For example, if the instructor mentions a resource during class, they can add it
 ## Give the instructor control over course updates
 
 The instructor manages lesson content separately from student access. They can revise a session page while keeping its existing release date and the same group of enrolled students.
-
-For example, a question during a session might reveal that students need another explanation. The instructor can add a resource to that lesson afterward, and students can return to the week’s page to find it. This also works for lessons from earlier weeks, so useful additions don’t have to wait for the next cohort.
 
 The portal keeps earlier versions of session pages. If the instructor wants to undo an update, they can review an older version and restore it through the content management system (CMS). They don’t need to ask me, the developer, to recover the previous page or search their files for an older copy.
 

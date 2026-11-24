@@ -3,7 +3,7 @@ import { withOg } from '@/lib/og';
 import descriptions from '@/lib/content/page-descriptions.json';
 import Image from 'next/image';
 import Link from 'next/link';
-import { HERO, WRITING, BUILDING, CONTENTDB } from '@/lib/content/home-copy';
+import { HERO, WRITING, CONTENTDB } from '@/lib/content/home-copy';
 import { CALENDLY_URL, SITE_URL } from '@/lib/site';
 import s from './home.module.css';
 
@@ -33,9 +33,9 @@ export default function HomePage() {
         </div>
         <p className={s.note}>New articles $600. Refreshes $400. I’ll reply within a business day.</p>
         <dl className={s.facts}>
-          <div><dt>51</dt><dd>BOFU &amp; MOFU articles for ManyRequests</dd></div>
-          <div><dt>1</dt><dd>round of feedback per article at Marker.io</dd></div>
-          <div><dt>3–5</dt><dd>business days to a first draft</dd></div>
+          <div><dt>51</dt><dd><Link href="/case-studies/manyrequests">BOFU &amp; MOFU articles for ManyRequests ↗</Link></dd></div>
+          <div><dt>2+ years</dt><dd><Link href="/case-studies/highervisibility">Writing content for HigherVisibility ↗</Link></dd></div>
+          <div><dt>Steve Toth</dt><dd><Link href="/case-studies/seo-aeo-research-workflows">AI research tools built for his team ↗</Link></dd></div>
         </dl>
       </div>
       <div className={s.frame}>
@@ -45,6 +45,7 @@ export default function HomePage() {
         <blockquote className={s.tag}>
           <p>“We never needed more than one round of feedback per article.”</p>
           <cite>Nathan Vander Heyden, head of marketing at Marker.io</cite>
+          <Link href="/testimonials">Read the testimonial ↗</Link>
         </blockquote>
         <p className={s.caption}><b>Peace Akinwale</b><span>B2B SaaS content writer</span></p>
       </div>
@@ -60,8 +61,15 @@ export default function HomePage() {
     <div className={s.page}>
     <figure className={s.testimonial}>
       <blockquote>“His top-performing posts are product-led ones, which has led to more traffic and demo requests for ManyRequests.”</blockquote>
-      <figcaption className="reviewer-attribution"><Image src="/images/clients/regine-garcia.png" alt="Regine Garcia" width={56} height={56} sizes="56px" /><span>Regine Garcia, operations and content lead at ManyRequests</span></figcaption>
+      <figcaption className="reviewer-attribution"><Image src="/images/clients/regine-garcia.png" alt="Regine Garcia" width={56} height={56} sizes="56px" /><span>Regine Garcia, operations and content lead at ManyRequests<br /><Link href="/case-studies/manyrequests">Read the case study ↗</Link></span></figcaption>
     </figure>
+    <section id="highervisibility" className={s.result} aria-labelledby="result-title">
+      <div><p className={s.eyebrow}>Content writing · HigherVisibility</p><h2 id="result-title">Content that helped more than double HigherVisibility’s organic traffic.</h2>
+        <p>I was HigherVisibility’s only content writer during a six-month growth period, helping grow its estimated monthly organic traffic from roughly 14,000 to 35,000. I wrote guides that answered buyers’ questions about SEO, agency services, and growing their businesses.</p>
+        <Link className={s.read} href="/case-studies/highervisibility">See the content I created ↗</Link>
+      </div>
+      <div className={s.resultNumbers}><p className={s.metric}>≈14,000 <span>→</span> ≈35,000</p><p>Monthly organic visits<br />July 2023 → January 2024</p><p className={s.estimate}>Semrush estimated sitewide organic traffic. Approximate values from the saved chart.</p></div>
+    </section>
     <section id="selected-work" className={s.work} aria-labelledby="selected-title">
       <div className={s.sectionHead}><h2 id="selected-title">Selected work</h2><Link href="/case-studies">See all case studies ↗</Link></div>
       <div className={s.projects}>
@@ -78,20 +86,25 @@ export default function HomePage() {
           <Link className={s.read} aria-label="Read the Exceed SEO case study" href="/case-studies/exceed-seo">Read the case study ↗</Link>
         </article>
         <article className={s.project}>
-          <h3>A tool to analyze fanout queries</h3>
-          <p>Record AI search activity so strategists can analyze citations, brand mentions and why AI platforms choose a client’s competitors.</p>
-          <Link className={s.projectImage} href={BUILDING.links[0].href} aria-label="Explore the fanout case study"><Image unoptimized src={BUILDING.shot} width={BUILDING.shotW} height={BUILDING.shotH} sizes="(max-width: 700px) 90vw, 580px" alt={BUILDING.shotAlt} /></Link>
-          <Link className={s.read} aria-label="Read the Fanout case study" href={BUILDING.links[0].href}>Read the case study ↗</Link>
+          <p className={s.eyebrow}>AI workflows · Steve Toth</p>
+          <h3>Industry reading and AI documentation monitoring</h3>
+          <Link className={s.projectImage} href="/case-studies/seo-aeo-research-workflows" aria-label="Explore the research workflows"><Image unoptimized src="/og/case-study-seo-aeo-research-workflows.png" width={1200} height={630} alt="Industry reading and AI documentation monitoring workflow overview" /></Link>
+          <p>For Steve Toth, I built tools that bring relevant SEO, AEO, and marketing posts into one reading workspace and track changes to AI platform documentation.</p>
+          <p>These help the team monitor what’s changing and assess how those changes affect—or could improve—its work as an AEO-first agency.</p>
+          <Link className={s.read} href="/case-studies/seo-aeo-research-workflows">Read the case study ↗</Link>
         </article>
         <article className={s.project}>
-          <h3>ContentDB</h3>
-          <p>Find useful quotes and their original context in your saved research while writing in Claude or ChatGPT.</p>
-          <Link className={s.projectImage} href={CONTENTDB.caseStudy} aria-label="Explore the ContentDB case study"><Image unoptimized src="/images/approved/contentdb/retina/02-keyword-search-retainer.png" width={1650} height={1230} sizes="(max-width: 700px) 90vw, 580px" alt="ContentDB library search for retainer, showing six of 15 matching sources" /></Link>
-          <Link className={s.read} aria-label="Read the ContentDB case study" href={CONTENTDB.caseStudy}>Read the case study ↗</Link>
+          <p className={s.eyebrow}>AI search analysis · Steve Toth</p>
+          <h3>Examine the searches and sources behind AI answers</h3>
+          <Link className={s.projectImage} href="/case-studies/fanout-query-analysis-tool" aria-label="Explore the fanout case study"><Image unoptimized src="/og/case-study-fanout-query-analysis-tool.png" width={1200} height={630} alt="Fan-out queries, cited sources and brand mentions workflow overview" /></Link>
+          <p>I built a tool that records available fan-out queries—the additional searches AI platforms make—and the sources cited in response to the team’s prompts.</p>
+          <p>The team can analyze sources and brand citations, identify where clients are missing, and investigate what to improve.</p>
+          <Link className={s.read} href="/case-studies/fanout-query-analysis-tool">Read the case study ↗</Link>
         </article>
 
+
       </div>
-      <p className={s.otherWork}>More projects: <Link href="/case-studies/read-aloud">Read Aloud</Link> · <Link href="/case-studies/ai-docs-watch">AI Docs Watch</Link> · <Link href="/case-studies/mylinks">MyLinks</Link></p>
+      <p className={s.otherWork}>More projects: <Link href={CONTENTDB.caseStudy}>ContentDB</Link> · <Link href="/case-studies/read-aloud">Read Aloud</Link> · <Link href="/case-studies/ai-docs-watch">AI Docs Watch</Link> · <Link href="/case-studies/mylinks">MyLinks</Link></p>
     </section>
     <section className={s.contact} aria-labelledby="contact-title">
       <div><h2 id="contact-title">Have something in mind?</h2><p>Let’s talk about your BOFU content needs or workflows you’d like to automate.</p></div>

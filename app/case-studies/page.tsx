@@ -64,11 +64,11 @@ export default function CaseStudiesPage() {
       <header className="cs-index"><h1>What I’ve written and built</h1></header>
       <section className="cs-group" aria-labelledby="writing-h">
         <h2 id="writing-h">Content writing</h2>
-        <ul className="cs-rows"><Row entry={writing} />{entries(['exceed-seo']).map((entry) => <Row key={entry.href} entry={entry} />)}</ul>
+        <ul className="cs-rows"><Row entry={writing} />{entries(['highervisibility', 'exceed-seo']).map((entry) => <Row key={entry.href} entry={entry} />)}</ul>
       </section>
       <section className="cs-group" aria-labelledby="teams-h">
         <h2 id="teams-h">AI workflows for marketing teams</h2>
-        <ul className="cs-rows">{entries(['fanout-query-analysis-tool', 'ai-docs-watch', 'okf']).map((entry) => <Row key={entry.href} entry={entry} />)}</ul>
+        <ul className="cs-rows">{entries(['fanout-query-analysis-tool', 'seo-aeo-research-workflows', 'ai-docs-watch', 'okf']).map((entry) => <Row key={entry.href} entry={entry} />)}</ul>
       </section>
       <section className="cs-group" aria-labelledby="learning-h">
         <h2 id="learning-h">Teaching and learning</h2>

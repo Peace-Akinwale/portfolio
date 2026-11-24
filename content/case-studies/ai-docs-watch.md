@@ -23,9 +23,7 @@ I built AI Docs Watch to make those changes easier to follow, with the original 
 
 ## Show what changed and why someone might care
 
-The monitor I built saves multiple versions of a documentation, compares them and prepares a short report about what has changed. A reader can open the before-and-after view to see the actual wording, then decide whether it affects their work and how.
-
-Every report has a summary that provides enough context to explain a change. And attached to every report is the source of the changes we created so you can confirm its accuracy before you take decisions based on the information.
+The monitor saves versions of each documentation page, compares them, and prepares a short report about what changed. Readers can open the before-and-after view to check the original wording before deciding whether the change affects their work.
 
 ![AI Docs Watch summarizes a change to OpenAI’s advertising policies, identifies who it affects, and links to the source comparison.](/case-studies/ai-docs-watch/retina/change-summary.png)
 
@@ -42,9 +40,5 @@ For example, Bing’s crawler page uses JavaScript to load its main content, so 
 This allows the monitor to access the changes without taking the extra browser step for every page. Running a browser takes more processing time, and the browser service I used adds a cost, so I reserved it for pages that needed it.
 
 Reading the content brought another problem. Menus and related-article links can change even when the main content of a page stays the same. I filtered those out so a renamed navigation link wouldn’t be reported as a change to how a platform works, which can lead to bloated reports about changes.
-
-## Bottom line
-
-AI Docs Watch works, and it helps every subscriber and team member stay "at the edge of AI".
 
 [Open AI Docs Watch](https://docswatch.stevetoth.ai)

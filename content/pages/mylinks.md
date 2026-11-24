@@ -18,7 +18,7 @@ Paste an article or import a Google Doc. You can also add destination URLs the c
 
 ## Review the suggestions
 
-Check the proposed anchor text, destination and explanation. A link should help someone follow the point you’re making or take a useful next step. Keep those and reject the rest.
+In my AEO article, one approved suggestion links “ChatGPT or Perplexity AI” to my guide to AI search engines. A reader who wants to compare those tools can follow the link without interrupting the article’s explanation. Each suggestion includes the destination and a reason for the match, so I can check whether it gives the reader a useful next step.
 
 ![Pending MyLinks suggestions showing anchor text, destinations, explanations, and approve or reject controls](/images/approved/mylinks/retina/02-pending-suggestions.png)
 
@@ -28,7 +28,7 @@ Check the proposed anchor text, destination and explanation. A link should help 
 
 Copy the linked HTML, export a Word document, or apply approved links to the connected Google Doc.
 
-![My AEO article in Google Docs with internal links on ChatGPT or Perplexity AI and checklist on a Claude Project](/images/approved/mylinks/retina/04-linked-google-doc.png)
+![My AEO article in Google Docs with internal links on ChatGPT or Perplexity AI and checklist on a Claude Project](/images/approved/mylinks/retina/04-linked-google-doc-clean.png)
 
 ## Why I built it
 

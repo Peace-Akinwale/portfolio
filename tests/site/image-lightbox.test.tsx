@@ -4,7 +4,7 @@ import { afterEach, expect, it, vi } from 'vitest';
 import { ImageLightbox } from '@/components/ImageLightbox';
 
 let root: ReturnType<typeof createRoot> | undefined;
-afterEach(async () => { await act(async () => root?.unmount()); document.body.innerHTML = ''; vi.restoreAllMocks(); });
+afterEach(async () => { await act(async () => root?.unmount()); document.body.innerHTML = ''; vi.restoreAllMocks(); vi.unstubAllGlobals(); });
 
 it('opens by keyboard, navigates, restores focus and cleans up after unmount', async () => {
   document.body.innerHTML = '<div class="prose"><img src="/one.jpg" alt="First"><img src="/two.jpg" alt="Second"><a href="/original"><img src="/linked.jpg" alt="Linked"></a></div><div id="mount"></div>';
@@ -84,4 +84,49 @@ it('uses the original image behind Next image resizing and supports horizontal s
   expect(dialog?.querySelector('img')?.alt).toBe('Second');
   swipe(80, 200);
   expect(dialog?.querySelector('img')?.alt).toBe('First');
+});
+
+
+it('uses the original icon-only controls and leaves image clicks open', async () => {
+  document.body.innerHTML = '<main><img src="/one.png" alt="First"><img src="/two.png" alt="Second"></main><div id="mount"></div>';
+  HTMLDialogElement.prototype.showModal = function () { this.open = true; };
+  root = createRoot(document.getElementById('mount')!);
+  await act(async () => root!.render(<ImageLightbox />));
+  document.querySelector<HTMLImageElement>('main img')!.click();
+  const dialog = document.querySelector('dialog')!;
+  expect(dialog.querySelector('a')).toBeNull();
+  const buttons = [...dialog.querySelectorAll('button')];
+  expect(buttons.map(button => button.getAttribute('aria-label'))).toEqual(['Close image viewer', 'Previous image', 'Next image']);
+  expect(buttons.every(button => button.textContent === '' && button.querySelector('svg'))).toBe(true);
+  dialog.querySelector('img')!.click();
+  expect(dialog.isConnected).toBe(true);
+  buttons[2].click();
+  expect(dialog.querySelector('img')?.alt).toBe('Second');
+  dialog.click();
+  expect(dialog.isConnected).toBe(false);
+});
+
+it('fits a smaller mobile visual viewport and follows changes only while open', async () => {
+  const viewport = Object.assign(new EventTarget(), { width: 390, height: 650, offsetTop: 80, offsetLeft: 0 });
+  vi.stubGlobal('visualViewport', viewport);
+  document.body.innerHTML = '<main><img src="/one.png" alt="First"></main><div id="mount"></div>';
+  HTMLDialogElement.prototype.showModal = function () { this.open = true; };
+  root = createRoot(document.getElementById('mount')!);
+  await act(async () => root!.render(<ImageLightbox />));
+  document.querySelector<HTMLImageElement>('main img')!.click();
+  const dialog = document.querySelector('dialog')!;
+  expect(dialog.style.getPropertyValue('--viewer-height')).toBe('650px');
+  expect(dialog.style.getPropertyValue('--viewer-width')).toBe('390px');
+  expect(dialog.style.getPropertyValue('--viewer-top')).toBe('80px');
+  Object.assign(viewport, { width: 844, height: 350, offsetTop: 0 });
+  viewport.dispatchEvent(new Event('resize'));
+  expect(dialog.style.getPropertyValue('--viewer-height')).toBe('350px');
+  expect(dialog.style.getPropertyValue('--viewer-width')).toBe('844px');
+  viewport.offsetLeft = 20;
+  viewport.dispatchEvent(new Event('scroll'));
+  expect(dialog.style.getPropertyValue('--viewer-left')).toBe('20px');
+  dialog.querySelector('button')!.click();
+  viewport.height = 700;
+  viewport.dispatchEvent(new Event('resize'));
+  expect(dialog.style.getPropertyValue('--viewer-height')).toBe('350px');
 });

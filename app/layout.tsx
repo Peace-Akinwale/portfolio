@@ -3,6 +3,7 @@ import localFont from "next/font/local";
 import { DM_Sans } from "next/font/google";
 import "./globals.css";
 import "./informal.css";
+import "../public/image-viewer.css";
 import { ThemeProvider } from "./providers";
 import { AppChrome } from "@/components/AppChrome";
 import { GoogleAnalytics } from "@/components/GoogleAnalytics";

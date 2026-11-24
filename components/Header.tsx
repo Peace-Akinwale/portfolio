@@ -6,12 +6,12 @@ import { usePathname } from 'next/navigation';
 import { CALENDLY_URL, NAV_LINKS } from '@/lib/site';
 import { ThemeToggle } from '@/components/ThemeToggle';
 
-// First-screen nav (Peace, 12 Nov 2026). Blog and Contact stay in the footer
-// and in the phone menu. The pill says "Book a call" and opens Calendly.
+// Blog stays visible alongside the writing samples and case studies.
 const HEADER_LINKS = [
   { href: '/writing', label: 'Writing samples' },
   { href: '/case-studies', label: 'Case studies' },
   { href: '/services', label: 'Services and prices' },
+  { href: '/blog', label: 'Blog' },
   { href: '/about', label: 'About' },
 ];
 export function Header() {
@@ -40,7 +40,7 @@ export function Header() {
           Peace Akinwale
         </Link>
 
-        <nav aria-label="Site" className="hidden items-center gap-5 min-[840px]:flex lg:gap-6">
+        <nav aria-label="Site" className="hidden items-center gap-5 min-[1000px]:flex lg:gap-6">
           {HEADER_LINKS.map((item) => (
             <Link
               key={item.href}
@@ -57,7 +57,7 @@ export function Header() {
           </a>
         </nav>
 
-        <div className="flex items-center gap-1 min-[840px]:hidden">
+        <div className="flex items-center gap-1 min-[1000px]:hidden">
         <a href={CALENDLY_URL} target="_blank" rel="noopener" className="button button-ink header-book min-h-9 shrink-0 whitespace-nowrap px-3 py-1.5 text-[12.5px]">
           Book a call
         </a>
@@ -85,7 +85,7 @@ export function Header() {
       </div>
 
       {open && (
-        <nav id={menuId} aria-label="Site" className="gutter border-t border-border pb-4 pt-2 min-[840px]:hidden">
+        <nav id={menuId} aria-label="Site" className="gutter border-t border-border pb-4 pt-2 min-[1000px]:hidden">
           <ul className="flex flex-col">
             {NAV_LINKS.map((item) => (
               <li key={item.href}>
@@ -105,7 +105,7 @@ export function Header() {
           </a>
         </nav>
       )}
-      <nav aria-label="Sections" className="flex gap-5 overflow-x-auto border-t border-border px-[var(--gutter)] py-1 text-[14.5px] min-[840px]:hidden">
+      <nav aria-label="Sections" className="flex gap-5 overflow-x-auto border-t border-border px-[var(--gutter)] py-1 text-[14.5px] min-[1000px]:hidden">
         {HEADER_LINKS.map((item) => (
           <Link
             key={item.href}

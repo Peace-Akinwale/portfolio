@@ -50,7 +50,7 @@ Claude gives a response from your database first, which helps keep the answer gr
 
 ![Claude returns a passage about unpaid client requests and explains the surrounding interview context.](/images/approved/contentdb/retina/04-claude-quote-context.png)
 
-[Try contentDB](https://contentdb.peaceakinwale.com)
+For an article about finding retainer clients, I asked Claude to search my library for problems agency founders described before switching to retainers. It returned a passage from Suraj Sodha’s interview about unpaid follow-up work, along with the surrounding context and a link to the source. I can go back to the interview to check what he meant before deciding whether the example belongs in my article.
 
 ## Problem it solves
 
@@ -75,19 +75,9 @@ I built it end-to-end: product direction, UX, data model, ingestion flows, trans
 - Use the same workspace context inside connected AI tools through MCP.
 - Filter by client inside one workspace so you can retrieve material for the correct account.
 
-## What makes it different
-
-- Manage and search your sources in the web app, and query the same material inside external AI tools through MCP.
-- Retrieve contextual quotes from your database to support the answers you write from.
-- Built for agency workflows where multiple clients share one workspace and research needs to stay organised by client.
-
 ## Stack
 
 Next.js · Node.js / Express · Supabase (Postgres/Auth) · OpenAI (embeddings + extraction) · MCP SDK · Railway
-
-## Why it matters
-
-It makes writing workflows faster and more specific. Instead of starting from generic AI output, I can pull real context from a client's content and customer language from shared calls, then use that material to produce stronger, more credible content.
 
 ## Use contentDB
 

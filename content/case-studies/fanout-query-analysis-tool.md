@@ -18,6 +18,8 @@ related:
   - "ai-docs-watch"
 ---
 
+![Workflow overview: a prompt branches into recorded search queries, cited sources and brand mentions for a strategist to review.](/og/case-study-fanout-query-analysis-tool.png)
+
 If an AI answer recommends a competitor, you need more to work with than what the AI said.
 
 You need to understand what the AI platform searched for. The pages it used, how it described the products and came to that conclusion, and which of your client’s capabilities were relevant to the question but weren't cited/referred to.

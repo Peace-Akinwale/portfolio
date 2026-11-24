@@ -53,3 +53,12 @@
 @media (min-width: 1100px) {
   .approved-prose figure.product-screenshot { width: min(1040px, calc(100vw - 96px)); max-width: none; }
 }
+
+/* Engagement details in the HigherVisibility case study. */
+.prose .engagement-facts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; padding: 20px 0; border-block: 1px solid var(--border); margin: 28px 0; }
+.prose .engagement-facts dt { color: var(--muted-foreground); font-size: 14px; }
+.prose .engagement-facts dd { margin: 4px 0 0; font-weight: 500; }
+.prose .writing-example { border-top: 1px solid var(--border); padding-top: 24px; margin-top: 28px; }
+.prose .writing-example .eyebrow { font-size: 14px; color: var(--muted-foreground); }
+.prose .next { display: flex; flex-wrap: wrap; gap: 18px; margin-top: 28px; }
+@media(max-width:600px) { .prose .engagement-facts { grid-template-columns: 1fr; gap: 16px; } }

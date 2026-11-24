@@ -27,31 +27,45 @@ export function installImageViewer() {
     const dialog = document.createElement('dialog');
     dialog.className = 'image-viewer';
     dialog.setAttribute('aria-label', 'Image viewer');
-    const toolbar = document.createElement('div');
-    toolbar.className = 'image-viewer-toolbar';
-    const fullSize = document.createElement('a');
-    fullSize.textContent = 'Open full-size image';
-    fullSize.target = '_blank';
-    fullSize.rel = 'noopener';
-    const close = document.createElement('button');
-    close.textContent = 'Close';
-    close.type = 'button';
+    // Embedded mobile browsers can have a layout viewport taller than the
+    // visible screen. Keep the image and controls inside the visual viewport.
+    const viewport = window.visualViewport;
+    const fitViewport = () => {
+      dialog.style.setProperty('--viewer-height', `${viewport?.height || window.innerHeight}px`);
+      dialog.style.setProperty('--viewer-width', `${viewport?.width || window.innerWidth}px`);
+      dialog.style.setProperty('--viewer-top', `${viewport?.offsetTop || 0}px`);
+      dialog.style.setProperty('--viewer-left', `${viewport?.offsetLeft || 0}px`);
+    };
+    // Restore the icon controls and uncluttered overlay from 0c32122.
+    const iconButton = (label: string, className: string, path: string) => {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = className;
+      button.setAttribute('aria-label', label);
+      const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      svg.setAttribute('viewBox', '0 0 24 24');
+      svg.setAttribute('aria-hidden', 'true');
+      svg.setAttribute('fill', 'none');
+      svg.setAttribute('stroke', 'currentColor');
+      svg.setAttribute('stroke-width', '2');
+      const stroke = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      stroke.setAttribute('d', path);
+      stroke.setAttribute('stroke-linecap', 'round');
+      stroke.setAttribute('stroke-linejoin', 'round');
+      svg.append(stroke);
+      button.append(svg);
+      return button;
+    };
+    const close = iconButton('Close image viewer', 'image-viewer-close', 'M6 18L18 6M6 6l12 12');
     close.autofocus = true;
-    toolbar.append(fullSize, close);
-    let image = document.createElement('img');
-    const controls = document.createElement('div');
-    controls.className = 'image-viewer-controls';
+    const previous = iconButton('Previous image', 'image-viewer-previous', 'M15 19l-7-7 7-7');
+    const next = iconButton('Next image', 'image-viewer-next', 'M9 5l7 7-7 7');
     const count = document.createElement('span');
+    count.className = 'image-viewer-count';
     count.setAttribute('aria-live', 'polite');
-    const previous = document.createElement('button');
-    previous.type = 'button';
-    previous.textContent = 'Previous';
-    const next = document.createElement('button');
-    next.type = 'button';
-    next.textContent = 'Next';
-    controls.append(previous, count, next);
-    controls.hidden = images.length < 2;
-    dialog.append(toolbar, image, controls);
+    previous.hidden = next.hidden = count.hidden = images.length < 2;
+    let image = document.createElement('img');
+    dialog.append(close, count, previous, next, image);
     function update() {
       const nextImage = document.createElement('img');
       nextImage.src = original(images[index]);
@@ -59,7 +73,6 @@ export function installImageViewer() {
       // Restart the fade/zoom without delayed callbacks racing a close or another move.
       image.replaceWith(nextImage);
       image = nextImage;
-      fullSize.href = image.src;
       count.textContent = `${index + 1} / ${images.length}`;
     }
     const move = (delta: number) => { index = (index + delta + images.length) % images.length; update(); };
@@ -67,6 +80,9 @@ export function installImageViewer() {
     next.onclick = () => move(1);
     const oldOverflow = document.body.style.overflow;
     const finish = () => {
+      window.removeEventListener('resize', fitViewport);
+      viewport?.removeEventListener('resize', fitViewport);
+      viewport?.removeEventListener('scroll', fitViewport);
       dialog.remove();
       document.body.style.overflow = oldOverflow;
       if (trigger.isConnected) (imageLink(trigger) || trigger).focus({ preventScroll: true });
@@ -95,7 +111,12 @@ export function installImageViewer() {
     update();
     document.body.append(dialog);
     document.body.style.overflow = 'hidden';
+    fitViewport();
     dialog.showModal();
+    fitViewport();
+    window.addEventListener('resize', fitViewport);
+    viewport?.addEventListener('resize', fitViewport);
+    viewport?.addEventListener('scroll', fitViewport);
   }
 
   function scan() {
