@@ -1,13 +1,11 @@
 // @vitest-environment node
 import { describe, expect, it } from 'vitest';
 import { allow, clientIp, resetRateLimits } from '@/lib/rate-limit';
-import { createCommentAdminSessionToken, isValidCommentAdminSession, revokeCommentAdminSession, validateCommentAdminPassword } from '@/lib/comments/admin';
 import { locateAnchors } from '@/lib/mylinks/google-docs';
 import { assertPublicUrl, isPrivateAddress } from '@/lib/mylinks/safe-fetch';
 import { requestOrigin } from '@/lib/mylinks/routing';
 import { normalizeRichTextHtml } from '@/lib/mylinks/rich-text';
 import { skipOptimizer } from '@/lib/image-hosts';
-import { createHash } from 'crypto';
 
 describe('rate limit', () => {
   it('allows the limit and then refuses until the window ends', () => {
@@ -18,23 +16,6 @@ describe('rate limit', () => {
   it('ignores the first forwarded hop, which the client controls', () => {
     expect(clientIp(new Request('http://x', { headers: { 'x-forwarded-for': '1.1.1.1, 9.9.9.9' } }))).toBe('9.9.9.9');
     expect(clientIp(new Request('http://x', { headers: { 'x-real-ip': '8.8.8.8', 'x-forwarded-for': '1.1.1.1' } }))).toBe('8.8.8.8');
-  });
-});
-
-describe('comment admin session', () => {
-  it('is different for every login, expires, and stops working after sign-out', () => {
-    process.env.COMMENT_ADMIN_PASSWORD = 'correct horse';
-    const a = createCommentAdminSessionToken(0);
-    const b = createCommentAdminSessionToken(0);
-    expect(a).not.toBe(b);
-    expect(isValidCommentAdminSession(a, 1000)).toBe(true);
-    expect(isValidCommentAdminSession(a, 8 * 24 * 60 * 60 * 1000)).toBe(false);
-    revokeCommentAdminSession(b, 1000);
-    expect(isValidCommentAdminSession(b, 1000)).toBe(false);
-    // the old cookie, a plain hash of the password, is no longer a session
-    expect(isValidCommentAdminSession(createHash('sha256').update('correct horse::peaceakinwale-comments').digest('hex'), 1000)).toBe(false);
-    expect(validateCommentAdminPassword('correct horse')).toBe(true);
-    expect(validateCommentAdminPassword('')).toBe(false);
   });
 });
 

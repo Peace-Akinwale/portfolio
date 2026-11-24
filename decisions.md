@@ -511,3 +511,7 @@ Peace: "fix the remaining ones too. and remove links to a private github repo. i
 - **Sample data** returns the existing sample on a second click and removes a half-made one.
 - **Comments:** an approved reply whose parent is hidden (spam or pending) shows at the top level.
 - `tests/content/informal.test.ts` follows the Aloud → Read Aloud rename; the suite is fully green (201 passed, 18 skipped).
+
+## 24 November 2026 — blog comments removed
+
+Peace: "i don't need comments", then "Remove them". The comment form and list under blog posts, `POST/GET /api/comments`, the `/admin/comments` moderation page, `/api/admin/*` and `lib/comments/admin.ts` are gone. The existing comments stay in Supabase's `blog_comments` table (schema in `docs/blog-comments-schema.sql`); nothing was deleted from the database. `COMMENT_ADMIN_PASSWORD` on Railway is now unused. `/admin` stays disallowed in robots.txt so the old URL is not crawled.

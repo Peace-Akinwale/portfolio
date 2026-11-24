@@ -24,7 +24,7 @@
 | `/services` | Services, prices, FAQ | Brief's service copy and prices; FAQ kept |
 | `/contact` | Form → Resend | Unchanged behaviour, new shell |
 | `/career-pathway/**` | Assessment tool | Unchanged |
-| `/admin/comments` | Moderation (password cookie) | Unchanged |
+| `/admin/comments` | Moderation (password cookie) | Removed 24 Nov 2026 with blog comments |
 | `/contentdb` | Redirect → `/projects/contentdb` | Unchanged |
 | `/sitemap.xml`, `/robots.txt` | Static routes + posts | Adds case studies, local articles, tags, Marker.io page |
 

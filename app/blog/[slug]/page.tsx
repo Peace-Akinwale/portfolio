@@ -17,7 +17,6 @@ import { ReadingProgress } from '@/components/ReadingProgress';
 import { TableOfContents } from '@/components/TableOfContents';
 import { CodeBlockEnhancer } from '@/components/CodeBlockEnhancer';
 import { ArticleEndCta } from '@/components/ArticleEndCta';
-import { Comments } from '@/components/Comments';
 
 interface ArticlePageProps {
   params: Promise<{ slug: string }>;
@@ -221,7 +220,6 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
           </section>
         )}
 
-        <Comments postSlug={post.slug} postTitle={post.title} />
       </article>
     </div>
   );
