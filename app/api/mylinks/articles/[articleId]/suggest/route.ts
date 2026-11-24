@@ -8,7 +8,7 @@ import {
 } from '@/lib/mylinks/server/link-ranges';
 import { requireAuthenticatedUser } from '@/lib/mylinks/auth';
 import { createServiceClient } from '@/lib/mylinks/supabase/server';
-import { budgetBlock } from '@/lib/mylinks/budget';
+import { budgetBlock, estimateEmbeddingCostUsd } from '@/lib/mylinks/budget';
 
 type InventoryPageRow = {
   id: string;
@@ -64,6 +64,16 @@ export async function POST(
 
   try {
     const articleEmbedding = await embedText(article.content_text);
+    // Every paid call is logged, so it counts toward the account's AI budget.
+    await serviceClient.from('llm_usage_logs').insert({
+      user_id: user.id,
+      project_id: article.project_id,
+      article_id: articleId,
+      operation: 'embed_article',
+      provider: 'openai',
+      model: 'text-embedding-3-small',
+      estimated_cost_usd: estimateEmbeddingCostUsd([article.content_text]),
+    });
     const { data: matched, error: matchError } = await serviceClient.rpc('match_pages', {
       p_project_id: article.project_id,
       p_query_embedding: formatVector(articleEmbedding),
@@ -183,9 +193,40 @@ export async function POST(
   const pageByUrl = new Map((pages ?? []).map((pageRow) => [pageRow.url, pageRow]));
   const clientTargetByUrl = new Map((clientTargets ?? []).map((target) => [target.url, target]));
 
-  await serviceClient.from('suggestions').delete().eq('article_id', articleId).neq('link_type', 'external');
+  // The paid call is recorded before anything else can fail.
+  await serviceClient.from('llm_usage_logs').insert({
+    user_id: user.id,
+    project_id: article.project_id,
+    article_id: articleId,
+    operation: 'generate_internal_suggestions',
+    provider: usageLog!.provider,
+    model: usageLog!.model,
+    prompt_tokens: suggestionResult.usage.promptTokens,
+    completion_tokens: suggestionResult.usage.completionTokens,
+    total_tokens: suggestionResult.usage.totalTokens,
+    estimated_cost_usd: suggestionResult.usage.estimatedCostUsd,
+  });
 
-  const toInsert = suggestionResult.suggestions.map((suggestion, index) => {
+  // "Only link to the inventory" is a rule in the prompt, and crawled pages are
+  // part of that prompt, so it is enforced here: a link to anything outside the
+  // project's pages and the client's own targets is dropped. Anchors that overlap
+  // an earlier one are dropped too, because the export writes each range once.
+  const accepted: typeof suggestionResult.suggestions = [];
+  for (const suggestion of suggestionResult.suggestions) {
+    if (!pageByUrl.has(suggestion.target_url) && !clientTargetByUrl.has(suggestion.target_url)) continue;
+    if (accepted.some((kept) => suggestion.char_start < kept.char_end && kept.char_start < suggestion.char_end)) continue;
+    accepted.push(suggestion);
+  }
+
+  // The old list is removed only after the new one is saved, so a failed save
+  // leaves the previous suggestions (and their approvals) in place.
+  const { data: previous, error: previousError } = await serviceClient
+    .from('suggestions').select('id').eq('article_id', articleId).neq('link_type', 'external');
+  if (previousError) {
+    return NextResponse.json({ error: previousError.message }, { status: 500 });
+  }
+
+  const toInsert = accepted.map((suggestion, index) => {
     const pageRow = pageByUrl.get(suggestion.target_url);
     const clientTarget = clientTargetByUrl.get(suggestion.target_url);
     return {
@@ -211,23 +252,18 @@ export async function POST(
     };
   });
 
-  const { data: inserted, error } = await serviceClient.from('suggestions').insert(toInsert).select();
+  const { data: inserted, error } = toInsert.length
+    ? await serviceClient.from('suggestions').insert(toInsert).select()
+    : { data: [], error: null };
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
-  await serviceClient.from('llm_usage_logs').insert({
-    user_id: user.id,
-    project_id: article.project_id,
-    article_id: articleId,
-    operation: 'generate_internal_suggestions',
-    provider: usageLog!.provider,
-    model: usageLog!.model,
-    prompt_tokens: suggestionResult.usage.promptTokens,
-    completion_tokens: suggestionResult.usage.completionTokens,
-    total_tokens: suggestionResult.usage.totalTokens,
-    estimated_cost_usd: suggestionResult.usage.estimatedCostUsd,
-  });
+  const previousIds = (previous ?? []).map((row: { id: string }) => row.id);
+  if (previousIds.length) {
+    const { error: deleteError } = await serviceClient.from('suggestions').delete().in('id', previousIds);
+    if (deleteError) console.error('[mylinks/suggest] old suggestions were not removed:', deleteError.message);
+  }
 
   return NextResponse.json({ suggestions: inserted, engine, notice }, { status: 201 });
 }

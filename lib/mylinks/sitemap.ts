@@ -1,4 +1,11 @@
 import { parseStringPromise } from "xml2js";
+import { safeFetchText } from "./safe-fetch";
+
+// Bounds on one discovery, so a hostile or broken sitemap index cannot fan out
+// without end or fill memory (24 Nov 2026).
+const MAX_SITEMAPS = 200;
+const MAX_DEPTH = 3;
+export const MAX_SITEMAP_URLS = 20000;
 
 /** Parse a single XML sitemap URL, recursing into sitemap indexes. */
 export async function parseSitemap(url: string): Promise<string[]> {
@@ -60,12 +67,9 @@ async function getSitemapUrlsFromRobots(domain: string): Promise<string[]> {
   const found: string[] = [];
   for (const base of [`https://${domain}`, `https://www.${domain}`]) {
     try {
-      const res = await fetch(`${base}/robots.txt`, {
-        headers: { "User-Agent": "MyLinksBot/1.0" },
-        signal: AbortSignal.timeout(5000),
-      });
+      const res = await safeFetchText(`${base}/robots.txt`, { timeoutMs: 5000, maxBytes: 512 * 1024 });
       if (!res.ok) continue;
-      const text = await res.text();
+      const text = res.text;
       const matches = text.match(/^Sitemap:\s*(.+)$/gim) ?? [];
       for (const line of matches) {
         const url = line.replace(/^Sitemap:\s*/i, "").trim();
@@ -82,22 +86,19 @@ async function getSitemapUrlsFromRobots(domain: string): Promise<string[]> {
 async function fetchSitemap(
   url: string,
   collected: string[],
-  visited: Set<string>
+  visited: Set<string>,
+  depth = 0
 ): Promise<void> {
-  if (visited.has(url)) return;
+  if (visited.has(url) || visited.size >= MAX_SITEMAPS || depth > MAX_DEPTH || collected.length >= MAX_SITEMAP_URLS) return;
   visited.add(url);
 
   let text: string;
   try {
-    const res = await fetch(url, {
-      headers: { "User-Agent": "MyLinksBot/1.0" },
-      signal: AbortSignal.timeout(10000),
-    });
-    if (!res.ok) return;
-    const contentType = res.headers.get("content-type") ?? "";
+    const res = await safeFetchText(url, { timeoutMs: 10000, maxBytes: 10 * 1024 * 1024 });
+    if (!res.ok || res.truncated) return;
     // Skip HTML pages — they are human-readable sitemaps, not XML
-    if (contentType.includes("text/html")) return;
-    text = await res.text();
+    if (res.contentType.includes("text/html")) return;
+    text = res.text;
     // Guard against HTML responses without a proper content-type header
     const trimmed = text.trimStart();
     if (trimmed.startsWith("<!") || trimmed.toLowerCase().startsWith("<html")) return;
@@ -121,9 +122,11 @@ async function fetchSitemap(
       .map((s) => s.loc?.[0])
       .filter((u): u is string => !!u);
 
-    await Promise.all(
-      childUrls.map((childUrl) => fetchSitemap(childUrl, collected, visited))
-    );
+    for (let i = 0; i < childUrls.length; i += 5) {
+      await Promise.all(
+        childUrls.slice(i, i + 5).map((childUrl) => fetchSitemap(childUrl, collected, visited, depth + 1))
+      );
+    }
     return;
   }
 
@@ -133,6 +136,9 @@ async function fetchSitemap(
     const pageUrls = (urlset.url ?? [])
       .map((u) => u.loc?.[0])
       .filter((u): u is string => !!u);
-    collected.push(...pageUrls);
+    for (const pageUrl of pageUrls) {
+      if (collected.length >= MAX_SITEMAP_URLS) break;
+      collected.push(pageUrl);
+    }
   }
 }

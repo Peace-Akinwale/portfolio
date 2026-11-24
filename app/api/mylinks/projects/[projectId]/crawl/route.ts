@@ -143,9 +143,18 @@ export async function POST(
               const payload = embedding
                 ? { ...basePayload, embedding: formatVector(embedding) }
                 : basePayload;
-              await serviceClient.from('pages').upsert(payload);
-
-              crawled += 1;
+              // A page is identified by (project_id, url). Without onConflict the
+              // upsert conflicts on the id it never sends, so every already-known
+              // URL was rejected by that unique constraint and nothing was updated.
+              const { error: upsertError } = await serviceClient
+                .from('pages')
+                .upsert(payload, { onConflict: 'project_id,url' });
+              if (upsertError) {
+                console.error('[mylinks/crawl] page save failed:', url, upsertError.message);
+                failed += 1;
+              } else {
+                crawled += 1;
+              }
               send(controller, { type: 'progress', crawled, failed, url });
             })
           );
@@ -169,13 +178,14 @@ export async function POST(
         send(controller, { type: 'done', crawled, failed });
       } catch (error) {
         const message = error instanceof Error ? error.message : 'Unknown error';
-        send(controller, { type: 'error', message });
+        // The reader may have gone away; the log row must still be closed.
+        try { send(controller, { type: 'error', message }); } catch { /* stream closed */ }
         await serviceClient
           .from('crawl_logs')
           .update({ status: 'failed', error_message: message, completed_at: new Date().toISOString() })
           .eq('id', crawlLog.id);
       } finally {
-        controller.close();
+        try { controller.close(); } catch { /* already closed */ }
       }
     },
   });

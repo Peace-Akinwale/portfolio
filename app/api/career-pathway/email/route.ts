@@ -3,6 +3,38 @@ import { Resend } from 'resend';
 import { getYoutubeExplainers } from '@/lib/career-pathway/resources';
 import { buildTranscriptSections } from '@/lib/career-pathway/transcript';
 import type { Answers, ScoredCareer } from '@/lib/career-pathway/types';
+import { CAREERS } from '@/lib/career-pathway/careers';
+import { allow, clientIp, EMAIL_PATTERN } from '@/lib/rate-limit';
+
+function escapeHtml(input: string) {
+  return input.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+
+// The browser sends back the results it was shown, but only the career ids are
+// read from it: every word and link in the email comes from this site's own
+// career list, so the endpoint cannot be used to send someone else's content.
+function trustedResults(input: unknown): ScoredCareer[] {
+  if (!Array.isArray(input)) return [];
+  const out: ScoredCareer[] = [];
+  for (const item of input.slice(0, 4)) {
+    const id = (item as { career?: { id?: unknown } } | null)?.career?.id;
+    const career = typeof id === 'string' ? CAREERS.find((c) => c.id === id) : undefined;
+    if (!career || out.some((r) => r.career.id === career.id)) continue;
+    const score = Number((item as { score?: unknown }).score);
+    out.push({ career, score: Number.isFinite(score) ? score : 0, rank: (out.length + 1) as ScoredCareer['rank'] });
+  }
+  return out;
+}
+
+function trustedAnswers(input: unknown): Answers {
+  if (typeof input !== 'object' || input === null || Array.isArray(input)) return {};
+  const out: Answers = {};
+  for (const [key, value] of Object.entries(input).slice(0, 60)) {
+    if (typeof value === 'string' && value.length <= 100) out[key] = value;
+    else if (Array.isArray(value) && value.length <= 20 && value.every((v) => typeof v === 'string' && v.length <= 100)) out[key] = value;
+  }
+  return out;
+}
 
 function buildTranscriptHtml(answers: Answers): string {
   return buildTranscriptSections(answers)
@@ -142,33 +174,46 @@ function buildEmailHtml(name: string, results: ScoredCareer[], moatResults: Scor
 
 export async function POST(req: Request) {
   try {
-    const body = await req.json();
-    const { email, name, results, moatResults, answers } = body as {
-      email?: string;
-      name?: string;
-      results?: ScoredCareer[];
-      moatResults?: ScoredCareer[];
-      answers?: Answers;
-    };
+    if (!allow(`cp-email:${clientIp(req)}`, 5, 60 * 60 * 1000)) {
+      return NextResponse.json({ error: 'Too many emails requested. Try again later.' }, { status: 429 });
+    }
+    const raw = await req.text();
+    if (raw.length > 400_000) {
+      return NextResponse.json({ error: 'That request is too large.' }, { status: 413 });
+    }
+    const body = JSON.parse(raw);
+    const email = typeof body?.email === 'string' ? body.email.trim() : '';
+    const name = typeof body?.name === 'string' ? body.name.trim().slice(0, 80) : '';
+    const results = trustedResults(body?.results);
+    const moatResults = trustedResults(body?.moatResults);
+    const answers = trustedAnswers(body?.answers);
 
-    if (!email || !results || !Array.isArray(results) || results.length === 0) {
+    if (!email || results.length === 0) {
       return NextResponse.json({ error: 'Missing required fields.' }, { status: 400 });
     }
-
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
+    if (!EMAIL_PATTERN.test(email) || email.length > 254) {
       return NextResponse.json({ error: 'Invalid email address.' }, { status: 400 });
+    }
+    // One recipient cannot be mailed repeatedly, whoever is asking.
+    if (!allow(`cp-email-to:${email.toLowerCase()}`, 3, 24 * 60 * 60 * 1000)) {
+      return NextResponse.json({ error: 'Those results were already sent to that address.' }, { status: 429 });
     }
 
     const resend = new Resend(process.env.RESEND_API_KEY);
+    const subjectName = name.replace(/[\r\n]+/g, ' ');
 
-    await resend.emails.send({
+    // Resend returns { data, error } instead of throwing, so the error is checked.
+    const { error } = await resend.emails.send({
       from: 'peace@peaceakinwale.com',
       to: email,
       replyTo: process.env.ADMIN_EMAIL!,
-      subject: `${name ? `${name}, your` : 'Your'} Career Pathway results`,
-      html: buildEmailHtml(name ?? '', results, moatResults ?? [], answers ?? {}),
+      subject: `${subjectName ? `${subjectName}, your` : 'Your'} Career Pathway results`,
+      html: buildEmailHtml(escapeHtml(name), results, moatResults, answers),
     });
+    if (error) {
+      console.error('[career-pathway/email] Resend rejected the send', error);
+      return NextResponse.json({ error: 'The email could not be sent. Please try again.' }, { status: 502 });
+    }
 
     return NextResponse.json({ success: true });
   } catch (err) {

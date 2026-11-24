@@ -26,6 +26,18 @@ export default async function ArticlePage({
     notFound();
   }
 
+  // The service client bypasses row-level security, so ownership is checked here,
+  // as every sibling page and API route does. Someone else's article is a 404.
+  const { data: owned } = await serviceClient
+    .from('projects')
+    .select('id')
+    .eq('id', article.project_id)
+    .eq('owner_id', user.id)
+    .maybeSingle();
+  if (!owned) {
+    notFound();
+  }
+
   const [{ data: suggestions }, { data: project }, { data: linkTargets }, { data: googleToken }] =
     await Promise.all([
       serviceClient.from('suggestions').select('*').eq('article_id', articleId).order('sort_order'),

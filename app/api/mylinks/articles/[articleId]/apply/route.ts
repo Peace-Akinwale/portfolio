@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { canUseGoogleDocs, requireAuthenticatedUser } from '@/lib/mylinks/auth';
-import { buildBatchUpdateRequests, extractDocContent } from '@/lib/mylinks/google-docs';
+import { buildBatchUpdateRequests, extractDocContent, locateAnchors } from '@/lib/mylinks/google-docs';
 import { refreshAccessToken } from '@/lib/mylinks/google-auth';
 import { extractGoogleDocId } from '@/lib/mylinks/utils';
 import { createServiceClient } from '@/lib/mylinks/supabase/server';
@@ -100,16 +100,20 @@ export async function POST(
   }
 
   const documentJson = await documentResponse.json();
-  const { charToDocIndex } = extractDocContent(documentJson);
-  const patches = suggestions.map((suggestion) => ({
-    char_start: suggestion.char_start,
-    char_end: suggestion.char_end,
-    url: suggestion.target_url,
-  }));
-  const requests = buildBatchUpdateRequests(patches, charToDocIndex);
+  const { text: liveText, charToDocIndex } = extractDocContent(documentJson);
+  const located = locateAnchors(liveText, suggestions);
+  // Only anchors whose start and end both map to a document position are sent.
+  const applicable = located.patches.filter(
+    (patch) => charToDocIndex.get(patch.char_start) !== undefined && charToDocIndex.get(patch.char_end) !== undefined
+  );
+  const requests = buildBatchUpdateRequests(applicable, charToDocIndex);
+  const skipped = suggestions.length - applicable.length;
 
   if (requests.length === 0) {
-    return NextResponse.json({ error: 'Could not map suggestions to doc positions' }, { status: 400 });
+    return NextResponse.json(
+      { error: 'None of the approved anchors could be found in the Google Doc. It may have changed since it was imported; re-import it and try again.' },
+      { status: 400 }
+    );
   }
 
   const updateResponse = await fetch(`https://docs.googleapis.com/v1/documents/${docId}:batchUpdate`, {
@@ -126,11 +130,12 @@ export async function POST(
     return NextResponse.json({ error: `Google Docs batchUpdate failed: ${errorText}` }, { status: 500 });
   }
 
-  await serviceClient
+  // Only the suggestions that were actually linked are marked applied.
+  const { error: markError } = await serviceClient
     .from('suggestions')
     .update({ applied_at: new Date().toISOString() })
-    .eq('article_id', articleId)
-    .eq('status', 'approved');
+    .in('id', applicable.map((patch) => patch.id));
+  if (markError) console.error('[mylinks/apply] applied_at was not saved:', markError.message);
 
-  return NextResponse.json({ applied: requests.length });
+  return NextResponse.json({ applied: requests.length, skipped });
 }

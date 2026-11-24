@@ -16,7 +16,7 @@ export async function POST() {
     .insert({
       owner_id: user.id,
       name: 'Sample — Acme SaaS',
-      domain: 'https://example-acme.test',
+      domain: 'example-acme.test',
       sitemap_url: null,
     })
     .select()

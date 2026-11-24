@@ -2,6 +2,7 @@ import '@/components/article/article.css';
 import { loadAllPosts } from '@/lib/content/posts';
 import { ArticleCard } from '@/components/ArticleCard';
 import Link from 'next/link';
+import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 
 interface TagPageProps {
@@ -17,15 +18,19 @@ export async function generateMetadata({ params }: TagPageProps): Promise<Metada
     alternates: {
       canonical: `https://peaceakinwale.com/tag/${tag}`,
     },
+    openGraph: { url: `https://peaceakinwale.com/tag/${tag}`, title: `Articles about ${label} | Peace Akinwale` },
   };
 }
 
 export default async function TagPage({ params }: TagPageProps) {
   const { tag } = await params;
-  const { posts } = await loadAllPosts();
+  const { posts, wordpressDown } = await loadAllPosts();
   const filtered = posts.filter((p) =>
     p.tags?.some((t) => t.slug === tag)
   );
+  // A tag nobody used is not a page. During a WordPress outage the list is
+  // incomplete, so the page stays rather than turning real tags into 404s.
+  if (filtered.length === 0 && !wordpressDown) notFound();
   const label = tag.replace(/-/g, ' ');
 
   return (

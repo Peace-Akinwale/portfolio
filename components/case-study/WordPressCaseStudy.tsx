@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import { skipOptimizer } from '@/lib/image-hosts';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
@@ -81,7 +82,7 @@ export default async function WordPressCaseStudy({ params }: ProjectPageProps) {
 
         {coverImage ? (
           <div className="relative mb-12 mt-8 aspect-[16/9] overflow-hidden bg-muted">
-            <Image src={coverImage} alt={staticPage.title} fill className="object-cover" priority />
+            <Image src={coverImage} unoptimized={skipOptimizer(coverImage)} alt={staticPage.title} fill className="object-cover" priority />
           </div>
         ) : null}
       </header>

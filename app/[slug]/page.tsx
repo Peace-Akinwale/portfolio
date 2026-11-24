@@ -6,6 +6,7 @@ import { listLocalArticles } from '@/lib/content/articles';
 import { parsePortfolioHtml } from '@/lib/wordpress/parsePortfolio';
 import { notFound, permanentRedirect } from 'next/navigation';
 import Image from 'next/image';
+import { skipOptimizer } from '@/lib/image-hosts';
 import Link from 'next/link';
 import type { Metadata } from 'next';
 import { PortfolioGrid } from '@/components/PortfolioGrid';
@@ -224,6 +225,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
                 <div className="relative aspect-[16/9] overflow-hidden bg-muted mb-12">
                   <Image
                     src={coverImage}
+                    unoptimized={skipOptimizer(coverImage)}
                     alt={staticPage.title}
                     fill
                     className="object-cover"

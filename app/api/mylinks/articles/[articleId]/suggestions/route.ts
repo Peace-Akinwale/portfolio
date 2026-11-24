@@ -57,15 +57,17 @@ export async function PATCH(
   }
 
   const reviewTimestamp = body.status === 'pending' ? null : new Date().toISOString();
-  const { error } = await owned.serviceClient
+  const { data: changed, error } = await owned.serviceClient
     .from('suggestions')
     .update({ status: body.status, reviewed_at: reviewTimestamp })
     .eq('article_id', articleId)
-    .in('id', body.ids);
+    .in('id', body.ids)
+    .select('id');
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
-  return NextResponse.json({ updated: body.ids.length });
+  // The number that actually changed, not the number that was asked for.
+  return NextResponse.json({ updated: changed?.length ?? 0 });
 }

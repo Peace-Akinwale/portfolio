@@ -10,6 +10,10 @@ export async function POST(request: Request) {
   if (!body.name?.trim() || !body.domain?.trim()) {
     return NextResponse.json({ error: 'name and domain are required' }, { status: 400 });
   }
+  const sitemapUrl = typeof body.sitemap_url === 'string' ? body.sitemap_url.trim() : '';
+  if (sitemapUrl && !/^https?:\/\/[^\s]+$/i.test(sitemapUrl)) {
+    return NextResponse.json({ error: 'The sitemap address must start with http:// or https://' }, { status: 400 });
+  }
 
   const serviceClient = await createServiceClient();
   const { data, error } = await serviceClient
@@ -18,7 +22,7 @@ export async function POST(request: Request) {
       owner_id: user.id,
       name: body.name.trim(),
       domain: normalizeDomain(body.domain),
-      sitemap_url: body.sitemap_url || null,
+      sitemap_url: sitemapUrl || null,
     })
     .select()
     .single();

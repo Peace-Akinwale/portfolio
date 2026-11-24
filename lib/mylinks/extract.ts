@@ -1,4 +1,5 @@
 import * as cheerio from "cheerio";
+import { safeFetchText } from "./safe-fetch";
 
 export interface PageData {
   title: string | null;
@@ -16,10 +17,7 @@ export async function extractPage(url: string): Promise<PageData | null> {
   let statusCode: number;
 
   try {
-    const res = await fetch(url, {
-      headers: { "User-Agent": "MyLinksBot/1.0" },
-      signal: AbortSignal.timeout(10000),
-    });
+    const res = await safeFetchText(url, { timeoutMs: 10000, maxBytes: 5 * 1024 * 1024 });
     statusCode = res.status;
     if (!res.ok) {
       return {
@@ -33,12 +31,16 @@ export async function extractPage(url: string): Promise<PageData | null> {
         publishedAt: null,
       };
     }
-    html = await res.text();
+    html = res.text;
   } catch {
     return null;
   }
 
   const $ = cheerio.load(html);
+
+  // Read the date first: the JSON-LD it can come from is a <script>, and scripts
+  // are removed just below.
+  const publishedAt = extractPublishedAt($, url);
 
   // Remove noise
   $("script, style, nav, footer, header, aside, [aria-hidden='true']").remove();
@@ -54,8 +56,6 @@ export async function extractPage(url: string): Promise<PageData | null> {
 
   const bodyText = $("body").text().replace(/\s+/g, " ").trim();
   const wordCount = bodyText.split(/\s+/).filter(Boolean).length;
-  const publishedAt = extractPublishedAt($, url);
-
   return { title, metaDescription, h1, h2s, bodyText, wordCount, statusCode, publishedAt };
 }
 

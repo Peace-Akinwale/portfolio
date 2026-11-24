@@ -4,9 +4,11 @@ import { exchangeCodeForTokens } from '@/lib/mylinks/google-auth';
 import { createNotification } from '@/lib/mylinks/notifications';
 import { sendMylinksSlackNotification } from '@/lib/mylinks/slack';
 import { createServiceClient } from '@/lib/mylinks/supabase/server';
+import { requestOrigin } from '@/lib/mylinks/routing';
 
 export async function GET(request: NextRequest) {
-  const { searchParams, origin } = new URL(request.url);
+  const { searchParams } = new URL(request.url);
+  const origin = requestOrigin(request);
   const code = searchParams.get('code');
   const state = searchParams.get('state');
   const storedState = request.cookies.get('google_oauth_state')?.value;

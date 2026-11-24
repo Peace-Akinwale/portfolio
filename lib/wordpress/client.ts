@@ -57,8 +57,44 @@ interface WordPressCollectionResponse<T> {
   };
 }
 
-let wordpressPostsPromise: Promise<WordPressPost[]> | null = null;
-let wordpressPagesPromise: Promise<WordPressPage[]> | null = null;
+// One fetch of the full list is shared by every caller for five minutes. Until
+// 24 Nov 2026 the first result was kept for the life of the server process, so
+// a new or edited post only appeared after a deploy, and a failed fetch was
+// returned as an empty list, which pages then showed as "no posts" or a 404.
+// Now a failed refresh keeps serving the last good list, and with no good list
+// the error is thrown so callers can tell an outage from an empty site.
+const WORDPRESS_CACHE_MS = 5 * 60 * 1000;
+
+interface CachedList<T> { value?: T[]; fetchedAt: number; inflight: Promise<T[]> | null }
+const postsCache: CachedList<WordPressPost> = { fetchedAt: 0, inflight: null };
+const pagesCache: CachedList<WordPressPage> = { fetchedAt: 0, inflight: null };
+
+function cachedList<T>(cache: CachedList<T>, label: string, load: () => Promise<T[]>): Promise<T[]> {
+  if (cache.value && Date.now() - cache.fetchedAt < WORDPRESS_CACHE_MS) return Promise.resolve(cache.value);
+  if (!cache.inflight) {
+    cache.inflight = load()
+      .then((value) => {
+        cache.value = value;
+        cache.fetchedAt = Date.now();
+        return value;
+      })
+      .catch((error) => {
+        console.error(`Error fetching WordPress ${label}:`, error);
+        if (cache.value) return cache.value;
+        throw error;
+      })
+      .finally(() => {
+        cache.inflight = null;
+      });
+  }
+  return cache.inflight;
+}
+
+// Called by the revalidation webhook so an edit in WordPress shows at once.
+export function clearWordPressCache() {
+  postsCache.fetchedAt = 0;
+  pagesCache.fetchedAt = 0;
+}
 
 function decodeHtmlEntities(input: string): string {
   const namedEntities: Record<string, string> = {
@@ -250,8 +286,7 @@ async function fetchWordPressPosts(): Promise<WordPressPost[]> {
     return [];
   }
 
-  if (!wordpressPostsPromise) {
-    wordpressPostsPromise = (async () => {
+  return cachedList(postsCache, 'posts', async () => {
       const allPosts: WordPressPublicPost[] = [];
       let nextPage: string | undefined;
 
@@ -273,14 +308,7 @@ async function fetchWordPressPosts(): Promise<WordPressPost[]> {
       } while (nextPage);
 
       return allPosts.map(buildPostFromWordPress);
-    })().catch((error) => {
-      wordpressPostsPromise = null;
-      console.error('Error fetching WordPress posts:', error);
-      return [];
-    });
-  }
-
-  return wordpressPostsPromise;
+  });
 }
 
 async function fetchWordPressPages(): Promise<WordPressPage[]> {
@@ -288,8 +316,7 @@ async function fetchWordPressPages(): Promise<WordPressPage[]> {
     return [];
   }
 
-  if (!wordpressPagesPromise) {
-    wordpressPagesPromise = (async () => {
+  return cachedList(pagesCache, 'pages', async () => {
       const allPages: WordPressPublicPage[] = [];
       let nextPage: string | undefined;
 
@@ -312,14 +339,7 @@ async function fetchWordPressPages(): Promise<WordPressPage[]> {
       } while (nextPage);
 
       return allPages.map(buildPageFromWordPress);
-    })().catch((error) => {
-      wordpressPagesPromise = null;
-      console.error('Error fetching WordPress pages:', error);
-      return [];
-    });
-  }
-
-  return wordpressPagesPromise;
+  });
 }
 
 export async function getPosts(
@@ -343,8 +363,10 @@ export async function getPostBySlug(slug: string): Promise<WordPressPost | null>
   return posts.find((post) => post.slug === slug) ?? null;
 }
 
+// The two slug lists only feed generateStaticParams. An outage there means the
+// pages are rendered on first request instead of failing the build.
 export async function getAllPostSlugs(): Promise<string[]> {
-  const posts = await fetchWordPressPosts();
+  const posts = await fetchWordPressPosts().catch(() => []);
   return posts.map((post) => post.slug);
 }
 
@@ -354,6 +376,6 @@ export async function getStaticPage(slug: string): Promise<WordPressPage | null>
 }
 
 export async function getAllStaticPageSlugs(): Promise<string[]> {
-  const pages = await fetchWordPressPages();
+  const pages = await fetchWordPressPages().catch(() => []);
   return pages.map((page) => page.slug);
 }

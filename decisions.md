@@ -457,3 +457,45 @@ Peace asked to remove every image after "The results so far" table. The seven fu
 
 - **ManyRequests.** Regine Garcia's testimonial is now the screenshot of her LinkedIn recommendation (9 February 2026), `public/images/testimonials/regine-garcia-linkedin.png`, captured at 2x in LinkedIn's light theme from Peace's recommendations page, with the owner-only edit pencil and visibility toggle hidden. It replaces the typed blockquote and the avatar line; the full text is in the image's alt.
 - **HigherVisibility.** Adam Heitzman's email screenshot (the one on /testimonials, `adam-heitzman-highervisibility.png`, 912x346) replaces the typed "Both of these look great" quote under "From a paid trial to a monthly partnership". Adam's testimonial is not on LinkedIn (Peace). It shows at up to 640px so the small capture isn't stretched (`.prose figure.testimonial-shot.narrow` in `app/globals.css`).
+
+## 24 November 2026 — whole-app bug hunt: fixes
+
+Peace asked for a bug hunt across the whole app and then "fix all". Findings were verified before fixing; regression tests are in `tests/site/bughunt-2026-11-24.test.ts`, `tests/site/wordpress-cache.test.ts` and `tests/api/career-email.test.ts`.
+
+**Public write endpoints**
+- New `lib/rate-limit.ts`: an in-process limiter (one `next start` process on Railway) keyed on `X-Real-IP`, else the LAST `X-Forwarded-For` hop; never the first hop, which the client sets.
+- `/api/career-pathway/email` rebuilt its email from request JSON and sent it to any address: an open relay for attacker HTML from peace@peaceakinwale.com. It now reads only career ids from the request and builds everything from `CAREERS`, escapes the name, checks Resend's `{ error }`, and is limited to 5 an hour per sender and 3 a day per recipient.
+- `/api/comments`: length caps, email and URL format, 5 per 10 minutes per sender; a reply's parent must be an approved comment on the same post; notices are sent from peace@peaceakinwale.com (was Resend's sandbox sender, `onboarding@resend.dev`) and a rejected send is logged. Auto-approve stays (logged decision).
+- `/api/career-pathway/save`: 60 KB body cap, type checks, 10 per 10 minutes; Slack text is escaped and `@channel`/`@here` defused; the missing-column fallback now reads the real error message.
+- Comment admin: the cookie was `sha256(password)`, identical for every login and valid forever. It is now `<expiry>.<random id>.<HMAC>`, lasts 7 days, and sign-out revokes it (in memory). Login is limited to 10 tries per 15 minutes per address. Existing admin cookies stop working once; sign in again.
+- `/api/revalidate`: constant-time compare, an empty secret admits nobody, `path` must be a site path; it also clears the WordPress cache.
+
+**Blog (WordPress)**
+- `lib/wordpress/client.ts` kept the first fetch for the life of the process and returned `[]` on failure. It now caches for 5 minutes, serves the last good list when a refresh fails, and throws when there is no good list, so `wordpressDown` is real and a post is not turned into a cached 404 during an outage. The slug lists used by `generateStaticParams` tolerate an outage so a build does not fail.
+- `/tag/<unused>` is a 404 (was an empty 200 page); tag pages set their own `og:url`.
+
+**MyLinks**
+- Redirects were built from `new URL(request.url).origin`, which is `https://localhost:8080` under `next start` on Railway (measured live). `requestOrigin()` in `lib/mylinks/routing.ts` uses the Host header and accepts only the app's own hosts. Sign-out redirects with 303.
+- The article review page now checks the project owner (it loaded any article by id with the service client).
+- Page upserts pass `onConflict: 'project_id,url'` and read the error (crawl and cron); a re-crawl used to update nothing and report success.
+- Cron: a project whose sitemap fails or is empty still moves to the back of the queue; the embedding backfill stops when saves fail.
+- Crawler: `lib/mylinks/safe-fetch.ts` allows only public http(s) addresses on ports 80/443, checks every redirect hop, and caps body size; sitemap discovery is bounded (200 sitemaps, depth 3, 20,000 URLs). Not covered: a DNS answer that changes between the check and the fetch.
+- AI budget: a failed read is an error (503), not "no cap"; the usage log is read in pages past 1000 rows; an account with no allowlist row gets the $2 cap; the article embedding and the generation call are logged before anything else can fail.
+- Suggestions: targets outside the project's pages and client targets are dropped, overlapping anchors are dropped, and the old list is deleted only after the new one is saved.
+- Apply to Google Doc: each anchor's words must be found in the live document (`locateAnchors`); anchors that are gone are skipped and reported, and only applied suggestions get `applied_at`.
+- Smaller: styled runs holding only a space keep the space; re-imported links get the http/https/mailto rule; the JSON-LD date is read before scripts are removed; bulk status returns the real count; deleting a missing project is a 404; the sample project's domain has no scheme.
+
+**Career Pathway**
+- A finished assessment always returns at least one career (the two closest when none reaches the minimum); changing B1 drops the previous follow-up answer; resuming after a reload during the final pause lands on the last question.
+
+**Site config**
+- The image optimizer accepted any https host. It now accepts only the hosts in `lib/image-hosts.ts`; a cover image from any other host is served unoptimized rather than breaking the page.
+- Security headers on every response (HSTS, nosniff, X-Frame-Options SAMEORIGIN, Referrer-Policy, Permissions-Policy); `X-Powered-By` is off. No Content-Security-Policy yet.
+- The four WordPress case studies have a sitemap date.
+
+**Not changed, on purpose**
+- Dead outbound links live in WordPress content: the LinkedIn Router GitHub repo link (404, likely a private repo) and an Animalz link in the style-guide post.
+- Next.js advisory (16.4.4): an upgrade is its own change.
+- Rotating `REVALIDATION_SECRET` and the Hashnode token is still Peace's step.
+- MyLinks: API routes answer an expired session with a redirect, not a 401; Google tokens are stored unencrypted; an approved reply under a spam-marked comment is hidden.
+- `tests/content/informal.test.ts` fails on a missing `content/informal/aloud.md`; it failed before this work.

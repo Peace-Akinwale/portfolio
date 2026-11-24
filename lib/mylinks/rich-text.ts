@@ -217,9 +217,15 @@ function serializeChildren(children: RichNode[]) {
   return children.map((child) => serializeNode(child)).join('');
 }
 
+// A styled run that holds only a space (Google Docs and Word emit these between
+// words) is still a space. Dropping it joined the words either side of it.
+function keepSpace(inner: string) {
+  return /^(?:\s|&nbsp;)+$/i.test(inner) ? ' ' : '';
+}
+
 function applyStyleWrappers(inner: string, style?: string) {
   if (!containsMeaningfulHtml(inner)) {
-    return '';
+    return keepSpace(inner);
   }
 
   let html = inner;
@@ -242,7 +248,7 @@ function applyStyleWrappers(inner: string, style?: string) {
 }
 
 function wrapIfMeaningful(tag: string, inner: string) {
-  return containsMeaningfulHtml(inner) ? `<${tag}>${inner}</${tag}>` : '';
+  return containsMeaningfulHtml(inner) ? `<${tag}>${inner}</${tag}>` : keepSpace(inner);
 }
 
 function sanitizeUrl(value?: string) {

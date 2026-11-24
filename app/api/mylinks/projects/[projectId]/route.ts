@@ -40,7 +40,13 @@ export async function PATCH(
   const updates: Record<string, string | null> = {};
   if (body.name !== undefined) updates.name = body.name.trim();
   if (body.domain !== undefined) updates.domain = normalizeDomain(body.domain);
-  if (body.sitemap_url !== undefined) updates.sitemap_url = body.sitemap_url;
+  if (body.sitemap_url !== undefined) {
+    const sitemapUrl = typeof body.sitemap_url === 'string' ? body.sitemap_url.trim() : '';
+    if (sitemapUrl && !/^https?:\/\/[^\s]+$/i.test(sitemapUrl)) {
+      return NextResponse.json({ error: 'The sitemap address must start with http:// or https://' }, { status: 400 });
+    }
+    updates.sitemap_url = sitemapUrl || null;
+  }
 
   if (Object.keys(updates).length === 0) {
     return NextResponse.json({ error: 'No fields to update' }, { status: 400 });
@@ -70,14 +76,19 @@ export async function DELETE(
   const { projectId } = await params;
   const serviceClient = await createServiceClient();
 
-  const { error } = await serviceClient
+  const { data: deleted, error } = await serviceClient
     .from('projects')
     .delete()
     .eq('id', projectId)
-    .eq('owner_id', user.id);
+    .eq('owner_id', user.id)
+    .select('id');
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+  // A delete that matched nothing is not a success.
+  if (!deleted || deleted.length === 0) {
+    return NextResponse.json({ error: 'Project not found' }, { status: 404 });
   }
 
   return new NextResponse(null, { status: 204 });

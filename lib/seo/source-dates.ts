@@ -5,7 +5,7 @@
 export const SOURCE_DATES: Record<string, string> = {
   'app/page.tsx': '2026-11-12T19:50:54+00:00',
   'lib/content/home-copy.ts': '2026-11-08T20:57:03+01:00',
-  'app/writing/page.tsx': '2026-11-24T11:57:56+00:00',
+  'app/writing/page.tsx': '2026-11-24T12:54:24+00:00',
   'lib/content/record.ts': '2026-11-08T20:57:03+01:00',
   'lib/content/record-static.ts': '2026-11-08T20:57:03+01:00',
   'app/case-studies/page.tsx': '2026-11-12T19:36:26+00:00',
@@ -24,6 +24,7 @@ export const SOURCE_DATES: Record<string, string> = {
   'lib/portfolio/manyrequests.ts': '2026-11-12T19:40:51+00:00',
   'app/writing/[client]/page.tsx': '2026-11-08T20:57:03+01:00',
   'app/[slug]/page.tsx': '2026-11-12T19:40:51+00:00',
+  'components/case-study/WordPressCaseStudy.tsx': '2026-11-23T21:04:41+01:00',
 };
 
 export function committedLastModified(sources: string[]): Date | null {

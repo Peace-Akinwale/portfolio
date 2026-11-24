@@ -396,7 +396,11 @@ export function resolveWhyItFits(career: Career, answers: Answers, userName?: st
 
 function buildRankedResults(rawScores: RawScore[], minimumScore: number): ScoredCareer[] {
   const sorted = [...rawScores].sort((a, b) => b.score - a.score);
-  const qualifying = sorted.filter((score) => score.score >= minimumScore);
+  const aboveMinimum = sorted.filter((score) => score.score >= minimumScore);
+  // A finished assessment always gets an answer. When no career reaches the
+  // minimum (a tightly constrained profile can score 18), the two closest are
+  // shown instead of an empty list, which the results page treated as "no session".
+  const qualifying = aboveMinimum.length > 0 ? aboveMinimum : sorted.slice(0, 2);
 
   if (qualifying.length === 0) return [];
 

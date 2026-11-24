@@ -102,6 +102,10 @@ export function AssessmentShell() {
   }
 
   function handleResume() {
+    // Progress is saved one step ahead, so a reload during the final "analysing"
+    // pause leaves an index past the last question. Resume on the last question.
+    const total = getQuestionsForPhase(resumeStage, answers).length;
+    if (currentIndex >= total) setCurrentIndex(Math.max(0, total - 1));
     setPhase(resumeStage);
   }
 
@@ -124,7 +128,12 @@ export function AssessmentShell() {
   function handleAnswer(value: string | string[]) {
     const questions = getQuestionsForPhase(phase, answers);
     const question = questions[currentIndex];
-    const nextAnswers = { ...answers, [question.id]: value };
+    const nextAnswers: Answers = { ...answers, [question.id]: value };
+    // B1 picks which follow-up question is asked. Changing it drops the answer to
+    // the previous follow-up, which would otherwise still be scored.
+    if (question.id === 'B1' && answers.B1 !== value) {
+      for (const key of Object.keys(nextAnswers)) if (key.startsWith('B_')) delete nextAnswers[key];
+    }
     setAnswers(nextAnswers);
 
     if (question.type === 'multi') return;

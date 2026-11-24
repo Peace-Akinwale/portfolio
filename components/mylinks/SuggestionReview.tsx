@@ -529,6 +529,7 @@ export default function SuggestionReview({
       const payload = (await response.json()) as {
         error?: string;
         applied?: number;
+        skipped?: number;
         reconnect_required?: boolean;
       };
 
@@ -542,7 +543,11 @@ export default function SuggestionReview({
         return;
       }
 
-      showToast(`${payload.applied ?? 0} links applied to the linked Google Doc.`);
+      showToast(
+        payload.skipped
+          ? `${payload.applied ?? 0} links applied. ${payload.skipped} skipped: that text is no longer in the Google Doc.`
+          : `${payload.applied ?? 0} links applied to the linked Google Doc.`
+      );
     } catch {
       setError("Request failed while applying links to Google Docs.");
     } finally {

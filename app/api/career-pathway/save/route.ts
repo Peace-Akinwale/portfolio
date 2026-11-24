@@ -1,4 +1,5 @@
 import { randomUUID } from 'crypto';
+import { allow, clientIp } from '@/lib/rate-limit';
 import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import type { Answers, CareerResultSummary } from '@/lib/career-pathway/types';
@@ -33,18 +34,24 @@ async function sendSlackNotification(data: {
   const webhookUrl = process.env.CAREER_PATHWAY_SLACK_WEBHOOK;
   if (!webhookUrl) return;
 
-  const top = data.results.find((result) => result.rank === 1);
-  const second = data.results.find((result) => result.rank === 2);
+  // Slack reads <...>, & and @-mentions in webhook text as markup, so text a
+  // person typed is escaped and control mentions are defused before it is posted.
+  const plain = (value: unknown) => String(value ?? '').slice(0, 120)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/@(channel|here|everyone)/gi, '@\u200b$1');
+  const results = Array.isArray(data.results) ? data.results : [];
+  const top = results.find((result) => result?.rank === 1);
+  const second = results.find((result) => result?.rank === 2);
   const countLabel = data.count != null ? ` - submission #${data.count}` : '';
 
   const lines = [
     `*Career Assessment${countLabel}*`,
-    `*Name:* ${data.name || '_not provided_'}`,
-    `*Email:* ${data.email || '_not provided_'}`,
-    `*Top match:* ${top?.careerId ?? '-'} (${top?.score ?? '-'} pts)`,
-    second ? `*#2:* ${second.careerId} (${second.score} pts)` : null,
-    `*Country:* ${data.country || '-'} · *Age range:* ${data.ageRange || '-'}`,
-    data.discoverySource ? `*Found via:* ${data.discoverySource}` : null,
+    `*Name:* ${data.name ? plain(data.name) : '_not provided_'}`,
+    `*Email:* ${data.email ? plain(data.email) : '_not provided_'}`,
+    `*Top match:* ${plain(top?.careerId ?? '-')} (${plain(top?.score ?? '-')} pts)`,
+    second ? `*#2:* ${plain(second.careerId)} (${plain(second.score)} pts)` : null,
+    `*Country:* ${plain(data.country || '-')} · *Age range:* ${plain(data.ageRange || '-')}`,
+    data.discoverySource ? `*Found via:* ${plain(data.discoverySource)}` : null,
     data.refinementTriggered ? '*Refinement triggered:* yes' : null,
     data.submissionUrl ? `<${data.submissionUrl}|View full submission ->>` : null,
   ].filter(Boolean).join('\n');
@@ -59,7 +66,8 @@ async function sendSlackNotification(data: {
 }
 
 function insertErrorMentionsMissingRefinementColumns(error: unknown): boolean {
-  const message = String(error);
+  // A PostgREST error is a plain object, so String(error) is "[object Object]".
+  const message = error instanceof Error ? error.message : JSON.stringify(error);
   return [
     'refinement_triggered',
     'refinement_answers',
@@ -72,7 +80,15 @@ function insertErrorMentionsMissingRefinementColumns(error: unknown): boolean {
 
 export async function POST(req: Request) {
   try {
-    const body = (await req.json()) as SavePayload;
+    if (!allow(`cp-save:${clientIp(req)}`, 10, 10 * 60 * 1000)) {
+      return NextResponse.json({ error: 'Too many submissions. Try again in a few minutes.' }, { status: 429 });
+    }
+    // The whole payload is stored, so its size is bounded before it is parsed.
+    const raw = await req.text();
+    if (raw.length > 60_000) {
+      return NextResponse.json({ error: 'That submission is too large.' }, { status: 413 });
+    }
+    const body = JSON.parse(raw) as SavePayload;
     const {
       name,
       discoverySource,
@@ -89,8 +105,13 @@ export async function POST(req: Request) {
       moatResults = null,
     } = body;
 
-    if (!answers || !results) {
+    const isRecord = (value: unknown) => typeof value === 'object' && value !== null && !Array.isArray(value);
+    const shortText = (value: unknown) => value == null || (typeof value === 'string' && value.length <= 200);
+    if (!isRecord(answers) || !Array.isArray(results)) {
       return NextResponse.json({ error: 'Missing required fields.' }, { status: 400 });
+    }
+    if (![name, discoverySource, ageRange, country, email].every(shortText)) {
+      return NextResponse.json({ error: 'One of the fields is too long.' }, { status: 400 });
     }
 
     const supabase = createClient(
@@ -148,7 +169,7 @@ export async function POST(req: Request) {
 
     const submissionUrl = `https://peaceakinwale.com/career-pathway/results/${id}`;
 
-    void sendSlackNotification({
+    void Promise.resolve().then(() => sendSlackNotification({
       name,
       email,
       country,
@@ -158,7 +179,7 @@ export async function POST(req: Request) {
       count: count ?? null,
       submissionUrl,
       refinementTriggered,
-    });
+    })).catch((error) => console.error('[career-pathway/save][slack]', error));
 
     return NextResponse.json({ success: true });
   } catch (err) {

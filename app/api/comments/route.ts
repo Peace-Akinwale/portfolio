@@ -1,7 +1,13 @@
-﻿import { createHash } from 'crypto';
+import { createHash } from 'crypto';
 import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import { Resend } from 'resend';
+import { allow, clientIp, EMAIL_PATTERN } from '@/lib/rate-limit';
+
+// Caps on what a stranger can store (24 Nov 2026 bug hunt). The comment box
+// itself asks for far less than these.
+const MAX = { slug: 200, title: 300, name: 80, email: 254, url: 300, content: 5000 };
+const SENDER = 'Peace Akinwale <peace@peaceakinwale.com>';
 
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL;
 const RESEND_API_KEY = process.env.RESEND_API_KEY;
@@ -73,11 +79,15 @@ async function sendEmails(params: {
   }
 
   const resend = new Resend(RESEND_API_KEY);
-  const postUrl = `https://peaceakinwale.com/${params.postSlug}`;
+  const postUrl = `https://peaceakinwale.com/blog/${encodeURIComponent(params.postSlug)}`;
+  // Resend returns { error } instead of throwing, so each result is read.
+  const report = (what: string, result: { error: unknown }) => {
+    if (result.error) console.error(`[comments][notify] ${what} was rejected`, result.error);
+  };
 
   if (ADMIN_EMAIL) {
-    await resend.emails.send({
-      from: 'Peace Akinwale <onboarding@resend.dev>',
+    report('admin notice', await resend.emails.send({
+      from: SENDER,
       to: ADMIN_EMAIL,
       subject: params.parentComment
         ? `New reply on "${params.postTitle}"`
@@ -93,15 +103,15 @@ async function sendEmails(params: {
       ]
         .filter(Boolean)
         .join('\n'),
-    });
+    }));
   }
 
   if (
     params.parentComment?.author_email &&
     params.parentComment.author_email !== params.authorEmail
   ) {
-    await resend.emails.send({
-      from: 'Peace Akinwale <onboarding@resend.dev>',
+    report('reply notice', await resend.emails.send({
+      from: SENDER,
       to: params.parentComment.author_email,
       subject: `Someone replied to your comment on "${params.postTitle}"`,
       text: [
@@ -111,7 +121,7 @@ async function sendEmails(params: {
         '',
         `Read the discussion: ${postUrl}`,
       ].join('\n'),
-    });
+    }));
   }
 }
 
@@ -176,6 +186,22 @@ export async function POST(request: Request) {
       );
     }
 
+    if (!EMAIL_PATTERN.test(authorEmail) || authorEmail.length > MAX.email) {
+      return NextResponse.json({ message: 'Enter a valid email address.' }, { status: 400 });
+    }
+    if (authorUrl && (authorUrl.length > MAX.url || !/^https?:\/\//i.test(authorUrl))) {
+      return NextResponse.json({ message: 'The website must start with http:// or https://.' }, { status: 400 });
+    }
+    if (postSlug.length > MAX.slug || !/^[a-z0-9-]+$/i.test(postSlug) || postTitle.length > MAX.title || authorName.length > MAX.name) {
+      return NextResponse.json({ message: 'That comment could not be accepted.' }, { status: 400 });
+    }
+    if (content.length > MAX.content) {
+      return NextResponse.json({ message: `Comments can be up to ${MAX.content} characters.` }, { status: 400 });
+    }
+    if (!allow(`comment:${clientIp(request)}`, 5, 10 * 60 * 1000)) {
+      return NextResponse.json({ message: 'Too many comments in a short time. Try again in a few minutes.' }, { status: 429 });
+    }
+
     const supabase = getSupabaseAdmin();
 
     let parentComment: CommentRow | null = null;
@@ -186,6 +212,11 @@ export async function POST(request: Request) {
         .eq('id', parent)
         .maybeSingle();
       parentComment = (data as CommentRow | null) ?? null;
+      // A reply belongs to a visible comment on the same post; anything else would
+      // let a stranger email an arbitrary commenter from an unrelated thread.
+      if (!parentComment || parentComment.post_slug !== postSlug || parentComment.status !== 'approved') {
+        return NextResponse.json({ message: 'That comment is no longer available to reply to.' }, { status: 400 });
+      }
     }
 
     const { data, error } = await supabase

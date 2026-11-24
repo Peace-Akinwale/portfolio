@@ -315,8 +315,10 @@ function wrapInlineStyles(
 
   let wrapped = html;
 
-  if (style.link?.url) {
-    wrapped = `<a href="${escapeHtml(style.link.url)}">${wrapped}</a>`;
+  // Same scheme rule as the paste path (rich-text.ts sanitizeUrl): this HTML is
+  // stored and rendered, so only web and mail links become links.
+  if (style.link?.url && /^(https?:|mailto:)/i.test(style.link.url.trim())) {
+    wrapped = `<a href="${escapeHtml(style.link.url.trim())}">${wrapped}</a>`;
   }
   if (style.bold) {
     wrapped = `<strong>${wrapped}</strong>`;
@@ -371,6 +373,41 @@ export interface BatchUpdateRequest {
     textStyle: { link: { url: string } };
     fields: string;
   };
+}
+
+export interface AnchorSuggestion { id: string; anchor_text: string; char_start: number; char_end: number; target_url: string }
+export interface LocatedPatch extends LinkPatch { id: string }
+
+// Where each approved anchor sits in the document as it is NOW. A suggestion's
+// offsets were measured against the text stored at import, which differs from the
+// live document whenever it has image-only paragraphs or has been edited since.
+// So the offsets are only a hint: the anchor's own words must be found in the live
+// text (at the stored position, or else the nearest occurrence), and an anchor
+// that is no longer there is skipped rather than linking whatever is at that spot.
+export function locateAnchors(liveText: string, suggestions: AnchorSuggestion[]): { patches: LocatedPatch[]; skipped: string[] } {
+  const patches: LocatedPatch[] = [];
+  const skipped: string[] = [];
+  const taken: Array<[number, number]> = [];
+  const free = (start: number, end: number) => taken.every(([s, e]) => end <= s || start >= e);
+  for (const suggestion of suggestions) {
+    const anchor = suggestion.anchor_text ?? '';
+    let start = -1;
+    if (anchor) {
+      if (liveText.slice(suggestion.char_start, suggestion.char_end) === anchor && free(suggestion.char_start, suggestion.char_end)) {
+        start = suggestion.char_start;
+      } else {
+        let best = Infinity;
+        for (let at = liveText.indexOf(anchor); at !== -1; at = liveText.indexOf(anchor, at + 1)) {
+          const distance = Math.abs(at - suggestion.char_start);
+          if (distance < best && free(at, at + anchor.length)) { best = distance; start = at; }
+        }
+      }
+    }
+    if (start === -1) { skipped.push(suggestion.id); continue; }
+    taken.push([start, start + anchor.length]);
+    patches.push({ id: suggestion.id, char_start: start, char_end: start + anchor.length, url: suggestion.target_url });
+  }
+  return { patches, skipped };
 }
 
 export function buildBatchUpdateRequests(

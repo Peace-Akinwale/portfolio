@@ -8,6 +8,7 @@ import { listLocalArticles } from '@/lib/content/articles';
 import { formatDate, formatReadingTime } from '@/lib/wordpress/utils';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
+import { skipOptimizer } from '@/lib/image-hosts';
 import Link from 'next/link';
 import type { Metadata } from 'next';
 import { ArticleCard } from '@/components/ArticleCard';
@@ -180,7 +181,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
           </p>
           {post.coverImage?.url && (
             <figure className="article-cover">
-              <Image src={post.coverImage.url} alt="" width={1200} height={675} sizes="(max-width: 960px) 100vw, 896px" priority />
+              <Image src={post.coverImage.url} unoptimized={skipOptimizer(post.coverImage.url)} alt="" width={1200} height={675} sizes="(max-width: 960px) 100vw, 896px" priority />
             </figure>
           )}
         </header>

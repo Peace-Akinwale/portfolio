@@ -338,8 +338,16 @@ describe('selectTopFour', () => {
   it('falls back gracefully if fewer than 4 careers qualify', () => {
     const scores = scoreAllCareers({});
     const top4 = selectTopFour(scores);
-    expect(top4.length).toBeGreaterThanOrEqual(0);
+    expect(top4.length).toBeGreaterThanOrEqual(1);
     expect(top4.length).toBeLessThanOrEqual(4);
+  });
+
+  it('still returns the closest careers when none reaches the minimum score', () => {
+    // Found by the 24 Nov 2026 bug hunt: this profile tops out below the minimum.
+    const answers = { A1: ['explainer'], A2: 'english-languages', A3: ['design-pro'], A4: 'low-pressure', B1: 'data-analysis', B2: 'building', B_DATA: 'data-engineer', C1: 'urgent', C2: 'vocational', C3: 'under5', C4: 'zero', C5: 'cert-no', D1: 'limited', D2: 'remote-yes', E1: ['visible-impact'], E2: 'ai-neutral', E3: 'long-term-moat', W4: 'Chile', R1: 'debug', R2: 'repeatable', R3: 'decision_analysis', R4: 'explain' };
+    const results = selectTopFour(applyRefinementBonuses(scoreAllCareers(answers), answers));
+    expect(results.length).toBeGreaterThanOrEqual(1);
+    expect(results[0].rank).toBe(1);
   });
 
   it('selects technical or data careers for the long-term moat track when possible', () => {

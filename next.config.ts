@@ -1,8 +1,27 @@
 import type { NextConfig } from "next";
 
 import { WORDPRESS_CASE_STUDY_SLUGS } from './lib/content/project-routes';
+import { IMAGE_HOSTS } from './lib/image-hosts';
 
 const nextConfig: NextConfig = {
+  poweredByHeader: false,
+  // Baseline security headers on every response (24 Nov 2026). No
+  // Content-Security-Policy yet: the pages use inline scripts and third-party
+  // embeds, so a policy needs its own pass.
+  async headers() {
+    return [
+      {
+        source: '/:path*',
+        headers: [
+          { key: 'Strict-Transport-Security', value: 'max-age=31536000; includeSubDomains' },
+          { key: 'X-Content-Type-Options', value: 'nosniff' },
+          { key: 'X-Frame-Options', value: 'SAMEORIGIN' },
+          { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
+          { key: 'Permissions-Policy', value: 'camera=(), microphone=(), geolocation=()' },
+        ],
+      },
+    ];
+  },
   async redirects() {
     return [
       { source: '/case-studies/aloud', destination: '/case-studies/read-aloud', permanent: true },
@@ -107,20 +126,7 @@ const nextConfig: NextConfig = {
   },
   images: {
     qualities: [75, 90],
-    remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: 'cdn.hashnode.com',
-      },
-      {
-        protocol: 'https',
-        hostname: 'res.cloudinary.com',
-      },
-      {
-        protocol: 'https',
-        hostname: '**',
-      },
-    ],
+    remotePatterns: IMAGE_HOSTS.map((hostname) => ({ protocol: 'https' as const, hostname })),
   },
 };
 

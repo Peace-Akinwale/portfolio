@@ -80,7 +80,7 @@ async function backfillEmbeddings(
       return embedded;
     }
 
-    await Promise.all(
+    const updates = await Promise.all(
       rows.map((row, index) =>
         serviceClient
           .from('pages')
@@ -88,8 +88,13 @@ async function backfillEmbeddings(
           .eq('id', row.id)
       )
     );
-
-    embedded += rows.length;
+    const saved = updates.filter((update) => !update.error).length;
+    embedded += saved;
+    if (saved < rows.length) {
+      // The same rows would be picked and paid for again, so stop here.
+      console.error('[cron] embedding save failed for', rows.length - saved, 'pages');
+      return embedded;
+    }
 
     if (rows.length < EMBED_BATCH_SIZE) {
       return embedded;
@@ -127,10 +132,14 @@ async function recrawlStalestProject(
       staleProject.id,
       err instanceof Error ? err.message : err
     );
+    // Still counts as this project's turn; otherwise one unreachable sitemap is
+    // picked first on every run and no other project is ever refreshed.
+    await serviceClient.from('projects').update({ updated_at: new Date().toISOString() }).eq('id', staleProject.id);
     return { projectId: staleProject.id, crawled, failed };
   }
 
   if (urls.length === 0) {
+    await serviceClient.from('projects').update({ updated_at: new Date().toISOString() }).eq('id', staleProject.id);
     return { projectId: staleProject.id, crawled, failed };
   }
 
@@ -209,8 +218,15 @@ async function recrawlStalestProject(
         const payload = embedding
           ? { ...basePayload, embedding: formatVector(embedding) }
           : basePayload;
-        await serviceClient.from('pages').upsert(payload);
-        crawled += 1;
+        const { error: upsertError } = await serviceClient
+          .from('pages')
+          .upsert(payload, { onConflict: 'project_id,url' });
+        if (upsertError) {
+          console.error('[cron] page save failed:', url, upsertError.message);
+          failed += 1;
+        } else {
+          crawled += 1;
+        }
       })
     );
   }
