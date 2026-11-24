@@ -3,6 +3,7 @@ import { loadAllPosts } from '@/lib/content/posts';
 import { ArticleCard } from '@/components/ArticleCard';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import { DEFAULT_OG } from '@/lib/og';
 import type { Metadata } from 'next';
 
 interface TagPageProps {
@@ -18,7 +19,8 @@ export async function generateMetadata({ params }: TagPageProps): Promise<Metada
     alternates: {
       canonical: `https://peaceakinwale.com/tag/${tag}`,
     },
-    openGraph: { url: `https://peaceakinwale.com/tag/${tag}`, title: `Articles about ${label} | Peace Akinwale` },
+    // Setting openGraph replaces the layout's block, so the default image is named here.
+    openGraph: { url: `https://peaceakinwale.com/tag/${tag}`, title: `Articles about ${label} | Peace Akinwale`, description: `Articles about ${label} by Peace Akinwale.`, images: [DEFAULT_OG] },
   };
 }
 
