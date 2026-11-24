@@ -15,7 +15,8 @@ img[data-image-viewer]:focus-visible { outline: 2px solid var(--accent); outline
 .image-viewer button:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
 .image-viewer button svg { width: 24px; height: 24px; }
 .image-viewer-close { top: 16px; right: 16px; }
-.image-viewer button.image-viewer-previous, .image-viewer button.image-viewer-next { top: 50%; transform: translateY(-50%); padding: 12px; width: 48px; height: 48px; }
+.image-viewer button.image-viewer-previous, .image-viewer button.image-viewer-next { top: 50%; transform: translateY(-50%); padding: 12px; width: 48px; height: 48px; background: rgb(0 0 0 / 65%); }
+.image-viewer button.image-viewer-previous:hover, .image-viewer button.image-viewer-next:hover { background: rgb(0 0 0 / 80%); }
 .image-viewer-previous { left: 16px; }
 .image-viewer-next { right: 16px; }
 .image-viewer-count { position: absolute; top: 16px; left: 16px; padding: 4px 12px; border-radius: 999px; background: rgb(255 255 255 / 10%); color: #fff; font-size: 14px; cursor: default; }
