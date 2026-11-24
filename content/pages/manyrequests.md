@@ -12,7 +12,7 @@ That made software comparisons and operational problems useful places to start. 
 
 I used business potential to judge those opportunities. When the connection was weak, I changed the angle or treated the piece as educational content. The article still had to answer the reader’s question.
 
-![Topic research for ManyRequests, with business potential scores](/images/case-studies/manyrequests/manyrequests-business-potential-score.png)
+![Topic research for ManyRequests, with business potential scores](/images/case-studies/manyrequests/manyrequests-topic-scores.png)
 
 ## Showing the work inside the software
 

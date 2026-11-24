@@ -11,6 +11,9 @@ export interface PortfolioSection {
   introHtml?: string;
   projects: PortfolioProject[];
   readMoreLink?: string;
+  /** Site-only extras for the Writing samples page; WordPress never sets these. */
+  caseStudyLink?: { href: string; label: string };
+  figure?: { src: string; width: number; height: number; alt: string; caption: string };
 }
 
 export interface ParsedPortfolio {

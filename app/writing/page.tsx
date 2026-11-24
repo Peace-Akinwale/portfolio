@@ -42,11 +42,22 @@ const MARKERIO_SECTION = {
 const JABRA_SECTION = {
   heading: 'Ghostwritten for Jabra',
   clientName: 'Jabra',
+  // Melissa's comment moved here from the top of the page (24 Nov 2026); the crop drops the @mention line.
+  figure: {
+    src: '/images/home/editor-comment-jabra-crop.png', width: 272, height: 388,
+    alt: 'Google Docs comment from Melissa Malec, 29 May 2025: “you had me hooked from start to finish! It was a really well researched, well structured, helpful piece of content with appropriate product placements. And that makes my heart happy.”',
+    caption: 'Melissa Malec, content lead at Jabra.',
+  },
   projects: [
     { title: '7 Modern Meeting Room Designs & What You Need to Nail Them', link: 'https://www.jabra.com/discover/modern-meeting-room' },
     { title: "How to Increase Employee Engagement (By Fixing What's Broken)", link: 'https://www.jabra.com/discover/increase-employee-engagement' },
   ],
 };
+
+const CASE_STUDY_CARDS = [
+  { href: '/case-studies/manyrequests', src: '/og/case-study-manyrequests.png', label: 'The ManyRequests case study', alt: 'Case study: 51 product-led articles for ManyRequests' },
+  { href: '/case-studies/highervisibility', src: '/og/case-study-highervisibility.png', label: 'The HigherVisibility case study', alt: 'Case study: content that helped more than double HigherVisibility’s organic traffic' },
+];
 
 async function loadSamples() {
   try {
@@ -93,6 +104,7 @@ export default async function PortfolioPage() {
       clientName: key === 'Pangea.ai' ? 'Pangea.ai' : section.clientName,
       introHtml: '<p>' + descriptionsByClient[key] + '</p>',
       readMoreLink,
+      ...(key === 'HigherVisibility' ? { caseStudyLink: { href: '/case-studies/highervisibility', label: 'Read the HigherVisibility case study' } } : {}),
     };
   });
 
@@ -109,17 +121,17 @@ export default async function PortfolioPage() {
         </dl>
       </header>
 
-      <section className="writing-proof" aria-label="Evidence">
-        <figure>
-          <Image src="/images/home/serp-design-annotation-results.png" width={685} height={430} sizes="(max-width: 800px) 100vw, 640px" alt="Google results for “design annotation tools” in April 2026, with the ManyRequests article in third place, marked with an arrow" priority />
-          <figcaption>
-            <Link href="/case-studies/manyrequests">The ManyRequests case study</Link>
-          </figcaption>
-        </figure>
-        <figure className="narrow">
-          <Image src="/images/home/editor-comment-jabra.png" width={335} height={469} sizes="300px" alt="Google Docs comment from Melissa Malec, 29 May 2025: “you had me hooked from start to finish! It was a really well researched, well structured, helpful piece of content with appropriate product placements. And that makes my heart happy.”" />
-          <figcaption>Melissa Malec, content lead at Jabra.</figcaption>
-        </figure>
+      {/* Two case-study share cards that open their case studies (24 Nov 2026). An image inside
+          a page link is skipped by the image viewer, so a click navigates. */}
+      <section className="writing-proof" aria-label="Case studies">
+        {CASE_STUDY_CARDS.map((card) => (
+          <figure key={card.href}>
+            <Link href={card.href} aria-label={card.label}>
+              <Image src={card.src} width={1200} height={630} sizes="(max-width: 800px) 100vw, 570px" alt={card.alt} priority />
+            </Link>
+            <figcaption><Link href={card.href}>{card.label}</Link></figcaption>
+          </figure>
+        ))}
       </section>
 
       <WritingSamples parsed={samples} />

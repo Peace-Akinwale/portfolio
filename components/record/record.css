@@ -110,12 +110,16 @@
 @media (max-width: 760px) { .writing-how { grid-template-columns: 1fr; } }
 .writing-head h1 { margin: 0 0 14px;  }
 .writing-head .lede { font-size: 1.15rem; line-height: 1.6; margin: 0; }
-.writing-proof { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 40px; align-items: start; padding: 8px 0 48px; }
+.writing-proof { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 40px; align-items: start; padding: 8px 0 48px; }
 .writing-proof figure { margin: 0; }
 .writing-proof img { width: 100%; height: auto; display: block; border-radius: var(--radius, 16px); background: var(--card); box-shadow: 0 24px 48px -32px rgba(13,30,44,.5); }
 .writing-proof figcaption { font-size: 15px; color: var(--muted-foreground); margin-top: 10px; }
 .writing-proof figcaption a { text-decoration: underline; text-underline-offset: 3px; }
-@media (max-width: 800px) { .writing-proof { grid-template-columns: 1fr; } .writing-proof .narrow { max-width: 300px; } }
+@media (max-width: 800px) { .writing-proof { grid-template-columns: 1fr; } }
+.samples-list { min-width: 0; }
+.samples-figure { margin: 28px 0 0; width: 100%; }
+.samples-figure img { width: 100%; height: auto; display: block; border-radius: 12px; box-shadow: 0 24px 48px -32px rgba(13,30,44,.5); }
+.samples-figure figcaption { font-size: 15px; color: var(--muted-foreground); margin-top: 10px; }
 .writing-more .go { font-size: 17px; font-weight: 400; }
 /* "All <client> articles" is a link and looks like one, like the titles (8 Nov 2026). */
 .samples-section .more a { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; text-decoration-color: color-mix(in srgb, currentColor 35%, transparent); }
