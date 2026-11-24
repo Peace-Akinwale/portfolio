@@ -56,15 +56,7 @@ The work has produced 51 published articles, and the retainer is ongoing. In a s
 | 17hats vs honeybook | 6 |
 | bloom alternatives | 8 |
 
-<div class="reviewer-attribution"><img src="/images/clients/regine-garcia.png" alt="Regine Garcia" width="56" height="56"><span>Regine Garcia, operations and content lead at ManyRequests, wrote:</span></div>
-
-> I've worked with Peace on content for ManyRequests, and he's one of the most thoughtful B2B SaaS content marketers I've collaborated with.
->
-> Peace specializes in product-led blog content, and it really shows in his work. He doesn't chase keywords. He takes time to deeply understand the product, the user journeys, and how content can actually drive adoption and conversions. His pieces are well-researched, structured with intent, and grounded in real use cases, which makes them genuinely useful.
->
-> What I appreciate most is his level of detail and care. He asks the right questions, challenges assumptions when needed, and consistently delivers content that aligns with the content strategy. For example, his top-performing posts are product-led ones, which has led to more traffic and demo requests for ManyRequests.
->
-> If you're a software company or agency looking for a writer who understands B2B SaaS, product-led growth, and conversion-focused content, Peace is someone I'd highly recommend working with. 🔥
+<figure class="testimonial-shot"><img src="/images/testimonials/regine-garcia-linkedin.png" width="1568" height="815" alt="Regine Garcia’s LinkedIn recommendation, 9 February 2026: I've worked with Peace on content for ManyRequests, and he's one of the most thoughtful B2B SaaS content marketers I've collaborated with. Peace specializes in product-led blog content, and it really shows in his work. He doesn't chase keywords. He takes time to deeply understand the product, the user journeys, and how content can actually drive adoption and conversions. His pieces are well-researched, structured with intent, and grounded in real use cases, which makes them genuinely useful. What I appreciate most is his level of detail and care. He asks the right questions, challenges assumptions when needed, and consistently delivers content that aligns with the content strategy. For example, his top-performing posts are product-led ones, which has led to more traffic and demo requests for ManyRequests. If you're a software company or agency looking for a writer who understands B2B SaaS, product-led growth, and conversion-focused content, Peace is someone I'd highly recommend working with. 🔥"><figcaption>Regine Garcia, operations and content lead at ManyRequests, on LinkedIn.</figcaption></figure>
 
 ## Need articles like these?
 

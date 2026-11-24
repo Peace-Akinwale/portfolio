@@ -452,3 +452,8 @@ Peace approved these from a before/after review (desktop 1440 and phone 390, rea
 ## 24 November 2026 — ManyRequests case study: Google screenshots removed
 
 Peace asked to remove every image after "The results so far" table. The seven full-page Google results screenshots (`serp-2026-11-07/*-complete.webp`) are gone from `content/pages/manyrequests.md`; together they ran about 13,000px and repeated the table. The table, Regine Garcia's testimonial and the call to action are unchanged. The image files stay in `public/` unused, as does `MANYREQUESTS_RANKINGS[].shot` in `lib/portfolio/manyrequests.ts`.
+
+## 24 November 2026 — testimonial screenshots on two case studies
+
+- **ManyRequests.** Regine Garcia's testimonial is now the screenshot of her LinkedIn recommendation (9 February 2026), `public/images/testimonials/regine-garcia-linkedin.png`, captured at 2x in LinkedIn's light theme from Peace's recommendations page, with the owner-only edit pencil and visibility toggle hidden. It replaces the typed blockquote and the avatar line; the full text is in the image's alt.
+- **HigherVisibility.** Adam Heitzman's email screenshot (the one on /testimonials, `adam-heitzman-highervisibility.png`, 912x346) replaces the typed "Both of these look great" quote under "From a paid trial to a monthly partnership". Adam's testimonial is not on LinkedIn (Peace). It shows at up to 640px so the small capture isn't stretched (`.prose figure.testimonial-shot.narrow` in `app/globals.css`).

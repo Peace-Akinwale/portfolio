@@ -383,6 +383,9 @@ figure.shot figcaption { font-family: var(--font-sans); font-size: 14px; color: 
 }
 .prose figure { margin: 2rem 0; }
 .prose figcaption, .prose img + em { display: block; font-family: var(--font-sans); font-size: 14px; color: var(--muted-foreground); margin-top: .5rem; }
+/* Client testimonials shown as the original screenshot (24 Nov 2026); smaller captures keep near their own width. */
+.prose figure.testimonial-shot img { width: 100%; height: auto; }
+.prose figure.testimonial-shot.narrow { max-width: 640px; }
 
 
 /* Dark mode prose - now handled by CSS variables */
