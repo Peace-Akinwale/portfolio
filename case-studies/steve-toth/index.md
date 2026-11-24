@@ -6380,3 +6380,32 @@ Simon (strategy team) asked for Firecrawl, an open-source tool that turns web pa
 - A tool request was answered with evidence from the code and from what people had actually asked for, and the result was "not now". Unneeded work never started.
 
 ---
+
+## 2026-11-24, Steve's cloned voice stopped guessing at words in capitals, and a bug hunt caught the first fix before it shipped
+
+Peace heard two mistakes in Steve's Nov 22 newsletter audio. "Google runs AFTER ranking" came out as "eight after". The company name "DEJAN" was said right once and as "Dee-jon" twice in the same note. He asked for these, and anything like them, never to happen again. He did not want the published note redone.
+
+### What shipped
+
+- Words written in capitals for emphasis are now sent to the voice in normal case, and "DEJAN" is sent as "Dejan". Live on Radar's voice worker and web app (commit `42b4965b` in `notebookagency/content-ops`).
+- Proof by measurement, not by ear. Word timestamps from two transcription models placed the faults; the 0.24 s "Dejan" against the 0.62 s "Dee-jon" showed the same text read two ways.
+- A test of under 1 cent, approved by Peace: the note's own sentences, rendered twice on the live setup. Both transcribers heard "after" and "Dejan" every time.
+- A confirmed answer to a third question: Notion's own audio player stops when a reader scrolls past it, because Notion removes the block from the page. Measured in Chrome on notion.so and on the public Notion site.
+
+### Decisions worth recording
+
+- **Judge a word by how it is spelled, not by a vowel.** Real acronyms must stay letters. The rule only changes a capitalized word whose start and end are real English letter patterns. Two-letter and three-letter acronyms such as API and URL are never touched unless they are common emphasis words such as NOT.
+- **Fix forward, never re-render what went out.** Peace's call. The fix applies from the next note on.
+- **No workaround for Notion.** Sending readers to a separate player tab was offered and rejected. That limit is recorded as Notion's, not ours.
+
+### Frictions and course corrections
+
+- **The first rule passed its own tests and was still wrong.** Peace asked for a bug hunt before the push. Running it over the 59 published notes showed it would have turned IPTC, HDYHAU, HVAC, JPEG and JSON into words. The rule was rebuilt and checked again on the same 59 notes: word counts and sentence counts stayed the same on every one, so the video captions stay in sync. All 2,863 app tests passed before the push.
+- **The first answer about Notion was a guess.** Peace said "confirm first". The test in his own browser turned the guess into a measured fact.
+
+### Why this matters for the portfolio
+
+- A text rule was tested against the client's real published work, not invented examples, and that caught the defect before it reached Steve's audience.
+- The bug-hunt checklist now carries this lesson for every future project: test a text rule on the real stored content, and also check what it misses.
+
+---
