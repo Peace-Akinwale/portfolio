@@ -6355,3 +6355,28 @@ Peace asked what work he still owed, then asked for a tool that removes a real b
 - A vendor's own status tool was checked against the deploy records instead of trusted, which caught two services that would have broken on a known date.
 
 ---
+
+## 2026-11-24, a teammate's request to host a web scraper was checked against every app, and declined for lack of a real need
+
+Simon (strategy team) asked for Firecrawl, an open-source tool that turns web pages into clean text for AI, to be hosted for the whole team. Peace ruled out a new paid host and asked where it could help inside the apps the team already runs.
+
+### What shipped
+
+- A written map of how every internal app reads web pages, with file and line evidence: Radar, Lens, LLM Desk, Quality Rater, the OKF knowledge app, Fanout, the coaching portal and Steve's site (`docs/plans/2026-11-24-firecrawl-fit-across-apps.md` in `notebookagency/content-ops`).
+- Nothing was built. That was the outcome.
+
+### Decisions worth recording
+
+- **Declined across the board.** The best fit was Lens, the team's AI-answer recorder, which keeps the pages an AI cites as addresses only. But a Slack search found no one asking to read those pages inside Lens. The September request was for the list of pages, which Lens already shows. Peace chose not to propose the work to Lens's owner.
+- **Reused what was already paid for.** The check found the company already pays for the hosted version of Firecrawl, through another engineer's report tool. Any future scraping need starts there, not with a new server.
+
+### Frictions and course corrections
+
+- **The first answer was too technical.** Peace asked what the tool does and why anyone would need it. He got a list of features. The answer was rewritten in plain terms: give it a web address, and it gives back the words on the page.
+- **The original ask is still unexplained.** Simon never said what he wanted to scrape, and the record says so rather than guessing.
+
+### Why this matters for the portfolio
+
+- A tool request was answered with evidence from the code and from what people had actually asked for, and the result was "not now". Unneeded work never started.
+
+---
