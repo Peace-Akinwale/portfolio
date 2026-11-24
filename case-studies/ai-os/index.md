@@ -137,3 +137,36 @@ The draft scorer was under a feature freeze so Peace could use it for real work.
 - Using the product for real work surfaces different problems from building it. Treating every bug report, including an AI reviewer's, as a claim to reproduce first kept the fixes on real defects and off noise.
 
 ---
+
+## 2026-11-24, the outline AI was guessing its structure; now it reads how the pages the AI tools cited were built
+
+Written at the end of the session, from the AI Search Lab repo's commits (`8df20eb`, `af5cf8f`, `433b91f`, `a789129`), its decisions log (D202 to D205) and the test runs of that session. It follows the earlier entry for the same day.
+
+The draft scorer's "Outline a new page" screen hands a writer an outline before they write. Peace rearranged it from a ten-change review, then asked the question that mattered: "Is there an AI behind this outline page and does it get its idea on how to structure based on our contexts of multiple pages the AI platforms cited?" It did not.
+
+### What shipped
+
+- **Outlines grounded in cited pages.** For the recorded questions closest to the writer's, the app now reads the pages the AI tools actually cited, from recordings already on the machine, and pulls each page's own H1 to H3 in order, pages of the chosen kind first. The screen shows them under "How cited pages were built", with a link to each, and the outline AI is given them and told to follow what they cover, in its own words, never copying a heading. A written outline records which pages it drew on. For the onboarding question on screen, three how-to guides came first; a vendor homepage, cited more often but useless as a model for a guide, was left out.
+- **The screen says what the AI is.** "How this outline was made" names the model, what it was given, what it was not given (the client's site or documents), and, for an outline written before this change, that its sections were the model's own judgement.
+- **The review's fixes, across the app.** A way back from pages reached by a link, a draggable divider between the document and its side panel, Google results that link to their pages, and every heading marked with its level.
+- **The bug hunt's lower-severity findings fixed,** among them: one client per name, real searches for questions in other languages (they produced the search "2026"), whole-word client-name matching, one paid call at a time, and tables reaching the paid model as rows rather than run-together cells.
+- **An origin check.** The local server now refuses changes and paid calls from any other website, and requests sent under another site's name.
+- **Checks:** the end-to-end suite passed 325 of 325 and the first-run walk 19 of 19, after the last change.
+
+### Decisions worth recording
+
+- **Show the AI's inputs on the screen, not only in the code.** A writer judging an outline needs to know whether its structure came from evidence or from the model. The page says which, per outline, including the old one that predates the change.
+- **Ground structure in the recordings, not a new paid search.** The cited pages and their saved copies already existed from the research phase, so grounding costs nothing per outline. The writing call grew by about 0.3 cents; the 15-cent cap held.
+- **A paid call is never made to test this.** No outline was rewritten with the new grounding; that first real call was left to Peace.
+
+### Frictions and course corrections
+
+- **The tests had been paying.** A morning feature asks an AI model for a new client's competitors the moment a name is typed. An older end-to-end walk types a client name, so roughly nine full test runs each made one or two real paid calls. It surfaced only because the new one-at-a-time lock refused the second call and the error tripped the page-error check. Every test context now fakes that endpoint, and the suite was re-run against a server with no keys at all, where any paid call would fail: 325 of 325 passed.
+- **The first-run walk found a click that never landed.** Typing a client's name and clicking Save at once did nothing: leaving the name box started the suggestion, and its progress line pushed the button down mid-click. The suggestion now waits to see where the focus went.
+- **The server tests had been failing silently for an hour.** They copied the real database and named four drafts that the owner had just cleared. They now run on a kept test database.
+
+### Why this matters for the portfolio
+
+- An AI feature earns trust when the screen says what the model was given. Asking that question out loud exposed that the outline was ungrounded, and the fix used evidence the project already held.
+
+---
