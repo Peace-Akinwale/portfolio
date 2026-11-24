@@ -55,8 +55,11 @@ function getInitials(name: string) {
 function buildCommentTree(comments: CommentItem[]) {
   const byParent = new Map<string, CommentItem[]>();
 
+  // A reply whose parent is not in the list (marked as spam, or still pending) is
+  // shown at the top level, so an approved comment is never silently hidden.
+  const ids = new Set(comments.map((comment) => comment.id));
   for (const comment of comments) {
-    const key = comment.parent ?? 'root';
+    const key = comment.parent && ids.has(comment.parent) ? comment.parent : 'root';
     const bucket = byParent.get(key) ?? [];
     bucket.push(comment);
     byParent.set(key, bucket);

@@ -10,7 +10,8 @@ const ROOT = process.cwd();
 const PAIRS: Record<string, string> = {
   'ai-docs-watch': 'ai-docs-watch',
   contentdb: 'contentdb-collect-research-and-question-your-sources',
-  aloud: 'aloud-listen-to-saved-articles-and-return-to-useful-passages',
+  // The draft was renamed with the product (Aloud became Read Aloud); the Notion export kept its name.
+  'read-aloud': 'aloud-listen-to-saved-articles-and-return-to-useful-passages',
   'quality-rater': 'quality-rater-reviewing-pages-using-googles-quality-guidelines',
   'fanout-query-analysis-tool': 'fanout-query-analysis-tool',
   'what-ai-search-apps-do-before-they-answer': 'what-ai-search-apps-do-before-they-answer-a-public-reference',

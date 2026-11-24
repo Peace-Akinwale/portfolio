@@ -499,3 +499,15 @@ Peace asked for a bug hunt across the whole app and then "fix all". Findings wer
 - Rotating `REVALIDATION_SECRET` and the Hashnode token is still Peace's step.
 - MyLinks: API routes answer an expired session with a redirect, not a 401; Google tokens are stored unencrypted; an approved reply under a spam-marked comment is hidden.
 - `tests/content/informal.test.ts` fails on a missing `content/informal/aloud.md`; it failed before this work.
+
+## 24 November 2026 — bug hunt, remaining items
+
+Peace: "fix the remaining ones too. and remove links to a private github repo. if it's public, it can stay."
+- **Links (edited in WordPress, not in this repo).** Every GitHub link on the site was checked: `Peace-Akinwale/LinkedIn-Router` is private (404 to visitors), `mystyleguide` and the two Google OKF links are public and stay. On the LinkedIn Router page (WordPress page 111) the sentence "You can check it out on my GitHub. & ask me any questions via…" is now "Ask me any questions via…". In the style-guide post (post 90) `animalz.co/blog/writing-tips` is the post's own example of a page that no longer exists, so it is plain text instead of a dead link.
+- **Next.js 16.4.4 → 16.4.6** for the published advisories; `npm audit --omit=dev` reports 0.
+- **`REVALIDATION_SECRET` rotated** on Railway and in the local `.env.local` (the old value was in this public repo's history). Anything outside this repo that calls `/api/revalidate` with the old value needs the new one; the blog also refreshes on its own every 5 minutes now. The Hashnode token can only be revoked from Hashnode's own settings; still Peace's step.
+- **Google tokens are encrypted at rest** (`lib/mylinks/google-tokens.ts`, AES-256-GCM, key from the new `MYLINKS_TOKEN_KEY` on Railway). Rows saved earlier are read as they are and re-saved encrypted on next use. The two copies of `getValidAccessToken` are now one. Losing `MYLINKS_TOKEN_KEY` means users reconnect Google.
+- **Expired MyLinks sessions on API calls** get a JSON 401 ("Your session has ended. Sign in again to continue.") instead of the login page's HTML: `proxy.ts` marks `/api/mylinks/*` requests (not the sign-in routes) and the auth gate sends those to `/api/mylinks/auth/required`.
+- **Sample data** returns the existing sample on a second click and removes a half-made one.
+- **Comments:** an approved reply whose parent is hidden (spam or pending) shows at the top level.
+- `tests/content/informal.test.ts` follows the Aloud → Read Aloud rename; the suite is fully green (201 passed, 18 skipped).

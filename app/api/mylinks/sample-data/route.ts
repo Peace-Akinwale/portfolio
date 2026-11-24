@@ -11,6 +11,24 @@ export async function POST() {
   const user = await requireAuthenticatedUser();
   const serviceClient = await createServiceClient();
 
+  // A second click returns the sample that is already there instead of a raw
+  // unique-constraint error.
+  const { data: existing } = await serviceClient
+    .from('projects')
+    .select('id')
+    .eq('owner_id', user.id)
+    .in('domain', ['example-acme.test', 'https://example-acme.test'])
+    .maybeSingle();
+  if (existing) {
+    const { data: existingArticle } = await serviceClient
+      .from('articles').select('id').eq('project_id', existing.id).limit(1).maybeSingle();
+    if (existingArticle) {
+      return NextResponse.json({ project_id: existing.id, article_id: existingArticle.id, existing: true });
+    }
+    // A half-made sample from an earlier failure: remove it and build it again.
+    await serviceClient.from('projects').delete().eq('id', existing.id).eq('owner_id', user.id);
+  }
+
   const { data: project, error: projectError } = await serviceClient
     .from('projects')
     .insert({
@@ -275,7 +293,11 @@ export async function POST() {
     .filter((r): r is NonNullable<typeof r> => r !== null);
 
   if (toInsertSuggestions.length > 0) {
-    await serviceClient.from('suggestions').insert(toInsertSuggestions);
+    const { error: suggestionsError } = await serviceClient.from('suggestions').insert(toInsertSuggestions);
+    if (suggestionsError) {
+      await serviceClient.from('projects').delete().eq('id', project.id).eq('owner_id', user.id);
+      return NextResponse.json({ error: 'The sample could not be created. Please try again.' }, { status: 500 });
+    }
   }
 
   return NextResponse.json({

@@ -1,35 +1,9 @@
 import { NextResponse } from 'next/server';
 import { canUseGoogleDocs, requireAuthenticatedUser } from '@/lib/mylinks/auth';
 import { buildBatchUpdateRequests, extractDocContent, locateAnchors } from '@/lib/mylinks/google-docs';
-import { refreshAccessToken } from '@/lib/mylinks/google-auth';
+import { getValidAccessToken } from '@/lib/mylinks/google-tokens';
 import { extractGoogleDocId } from '@/lib/mylinks/utils';
 import { createServiceClient } from '@/lib/mylinks/supabase/server';
-
-async function getValidAccessToken(userId: string) {
-  const serviceClient = await createServiceClient();
-  const { data: tokenRow } = await serviceClient
-    .from('google_tokens')
-    .select('*')
-    .eq('user_id', userId)
-    .maybeSingle();
-
-  if (!tokenRow) {
-    throw new Error('Google account not connected');
-  }
-
-  if (new Date(tokenRow.expires_at).getTime() > Date.now() + 60_000) {
-    return tokenRow.access_token;
-  }
-
-  const refreshed = await refreshAccessToken(tokenRow.refresh_token);
-  const newExpiry = new Date(Date.now() + refreshed.expires_in * 1000).toISOString();
-  await serviceClient
-    .from('google_tokens')
-    .update({ access_token: refreshed.access_token, expires_at: newExpiry })
-    .eq('user_id', userId);
-
-  return refreshed.access_token;
-}
 
 export async function POST(
   _request: Request,

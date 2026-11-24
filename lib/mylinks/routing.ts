@@ -1,6 +1,7 @@
 export const MYLINKS_HOST = 'mylinks.peaceakinwale.com';
 export const MYLINKS_ORIGIN = `https://${MYLINKS_HOST}`;
 export const MYLINKS_INTERNAL_PREFIX = '/projects/mylinks';
+export const MYLINKS_API_HEADER = 'x-mylinks-api';
 
 // Public workspace paths on the subdomain. The existing route files and
 // legacy portfolio URLs remain intact, including old email callbacks.

@@ -1,6 +1,6 @@
 import { escapeHtml } from '@/lib/mylinks/rich-text-common';
 import { extractGoogleDocId } from '@/lib/mylinks/utils';
-import { refreshAccessToken } from '@/lib/mylinks/google-auth';
+import { getValidAccessToken } from '@/lib/mylinks/google-tokens';
 import { createServiceClient } from '@/lib/mylinks/supabase/server';
 
 interface DocContent {
@@ -440,34 +440,6 @@ export function buildBatchUpdateRequests(
 
 export function extractDocIdFromUrl(input: string): string {
   return extractGoogleDocId(input);
-}
-
-async function getValidAccessToken(userId: string): Promise<string> {
-  const serviceClient = await createServiceClient();
-  const { data: tokenRow } = await serviceClient
-    .from('google_tokens')
-    .select('*')
-    .eq('user_id', userId)
-    .order('expires_at', { ascending: false })
-    .limit(1)
-    .maybeSingle();
-
-  if (!tokenRow) {
-    throw new Error('Google account not connected');
-  }
-
-  if (new Date(tokenRow.expires_at).getTime() > Date.now() + 60_000) {
-    return tokenRow.access_token;
-  }
-
-  const refreshed = await refreshAccessToken(tokenRow.refresh_token);
-  const newExpiry = new Date(Date.now() + refreshed.expires_in * 1000).toISOString();
-  await serviceClient
-    .from('google_tokens')
-    .update({ access_token: refreshed.access_token, expires_at: newExpiry })
-    .eq('user_id', userId);
-
-  return refreshed.access_token;
 }
 
 export async function fetchGoogleDocContent(userId: string, docIdOrUrl: string): Promise<DocContent & { docId: string }> {

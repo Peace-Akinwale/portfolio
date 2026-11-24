@@ -5,6 +5,7 @@ import { createNotification } from '@/lib/mylinks/notifications';
 import { sendMylinksSlackNotification } from '@/lib/mylinks/slack';
 import { createServiceClient } from '@/lib/mylinks/supabase/server';
 import { requestOrigin } from '@/lib/mylinks/routing';
+import { sealToken } from '@/lib/mylinks/google-tokens';
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
@@ -30,8 +31,8 @@ export async function GET(request: NextRequest) {
   const serviceClient = await createServiceClient();
   const upsertData = {
     user_id: user.id,
-    access_token: tokens.access_token,
-    ...(tokens.refresh_token && { refresh_token: tokens.refresh_token }),
+    access_token: sealToken(tokens.access_token),
+    ...(tokens.refresh_token && { refresh_token: sealToken(tokens.refresh_token) }),
     expires_at: expiresAt,
     scope: tokens.scope,
     refresh_issued_at: new Date().toISOString(),

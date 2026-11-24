@@ -1,5 +1,7 @@
 import { cache } from 'react';
 import { redirect } from 'next/navigation';
+import { headers } from 'next/headers';
+import { MYLINKS_API_HEADER } from '@/lib/mylinks/routing';
 import { createClient, createServiceClient } from '@/lib/mylinks/supabase/server';
 import { askAllowlist, decideListed } from '@/lib/mylinks/allowlist';
 import { SELF_SIGNUP_BUDGET_USD } from '@/lib/mylinks/budget';
@@ -48,14 +50,16 @@ const isListed = cache(async (email: string) => {
  */
 export async function requireAuthenticatedUser() {
   const user = await getAuthenticatedUser();
+  // API calls (marked by proxy.ts) get a JSON 401; pages go to the login screen.
+  const isApi = (await headers()).get(MYLINKS_API_HEADER) === '1';
   if (!user) {
-    redirect('/projects/mylinks/login');
+    redirect(isApi ? '/api/mylinks/auth/required' : '/projects/mylinks/login');
   }
 
   if (!(await isListed(user.email ?? ''))) {
     const supabase = await createClient();
     await supabase.auth.signOut({ scope: 'local' });
-    redirect('/projects/mylinks/login?denied=1');
+    redirect(isApi ? '/api/mylinks/auth/required' : '/projects/mylinks/login?denied=1');
   }
 
   return user;
