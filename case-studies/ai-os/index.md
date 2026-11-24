@@ -106,3 +106,34 @@ The AI Search Lab scores an article draft against what ChatGPT, Claude, Perplexi
 - An AI recommendation is only usable when the person acting on it can see what it rests on and how sure it is. Building that in changed which recommendations survived.
 
 ---
+
+## 2026-11-24, a day of the owner's own fixes, then a whole-app bug hunt that fixed 15 bugs, each reproduced before it was touched
+
+Written at the end of the session, from the AI Search Lab repo's commits (`988f277`, `8b3508a`), its decisions log (D189 to D201) and the test runs of that session.
+
+The draft scorer was under a feature freeze so Peace could use it for real work. Using it, he hit friction and asked for fixes one at a time, then asked for a bug hunt over the whole app, "not just what you just did now".
+
+### What shipped
+
+- **Fixes from real use:** a heading that stays under the pointer when a section opens or closes (it jumped 629 pixels before); Google Docs imports and pastes that keep the doc's Title as the main heading and image captions as small print; a progress line, with honest wording and no fake percentage, for every wait on an outside service; a client added in place from the draft form, with nothing typed lost; a new client's likely competitors suggested by one small model call, to check before saving.
+- **A whole-app bug hunt:** three read-only reviewers covered the server, the import and paid-service code, and the front end, and returned 32 candidates. The most serious were reproduced before any fix, and 15 were fixed. Examples: a draft that merely mentioned an HTML tag in its text was cut off at that point on save; a paragraph starting "Title tags are..." was read as the page title and removed from the body; accepting a second rewrite silently dropped the first; a slow paid call could take over the buttons of whatever record was on screen when it came back.
+- **Checks:** the server suite passed with new regression checks, and the browser suite passed 312 of 312 on a copy of the database. Each fixed bug's reproduction script was run again and showed the bug gone.
+
+### Decisions worth recording
+
+- **No fix without a reproduction.** A reviewer's report was treated as a hypothesis. Findings that depend on how an outside service really behaves, such as Google Docs suggestions arriving as text, were reported as unconfirmed and left unfixed rather than guessed at.
+- **Waits say what is happening, not a made-up percentage.** The server cannot report real progress, so the bar eases toward the end and fills only when the answer is back. The time limits quoted are the app's own timeouts, not estimates.
+- **A label for the owner's real content, without retraining.** An opinion piece with tips did not fit the page types. The existing type was renamed to include thought leadership, with a rule for mixed pages, because the scoring model's categories cannot change without new data.
+
+### Frictions and course corrections
+
+- **The hunt found a bug in a fix made earlier the same day.** The "keep the heading in place" fix scrolled the page even when the section sat in a side panel with its own scrollbar, so the draft jumped instead. It now scrolls whatever actually contains the section.
+- **A new feature broke test isolation.** Keeping an unscored draft in the browser made later test walks start with an earlier walk's text. The fix lives in the test harness, so the feature stays as built.
+- **A clean slate meant more than drafts.** Peace asked for one, the drafts were deleted, and he came back: "you didn't remove existing clients nor did you add a button where i can delete them myself." The clients went too, a backup was kept, and every client row now has a visible Remove button.
+- **One paid call was not made.** The new competitor suggestion was tested with a fake model only. It copies a request shape the app already uses successfully, and the handoff names it as the first thing to check if it fails.
+
+### Why this matters for the portfolio
+
+- Using the product for real work surfaces different problems from building it. Treating every bug report, including an AI reviewer's, as a claim to reproduce first kept the fixes on real defects and off noise.
+
+---
