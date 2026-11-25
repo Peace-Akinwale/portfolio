@@ -76,3 +76,37 @@ Written the same day, from `telegram-agent` commit `a769089`, Blue's decisions l
 - The report separates what was measured (logins, timeouts) from what is still expected (the Disk IO budget).
 
 ---
+
+## 2026-11-25, the Disk IO warnings traced to memory, not queries, and a database move that cost five minutes of someone else's API
+
+Written the same day, from `telegram-agent` commits `276e14a` to `d7357c8` (D65), `ops-dashboard` commits `4056065` to `05ee39f` (D70), the Supabase dashboard, Gmail and Supabase's logs read in the session. The 9 November fix had cut the logins, but the Disk IO emails kept coming: 24 October, 2, 9, 17 and 24 November.
+
+### What shipped
+
+- **The real cause, read off the dashboard.** On the smallest free instance (about 477 MB of memory), memory commitment sat at about 1.5 GB, flagged severe, and swap was 383 MB and about 94 percent full at 02:00, when almost nothing runs. Swapping is what spends the IO budget. The daily chart showed the budget at 99 percent on 23 November and 39 percent on 24 November.
+- **Blue and the ops dashboard moved to a second free project.** Two schemas copied with pg_dump 17 and checked row for row: 74 tables, 32,470 rows, identical. Railway variables were set without deploying, a final copy was taken, then both services were redeployed on the new database.
+- **Nothing written during the switch was lost.** A per-table comparison by primary key found no row only in the old copy; every row that differed was newer on the new side.
+- **The dashboard's Aloud pane now reads across projects** through its own two-connection pool (`app/lib/aloud-db.ts`), because Aloud stayed where it was.
+- **A new bug-hunt pattern (C174)** for the outage below.
+
+### Decisions worth recording
+
+- **No plan upgrade, again.** Pro plus the next compute size would have fixed the memory directly for about 25 dollars a month. The owner declined, so the free answer was to split the load across the two free projects the plan allows.
+- **The first target was impossible.** The owner chose a paused project, but the free plan allows two active projects and both slots were taken, so the second slot's project became the target instead.
+- **Credentials never entered the conversation.** New database passwords were generated into a private file and handed to Postgres as SCRAM hashes, and Railway values were piped from that file. When a command would have printed them, the agent's own safety check blocked it and the approach was changed.
+
+### Frictions and course corrections
+
+- **The agent's own cleanup caused an outage.** Dropping the old schema took down the other project's whole Data API for about five minutes (13:08 to 13:13 UTC): the API's schema list, set as a role override, still named the dropped schema, so every request returned 503. The owner noticed it as a failed Google sign-in on Aloud. Supabase's own logs showed the sign-in itself had succeeded and the profile lookup after it had failed. Service came back with an empty placeholder schema, then the override was edited to drop only that name.
+- **The first restore was refused.** `pg_restore --clean` cannot drop a partitioned job-queue table, so the whole transaction rolled back; the schemas were recreated empty and restored again.
+- **Builds failed twice on a font download**, not on the change. Each retry of the same commit succeeded, and the previous build kept serving meanwhile.
+- **A wrong claim, corrected the same day.** The agent said the dashboard's handoff overstated its tests; on rereading, the line described Blue's suite, which passes 493 tests.
+
+### Why this matters for the portfolio
+
+- The second look at the same warning found a different cause than the first. The fix that worked on 9 November was real, but it addressed a symptom of a box too small for what it runs.
+- A migration checked row for row, with the old copy backed up before it was deleted, is what makes a move like this safe on free infrastructure.
+- The outage, its cause and the rule it produced are recorded in both repos and in a reusable pattern, not just fixed and forgotten.
+
+---
+
