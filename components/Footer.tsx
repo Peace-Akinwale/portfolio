@@ -33,6 +33,9 @@ export function Footer({ night = false, compact = false }: { night?: boolean; co
         </nav>
         <nav aria-label="Elsewhere">
           <ul>
+            <li><Link href="/apps" className="footer-link">Apps</Link></li>
+            <li><Link href="/privacy" className="footer-link">Privacy</Link></li>
+            <li><Link href="/terms" className="footer-link">Terms</Link></li>
             <li><Link href="/testimonials" className="footer-link">What clients say</Link></li>
             <li><a href={LINKEDIN_URL} target="_blank" rel="noopener noreferrer" className="footer-link">LinkedIn</a></li>
             <li><a href={X_URL} target="_blank" rel="noopener noreferrer" className="footer-link">X</a></li>

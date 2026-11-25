@@ -9,16 +9,12 @@ export default async function SettingsPage() {
   const serviceClient = await createServiceClient();
   const { data: tokenRaw } = await serviceClient
     .from('google_tokens')
-    .select('scope, expires_at, refresh_issued_at')
+    .select('scope')
     .eq('user_id', user.id)
     .maybeSingle();
   const token = tokenRaw as
-    | { scope: string; expires_at: string; refresh_issued_at: string | null }
+    | { scope: string }
     | null;
-  const refreshAgeDays = token?.refresh_issued_at
-    ? (Date.now() - new Date(token.refresh_issued_at).getTime()) / 86_400_000
-    : null;
-  const nearExpiry = refreshAgeDays !== null && refreshAgeDays >= 5;
 
   return (
     <div className="min-h-screen bg-[var(--muted)]/45">
@@ -60,35 +56,11 @@ export default async function SettingsPage() {
           </p>
           {token ? (
             <div className="mt-3 text-sm text-muted-foreground">
-              {refreshAgeDays !== null ? (
-                <p className="text-foreground">
-                  <strong>Connected.</strong> About{' '}
-                  {Math.max(0, Math.round(7 - refreshAgeDays))} day
-                  {Math.max(0, Math.round(7 - refreshAgeDays)) === 1 ? '' : 's'} until reconnect is
-                  needed.
-                </p>
-              ) : (
-                <p className="text-foreground">
-                  <strong>Connected.</strong>
-                </p>
-              )}
-              <details className="mt-2 text-xs">
-                <summary className="cursor-pointer text-muted-foreground underline">
-                  Why does this expire weekly?
-                </summary>
-                <p className="mt-2 leading-relaxed">
-                  The app is in Google&rsquo;s OAuth testing mode, which limits every connection to
-                  7 days. The access token inside that window rotates automatically every hour
-                  (next rotation at {new Date(token.expires_at).toLocaleString()}). Once the app is
-                  published out of testing, connections will last indefinitely.
-                </p>
-              </details>
-            </div>
-          ) : null}
-          {nearExpiry ? (
-            <div className="mt-4 rounded-[1rem] border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-900">
-              Your Google Docs connection expires soon. Reconnect below to keep re-import and
-              auto-apply working.
+              <p className="text-foreground"><strong>Google connection saved.</strong></p>
+              <p className="mt-2 leading-relaxed">
+                MyLinks refreshes access automatically when you use Google Docs. If Google expires
+                or revokes the connection, the app will ask you to reconnect.
+              </p>
             </div>
           ) : null}
           <a
