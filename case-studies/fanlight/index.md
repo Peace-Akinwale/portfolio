@@ -74,3 +74,28 @@ Written from the same day's Google-verification handoff and deployed source comm
 - Shipping authentication includes the consent screen, domain ownership, account continuity and clear review status. A working login is evidence for that login, not proof that every requested Google permission is approved.
 
 ---
+
+## 2026-11-25, a separate sending key for Fanlight, with delivery verification left open
+
+Written from the same day's Resend account check, Fanlight decisions and Railway deployment metadata. Invite sends had returned a domain-verification error even though the domain was verified in Peace's personal Resend account.
+
+### What shipped
+
+- Peace replaced Fanlight's reused email key with a dedicated key. The prepared configuration uses Sending access, restricted to peaceakinwale.com.
+- The latest Fanlight deployment, commit `fe184f4`, reported success. Its homepage and health endpoint returned HTTP 200 in the closing check.
+
+### Decisions worth recording
+
+- **Separate the products' sending keys.** Fanlight's credential belongs with its verified domain and can be managed without changing the portfolio's or Read Aloud's key.
+- **Keep new credentials private.** The agent prepared the form, then handed control to Peace before creation and entry. No replacement key appeared in agent output.
+
+### Frictions and course corrections
+
+- Domain verification was already complete, so no DNS change was needed. A key from another account or team was suspected; that diagnosis was not independently established.
+- Deployment health is confirmed. A test invite arriving and the interactive Members list still need verification, so the email issue is not recorded as fixed.
+
+### Why this matters for the portfolio
+
+- Check the account and deployed credential context before changing working DNS. Record deployment health and actual email delivery as separate results.
+
+---
