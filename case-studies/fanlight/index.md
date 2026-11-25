@@ -45,3 +45,32 @@ Written the same day, from the session's commands, the repo's git log and CI run
 - Hardening means gates you can watch working, not a promise: a deploy held in WAITING, a config error in plain words, and the last good version still serving.
 
 ---
+
+## 2026-11-25, one personal brand across Google sign-in, with permission review kept separate
+
+Written from the same day's Google-verification handoff and deployed source commits. This continued the production setup above. The public policy pages and app endpoints were checked again while recording this entry; earlier browser sign-in evidence is identified as such.
+
+### What shipped
+
+- Public app, privacy and terms pages on peaceakinwale.com, deployed in portfolio commit `0885413`. All returned HTTP 200 in the closing check.
+- Peace Akinwale branding verified and published for the shared Google project. Earlier fresh sign-ins reached the existing Fanlight, MyLinks and Read Aloud accounts.
+- ContentDB's Google button moved onto its own domain, retaining the existing accounts and access rules. The rollout's fresh sign-in passed; its separate brand appeal remained under review.
+- MyLinks' reconnect message no longer invents a weekly expiry or says its production Google app is in testing.
+
+### Decisions worth recording
+
+- **Brand verification is not permission verification.** Basic sign-in and sensitive document access have different review requirements. The docs explicitly keep the unfinished scope application open.
+- **Preserve the intended write feature.** A proposed reduction to read-only document access was withdrawn when Peace clarified that Draft Scorer will add new content in a new document tab. That feature must work before it appears in the review demo.
+- **Parked means parked.** Garde's broken sign-in was investigated, then left alone when Peace confirmed the product is parked.
+
+### Frictions and course corrections
+
+- Google's automated ContentDB check rejected the public homepage, so an appeal was submitted rather than calling the brand approved.
+- ContentDB's first build failed in its existing font downloader. Bundling the same fonts locally removed that build dependency.
+- Secret rotation remains a separate follow-up. No claim is made here that the replacement has passed a new sign-in or that the old secret has been retired.
+
+### Why this matters for the portfolio
+
+- Shipping authentication includes the consent screen, domain ownership, account continuity and clear review status. A working login is evidence for that login, not proof that every requested Google permission is approved.
+
+---

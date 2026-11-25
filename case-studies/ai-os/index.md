@@ -170,3 +170,30 @@ The draft scorer's "Outline a new page" screen hands a writer an outline before 
 - An AI feature earns trust when the screen says what the model was given. Asking that question out loud exposed that the outline was ungrounded, and the fix used evidence the project already held.
 
 ---
+
+## 2026-11-25, Claude Code and Codex share the session records
+
+Peace asked for the same update and handoff routines in both coding agents, with both writing to the same files. Inspection found a newer Claude handoff and an older Codex copy that still required long outputs and extra closing prompts. A current project handoff also existed only in a separate worktree.
+
+### What shipped
+
+- Shared `update` and `handoff` skill sources in AI OS, installed for both agents. Claude's update command reads the same source as Codex's skill; both handoff installations resolve to the same file.
+- Shared routing that finds the owning project records before writing, records the actual implementation branch separately, and preserves another session's changes.
+- The current Google-verification handoff moved to the private coordination folder. Its old path remains an alias to the same file, and the affected project records link to it.
+- Both skills passed the bundled structural validator. Filesystem checks confirmed shared targets. Fresh-chat skill discovery has not been observed.
+
+### Decisions worth recording
+
+- **One workflow source, one project record.** Agent-specific entry points can differ without maintaining competing instructions or handoffs.
+- **A handoff can be complete while work remains open.** The record keeps credential rotation, external review and the unfinished permission demo pending; parked work stays parked.
+
+### Frictions and course corrections
+
+- The old Codex handoff had drifted from Claude's tested revision. It was backed up before replacement, including its supporting files.
+- The main portfolio checkout contained other work and lagged the remote. Log publication uses an isolated checkout of the current remote so it cannot ship those unrelated changes.
+
+### Why this matters for the portfolio
+
+- Moving between agents should preserve decisions and evidence. Shared files and checked destinations make that continuity inspectable instead of depending on each agent's private memory.
+
+---
