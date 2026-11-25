@@ -6409,3 +6409,38 @@ Peace heard two mistakes in Steve's Nov 22 newsletter audio. "Google runs AFTER 
 - The bug-hunt checklist now carries this lesson for every future project: test a text rule on the real stored content, and also check what it misses.
 
 ---
+
+## 2026-11-24 to 2026-11-25, three pull requests made the team's AI-answer tool read ChatGPT and Google AI Mode correctly, and the first was merged in a day
+
+Lens is the team's tool for recording what ChatGPT and Google AI Mode answer, cite and search. Another engineer owns it. A research run of 682 recordings showed six things it read wrong, and on Nov 25 a strategist reported more from his own client sessions. Peace chose to fix them as pull requests for the owner to review, not to hand him a list.
+
+### What shipped
+
+- **Pull request 1, merged Nov 25** (`notebookagency/Lens#20`, 13 commits). ChatGPT citations written in a second tag form were being missed: cited results found went from 359 to 434 of 434, and answers missing citations from 35 to 0 of 175. It also added page snippets, and listed the sites an AI Mode answer links.
+- **Pull request 2, open** (`#22`). The privacy filter hid every number and query value in every address, so pages a search returned could not be opened. Addresses the platform returned as search results now keep those parts. ChatGPT citations with a hidden part went from 577 to 72 of 577.
+- **Pull request 3, open** (`#23`, 6 commits). ChatGPT product cards keep their store, price and page. Google AI Mode links inside the answer now count as citations: 2,969 to 3,325 on the 682 recordings, and turns with no citation from 69 to 50. On the strategist's own 22 sessions, AI Mode citations went from 254 to 357 and turns with no citation from 12 to 4.
+- Every number came from reading all 682 recordings, and the strategist's 22, before and after each change. Each read was run twice to separate real change from noise.
+- The final check on a clean copy of the last commit: 87 Go test packages pass, plus the web type check, build and 19 of 19 page checks.
+
+### Decisions worth recording
+
+- **Fix it, do not report it.** The owner had a heavy week. The bar Peace set: the pull requests must be good enough that he does not have to patch them.
+- **The privacy change got its own pull request.** It was first written into pull request 1. A review found it let through pasted links and signed values, so it was taken out and rebuilt narrower: only addresses a search returned are opened up; everything else keeps the full rule.
+- **A shopping card is not a citation.** ChatGPT never cites a product. Showing a store page as a cited source would have been a false reading, so cards keep their data and stay out of the citation list.
+- **Never guess a page.** Google now sends some links with no address, only a title and a site name. Matching by site alone was measured first: 0 correct, 2 wrong. It was not built. A link is tied to a page only when exactly one page fits; otherwise it is kept as a citation with no address.
+- **Stacked pull requests, not a push to the live branch**, even after the first was merged, because both change what the owner must be able to vouch for.
+
+### Frictions and course corrections
+
+- **The first pull request was merged while the strategist's feedback was still being folded in.** The new fixes became a third pull request instead of joining the first.
+- **Each pull request was reviewed more than once by someone who had not seen the conclusions, and every round found real defects.** The largest: card buttons with no visible words had been counted as 16 citations. In the last round, 10 defects were found in a rule written that evening, including one where a tie between two pages could be settled by a page from an earlier turn. All were fixed, each with a test.
+- **Tests were tested.** Each new rule was broken on purpose in a copy of the code. Two breaks passed the suite at first, which exposed two missing tests; both were added.
+- **A late addition was measured before it was built.** Of 45 links with no address in the strategist's sessions, 25 now point to a real page, 13 are kept as citations without an address, and 7 cite nothing because Google sends nothing to go on. That limit is stated in the pull request.
+
+### Why this matters for the portfolio
+
+- Work on someone else's codebase was delivered the way its owner would want it: small reviewable commits, a description that states what is not fixed, and numbers he can check.
+- Claims were measured on the real recordings, including the person's own sessions who reported the problem, not on invented examples.
+- Three new checks from this work went into the reusable bug-hunt checklist (a stand-in value matched as real, a tie settled by a fallback, a writer and reader that disagree on quoting).
+
+---
