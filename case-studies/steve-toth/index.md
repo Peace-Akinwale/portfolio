@@ -6444,3 +6444,35 @@ Lens is the team's tool for recording what ChatGPT and Google AI Mode answer, ci
 - Three new checks from this work went into the reusable bug-hunt checklist (a stand-in value matched as real, a tie settled by a fallback, a writer and reader that disagree on quoting).
 
 ---
+
+## 2026-11-26, Steve's weekly platform posts ran on time again, and a plan for reading his notes from his new app was worked out from its code
+
+Three threads from the Nov 25 engineering call. The weekly LinkedIn drafts that summarize what AI platforms changed in their docs had been moved to a slot that never fired. The answer-reading tool's fixes from the previous two days were merged. And Steve's notes are moving into his new app, TothBot, so the roundup tool (Radar) needs a way to read them and link to them.
+
+### What shipped
+
+- **The weekly drafts are back on Thursday 12:00 New York** (commit `ceeebeab`, database change 097). A change on Nov 20 had moved them to Friday 06:00, and that run never fired. A database rule now refuses any week that does not end at Thursday noon. 2,941 tests pass.
+- **The first Thursday run passed on schedule** (Nov 26, 17:00 UTC): four drafts, OpenAI (9 changes), Google (6), Gemini (3) and Perplexity (5), with the other four platforms correctly quiet. Writing them cost about $1.25. Phone, Slack and in-app alerts all went out.
+- **The answer-reading tool's pull requests #22 and #23 were merged and deployed by their owner.** The re-read of 842 stored sessions was started from our side the same evening, since it is an admin request rather than a server task.
+- **A plan for Radar and TothBot, posted on the team's issue** (`notebookagency/stevetoth.ai#191`), written from TothBot's own code.
+
+### Decisions worth recording
+
+- **One small route behind its own key, not a wider door.** Three other ways were considered and rejected: Radar signing in as a member (sign-in is not built for robots, sessions expire, locked notes come back empty), reading TothBot's database directly (too much access, breaks whenever the owner changes a table), and share links (paid text held back, one link per note). The chosen route copies a pattern the app already uses for its own connector, with a separate key so changing one never breaks the other.
+- **The teaser cuts by value, not by position.** Steve wants his own notes shown as a teaser that sends readers to TothBot. Showing the opening and a link fails when the valuable part sits in the middle. The agreed rule names every step, gives real detail on the parts that are not the valuable one, and says what the valuable part does without giving it away. A second mode for research notes holds nothing back artificially, because holding back felt forced when tested on a real research note.
+- **His LinkedIn posts are not teasers.** They are public and the link goes to the post itself, so only his notes get the teaser treatment.
+- **Nothing built ahead of the owner's side.** The plan was agreed and posted, and the build waits for the route to exist.
+
+### Frictions and course corrections
+
+- **An absence claim was wrong.** The first check said the team had no access to TothBot's code, because it searched for a repository named TothBot. The code lives inside the website repository the team already had. The owner pointed it out. The plan was rebuilt from the code, and the lesson went into memory: search inside the repositories you can reach, not only by name.
+- **A second claim was corrected before posting.** An early draft said the app had no way to look up a note by its Notion id. A closer read found one; it just does not return the new address. The posted plan says exactly that.
+- **"No machine access" was checked, not assumed.** Every route that skips the sign-in check was listed, which is how the existing key-protected route was found and became the model.
+
+### Why this matters for the portfolio
+
+- A scheduling bug was fixed with a rule in the database, not just a code change, and the fix was proven by watching the real run land.
+- An integration with another engineer's system was designed from his code, with the rejected options and their reasons written down, and posted where he already tracks the work.
+- When a claim turned out wrong, it was corrected in the record instead of quietly dropped.
+
+---
