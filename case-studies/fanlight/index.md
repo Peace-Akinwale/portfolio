@@ -137,3 +137,38 @@ Written the same day, from the Fanlight repo's merged pull requests, its decisio
 - Publishing the corrections is part of the work. The review that overturned a reported number happened before merge, and the pull request said so.
 
 ---
+
+## 2026-11-27, a redesign thrown out for losing what worked, and a written spec another agent built seven batches from in one evening
+
+Written the same day, from the session's notes, the spec file, the Fanlight repo's pull request list and its decision log. The brief was to improve how Fanlight looks and reads. The day's own work was a review and a spec. The build that followed was done by a separate agent session working from that spec, and is credited as such below.
+
+### What shipped
+
+- **A page-by-page review with Peace** of the live app and of a wireframe of every screen, recorded as he went: what to keep, what to change and why.
+- **A spec of about 4,650 words:** 12 decisions, each page in turn, nine questions still open, and the work split into eight batches with one pull request each.
+- **A handoff prompt** naming the files to read, in order, and the rules to work by. Peace gave it to an agent of his choosing.
+- **A colour comparison** of five screens in the current look and a proposed light one, shown side by side at the same size.
+- **What the spec led to, built by another agent session the same day:** eight pull requests (6 to 13) merged between 16:10 and 19:50 Lagos time, covering the first seven batches. The eighth batch was still in progress when this was written. Those pull requests are that session's work. This entry claims the review and the spec.
+
+### Decisions worth recording
+
+- **Keep the colours.** The first wireframe was grey. Peace called it worse and bland, so it was rebuilt in the current navy and gold. A light palette was then offered with measured contrast, and he declined that too. The lesson recorded in the spec: change the structure, keep what already works.
+- **Not every wireframe page won.** Peace preferred the wireframe for Sources and the live app for Runs and Actions. The spec takes each page on its own evidence, not the redesign as a package.
+- **Every diagram is on the page when it opens.** Drawing fan-out diagrams as the reader scrolls was proposed for speed. Peace refused: the reader should only scroll. The spec says to fix speed some other way if it is slow, and never to hide a diagram.
+- **Advice needs quotes from both sides.** The goal is to never recommend something a client already did. So each recommendation must carry an exact quote from the client's page and from the page an assistant cited, code checks each quote appears in the fetched text, and "could not tell" stays a valid answer.
+- **Paid steps need a yes first.** A crawling service and the model that reads pages were both written into the spec as needing an estimate and Peace's approval, with the estimates kept out of the app.
+
+### Frictions and course corrections
+
+- **The first redesign removed things Peace liked.** It dropped the per-assistant cards and the colour that told sources apart. It was thrown out and redone.
+- **An instruction was read as a comment.** Peace wrote "a question (use prompts)". The first reply treated it as an aside. It was a naming decision, later confirmed and built.
+- **A proposal was unclear.** The first explanation of how to show repeat answers did not land. A worked example did, and it became a toggle between the latest capture and all versions.
+- **The spec's code notes went stale within hours.** They describe the app before the build. The spec now carries a status line saying so, and the handoff lists which open questions the build answered.
+- **Not verified by this session:** the merged work was not re-tested here, and the live app was not opened after the merges. The cost figures in the spec are estimates from token counts, not measurements.
+
+### Why this matters for the portfolio
+
+- A redesign is judged by what it keeps as much as by what it adds. Showing the old and new side by side, per page, let the owner keep the good parts of both.
+- A spec that states decisions, open questions and rules plainly can be handed to a different agent and built from the same day.
+
+---
