@@ -6476,3 +6476,34 @@ Three threads from the Nov 25 engineering call. The weekly LinkedIn drafts that 
 - When a claim turned out wrong, it was corrected in the record instead of quietly dropped.
 
 ---
+
+## 2026-11-27, two more pull requests for the team's AI-answer tool closed a live privacy gap, after every check was finished instead of skipped
+
+The answer-reading tool (Lens) records AI search sessions and hides private data before storing them. Two branches of fixes were ready on Nov 26, but two of four reviewers had been stopped early to save cost and the web pages had never been tried in a browser. Peace asked for that to be finished before anything went out. Both pull requests were opened on the evening of Nov 27 (`notebookagency/Lens#26` and `#27`).
+
+### What shipped
+
+- **#26, the privacy filter.** The browser extension's upload carries two extra copies of each ChatGPT session (the answer stream and the conversation), and the filter had never cleaned them, so a phone number, email or key in a prompt could reach the stored record and reports. This was live for every extension upload. Both copies are now cleaned with the recording. A Google session token that stayed inside Google's links in 278 of our 704 test recordings is now hidden too.
+- **#27, reading and reports.** Reports and the session summary now show the same brands as the session page (they had skipped the model step and listed guesses from bold text). Every screen counts sources by one rule. Every download names the reader version that read each session. A new "HAR files (zip)" export, which a strategist asked for, serves cleaned copies only.
+- **Checked on 704 real recordings:** no citation or page lost (ChatGPT 713 citations, Google AI Mode 3,682), nothing private newly kept, and cleaning a recording twice now gives the same result (it changed 397 of them at the start of the day). All tests pass on both branches: the Go suite, 67 extension tests, and 19 and 21 web checks.
+
+### Decisions worth recording
+
+- **A visible number was allowed to change, and the owner was told up front.** About one in seven ChatGPT "sources" were images and links ChatGPT only checks before showing them, not search results. They now get their own label, so the team's ChatGPT "searched" counts will drop after deploy (8,020 entries become 5,911 searched).
+- **A rule was rolled back because it bought nothing.** A reviewer's change let longer letter-and-digit runs count as page names. Measured on 28,520 real address parts, it saved no extra real page name and let more random keys through, so it went back.
+- **Items that were not ours to change were written down, not changed.** The session page's raw download, an unused page, and the filter key's design went into the pull requests as the owner's calls, each marked as not blocking the merge.
+
+### Frictions and course corrections
+
+- **My own measuring tool was wrong for two days.** It fed the readers less than the app does, so the first pull request texts carried source counts from a path the app never runs (689 ChatGPT entries instead of 8,020). It was caught only because a reviewer's count disagreed. Every number was re-measured the app's way before posting.
+- **A change of mine was taken out after a second model reviewed it.** I had made the filter match an extension stream to its request by site and path, to guard against a spelling mismatch. The review showed the extension never produces that mismatch, and that the change opened a small gap on Google AI Mode. It was removed and both branches rebuilt.
+- **A check ran in a loop for an hour** because I passed a borrowed script a setting of 0. A three-file test run would have caught it in seconds.
+- Peace asked how to stop this kind of mistake, not just this one. The answer became a written rule (test any long run on a few inputs first, show progress, check a measuring tool against the app before quoting it), added to the reusable bug-hunt checklist and to the project's standing notes.
+
+### Why this matters for the portfolio
+
+- A privacy gap that was live on the main branch was found by reading what actually gets uploaded, not by assuming the filter covered it.
+- The work went out only after the skipped checks were finished, and the pull requests say plainly what changes for the team and what is left for the owner.
+- When my own tools and changes were wrong, that is in the record with the fix, and it became a rule for the next project.
+
+---
